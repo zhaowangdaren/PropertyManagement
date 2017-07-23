@@ -2,7 +2,7 @@
   <div :class='s.wrap'>
     <div :class='s.title'>
       <img src="~@/res/images/earth.png">
-      基础信息维护
+      Home<!-- 基础信息维护 -->
     </div>
     <div :class='s.content'>
       <div :class='s.tabs'>
@@ -72,19 +72,19 @@ import InfosXiaoQu from '@/components/InfosXiaoQu'
       return {
         tabs: [
           {
-            name: '街道信息维护',
+            name: 'street',//街道信息维护
             view: InfosStreet
           },
           {
-            name: '社区信息维护',
+            name: 'community',//社区信息维护
             view: InfosCommunity
           },
           {
-            name: '小区信息维护',
+            name: 'country',//社区信息维护
             view: InfosXiaoQu
           }
         ],
-        curView: InfosStreet
+        curView: InfosCommunity
       } 
     },
     methods: {

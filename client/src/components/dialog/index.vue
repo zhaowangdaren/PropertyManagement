@@ -38,6 +38,7 @@
     align-items: center;
     .contentWrap{
       background: #fff;
+      min-width: 40%;
       .titleWrap{
         background: #fff;
         padding: 10px;

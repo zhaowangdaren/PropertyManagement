@@ -1,34 +1,40 @@
 <template>
   <div>
+  <!-- 新增街道信息 -->
     <basic-dialog 
-      title='新增街道信息' 
+      title='Title' 
       :onSave='onSave'
       :onCancel='onCancel'
       :warn='warn'
       >
       <div :class='s.item'>
         <div :class='s.red'>*</div>
-        街道名
+        name
+        <!-- 街道名 -->
         <input type="text" v-model='street.name' @focus='onFocus'>
       </div>
       <div :class='s.item'>
         <div :class='s.red'>*</div>
-        负责人
-        <input type="text" v-model='street.psersonInCharge' @focus='onFocus'>
+        charger
+        <!-- 负责人 -->
+        <input type="text" v-model='street.personInCharge' @focus='onFocus'>
       </div>
       <div :class='s.item'>
         <div :class='s.red'>*</div>
-        电话号码
+        tel
+        <!-- 电话号码 -->
         <input type="text" v-model='street.tel' @focus='onFocus'>
       </div>
       <div :class='s.item'>
         <div :class='s.red'>*</div>
-        授权码
+        authCode
+        <!-- 授权码 -->
         <input type="text" v-model='street.authCode' @focus='onFocus'>
       </div>
       <div :class='s.item'>
         <div :class='s.red'>*</div>
-        描述
+        intro
+        <!-- 描述 -->
         <input type="text" v-model='street.intro' @focus='onFocus'>
       </div>
     </basic-dialog>
@@ -83,7 +89,7 @@
       },
       checkStreet () {
         if( this.street.name !== ''
-          && this.street.psersonInCharge !== ''
+          && this.street.personInCharge !== ''
           && this.street.tel !== ''
           && this.street.authCode !== ''
           && this.street.intro !== '') return true
@@ -112,7 +118,7 @@
           else {
             this.warn = '街道新增成功'
             this.street.name = '',
-            this.street.psersonInCharge = ''
+            this.street.personInCharge = ''
             this.street.tel = ''
             this.street.authCode = ''
             this.street.intro = ''

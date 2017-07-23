@@ -5,6 +5,8 @@ import (
 	"log"
 	"strings"
 
+	"github.com/gin-gonic/gin"
+
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -26,23 +28,23 @@ type Communities struct {
 	Communities []Community
 }
 
-//InsertCommunityTB 插入
-func InsertCommunityTB(db *mgo.Database, comm Community) string {
+//InsertCommunity 插入
+func InsertCommunity(db *mgo.Database, comm Community) interface{} {
 	c := db.C(CommunityTableName)
 	count, err := c.Find(bson.M{"name": comm.Name}).Count()
 	if err != nil {
-		log.Fatal(err)
-		return err.Error()
+		log.Print(err)
+		return gin.H{"error": 1, "data": err.Error()}
 	}
 	if count > 0 {
-		return "已存在街道名为" + comm.Name + ", 请重新设置街道名"
+		return gin.H{"error": 1, "data": "已存在community" + comm.Name + ", 请重新设置name"}
 	}
 	err = c.Insert(&comm)
 	if err != nil {
 		log.Fatal(err)
-		return err.Error()
+		return gin.H{"error": 1, "data": err.Error()}
 	}
-	return Succ
+	return gin.H{"error": 0, "data": Succ}
 }
 
 //FindCommunities 查询社区信息

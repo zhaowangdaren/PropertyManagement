@@ -19,31 +19,31 @@
         menus: [
           {
             icon: require('@/res/images/home.png'),
-            text:'基础信息维护'
+            text:'Home'//基础信息维护
           },
           {
             icon: require('@/res/images/refresh.png'),
-            text:'数据初始化'
+            text:'Init'//数据初始化
           },
           {
             icon: require('@/res/images/users.png'),
-            text:'用户管理'
+            text:'Users'//数据初始化
           },
           {
             icon: require('@/res/images/wechat.png'),
-            text:'微信用户绑定管理'
+            text:'wx'//微信用户绑定管理
           },
           {
             icon: require('@/res/images/complaints.png'),
-            text:'投诉数据维护'
+            text:'complaints'//微信用户绑定管理
           },
           {
             icon: require('@/res/images/wuye.png'),
-            text:'物业信息管理'
+            text:'pm'//物业信息管理
           },
           {
             icon: require('@/res/images/build.png'),
-            text:'建筑信息管理'
+            text:'build'//物业信息管理
           }
         ]
       }

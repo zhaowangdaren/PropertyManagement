@@ -71,7 +71,7 @@ func Start() {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": "params error"})
 			panic(err)
 		} else {
-			c.JSON(http.StatusOK, db.InsertStreet(dbc, jsonStreet))
+			c.JSON(http.StatusOK, table.InsertStreet(dbc, jsonStreet))
 		}
 	})
 
@@ -84,6 +84,16 @@ func Start() {
 		c.String(http.StatusOK, db.QueryComunityInfo(dbc, name, pageNo, pageSize))
 	})
 
+	router.POST("/community/add", func(c *gin.Context) {
+		var jsonComm table.Community
+		err := c.BindJSON(&jsonComm)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			panic(err)
+		} else {
+			c.JSON(http.StatusOK, table.InsertCommunity(dbc, jsonComm))
+		}
+	})
 	//localhost:3000/communityInfo/key?key=name
 	router.POST("/communityInfo/key", func(c *gin.Context) {
 		key := c.PostForm("key")
@@ -106,6 +116,17 @@ func Start() {
 		pageNo, _ := strconv.Atoi(c.PostForm("pageNo"))
 		pageSize, _ := strconv.Atoi(c.PostForm("pageSize"))
 		c.String(http.StatusOK, db.QueryXiaoQuInfo(dbc, name, pageNo, pageSize))
+	})
+
+	router.POST("/xq/add", func(c *gin.Context) {
+		var jsonObj table.XiaoQu
+		err := c.BindJSON(&jsonObj)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": "params error"})
+			log.Print(err)
+		} else {
+			c.JSON(http.StatusOK, table.InsertXQ(dbc, jsonObj))
+		}
 	})
 
 	//localhost:3000/xiaoQu/key?key=name

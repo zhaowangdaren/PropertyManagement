@@ -17,11 +17,16 @@
     <table>
       <tr >
         <th>选择</th>
-        <th>街道名</th>
-        <th>负责人</th>
-        <th>电话号码</th>
-        <th>授权码</th>
-        <th :class='s.descr'>描述</th>
+        <th>name</th>
+        <!-- 街道名 -->
+        <th>charger</th>
+        <!-- 负责人 -->
+        <th>Tel</th>
+        <!-- 电话号码 -->
+        <th>code</th>
+        <!-- 授权码 -->
+        <th :class='s.descr'>intro</th>
+        <!-- 描述 -->
         <th>操作</th>
       </tr>
       <tr v-for='street in streets' :class='s.street'>

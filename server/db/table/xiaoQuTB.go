@@ -4,6 +4,8 @@ import (
 	"log"
 	"strings"
 
+	"github.com/gin-gonic/gin"
+
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -27,22 +29,23 @@ type XiaoQus struct {
 	XiaoQus []XiaoQu
 }
 
-//InsertXiaoQu 插入user
-func InsertXiaoQu(db *mgo.Database, info XiaoQu) string {
+//InsertXQ 插入user
+func InsertXQ(db *mgo.Database, info XiaoQu) interface{} {
 	c := db.C(XiaoQuTableName)
 	count, err := c.Find(bson.M{"name": info.Name}).Count()
 	if err != nil { //查询出错或记录不存在
 		log.Fatal(err)
+		return gin.H{"error": 1, "data": err.Error()}
 	}
 	if count > 0 {
-		return "已存在物业公司：" + info.Name + ", 请重新设置公司名"
+		return gin.H{"error": 1, "data": "已存在country：" + info.Name + ", 请重新设置name"}
 	}
 	err = c.Insert(&info)
 	if err != nil {
-		log.Fatal(err)
-		return err.Error()
+		log.Print(err)
+		return gin.H{"error": 1, "data": err.Error()}
 	}
-	return Succ
+	return gin.H{"error": 0, "data": Succ}
 }
 
 //FindXiaoQus 查询小区信息集

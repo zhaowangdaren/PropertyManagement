@@ -27,11 +27,11 @@ type Streets struct {
 }
 
 //InsertStreetTB 插入
-func InsertStreetTB(db *mgo.Database, street Street) interface{} {
+func InsertStreet(db *mgo.Database, street Street) interface{} {
 	c := db.C(StreetTableName)
 	count, err := c.Find(bson.M{"name": street.Name}).Count()
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
 		return gin.H{"error": 1, "data": err.Error()}
 	}
 	if count > 0 {

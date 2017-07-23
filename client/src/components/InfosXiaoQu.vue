@@ -1,14 +1,16 @@
 <template>
   <div>
     <div :class='s.searchWrap'>
-      <div :class='s.title'>街道名</div>
+    <!-- 街道名 -->
+      <div :class='s.title'>name</div>
       <div :class='s.inputWrap'>
         <input type="text" v-model='inputStreetName'>
         <div :class='s.dropList'>
           <div v-for='streetName in showNames' v-text='streetName' :class='s.streetName' @click='inputStreetName = streetName'></div>
         </div>
       </div>
-      <div :class='s.title'>小区名</div>
+      <!-- 小区名 -->
+      <div :class='s.title'>country</div>
       <div :class='s.inputWrap'>
         <input type="text" v-model='inputXQName'>
         <div :class='s.dropList'>
@@ -39,12 +41,18 @@
     <table>
       <tr >
         <th>选择</th>
-        <th>街道名</th>
-        <th>社区名</th>
-        <th>小区名</th>
-        <th>位置</th>
-        <th>负责人</th>
-        <th>电话号码</th>
+        <!-- 街道名 -->
+        <th>name</th>
+        <!-- 社区名 -->
+        <th>name2</th>
+        <!-- 小区名 -->
+        <th>country</th>
+        <!-- 位置 -->
+        <th>address</th>
+        <!-- 负责人 -->
+        <th>charger</th>
+        <!-- 电话号码 -->
+        <th>tel</th>
         <th :class='s.descr'>描述</th>
         <th>操作</th>
       </tr>

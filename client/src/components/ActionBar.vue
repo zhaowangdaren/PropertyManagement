@@ -1,7 +1,7 @@
 <template>
   <div :class='s.wrap'>
-    <img src="~@/res/images/logo.png" :class='s.logo'>
-    <div :class='s.title'>信息系统</div>
+    <img src="~@/res/images/logo_jh.png" :class='s.logo'>
+    <div :class='s.title'>Title</div>
     <div :class='s.noticeWrap'>
       <img src="~@/res/images/notice.png" :class='s.notice'>
       <div :class='s.noticeNum'>0</div>

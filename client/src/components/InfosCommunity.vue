@@ -1,7 +1,8 @@
 <template>
   <div>
     <div :class='s.searchWrap'>
-      <div :class='s.title'>街道名</div>
+      <div :class='s.title'>name</div>
+      <!-- 街道名 -->
       <div :class='s.inputWrap'>
         <input type="text" v-model='inputName'>
         <div :class='s.dropList'>
@@ -17,7 +18,7 @@
       />
     </div>
     <div :class='s.addDel'>
-      <image-button :class='s.bt'
+      <image-button :class='s.bt' :clickMethod='onAdd'
         text='新增'
         :img='require("@/res/images/add.png")'
         bgColor='#3598dc'
@@ -33,10 +34,14 @@
     <table>
       <tr>
         <th>选择</th>
-        <th>街道名</th>
-        <th>社区名</th>
-        <th>负责人</th>
-        <th>电话号码</th>
+        <th>name</th>
+        <!-- 街道名 -->
+        <th>name2</th>
+        <!-- 社区名 -->
+        <th>charger</th>
+        <!-- 负责人 -->
+        <th>tel</th>
+        <!-- 电话号码 -->
         <th :class='s.descr'>描述</th>
         <th>操作</th>
       </tr>
@@ -58,6 +63,8 @@
         </td>
       </tr>
     </table>
+    <component :is='showDialog' @close='showDialog = ""' />
+    <!-- <add-community /> -->
   </div>
 </template>
 
@@ -145,14 +152,15 @@
 <script type="text/javascript">
   import Ajax from '@/Ajax'
   import ImageButton from '@/components/ImageButton'
-
+  import AddCommunity from '@/components/dialog/AddCommunity'
   export default {
-    components: {ImageButton},
+    components: {ImageButton, AddCommunity},
     data () {
       return {
         communities:[],
         streetNames: [],
-        inputName:''
+        inputName:'',
+        showDialog: ''
       }
     },
     mounted () {
@@ -211,6 +219,10 @@
           if (data === null || data === 'succ' || data === '') return
           this.communities = JSON.parse(data).Communities
         })
+      },
+      onAdd () {
+        console.info('onAdd')
+        this.showDialog = AddCommunity
       }
     }
   }
