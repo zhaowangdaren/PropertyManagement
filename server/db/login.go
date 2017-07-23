@@ -6,19 +6,8 @@ import (
 )
 
 //Login 登录
-func Login(userName string, password string) string {
-	session, err := mgo.Dial("localhost:27017")
-	if err != nil {
-		panic(err)
-	}
-	defer session.Close()
-	session.SetMode(mgo.Monotonic, true)
-	db := session.DB(DBName)
+func Login(db *mgo.Database, userName string, password string) string {
 	result := table.FindUser(db, userName)
-	if session != nil {
-		session.Close()
-		session = nil
-	}
 	if result.UserName == userName && result.Password == password {
 		return "succ"
 	} else if result.UserName != userName {

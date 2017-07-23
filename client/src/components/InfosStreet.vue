@@ -1,12 +1,18 @@
 <template>
   <div>
     <div :class='s.addDel'>
-      <button :class='s.add'>
-        <img src="~@/res/images/add.png">新增
-      </button>
-      <button :class='s.del'>
-        <img src="~@/res/images/delete.png">删除
-      </button>
+      <image-button :class='s.bt' :clickMethod='onAdd'
+        text='新增'
+        :img='require("@/res/images/add.png")'
+        bgColor='#3598dc'
+        fontSize='20px'
+        />
+      <image-button :class='s.bt'
+        text='删除'
+        :img='require("@/res/images/delete.png")'
+        bgColor='#cb5a5e'
+        fontSize='20px'
+        />
     </div>
     <table>
       <tr >
@@ -28,12 +34,15 @@
         <td v-text='street.AuthCode'></td>
         <td v-text='street.Intro'></td>
         <td>
-          <button :class='s.operation'>
-            <img src="~@/res/images/edit.png"/>编辑
-          </button>
+          <image-button
+            text='编辑'
+            :img='require("@/res/images/edit.png")'
+            bgColor='#26a69a'
+          />
         </td>
       </tr>
     </table>
+    <component :is='showDialog' @close='showDialog = ""' />
   </div>
 </template>
 
@@ -42,22 +51,8 @@
     display: flex;
     align-items: center;
     margin-top: 10px;
-    button{
-      border: transparent;
-      padding: 5px 10px;
-      margin: 10px;
-      font-size: 20px;
-      color: #fff;
-      img{
-        width: 15px;
-        margin-right: 5px;
-      }
-    }
-    .add{
-      background: #3598dc;
-    }
-    .del{
-      background: #cb5a5e;
+    .bt {
+      margin: 5px;
     }
   }
   table{
@@ -80,31 +75,19 @@
         background-color: #ddd;
       }
     }
-    .operation{
-      display: flex;
-      background: #26a69a;
-      color: #fff;
-      min-width: 60px;
-      font-size: 15px;
-      align-items: center;
-      margin: auto;
-      img{
-        width: 20px;
-        margin-right: 5px;
-      }
-      &:hover{
-        background: #29847b;
-      }
-    }
   }
 </style>
 
 <script type="text/javascript">
   import Ajax from '@/Ajax'
+  import ImageButton from '@/components/ImageButton'
+  import AddStreet from '@/components/dialog/AddStreet'
   export default {
+    components: {ImageButton, AddStreet},
     data () {
       return {
-        streets:[]
+        streets:[],
+        showDialog: ''
       }
     },
     mounted () {
@@ -112,14 +95,29 @@
     },
     methods: {
       fetechStreets () {
-        var request = {
+        // var request = {
+        //   method: 'POST',
+        //   url:'http://10.176.118.61:3000/streetInfo'
+        // }
+        // Ajax(request, data => {
+        //   if (data === null) return
+        //   this.streets = JSON.parse(data).Streets
+        // })
+        fetch('http://10.176.118.61:3000/streetInfo', {
           method: 'POST',
-          url:'http://10.176.118.61:3000/streetInfo'
-        }
-        Ajax(request, data => {
-          if (data === null) return
-          this.streets = JSON.parse(data).Streets
+          body: JSON.stringify({name:'', pageNo: 1, pageSize: 1})
+        }).then(resp => {
+          console.info(resp)
+          return resp.json()
+        }).then( data => {
+          // console.info('fetechStreets', data)
+          if (data.error === 0)
+            this.streets = JSON.parse(data.data).Streets
         })
+      },
+      onAdd () {
+        console.info('onAdd')
+        this.showDialog = AddStreet
       }
     }
   }

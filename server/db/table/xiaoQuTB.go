@@ -2,6 +2,7 @@ package table
 
 import (
 	"log"
+	"strings"
 
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -66,6 +67,20 @@ func FindXQDistincts(db *mgo.Database, key string) []string {
 	var result []string
 	var err error
 	err = c.Find(nil).Distinct(key, &result)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return result
+}
+
+func FindXQKVs(db *mgo.Database, kvs map[string]interface{}) XiaoQus {
+	query := make(map[string]interface{})
+	for k, v := range kvs {
+		query[strings.ToLower(k)] = v
+	}
+	c := db.C(XiaoQuTableName)
+	var result XiaoQus
+	err := c.Find(query).All(&result.XiaoQus)
 	if err != nil {
 		log.Fatal(err)
 	}

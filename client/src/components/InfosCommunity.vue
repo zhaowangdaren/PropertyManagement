@@ -5,17 +5,30 @@
       <div :class='s.inputWrap'>
         <input type="text" v-model='inputName'>
         <div :class='s.dropList'>
+          <div :class='s.streetName + " " + s.all' @click='fetchCommunities'>全部</div>
           <div v-for='streetName in showNames' v-text='streetName' :class='s.streetName' @click='inputName = streetName'></div>
         </div>
       </div>
+      <image-button :class='s.searchBt' :clickMethod='onSearch'
+        text='查询'
+        :img='require("@/res/images/ic_serach.png")'
+        bgColor='#4c87b9'
+        color='#fff'
+      />
     </div>
     <div :class='s.addDel'>
-      <button :class='s.add'>
-        <img src="~@/res/images/add.png">新增
-      </button>
-      <button :class='s.del'>
-        <img src="~@/res/images/delete.png">删除
-      </button>
+      <image-button :class='s.bt'
+        text='新增'
+        :img='require("@/res/images/add.png")'
+        bgColor='#3598dc'
+        fontSize='20px'
+        />
+      <image-button :class='s.bt'
+        text='删除'
+        :img='require("@/res/images/delete.png")'
+        bgColor='#cb5a5e'
+        fontSize='20px'
+        />
     </div>
     <table>
       <tr>
@@ -37,9 +50,11 @@
         <td v-text='item.Tel'></td>
         <td v-text='item.Intro'></td>
         <td>
-          <button :class='s.operation'>
-            <img src="~@/res/images/edit.png"/>编辑
-          </button>
+          <image-button
+            text='编辑'
+            :img='require("@/res/images/edit.png")'
+            bgColor='#26a69a'
+          />
         </td>
       </tr>
     </table>
@@ -51,6 +66,7 @@
     border: solid 1px #ddd;
     display: flex;
     align-items: center;
+    position: relative;
     .title{
       background: #e0e0e0;
       padding: 10px;
@@ -76,45 +92,31 @@
         background: #fff;
         box-shadow: 1px 1px 1px 1px #ddd;
         display: none;
+        z-index: 2;
         .streetName{
           padding: 5px;
+          color: #555;
           &:hover{
-            background: #ddd;
+            background: #0593f5;
           }
+        }
+        .all{
+          background: #ddd;
         }
       }
 
     }
-    select{
-      border: solid 1px #ddd;
-      min-width: 200px;
-      height: 30px;
-      margin-left: 10px;
-      font-size: 15px;
-      background: #fff;
-      border-radius: 0;
+    .searchBt{
+      position: absolute;
+      right: 10px;
     }
   }
   .addDel{
     display: flex;
     align-items: center;
     margin-top: 10px;
-    button{
-      border: transparent;
-      padding: 5px 10px;
-      margin: 10px;
-      font-size: 20px;
-      color: #fff;
-      img{
-        width: 15px;
-        margin-right: 5px;
-      }
-    }
-    .add{
-      background: #3598dc;
-    }
-    .del{
-      background: #cb5a5e;
+    .bt {
+      margin: 5px;
     }
   }
   table{
@@ -137,28 +139,15 @@
         background-color: #ddd;
       }
     }
-    .operation{
-      display: flex;
-      background: #26a69a;
-      color: #fff;
-      min-width: 60px;
-      font-size: 15px;
-      align-items: center;
-      margin: auto;
-      img{
-        width: 20px;
-        margin-right: 5px;
-      }
-      &:hover{
-        background: #29847b;
-      }
-    }
   }
 </style>
 
 <script type="text/javascript">
   import Ajax from '@/Ajax'
+  import ImageButton from '@/components/ImageButton'
+
   export default {
+    components: {ImageButton},
     data () {
       return {
         communities:[],
@@ -167,8 +156,8 @@
       }
     },
     mounted () {
-      this.fetechCommunities()
-      this.fetechAllStreetName()
+      this.fetchCommunities('')
+      this.fetchAllStreetName()
     },
     computed: {
       showNames: function () {
@@ -179,7 +168,11 @@
       }
     },
     methods: {
-      fetechCommunities () {
+      onSearch () {
+        if (!this.inputName && this.inputName === '') return
+        this.fetchKVs()
+      },
+      fetchCommunities () {
         var request = {
           method: 'POST',
           url:'http://10.176.118.61:3000/communityInfo'
@@ -187,10 +180,10 @@
         Ajax(request, data => {
           if (data === null) return
           this.communities = JSON.parse(data).Communities
-          if (this.communities === null) return
+          console.info(this.communities)
         })
       },
-      fetechAllStreetName () {
+      fetchAllStreetName () {//获取所有街道名称
         var request = {
           method: 'POST',
           url:'http://10.176.118.61:3000/communityInfo/key',
@@ -200,9 +193,23 @@
         }
         Ajax(request, data => {
           if (data === null) return
+          if (data === 'succ') return
           this.streetNames = JSON.parse(data)
-        console.info(data)
           if (this.streetNames === null) return
+        })
+      },
+      fetchKVs () {
+        console.info('fetchKVs')
+        var request = {
+          method: 'POST',
+          url:'http://10.176.118.61:3000/communityKVs',
+          query: {
+            query: JSON.stringify({streetName: this.inputName})
+          }
+        }
+        Ajax(request, data => {
+          if (data === null || data === 'succ' || data === '') return
+          this.communities = JSON.parse(data).Communities
         })
       }
     }

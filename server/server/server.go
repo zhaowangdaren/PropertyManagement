@@ -1,12 +1,18 @@
 package server
 
 import (
+	"encoding/json"
+	"fmt"
+	"log"
 	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
 
+	mgo "gopkg.in/mgo.v2"
+
 	"../db"
+	"../db/table"
 	"github.com/gin-gonic/gin"
 )
 
@@ -27,81 +33,132 @@ func cors() gin.HandlerFunc {
 
 //Start 使用Gin Web Framework
 func Start() {
+	session, err := mgo.Dial("localhost:27017")
+	if err != nil {
+		panic(err)
+	}
+	defer session.Close()
+	session.SetMode(mgo.Monotonic, true)
+	dbc := session.DB(db.DBName)
+
 	router := gin.Default()
 	router.Use(cors())
 	router.POST("/login", func(c *gin.Context) {
-		userName := c.Query("userName")
-		password := c.Query("password")
-		c.String(http.StatusOK, db.Login(userName, password))
+		userName := c.PostForm("userName")
+		password := c.PostForm("password")
+		c.String(http.StatusOK, db.Login(dbc, userName, password))
 	})
 
 	router.POST("/streetInfo", func(c *gin.Context) {
-		name := c.Query("name")
-		pageNo, _ := strconv.Atoi(c.Query("pageNo"))
-		pageSize, _ := strconv.Atoi(c.Query("pageSize"))
-		c.String(http.StatusOK, db.QueryStreetInfo(name, pageNo, pageSize))
+		var queryInfo QueryStreet
+		err := c.BindJSON(&queryInfo)
+		if err == nil {
+			c.JSON(http.StatusOK, gin.H{"error": 0, "data": db.QueryStreetInfo(dbc, queryInfo.Name, queryInfo.PageNO, queryInfo.PageSize)})
+		} else {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": "params error"})
+			panic(err)
+		}
+		// name := c.PostForm("name")
+		// pageNo, _ := strconv.Atoi(c.PostForm("pageNo"))
+		// pageSize, _ := strconv.Atoi(c.PostForm("pageSize"))
+		// c.String(http.StatusOK, db.QueryStreetInfo(dbc, name, pageNo, pageSize))
+	})
+
+	router.POST("/street/add", func(c *gin.Context) {
+		var jsonStreet table.Street
+		err := c.BindJSON(&jsonStreet)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": "params error"})
+			panic(err)
+		} else {
+			c.JSON(http.StatusOK, db.InsertStreet(dbc, jsonStreet))
+		}
 	})
 
 	//localhost:3000/communityInfo?name=社区名&pageNo=1&pageSize=1
 	router.POST("/communityInfo", func(c *gin.Context) {
-		name := c.Query("name")
-		pageNo, _ := strconv.Atoi(c.Query("pageNo"))
-		pageSize, _ := strconv.Atoi(c.Query("pageSize"))
-		c.String(http.StatusOK, db.QueryComunityInfo(name, pageNo, pageSize))
+		name := c.PostForm("name")
+		pageNo, _ := strconv.Atoi(c.PostForm("pageNo"))
+		pageSize, _ := strconv.Atoi(c.PostForm("pageSize"))
+		fmt.Println("name", name)
+		c.String(http.StatusOK, db.QueryComunityInfo(dbc, name, pageNo, pageSize))
 	})
 
 	//localhost:3000/communityInfo/key?key=name
 	router.POST("/communityInfo/key", func(c *gin.Context) {
-		key := c.Query("key")
-		c.String(http.StatusOK, db.QueryComunityDistinct(key))
+		key := c.PostForm("key")
+		c.String(http.StatusOK, db.QueryComunityDistinct(dbc, key))
 	})
 
+	router.POST("/communityKVs", func(c *gin.Context) {
+		queryStr := c.PostForm("query")
+		var query map[string]interface{}
+		err := json.Unmarshal([]byte(queryStr), &query)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("query", query)
+		result := db.QueryComunityKVs(dbc, query)
+		c.String(http.StatusOK, result)
+	})
 	router.POST("/xiaoQu", func(c *gin.Context) {
-		name := c.Query("name")
-		pageNo, _ := strconv.Atoi(c.Query("pageNo"))
-		pageSize, _ := strconv.Atoi(c.Query("pageSize"))
-		c.String(http.StatusOK, db.QueryXiaoQuInfo(name, pageNo, pageSize))
+		name := c.PostForm("name")
+		pageNo, _ := strconv.Atoi(c.PostForm("pageNo"))
+		pageSize, _ := strconv.Atoi(c.PostForm("pageSize"))
+		c.String(http.StatusOK, db.QueryXiaoQuInfo(dbc, name, pageNo, pageSize))
 	})
 
 	//localhost:3000/xiaoQu/key?key=name
 	router.POST("/xiaoQu/key", func(c *gin.Context) {
-		key := c.Query("key")
-		c.String(http.StatusOK, db.QueryXQDistinct(key))
+		key := c.PostForm("key")
+		c.String(http.StatusOK, db.QueryXQDistinct(dbc, key))
+	})
+
+	router.POST("/xiaoQuKVs", func(c *gin.Context) {
+		queryStr := c.PostForm("query")
+		var query map[string]interface{}
+		err := json.Unmarshal([]byte(queryStr), &query)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("query", query)
+		result := db.QueryXQKVs(dbc, query)
+		c.String(http.StatusOK, result)
 	})
 
 	router.POST("/gov", func(c *gin.Context) {
-		username := c.Query("username")
-		pageNo, _ := strconv.Atoi(c.Query("pageNo"))
-		pageSize, _ := strconv.Atoi(c.Query("pageSize"))
-		c.String(http.StatusOK, db.QueryGovInfo(username, pageNo, pageSize))
+		username := c.PostForm("username")
+		pageNo, _ := strconv.Atoi(c.PostForm("pageNo"))
+		pageSize, _ := strconv.Atoi(c.PostForm("pageSize"))
+		c.String(http.StatusOK, db.QueryGovInfo(dbc, username, pageNo, pageSize))
 	})
 
 	router.POST("/streetUser", func(c *gin.Context) {
-		username := c.Query("username")
-		pageNo, _ := strconv.Atoi(c.Query("pageNo"))
-		pageSize, _ := strconv.Atoi(c.Query("pageSize"))
-		c.String(http.StatusOK, db.QueryStreetUserInfo(username, pageNo, pageSize))
+		username := c.PostForm("username")
+		pageNo, _ := strconv.Atoi(c.PostForm("pageNo"))
+		pageSize, _ := strconv.Atoi(c.PostForm("pageSize"))
+		c.String(http.StatusOK, db.QueryStreetUserInfo(dbc, username, pageNo, pageSize))
 	})
 
 	router.POST("/wx", func(c *gin.Context) {
-		openID := c.Query("openID")
-		pageNo, _ := strconv.Atoi(c.Query("pageNo"))
-		pageSize, _ := strconv.Atoi(c.Query("pageSize"))
-		c.String(http.StatusOK, db.QueryWXUser(openID, pageNo, pageSize))
+		openID := c.PostForm("openID")
+		pageNo, _ := strconv.Atoi(c.PostForm("pageNo"))
+		pageSize, _ := strconv.Atoi(c.PostForm("pageSize"))
+		c.String(http.StatusOK, db.QueryWXUser(dbc, openID, pageNo, pageSize))
 	})
 
 	router.POST("/wuye", func(c *gin.Context) {
-		xiaoQu := c.Query("xiaoQu")
-		pageNo, _ := strconv.Atoi(c.Query("pageNo"))
-		pageSize, _ := strconv.Atoi(c.Query("pageSize"))
-		c.String(http.StatusOK, db.QueryWuYe(xiaoQu, pageNo, pageSize))
+		xiaoQu := c.PostForm("xiaoQu")
+		pageNo, _ := strconv.Atoi(c.PostForm("pageNo"))
+		pageSize, _ := strconv.Atoi(c.PostForm("pageSize"))
+		c.String(http.StatusOK, db.QueryWuYe(dbc, xiaoQu, pageNo, pageSize))
 	})
 
 	router.POST("/house", func(c *gin.Context) {
-		buildNo := c.Query("buildNo")
-		pageNo, _ := strconv.Atoi(c.Query("pageNo"))
-		pageSize, _ := strconv.Atoi(c.Query("pageSize"))
-		c.String(http.StatusOK, db.QueryHouse(buildNo, pageNo, pageSize))
+		buildNo := c.PostForm("buildNo")
+		pageNo, _ := strconv.Atoi(c.PostForm("pageNo"))
+		pageSize, _ := strconv.Atoi(c.PostForm("pageSize"))
+		c.String(http.StatusOK, db.QueryHouse(dbc, buildNo, pageNo, pageSize))
 	})
 	router.Run(":3000")
 }

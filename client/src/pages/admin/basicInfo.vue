@@ -84,7 +84,7 @@ import InfosXiaoQu from '@/components/InfosXiaoQu'
             view: InfosXiaoQu
           }
         ],
-        curView: InfosXiaoQu
+        curView: InfosStreet
       } 
     },
     methods: {

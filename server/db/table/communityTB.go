@@ -1,7 +1,9 @@
 package table //社区
 
 import (
+	"fmt"
 	"log"
+	"strings"
 
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -44,15 +46,31 @@ func InsertCommunityTB(db *mgo.Database, comm Community) string {
 }
 
 //FindCommunities 查询社区信息
-func FindCommunities(db *mgo.Database, community Community, pageNo int, pageSize int) []Community {
+func FindCommunities(db *mgo.Database, community Community, pageNo int, pageSize int) Communities {
 	c := db.C(CommunityTableName)
-	var result []Community
+	var result Communities
 	var err error
 	if community == (Community{}) {
-		err = c.Find(nil).All(&result)
+		err = c.Find(nil).All(&result.Communities)
 	} else {
-		err = c.Find(bson.M{"name": community.Name}).All(&result)
+		err = c.Find(bson.M{"name": community.Name}).All(&result.Communities)
 	}
+	if err != nil {
+		log.Fatal(err)
+	}
+	return result
+}
+
+func FindCommunitiesKV(db *mgo.Database, kvs map[string]interface{}) Communities {
+	query := make(map[string]interface{})
+	for k, v := range kvs {
+		query[strings.ToLower(k)] = v
+	}
+	fmt.Println("FindCommunitiesKV", query)
+
+	c := db.C(CommunityTableName)
+	var result Communities
+	err := c.Find(query).All(&result.Communities)
 	if err != nil {
 		log.Fatal(err)
 	}

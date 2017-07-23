@@ -3,6 +3,8 @@ package table
 import (
 	"log"
 
+	"github.com/gin-gonic/gin"
+
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -25,22 +27,22 @@ type Streets struct {
 }
 
 //InsertStreetTB 插入
-func InsertStreetTB(db *mgo.Database, street Street) string {
+func InsertStreetTB(db *mgo.Database, street Street) interface{} {
 	c := db.C(StreetTableName)
 	count, err := c.Find(bson.M{"name": street.Name}).Count()
 	if err != nil {
 		log.Fatal(err)
-		return err.Error()
+		return gin.H{"error": 1, "data": err.Error()}
 	}
 	if count > 0 {
-		return "已存在街道名为" + street.Name + ", 请重新设置街道名"
+		return gin.H{"error": 1, "data": "已存在街道\"" + street.Name + "\", 请重新设置街道名"}
 	}
 	err = c.Insert(&street)
 	if err != nil {
 		log.Fatal(err)
-		return err.Error()
+		return gin.H{"error": 1, "data": err.Error()}
 	}
-	return Succ
+	return gin.H{"error": 0, "data": Succ}
 }
 
 //FindStreets 如果street.Name为""，则查询所有的街道信息,

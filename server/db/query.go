@@ -8,14 +8,7 @@ import (
 )
 
 //QueryStreetInfo 查询街道信息
-func QueryStreetInfo(name string, pageNo int, pageSize int) string {
-	session, err := mgo.Dial("localhost:27017")
-	if err != nil {
-		panic(err)
-	}
-	defer session.Close()
-	session.SetMode(mgo.Monotonic, true)
-	db := session.DB(DBName)
+func QueryStreetInfo(db *mgo.Database, name string, pageNo int, pageSize int) string {
 	street := table.Street{}
 	street.Name = name
 	finds := table.FindStreets(db, street, pageNo, pageSize)
@@ -26,56 +19,32 @@ func QueryStreetInfo(name string, pageNo int, pageSize int) string {
 }
 
 //QueryComunityInfo 查询社区信息
-func QueryComunityInfo(name string, pageNo int, pageSize int) string {
-	session, err := mgo.Dial("localhost:27017")
-	if err != nil {
-		panic(err)
-	}
-	defer session.Close()
-	session.SetMode(mgo.Monotonic, true)
-	db := session.DB(DBName)
+func QueryComunityInfo(db *mgo.Database, name string, pageNo int, pageSize int) string {
 	community := table.Community{}
 	community.Name = name
-
 	finds := table.FindCommunities(db, community, pageNo, pageSize)
+	result, _ := json.Marshal(finds)
+	return string(result)
+}
 
-	if session != nil {
-		session.Close()
-	}
+//QueryComunityKVs 查询社区信息
+func QueryComunityKVs(db *mgo.Database, kvs map[string]interface{}) string {
+	finds := table.FindCommunitiesKV(db, kvs)
 
-	communities := table.Communities{finds}
-	result, _ := json.Marshal(communities)
+	result, _ := json.Marshal(finds)
 	return string(result)
 }
 
 //QueryComunityDistinct 查询社区信息
-func QueryComunityDistinct(key string) string {
-	session, err := mgo.Dial("localhost:27017")
-	if err != nil {
-		panic(err)
-	}
-	defer session.Close()
-	session.SetMode(mgo.Monotonic, true)
-	db := session.DB(DBName)
-
+func QueryComunityDistinct(db *mgo.Database, key string) string {
 	finds := table.FindCommunityDistincts(db, key)
 
-	if session != nil {
-		session.Close()
-	}
 	result, _ := json.Marshal(finds)
 	return string(result)
 }
 
 //QueryXiaoQuInfo 查询小区infos
-func QueryXiaoQuInfo(name string, pageNo int, pageSize int) string {
-	session, err := mgo.Dial(HOST)
-	if err != nil {
-		panic(err)
-	}
-	defer session.Close()
-	session.SetMode(mgo.Monotonic, true)
-	db := session.DB(DBName)
+func QueryXiaoQuInfo(db *mgo.Database, name string, pageNo int, pageSize int) string {
 	xiaoQu := table.XiaoQu{}
 	xiaoQu.Name = name
 
@@ -86,33 +55,24 @@ func QueryXiaoQuInfo(name string, pageNo int, pageSize int) string {
 }
 
 //QueryXQDistinct 查询社区信息
-func QueryXQDistinct(key string) string {
-	session, err := mgo.Dial("localhost:27017")
-	if err != nil {
-		panic(err)
-	}
-	defer session.Close()
-	session.SetMode(mgo.Monotonic, true)
-	db := session.DB(DBName)
+func QueryXQDistinct(db *mgo.Database, key string) string {
 
 	finds := table.FindXQDistincts(db, key)
 
-	if session != nil {
-		session.Close()
-	}
+	result, _ := json.Marshal(finds)
+	return string(result)
+}
+
+//QueryComunityKVs 查询社区信息
+func QueryXQKVs(db *mgo.Database, kvs map[string]interface{}) string {
+	finds := table.FindXQKVs(db, kvs)
+
 	result, _ := json.Marshal(finds)
 	return string(result)
 }
 
 //QueryGovInfo 查询小区infos
-func QueryGovInfo(name string, pageNo int, pageSize int) string {
-	session, err := mgo.Dial(HOST)
-	if err != nil {
-		panic(err)
-	}
-	defer session.Close()
-	session.SetMode(mgo.Monotonic, true)
-	db := session.DB(DBName)
+func QueryGovInfo(db *mgo.Database, name string, pageNo int, pageSize int) string {
 	gov := table.Gov{}
 	gov.UserName = name
 
@@ -123,14 +83,7 @@ func QueryGovInfo(name string, pageNo int, pageSize int) string {
 }
 
 //QueryStreetUserInfo 查询街道用户结果集
-func QueryStreetUserInfo(name string, pageNo int, pageSize int) string {
-	session, err := mgo.Dial(HOST)
-	if err != nil {
-		panic(err)
-	}
-	defer session.Close()
-	session.SetMode(mgo.Monotonic, true)
-	db := session.DB(DBName)
+func QueryStreetUserInfo(db *mgo.Database, name string, pageNo int, pageSize int) string {
 	info := table.StreetUser{}
 	info.UserName = name
 
@@ -141,14 +94,7 @@ func QueryStreetUserInfo(name string, pageNo int, pageSize int) string {
 }
 
 //QueryWXUser 查询街道用户结果集
-func QueryWXUser(openID string, pageNo int, pageSize int) string {
-	session, err := mgo.Dial(HOST)
-	if err != nil {
-		panic(err)
-	}
-	defer session.Close()
-	session.SetMode(mgo.Monotonic, true)
-	db := session.DB(DBName)
+func QueryWXUser(db *mgo.Database, openID string, pageNo int, pageSize int) string {
 	info := table.WXUser{}
 	info.OpenID = openID
 
@@ -159,14 +105,8 @@ func QueryWXUser(openID string, pageNo int, pageSize int) string {
 }
 
 //QueryWuYe 查询街道用户结果集
-func QueryWuYe(xiaoQu string, pageNo int, pageSize int) string {
-	session, err := mgo.Dial(HOST)
-	if err != nil {
-		panic(err)
-	}
-	defer session.Close()
-	session.SetMode(mgo.Monotonic, true)
-	db := session.DB(DBName)
+func QueryWuYe(db *mgo.Database, xiaoQu string, pageNo int, pageSize int) string {
+
 	info := table.WuYe{}
 	info.XiaoQu = xiaoQu
 
@@ -177,14 +117,8 @@ func QueryWuYe(xiaoQu string, pageNo int, pageSize int) string {
 }
 
 //QueryHouse 查询街道用户结果集
-func QueryHouse(buildNo string, pageNo int, pageSize int) string {
-	session, err := mgo.Dial(HOST)
-	if err != nil {
-		panic(err)
-	}
-	defer session.Close()
-	session.SetMode(mgo.Monotonic, true)
-	db := session.DB(DBName)
+func QueryHouse(db *mgo.Database, buildNo string, pageNo int, pageSize int) string {
+
 	info := table.House{}
 	info.BuildNo = buildNo
 
