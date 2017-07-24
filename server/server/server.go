@@ -134,7 +134,7 @@ func Start() {
 		key := c.Param("key")
 		c.String(http.StatusOK, db.QueryComunityDistinct(dbc, key))
 	})
-	//TODO
+
 	router.POST("/community/kvs", func(c *gin.Context) {
 		params := make(map[string]interface{})
 		err := c.BindJSON(&params)
@@ -161,6 +161,7 @@ func Start() {
 		log.Println("streetName", streetName)
 		c.JSON(http.StatusOK, table.FindCommunityByStreetName(dbc, streetName))
 	})
+
 	router.POST("/xq", func(c *gin.Context) {
 		var queryInfo QueryBasic
 		err := c.BindJSON(&queryInfo)
@@ -222,6 +223,7 @@ func Start() {
 		// c.String(http.StatusOK, result)
 	})
 
+	//TODO 参照上面的xq的查、增加、删除，为下面的API增加相应接口
 	router.POST("/gov", func(c *gin.Context) {
 		username := c.PostForm("username")
 		pageNo, _ := strconv.Atoi(c.PostForm("pageNo"))
