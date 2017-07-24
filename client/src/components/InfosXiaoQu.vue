@@ -163,6 +163,7 @@
     components: {ImageButton},
     data () {
       return {
+        host:'http://10.176.118.61:3000',
         xiaoQus:[],
         streetNames: [],
         xqNames: [],
@@ -195,54 +196,66 @@
         var params = {}
         if (this.inputStreetName !== '') params.street = this.inputStreetName
         if (this.inputXQName !== '') params.name = this.inputXQName
-        var request = {
+        fetch(this.host + '/xq/kvs', {
           method: 'POST',
-          url: 'http://10.176.118.61:3000/xiaoQuKVs',
-          query: {
-            query: JSON.stringify(params)
-          }
-        }
-        Ajax(request, data => {
-          if (data === null || data === 'succ') return
-          this.xiaoQus = JSON.parse(data).XiaoQus
+          body:JSON.stringify(params)
+        }).then( resp => {
+          return resp.json()
+        }).then( data => {
+          console.info('fetchXQKVs', data)
+          if (data.error !== 1) this.xiaoQus = data
         })
       },
       fetechStreets () {
         var request = {
           method: 'POST',
-          url:'http://10.176.118.61:3000/xiaoQu'
+          url: this.host + '/xq'
         }
         Ajax(request, data => {
           this.xiaoQus = JSON.parse(data).XiaoQus
         })
       },
       fetechAllStreetName () {
-        var request = {
-          method: 'POST',
-          url:'http://10.176.118.61:3000/communityInfo/key',
-          query: {
-            key: 'streetname'
-          }
-        }
-        Ajax(request, data => {
-          if (data === null || data === 'succ') return
-          this.streetNames = JSON.parse(data)
-        console.info(data)
-          if (this.streetNames === null) return
+        // var request = {
+        //   method: 'POST',
+        //   url:'http://10.176.118.61:3000/communityInfo/key',
+        //   query: {
+        //     key: 'streetname'
+        //   }
+        // }
+        // Ajax(request, data => {
+        //   if (data === null || data === 'succ') return
+        //   this.streetNames = JSON.parse(data)
+        // console.info(data)
+        //   if (this.streetNames === null) return
+        // })
+        fetch('http://localhost:3000/community/key/streetName', {
+          method: 'POST'
+        }).then(resp => {
+          return resp.json()
+        }).then(data => {
+          this.streetNames = data
         })
       },
       fetechAllXQName () {
-        var request = {
-          method: 'POST',
-          url:'http://10.176.118.61:3000/xiaoQu/key',
-          query: {
-            key: 'name'
-          }
-        }
-        Ajax(request, data => {
-          if (data === null) return
-            console.info(data)
-          this.xqNames = JSON.parse(data)
+        // var request = {
+        //   method: 'POST',
+        //   url:'http://10.176.118.61:3000/xiaoQu/key',
+        //   query: {
+        //     key: 'name'
+        //   }
+        // }
+        // Ajax(request, data => {
+        //   if (data === null) return
+        //     console.info(data)
+        //   this.xqNames = JSON.parse(data)
+        // })
+        fetch('http://10.176.118.61:3000/xq/key/name', {
+          method: 'POST'
+        }).then(resp => {
+          return resp.json()
+        }).then(data => {
+          this.xqNames = data
         })
       }
     }

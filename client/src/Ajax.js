@@ -26,7 +26,7 @@ export default function (request, callback) {
   if(xmlhttp != null){
     xmlhttp.open(request.method ? request.method : 'GET', request.url);
     xmlhttp.onload = handler;
-    // xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded")
+    xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded")
     // xmlhttp.setRequestHeader('Content-type','application/json; charset=utf-8');
  
     if (request.query) {

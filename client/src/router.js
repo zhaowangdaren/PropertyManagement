@@ -7,6 +7,10 @@ export default new Router({
   // mode: 'history',
   routes: [
     {
+      path: '/test',
+      component: require('@/pages/testAPI')
+    },
+    {
       path: '/',
       component: require('@/pages/index')
     },

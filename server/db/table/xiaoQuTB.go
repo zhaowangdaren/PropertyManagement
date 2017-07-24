@@ -76,16 +76,37 @@ func FindXQDistincts(db *mgo.Database, key string) []string {
 	return result
 }
 
-func FindXQKVs(db *mgo.Database, kvs map[string]interface{}) XiaoQus {
+//FindXQKVs 通过一系列的K-V来查找记录
+func FindXQKVs(db *mgo.Database, kvs map[string]interface{}) interface{} {
 	query := make(map[string]interface{})
 	for k, v := range kvs {
 		query[strings.ToLower(k)] = v
 	}
 	c := db.C(XiaoQuTableName)
-	var result XiaoQus
-	err := c.Find(query).All(&result.XiaoQus)
+	var result []XiaoQu
+	err := c.Find(query).All(&result)
 	if err != nil {
 		log.Fatal(err)
+		return gin.H{"error": 1, "data": err.Error()}
 	}
-	return result
+	return gin.H{"error": 0, "data": result}
+}
+
+//DelXQs 删除
+func DelXQs(db *mgo.Database, names []string) interface{} {
+	c := db.C(XiaoQuTableName)
+	var err error
+	result := ""
+	for _, v := range names {
+		err = c.Remove(bson.M{"name": v})
+		if err != nil {
+			log.Println(err.Error())
+			result += err.Error()
+			err = nil
+		}
+	}
+	if result != "" {
+		return gin.H{"error": 1, "data": result}
+	}
+	return gin.H{"error": 0, "data": Succ}
 }

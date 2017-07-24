@@ -53,12 +53,11 @@
         type: String,
         default: '15px'
       },
-      clickMethod: {
-        type: Function
-      }
+      clickMethod: Function
     },
     methods: {
       onClick () {
+        if (!this.clickMethod) return
         this.clickMethod()
       }
     }

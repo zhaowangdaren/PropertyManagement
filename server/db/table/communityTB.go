@@ -1,7 +1,6 @@
 package table //社区
 
 import (
-	"fmt"
 	"log"
 	"strings"
 
@@ -63,20 +62,19 @@ func FindCommunities(db *mgo.Database, community Community, pageNo int, pageSize
 	return result
 }
 
-func FindCommunitiesKV(db *mgo.Database, kvs map[string]interface{}) Communities {
+func FindCommunitiesKV(db *mgo.Database, kvs map[string]interface{}) interface{} {
 	query := make(map[string]interface{})
 	for k, v := range kvs {
 		query[strings.ToLower(k)] = v
 	}
-	fmt.Println("FindCommunitiesKV", query)
-
 	c := db.C(CommunityTableName)
-	var result Communities
-	err := c.Find(query).All(&result.Communities)
+	var result []Community
+	err := c.Find(query).All(&result)
 	if err != nil {
 		log.Fatal(err)
+		return gin.H{"error": 1, "data": err.Error()}
 	}
-	return result
+	return gin.H{"error": 1, "data": result}
 }
 
 //FindCommunityDistincts 查找key对应的不同values
@@ -84,9 +82,40 @@ func FindCommunityDistincts(db *mgo.Database, key string) []string {
 	c := db.C(CommunityTableName)
 	var result []string
 	var err error
-	err = c.Find(nil).Distinct(key, &result)
+	err = c.Find(nil).Distinct(strings.ToLower(key), &result)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
 	}
 	return result
+}
+
+//FindCommunityByStreetName 查询社区信息
+func FindCommunityByStreetName(db *mgo.Database, streetName string) interface{} {
+	c := db.C(CommunityTableName)
+	var result []Community
+	err := c.Find(bson.M{"streetname": streetName}).All(&result)
+	if err != nil {
+		log.Print(err)
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": result}
+}
+
+//DelCommunities 根据名称删除记录
+func DelCommunities(db *mgo.Database, names []string) interface{} {
+	c := db.C(CommunityTableName)
+	var err error
+	result := ""
+	for _, v := range names {
+		err = c.Remove(bson.M{"name": v})
+		if err != nil {
+			log.Println(err.Error())
+			result += err.Error()
+			err = nil
+		}
+	}
+	if result != "" {
+		return gin.H{"error": 1, "data": result}
+	}
+	return gin.H{"error": 0, "data": Succ}
 }

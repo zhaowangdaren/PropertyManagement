@@ -178,7 +178,7 @@
     methods: {
       onSearch () {
         if (!this.inputName && this.inputName === '') return
-        this.fetchKVs()
+        this.fetchCommunitiesByStreetName(this.inputName)
       },
       fetchCommunities () {
         var request = {
@@ -192,32 +192,34 @@
         })
       },
       fetchAllStreetName () {//获取所有街道名称
-        var request = {
-          method: 'POST',
-          url:'http://10.176.118.61:3000/communityInfo/key',
-          query: {
-            key: 'streetname'
-          }
-        }
-        Ajax(request, data => {
-          if (data === null) return
-          if (data === 'succ') return
-          this.streetNames = JSON.parse(data)
-          if (this.streetNames === null) return
+        fetch('http://localhost:3000/communityInfo/key/streetName', {
+          method: 'POST'
+        }).then(resp => {
+          return resp.json()
+        }).then(data => {
+          this.streetNames = data
         })
       },
-      fetchKVs () {
-        console.info('fetchKVs')
-        var request = {
-          method: 'POST',
-          url:'http://10.176.118.61:3000/communityKVs',
-          query: {
-            query: JSON.stringify({streetName: this.inputName})
-          }
-        }
-        Ajax(request, data => {
-          if (data === null || data === 'succ' || data === '') return
-          this.communities = JSON.parse(data).Communities
+      fetchCommunitiesByStreetName (streetName) {
+        // var request = {
+        //   method: 'POST',
+        //   url:'http://10.176.118.61:3000/community/streetName/'+streetName,
+        //   query: {
+        //     query: {streetName: this.inputName}
+        //   }
+        // }
+        // Ajax(request, data => {
+        //   if (data === null || data === 'succ' || data === '') return
+        //   this.communities = JSON.parse(data).Communities
+        // })
+        if (!streetName) return
+        fetch('http://10.176.118.61:3000/community/streetName/'+streetName, {
+          method: 'POST'
+        }).then(resp => {
+          return resp.json()
+        }).then( data => {
+          if(data.error !== 0) console.error("Error: search CommunitiesByStreetName. Reason:" + data.data)
+          this.communities = data.data
         })
       },
       onAdd () {

@@ -8,14 +8,11 @@ import (
 )
 
 //QueryStreetInfo 查询街道信息
-func QueryStreetInfo(db *mgo.Database, name string, pageNo int, pageSize int) string {
+func QueryStreetInfo(db *mgo.Database, name string, pageNo int, pageSize int) interface{} {
 	street := table.Street{}
 	street.Name = name
 	finds := table.FindStreets(db, street, pageNo, pageSize)
-
-	streets := table.Streets{finds}
-	result, _ := json.Marshal(streets)
-	return string(result)
+	return finds
 }
 
 //QueryComunityInfo 查询社区信息
@@ -63,7 +60,7 @@ func QueryXQDistinct(db *mgo.Database, key string) string {
 	return string(result)
 }
 
-//QueryComunityKVs 查询社区信息
+//QueryXQKVs 查询
 func QueryXQKVs(db *mgo.Database, kvs map[string]interface{}) string {
 	finds := table.FindXQKVs(db, kvs)
 

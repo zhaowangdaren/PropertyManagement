@@ -2,6 +2,7 @@ package table
 
 import (
 	"log"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 
@@ -46,7 +47,7 @@ func InsertStreet(db *mgo.Database, street Street) interface{} {
 }
 
 //FindStreets 如果street.Name为""，则查询所有的街道信息,
-func FindStreets(db *mgo.Database, street Street, pageNo int, pageSize int) []Street {
+func FindStreets(db *mgo.Database, street Street, pageNo int, pageSize int) interface{} {
 	c := db.C(StreetTableName)
 	var result []Street
 	var err error
@@ -57,6 +58,39 @@ func FindStreets(db *mgo.Database, street Street, pageNo int, pageSize int) []St
 	}
 	if err != nil {
 		log.Fatal(err)
+		return gin.H{"error": 1, "data": err.Error()}
+	} else {
+		return gin.H{"error": 0, "data": result}
 	}
-	return result
+}
+
+//FindStreetDistinct 筛选出key值不重复的value
+func FindStreetDistinct(db *mgo.Database, key string) interface{} {
+	c := db.C(StreetTableName)
+	var result []string
+	err := c.Find(nil).Distinct(strings.ToLower(key), &result)
+	if err != nil {
+		log.Print(err)
+		return gin.H{"erro": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": result}
+}
+
+//DelStreets 删除
+func DelStreets(db *mgo.Database, names []string) interface{} {
+	c := db.C(StreetTableName)
+	var err error
+	result := ""
+	for _, v := range names {
+		err = c.Remove(bson.M{"name": v})
+		if err != nil {
+			log.Println(err.Error())
+			result += err.Error()
+			err = nil
+		}
+	}
+	if result != "" {
+		return gin.H{"error": 1, "data": result}
+	}
+	return gin.H{"error": 0, "data": Succ}
 }
