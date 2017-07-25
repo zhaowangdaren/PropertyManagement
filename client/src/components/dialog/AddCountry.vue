@@ -74,7 +74,7 @@
 
 <script>
 import BasicDialog from '@/components/dialog/index'
-import SearchSelect from '@/components/Select'
+import SearchSelect from '@/components/SearchSelect'
 export default {
   components: { BasicDialog, SearchSelect },
   data () {

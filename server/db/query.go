@@ -72,40 +72,6 @@ func QueryGovInfo(db *mgo.Database, name string, pageNo int, pageSize int) strin
 	return string(result)
 }
 
-//QueryStreetUserInfo 查询街道用户结果集
-func QueryStreetUserInfo(db *mgo.Database, name string, pageNo int, pageSize int) string {
-	info := table.StreetUser{}
-	info.UserName = name
-
-	finds := table.FindStreetUsers(db, info, pageNo, pageSize)
-
-	result, _ := json.Marshal(finds)
-	return string(result)
-}
-
-//QueryWXUser 查询街道用户结果集
-func QueryWXUser(db *mgo.Database, openID string, pageNo int, pageSize int) string {
-	info := table.WXUser{}
-	info.OpenID = openID
-
-	finds := table.FindWXUsers(db, info, pageNo, pageSize)
-
-	result, _ := json.Marshal(finds)
-	return string(result)
-}
-
-//QueryWuYe 查询街道用户结果集
-func QueryWuYe(db *mgo.Database, xiaoQu string, pageNo int, pageSize int) string {
-
-	info := table.WuYe{}
-	info.XiaoQu = xiaoQu
-
-	finds := table.FindWuYes(db, info, pageNo, pageSize)
-
-	result, _ := json.Marshal(finds)
-	return string(result)
-}
-
 //QueryHouse 查询街道用户结果集
 func QueryHouse(db *mgo.Database, buildNo string, pageNo int, pageSize int) string {
 

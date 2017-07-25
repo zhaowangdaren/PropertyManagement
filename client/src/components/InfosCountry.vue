@@ -188,7 +188,7 @@
       }
     },
     mounted () {
-      this.fetechStreets()
+      this.fetechXQs()
       this.fetechAllStreetName()
       this.fetechAllXQName()
     },
@@ -211,7 +211,7 @@
           if (data.error !== 1) this.xiaoQus = data.data
         })
       },
-      fetechStreets () {
+      fetechXQs () {
         // var request = {
         //   method: 'POST',
         //   url: this.host + '/xq'

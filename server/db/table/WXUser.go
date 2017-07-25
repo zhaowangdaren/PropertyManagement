@@ -2,6 +2,9 @@ package table
 
 import (
 	"log"
+	"strings"
+
+	"github.com/gin-gonic/gin"
 
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -43,17 +46,31 @@ func InsertWXUser(db *mgo.Database, info WXUser) string {
 }
 
 //FindWXUsers 查询小区信息集
-func FindWXUsers(db *mgo.Database, info WXUser, pageNo int, pageSize int) WXUsers {
+func FindWXUsers(db *mgo.Database, wxName string, pageNo int, pageSize int) interface{} {
 	c := db.C(WXUserTableName)
-	var result WXUsers
+	var result []WXUser
 	var err error
-	if info == (WXUser{}) {
-		err = c.Find(nil).All(&result.WXUsers)
+	if wxName == "" {
+		err = c.Find(nil).All(&result)
 	} else {
-		err = c.Find(bson.M{"openid": info.OpenID}).All(&result.WXUsers)
+		err = c.Find(bson.M{"wxname": wxName}).All(&result)
 	}
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err.Error())
+		return gin.H{"error": 1, "data": err.Error()}
 	}
-	return result
+	return gin.H{"error": 0, "data": result}
+}
+
+//FindWXUserDistinct 筛选key对应的value
+func FindWXUserDistinct(db *mgo.Database, key string) interface{} {
+	c := db.C(WXUserTableName)
+	var result []string
+	var err error
+	err = c.Find(nil).Distinct(strings.ToLower(key), &result)
+	if err != nil {
+		log.Fatal(err)
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": result}
 }

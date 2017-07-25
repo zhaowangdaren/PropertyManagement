@@ -209,16 +209,6 @@ func Start() {
 		} else {
 			c.JSON(http.StatusOK, table.FindXQKVs(dbc, params))
 		}
-
-		// queryStr := c.PostForm("query")
-		// var query map[string]interface{}
-		// err := json.Unmarshal([]byte(queryStr), &query)
-		// if err != nil {
-		// 	log.Fatal(err)
-		// }
-		// fmt.Println("query", query)
-		// result := db.QueryXQKVs(dbc, query)
-		// c.String(http.StatusOK, result)
 	})
 
 	//TODO 参照上面的xq的查、增加、删除，为下面的API增加相应接口
@@ -230,24 +220,65 @@ func Start() {
 	})
 
 	router.POST("/streetUser", func(c *gin.Context) {
-		username := c.PostForm("username")
-		pageNo, _ := strconv.Atoi(c.PostForm("pageNo"))
-		pageSize, _ := strconv.Atoi(c.PostForm("pageSize"))
-		c.String(http.StatusOK, db.QueryStreetUserInfo(dbc, username, pageNo, pageSize))
+		var queryInfo QueryBasic
+		err := c.BindJSON(&queryInfo)
+		if err == nil {
+			c.JSON(http.StatusOK, table.FindStreetUsers(dbc, queryInfo.Name,
+				queryInfo.PageNO, queryInfo.PageSize))
+		} else {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+		}
 	})
 
-	router.POST("/wx", func(c *gin.Context) {
-		openID := c.PostForm("openID")
-		pageNo, _ := strconv.Atoi(c.PostForm("pageNo"))
-		pageSize, _ := strconv.Atoi(c.PostForm("pageSize"))
-		c.String(http.StatusOK, db.QueryWXUser(dbc, openID, pageNo, pageSize))
+	router.POST("/streetUser/add", func(c *gin.Context) {
+		var jsonObj table.StreetUser
+		err := c.BindJSON(&jsonObj)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			log.Print(err)
+		} else {
+			c.JSON(http.StatusOK, table.InsertStreetUser(dbc, jsonObj))
+		}
 	})
 
-	router.POST("/wuye", func(c *gin.Context) {
-		xiaoQu := c.PostForm("xiaoQu")
-		pageNo, _ := strconv.Atoi(c.PostForm("pageNo"))
-		pageSize, _ := strconv.Atoi(c.PostForm("pageSize"))
-		c.String(http.StatusOK, db.QueryWuYe(dbc, xiaoQu, pageNo, pageSize))
+	//查询绑定的用户，入参为name、pageNo、pageSize
+	router.POST("/wxUser", func(c *gin.Context) {
+		var queryInfo QueryBasic
+		err := c.BindJSON(&queryInfo)
+		if err == nil {
+			c.JSON(http.StatusOK, table.FindWXUsers(dbc, queryInfo.Name,
+				queryInfo.PageNO, queryInfo.PageSize))
+		} else {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+		}
+	})
+
+	//获取所有key对应的不同value集合
+	router.POST("/wxUser/key/:key", func(c *gin.Context) {
+		key := c.Param("key")
+		c.JSON(http.StatusOK, table.FindWXUserDistinct(dbc, key))
+	})
+
+	router.POST("/pm", func(c *gin.Context) {
+		var queryInfo QueryBasic
+		err := c.BindJSON(&queryInfo)
+		if err == nil {
+			c.JSON(http.StatusOK, table.FindWuYes(dbc, queryInfo.Name,
+				queryInfo.PageNO, queryInfo.PageSize))
+		} else {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+		}
+	})
+
+	router.POST("/pm/kvs", func(c *gin.Context) {
+		params := make(map[string]interface{})
+		err := c.BindJSON(&params)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			log.Println(err.Error())
+		} else {
+			c.JSON(http.StatusOK, table.FindWuYeKVs(dbc, params))
+		}
 	})
 
 	router.POST("/house", func(c *gin.Context) {

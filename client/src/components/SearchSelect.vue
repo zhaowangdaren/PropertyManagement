@@ -3,23 +3,22 @@
     <input type="text" @input='updateValue($event.target.value)' :value='inputValue'>
     <div :class='s.dropList'>
       <div :class='s.streetName + " " + s.all' @click='fetchAll'>全部</div>
-      <div v-for='value in values' v-text='value' :class='s.streetName' @click='updateValue(value)'></div>
+      <div v-for='value in showValues' v-text='value' :class='s.streetName' @click='updateValue(value)'></div>
     </div>
   </div>
 </template>
 
 <style lang="less" module='s'>
   .inputWrap{
-    border: solid 1px #ddd;
     position: relative;
     font-size: 18px;
     flex: 1;
     margin-left: 10px;
     // width: 100%;
     input{
-      // width: 95%;
-      border: solid 0px transparent;
-      padding: 5px;
+      width: 100%;
+      border: solid 1px #ddd;
+      // padding-left: 5px;
       height: 30px;
     }
     &:hover .dropList{
@@ -29,7 +28,7 @@
       position: absolute;
       width: 100%;
       background: #fff;
-      box-shadow: 1px 1px 1px 1px #ddd;
+      box-shadow: 1px 1px 2px 2px #ddd;
       display: none;
       z-index: 2;
       .streetName{
@@ -54,6 +53,14 @@ export default {
   data () {
     return {
       inputValue: ''
+    }
+  },
+  computed: {
+    showValues: function () {
+      return this.values.filter(value => {
+        var index = value.indexOf(this.inputValue) > -1
+        return index
+      })
     }
   },
   methods: {

@@ -63,6 +63,7 @@ func FindCommunities(db *mgo.Database, community Community, pageNo int, pageSize
 	return gin.H{"error": 0, "data": result}
 }
 
+//FindCommunitiesKV 依据传入的kv查询
 func FindCommunitiesKV(db *mgo.Database, kvs map[string]interface{}) interface{} {
 	query := make(map[string]interface{})
 	for k, v := range kvs {

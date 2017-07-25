@@ -2,6 +2,9 @@ package table
 
 import (
 	"log"
+	"strings"
+
+	"github.com/gin-gonic/gin"
 
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -13,6 +16,8 @@ const WuYeTableName = "WuYe"
 //WuYe 物业信息
 type WuYe struct {
 	Name                 string //物业公司名称
+	Street               string //所在街道
+	Community            string //所在社区
 	XiaoQu               string //所在小区
 	LegalPerson          string //独立法人
 	Tel                  string //
@@ -60,18 +65,37 @@ func InsertWuYe(db *mgo.Database, info WuYe) string {
 }
 
 //FindWuYes 查询小区信息集
-func FindWuYes(db *mgo.Database, info WuYe, pageNo int, pageSize int) WuYes {
+func FindWuYes(db *mgo.Database, name string, pageNo int, pageSize int) interface{} {
 	c := db.C(WuYeTableName)
-	var result WuYes
+	var result []WuYe
 	var err error
-	if info == (WuYe{}) {
-		err = c.Find(nil).All(&result.WuYes)
+	if name == "" {
+		err = c.Find(nil).All(&result)
 	} else {
-		err = c.Find(bson.M{"xiaoqu": info.XiaoQu}).All(&result.WuYes)
+		err = c.Find(bson.M{"name": name}).All(&result)
 	}
-	// c.Find(bson.M{"XiaoQu": info.XiaoQu}).All(&result.WuYes)
+	if err != nil {
+		log.Println(err)
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": result}
+}
+
+//FindWuYeKVs 通过一系列的K-V来查找记录
+func FindWuYeKVs(db *mgo.Database, kvs map[string]interface{}) interface{} {
+	query := make(map[string]interface{})
+	for k, v := range kvs {
+		query[strings.ToLower(k)] = v
+	}
+	c := db.C(WuYeTableName)
+	var result []WuYe
+	err := c.Find(query).All(&result)
 	if err != nil {
 		log.Fatal(err)
+		return gin.H{"error": 1, "data": err.Error()}
 	}
-	return result
+	if result == nil {
+		return gin.H{"error": 1, "data": "没有查询到结果"}
+	}
+	return gin.H{"error": 0, "data": result}
 }

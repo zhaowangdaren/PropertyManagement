@@ -29,7 +29,7 @@
           },
           {
             icon: require('@/res/images/users.png'),
-            text:'Users',//数据初始化
+            text:'Users',//用户数据管理
             path:'/admin/users'
           },
           {
