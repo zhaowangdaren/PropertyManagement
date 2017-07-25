@@ -67,8 +67,9 @@ export default {
   components: { BasicDialog, SearchSelect },
   data () {
     return {
+      host: 'http://10.176.118.61:3000',
       inputWord: '',
-      values: ['1','2','34','4'],
+      values: [],
       community: {
         name: '',
         psersonInCharge:'',
@@ -78,6 +79,9 @@ export default {
       },
       warn:''
     }
+  },
+  mounted () {
+    this.fetchAllStreetName()
   },
   methods: {
     onSave () {
@@ -100,7 +104,7 @@ export default {
       return false
     },
     addStreet () {
-      fetch('http://10.176.118.61:3000/community/add', {
+      fetch(this.host + '/community/add', {
         method: 'POST',
         body: JSON.stringify(this.community)
       }).then(resp => {
@@ -116,6 +120,16 @@ export default {
           this.community.streetName = ''
           this.community.intro = ''
         }
+      })
+    },
+    fetchAllStreetName () {//获取所有街道名称
+      fetch( this.host + '/street/key/name', {
+        method: 'POST',
+        body: '{}'
+      }).then(resp => {
+        return resp.json()
+      }).then(body => {
+        this.values = body.data
       })
     },
     onFocus () {

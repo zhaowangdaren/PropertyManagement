@@ -49,31 +49,34 @@ func InsertXQ(db *mgo.Database, info XiaoQu) interface{} {
 }
 
 //FindXiaoQus 查询小区信息集
-func FindXiaoQus(db *mgo.Database, xiaoQu XiaoQu, pageNo int, pageSize int) XiaoQus {
+func FindXiaoQus(db *mgo.Database, xiaoQu XiaoQu, pageNo int, pageSize int) interface{} {
 	c := db.C(XiaoQuTableName)
-	var result XiaoQus
+	var result []XiaoQu
 	var err error
 	if xiaoQu == (XiaoQu{}) {
-		err = c.Find(nil).All(&result.XiaoQus)
+		err = c.Find(nil).All(&result)
 	} else {
-		err = c.Find(bson.M{"name": xiaoQu.Name}).All(&result.XiaoQus)
+		err = c.Find(bson.M{"name": xiaoQu.Name}).All(&result)
 	}
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return gin.H{"error": 1, "data": err.Error()}
 	}
-	return result
+	return gin.H{"error": 0, "data": result}
+
 }
 
 //FindXQDistincts 查找key对应的不同values
-func FindXQDistincts(db *mgo.Database, key string) []string {
+func FindXQDistincts(db *mgo.Database, key string) interface{} {
 	c := db.C(XiaoQuTableName)
 	var result []string
 	var err error
 	err = c.Find(nil).Distinct(key, &result)
 	if err != nil {
 		log.Fatal(err)
+		return gin.H{"error": 1, "data": err.Error()}
 	}
-	return result
+	return gin.H{"error": 0, "data": result}
 }
 
 //FindXQKVs 通过一系列的K-V来查找记录
@@ -88,6 +91,9 @@ func FindXQKVs(db *mgo.Database, kvs map[string]interface{}) interface{} {
 	if err != nil {
 		log.Fatal(err)
 		return gin.H{"error": 1, "data": err.Error()}
+	}
+	if result == nil {
+		return gin.H{"error": 1, "data": "没有查询到结果"}
 	}
 	return gin.H{"error": 0, "data": result}
 }

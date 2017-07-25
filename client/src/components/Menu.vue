@@ -1,6 +1,6 @@
 <template>
   <div :class='s.wrap'>
-    <div v-for='menu in menus'>
+    <div v-for='menu in menus' @click='onClick(menu)'>
       <img :src="menu.icon">
       {{menu.text}}
     </div>
@@ -28,6 +28,11 @@
   export default {
     props: {
       menus: Array
+    },
+    methods: {
+      onClick (menu) {
+        this.$router.push({path: menu.path})
+      }
     }
   }
 </script>

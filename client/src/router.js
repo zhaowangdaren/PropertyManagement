@@ -19,9 +19,28 @@ export default new Router({
       component: require('@/pages/admin'),
       children: [
         {
-          path: '/',
+          path:'',
           component: require('@/pages/admin/basicInfo')
-        }
+        },
+        {
+          path: 'users',
+          component: require('@/pages/admin/users')
+        },{
+          path: 'init',
+          component: require('@/pages/admin/init')
+        },{
+          path: 'wx',
+          component: require('@/pages/admin/wx')
+        },{
+          path: 'complaints',
+          component: require('@/pages/admin/complaints')
+        },{
+          path: 'pm',
+          component: require('@/pages/admin/pm')
+        },{
+          path: 'build',
+          component: require('@/pages/admin/build')
+        },
       ]
     }
   ]

@@ -16,12 +16,11 @@ func QueryStreetInfo(db *mgo.Database, name string, pageNo int, pageSize int) in
 }
 
 //QueryComunityInfo 查询社区信息
-func QueryComunityInfo(db *mgo.Database, name string, pageNo int, pageSize int) string {
+func QueryComunityInfo(db *mgo.Database, name string, pageNo int, pageSize int) interface{} {
 	community := table.Community{}
 	community.Name = name
 	finds := table.FindCommunities(db, community, pageNo, pageSize)
-	result, _ := json.Marshal(finds)
-	return string(result)
+	return finds
 }
 
 //QueryComunityKVs 查询社区信息
@@ -33,31 +32,25 @@ func QueryComunityKVs(db *mgo.Database, kvs map[string]interface{}) string {
 }
 
 //QueryComunityDistinct 查询社区信息
-func QueryComunityDistinct(db *mgo.Database, key string) string {
+func QueryComunityDistinct(db *mgo.Database, key string) interface{} {
 	finds := table.FindCommunityDistincts(db, key)
-
-	result, _ := json.Marshal(finds)
-	return string(result)
+	return finds
 }
 
 //QueryXiaoQuInfo 查询小区infos
-func QueryXiaoQuInfo(db *mgo.Database, name string, pageNo int, pageSize int) string {
+func QueryXiaoQuInfo(db *mgo.Database, name string, pageNo int, pageSize int) interface{} {
 	xiaoQu := table.XiaoQu{}
 	xiaoQu.Name = name
 
 	finds := table.FindXiaoQus(db, xiaoQu, pageNo, pageSize)
-
-	result, _ := json.Marshal(finds)
-	return string(result)
+	return finds
 }
 
 //QueryXQDistinct 查询社区信息
-func QueryXQDistinct(db *mgo.Database, key string) string {
+func QueryXQDistinct(db *mgo.Database, key string) interface{} {
 
 	finds := table.FindXQDistincts(db, key)
-
-	result, _ := json.Marshal(finds)
-	return string(result)
+	return finds
 }
 
 //QueryXQKVs 查询

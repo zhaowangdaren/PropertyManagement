@@ -91,6 +91,7 @@
     components: {ImageButton, AddStreet},
     data () {
       return {
+        host:'http://10.176.118.61:3000/street',
         streets:[],
         showDialog: ''
       }
@@ -108,7 +109,7 @@
         //   if (data === null) return
         //   this.streets = JSON.parse(data).Streets
         // })
-        fetch('http://10.176.118.61:3000/streetInfo', {
+        fetch(this.host, {
           method: 'POST',
           body: JSON.stringify({name:'', pageNo: 1, pageSize: 1})
         }).then(resp => {
@@ -116,8 +117,10 @@
           return resp.json()
         }).then( data => {
           // console.info('fetechStreets', data)
-          if (data.error === 0)
-            this.streets = JSON.parse(data.data).Streets
+          if (data.error === 0) {
+            console.info (data)
+            this.streets = data.data
+          }
         })
       },
       onAdd () {

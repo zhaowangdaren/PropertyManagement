@@ -25,7 +25,7 @@
       />
     </div>
     <div :class='s.addDel'>
-      <image-button :class='s.bt'
+      <image-button :class='s.bt' :clickMethod='onAdd'
         text='新增'
         :img='require("@/res/images/add.png")'
         bgColor='#3598dc'
@@ -76,6 +76,7 @@
         </td>
       </tr>
     </table>
+    <component :is='showDialog' @close='showDialog = ""' />
   </div>
 </template>
 
@@ -157,13 +158,14 @@
 </style>
 
 <script type="text/javascript">
-  import Ajax from '@/Ajax'
   import ImageButton from '@/components/ImageButton'
+  import AddCountry from '@/components/dialog/AddCountry'
   export default {
-    components: {ImageButton},
+    components: {ImageButton, AddCountry},
     data () {
       return {
         host:'http://10.176.118.61:3000',
+        showDialog: '',
         xiaoQus:[],
         streetNames: [],
         xqNames: [],
@@ -191,6 +193,9 @@
       this.fetechAllXQName()
     },
     methods: {
+      onAdd () {
+        this.showDialog = AddCountry
+      },
       onSearch () {
         if(this.inputStreetName === '' && this.inputStreetName === '') return
         var params = {}
@@ -203,16 +208,25 @@
           return resp.json()
         }).then( data => {
           console.info('fetchXQKVs', data)
-          if (data.error !== 1) this.xiaoQus = data
+          if (data.error !== 1) this.xiaoQus = data.data
         })
       },
       fetechStreets () {
-        var request = {
+        // var request = {
+        //   method: 'POST',
+        //   url: this.host + '/xq'
+        // }
+        // Ajax(request, data => {
+        //   this.xiaoQus = JSON.parse(data).XiaoQus
+        // })
+        fetch(this.host + '/xq', {
           method: 'POST',
-          url: this.host + '/xq'
-        }
-        Ajax(request, data => {
-          this.xiaoQus = JSON.parse(data).XiaoQus
+          body: '{}'
+        }).then(resp => {
+          return resp.json()
+        }).then(data => {
+          console.info(data)
+          this.xiaoQus = data.data
         })
       },
       fetechAllStreetName () {
@@ -229,12 +243,14 @@
         // console.info(data)
         //   if (this.streetNames === null) return
         // })
-        fetch('http://localhost:3000/community/key/streetName', {
-          method: 'POST'
+        fetch(this.host + '/street/key/name', {
+          method: 'POST',
+          body: '{}'
         }).then(resp => {
           return resp.json()
         }).then(data => {
-          this.streetNames = data
+          console.info('fetechAllStreetName',data)
+          this.streetNames = data.data
         })
       },
       fetechAllXQName () {
@@ -250,12 +266,14 @@
         //     console.info(data)
         //   this.xqNames = JSON.parse(data)
         // })
-        fetch('http://10.176.118.61:3000/xq/key/name', {
-          method: 'POST'
+        fetch(this.host + '/xq/key/name', {
+          method: 'POST',
+          body: '{}'
         }).then(resp => {
           return resp.json()
         }).then(data => {
-          this.xqNames = data
+          console.info('fetechAllXQName', data)
+          this.xqNames = data.data
         })
       }
     }

@@ -47,19 +47,20 @@ func InsertCommunity(db *mgo.Database, comm Community) interface{} {
 }
 
 //FindCommunities 查询社区信息
-func FindCommunities(db *mgo.Database, community Community, pageNo int, pageSize int) Communities {
+func FindCommunities(db *mgo.Database, community Community, pageNo int, pageSize int) interface{} {
 	c := db.C(CommunityTableName)
-	var result Communities
+	var result []Community
 	var err error
 	if community == (Community{}) {
-		err = c.Find(nil).All(&result.Communities)
+		err = c.Find(nil).All(&result)
 	} else {
-		err = c.Find(bson.M{"name": community.Name}).All(&result.Communities)
+		err = c.Find(bson.M{"name": community.Name}).All(&result)
 	}
 	if err != nil {
 		log.Fatal(err)
+		return gin.H{"error": 1, "data": err.Error()}
 	}
-	return result
+	return gin.H{"error": 0, "data": result}
 }
 
 func FindCommunitiesKV(db *mgo.Database, kvs map[string]interface{}) interface{} {
@@ -74,19 +75,20 @@ func FindCommunitiesKV(db *mgo.Database, kvs map[string]interface{}) interface{}
 		log.Fatal(err)
 		return gin.H{"error": 1, "data": err.Error()}
 	}
-	return gin.H{"error": 1, "data": result}
+	return gin.H{"error": 0, "data": result}
 }
 
 //FindCommunityDistincts 查找key对应的不同values
-func FindCommunityDistincts(db *mgo.Database, key string) []string {
+func FindCommunityDistincts(db *mgo.Database, key string) interface{} {
 	c := db.C(CommunityTableName)
 	var result []string
 	var err error
 	err = c.Find(nil).Distinct(strings.ToLower(key), &result)
 	if err != nil {
 		log.Print(err)
+		return gin.H{"error": 1, "data": err.Error()}
 	}
-	return result
+	return gin.H{"error": 0, "data": result}
 }
 
 //FindCommunityByStreetName 查询社区信息

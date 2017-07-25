@@ -57,7 +57,7 @@ func Start() {
 		var queryInfo QueryBasic
 		err := c.BindJSON(&queryInfo)
 		if err == nil {
-			c.JSON(http.StatusOK, gin.H{"error": 0, "data": db.QueryStreetInfo(dbc, queryInfo.Name, queryInfo.PageNO, queryInfo.PageSize)})
+			c.JSON(http.StatusOK, db.QueryStreetInfo(dbc, queryInfo.Name, queryInfo.PageNO, queryInfo.PageSize))
 		} else {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
 			log.Println(err)
@@ -100,8 +100,7 @@ func Start() {
 		var queryInfo QueryBasic
 		err := c.BindJSON(&queryInfo)
 		if err == nil {
-			c.JSON(http.StatusOK, gin.H{"error": 0,
-				"data": db.QueryComunityInfo(dbc, queryInfo.Name, queryInfo.PageNO, queryInfo.PageSize)})
+			c.JSON(http.StatusOK, db.QueryComunityInfo(dbc, queryInfo.Name, queryInfo.PageNO, queryInfo.PageSize))
 		} else {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
 			log.Println(err)
@@ -132,7 +131,7 @@ func Start() {
 	//localhost:3000/communityInfo/key?key=name
 	router.POST("/community/key/:key", func(c *gin.Context) {
 		key := c.Param("key")
-		c.String(http.StatusOK, db.QueryComunityDistinct(dbc, key))
+		c.JSON(http.StatusOK, db.QueryComunityDistinct(dbc, key))
 	})
 
 	router.POST("/community/kvs", func(c *gin.Context) {
@@ -166,8 +165,7 @@ func Start() {
 		var queryInfo QueryBasic
 		err := c.BindJSON(&queryInfo)
 		if err == nil {
-			c.JSON(http.StatusOK, gin.H{"error": 0,
-				"data": db.QueryXiaoQuInfo(dbc, queryInfo.Name, queryInfo.PageNO, queryInfo.PageSize)})
+			c.JSON(http.StatusOK, db.QueryXiaoQuInfo(dbc, queryInfo.Name, queryInfo.PageNO, queryInfo.PageSize))
 		} else {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
 			log.Println(err)
@@ -199,7 +197,7 @@ func Start() {
 	//localhost:3000/xiaoQu/key?key=name
 	router.POST("/xq/key/:key", func(c *gin.Context) {
 		key := c.Param("key")
-		c.String(http.StatusOK, db.QueryXQDistinct(dbc, key))
+		c.JSON(http.StatusOK, db.QueryXQDistinct(dbc, key))
 	})
 
 	router.POST("/xq/kvs", func(c *gin.Context) {

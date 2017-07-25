@@ -157,6 +157,7 @@
     components: {ImageButton, AddCommunity},
     data () {
       return {
+        host: 'http://localhost:3000',
         communities:[],
         streetNames: [],
         inputName:'',
@@ -181,39 +182,38 @@
         this.fetchCommunitiesByStreetName(this.inputName)
       },
       fetchCommunities () {
-        var request = {
+        // var request = {
+        //   method: 'POST',
+        //   url:'http://10.176.118.61:3000/community'
+        // }
+        // Ajax(request, data => {
+        //   if (data === null) return
+        //   this.communities = JSON.parse(data).Communities
+        //   console.info(this.communities)
+        // })
+        fetch(this.host + '/community', {
           method: 'POST',
-          url:'http://10.176.118.61:3000/communityInfo'
-        }
-        Ajax(request, data => {
-          if (data === null) return
-          this.communities = JSON.parse(data).Communities
-          console.info(this.communities)
-        })
-      },
-      fetchAllStreetName () {//获取所有街道名称
-        fetch('http://localhost:3000/communityInfo/key/streetName', {
-          method: 'POST'
+          body: JSON.stringify({})
         }).then(resp => {
           return resp.json()
         }).then(data => {
-          this.streetNames = data
+          console.info(data)
+          this.communities = data.data
+        })
+      },
+      fetchAllStreetName () {//获取所有街道名称
+        fetch( this.host + '/street/key/name', {
+          method: 'POST',
+          body: '{}'
+        }).then(resp => {
+          return resp.json()
+        }).then(body => {
+          this.streetNames = body.data
         })
       },
       fetchCommunitiesByStreetName (streetName) {
-        // var request = {
-        //   method: 'POST',
-        //   url:'http://10.176.118.61:3000/community/streetName/'+streetName,
-        //   query: {
-        //     query: {streetName: this.inputName}
-        //   }
-        // }
-        // Ajax(request, data => {
-        //   if (data === null || data === 'succ' || data === '') return
-        //   this.communities = JSON.parse(data).Communities
-        // })
         if (!streetName) return
-        fetch('http://10.176.118.61:3000/community/streetName/'+streetName, {
+        fetch(this.host + '/community/streetName/'+streetName, {
           method: 'POST'
         }).then(resp => {
           return resp.json()

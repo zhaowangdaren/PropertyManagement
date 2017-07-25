@@ -65,9 +65,9 @@
 <script type="text/javascript">
 import InfosStreet from '@/components/InfosStreet'
 import InfosCommunity from '@/components/InfosCommunity'
-import InfosXiaoQu from '@/components/InfosXiaoQu'
+import InfosCountry from '@/components/InfosCountry'
   export default {
-    components: { InfosStreet, InfosCommunity, InfosXiaoQu},
+    components: { InfosStreet, InfosCommunity, InfosCountry},
     data () {
       return {
         tabs: [
@@ -81,10 +81,10 @@ import InfosXiaoQu from '@/components/InfosXiaoQu'
           },
           {
             name: 'country',//社区信息维护
-            view: InfosXiaoQu
+            view: InfosCountry
           }
         ],
-        curView: InfosXiaoQu
+        curView: InfosCountry
       } 
     },
     methods: {
