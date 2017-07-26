@@ -1,22 +1,41 @@
 <template>
   <div>
-    <div :class='s.searchWrap'>
-    <!-- 街道名 -->
-      <div :class='s.title'>Street Name</div>
-      <div :class='s.inputWrap'>
-        <search-select v-model='inputStreetName' :values='streetNames' />
-      </div>
-      <!-- 社区名 -->
-      <div :class='s.title'>Community</div>
-      <div :class='s.inputWrap'>
-        <search-select v-model='inputCommunityName' :values='communityNames' />
-      </div>
-      <!-- 小区名 -->
-      <div :class='s.title'>country</div>
-      <div :class='s.inputWrap'>
-        <search-select v-model='inputXiaoQu' :values='xqNames' />
-      </div>
-    </div>
+    <table :class='s.searchWrap'>
+      <tr>
+        <td :class='s.title'>Street Name</td>
+        <td>
+          <search-select v-model='inputStreetName' :values='streetNames' />
+        </td>
+        <td :class='s.title'>Community</td>
+        <td>
+          <search-select v-model='inputCommunityName' :values='communityNames' />
+        </td>
+        <td :class='s.title'>Country</td>
+        <td>
+          <search-select v-model='inputXiaoQu' :values='xqNames' />
+        </td>
+      </tr>
+      <tr>
+        <td :class='s.title'>HouseBuildNo</td>
+        <td>
+          <div :class='s.inputWrap'>
+            <input type="text" v-model='inputHouseBuildNo' :class=''>
+          </div>
+        </td>
+        <td :class='s.title'>HouseNo</td>
+        <td>
+          <div :class='s.inputWrap'>
+            <input type="text" v-model='inputHouseNo'>
+          </div>
+        </td>
+        <td :class='s.title'>Owner</td>
+        <td>
+          <div :class='s.inputWrap'>
+            <input type="text" v-model='inputOwner'>
+          </div>
+        </td>
+      </tr>
+    </table>
     <div :class='s.addDel'>
       <image-button :class='s.bt' :clickMethod='onAdd'
         text='新增'
@@ -33,24 +52,24 @@
     </div>
     <table>
       <tr >
-        <th>Country Name</th>
-        <!-- 小区名 -->
-        <th>PM Name</th>
-        <!-- 物业公司 -->
-        <th>LegalPerson</th>
-        <!-- 独立法人 -->
-        <th>WuYeZiZhi</th>
-        <!-- 物业资质 -->
-        <th>WuYeXinZhi</th>
-        <!-- 物业性质 -->
+        <!-- 房产登记人 -->
+        <th>Owner</th>
+        <!-- 所在小区 -->
+        <th>XQ</th>
+        <!-- 楼栋号 -->
+        <th>HouseBuildNo</th>
+        <!-- 门牌号 -->
+        <th>HouseNo</th>
+        <!-- 房屋类型 -->
+        <th>HouseType</th>
         <th>操作</th>
       </tr>
-      <tr v-for='item in pms' :class='s.street'>
-        <td v-text='item.XiaoQu'></td>
-        <td v-text='item.Name'></td>
-        <td v-text='item.LegalPerson'></td>
-        <td v-text='item.WuYeZiZhi'></td>
-        <td v-text='item.WuYeXinZhi'></td>
+      <tr v-for='item in houses' :class='s.street'>
+        <td v-text='item.Owner'></td>
+        <td v-text='item.XQ'></td>
+        <td v-text='item.HouseBuildNo'></td>
+        <td v-text='item.HouseNo'></td>
+        <td v-text='item.HouseType'></td>
         <td align="center">
           <image-button :class='s.bt'
             text='编辑'
@@ -65,28 +84,36 @@
         </td>
       </tr>
     </table>
-    <component :is='showDialog' @close='showDialog = ""' />
+    <el-dialog 
+      title='Add Build'
+      size='large'
+      :visible.sync="showAdd"
+    >
+      <add-build @close='showAdd = false'
+      @save='showAdd = false'></add-build>
+    </el-dialog>
   </div>
 </template>
 
 <style lang="less" module='s'>
   .searchWrap{
     border: solid 1px #ddd;
-    display: flex;
-    align-items: center;
-    width: 100%;
-    position: relative;
     .title{
-      background: #e0e0e0;
+      background: #f0f0f0;
       padding: 10px;
       font-size: 20px;
     }
-    .inputWrap{
-      position: relative;
-      font-size: 18px;
-      flex: 1;
-      margin-right: 5px;
-    }
+    .inputWrap {
+        position: relative;
+        font-size: 18px;
+        flex: 1;
+        margin-left: 10px;
+      input{
+        width: 100%;
+        border: solid 1px #ddd;
+        height: 30px;
+      }
+    } 
     .searchBt{
       position: absolute;
       right: 10px;
@@ -111,6 +138,7 @@
       text-align: center;
       padding: 5px;
       border: solid 1px #ddd;
+      background: #f0f0f0;
     }
     td{
       padding: 5px;
@@ -130,27 +158,30 @@
 <script type="text/javascript">
   import ImageButton from '@/components/ImageButton'
   import SearchSelect from '@/components/SearchSelect'
-  import AddPM from '@/components/dialog/AddPM'
+  import AddBuild from '@/components/dialog/AddBuild'
   export default {
-    components: {ImageButton, AddPM, SearchSelect},
+    components: {ImageButton, AddBuild, SearchSelect},
     data () {
       return {
         host:'http://10.176.118.61:3000',
-        showDialog: '',
+        showAdd: false,
         streetNames: [],
         communityNames: [],
         xqNames: [],
         inputStreetName:'',
         inputCommunityName: '',
         inputXiaoQu:'',
+        inputHouseBuildNo:'',
+        inputHouseNo:'',
+        inputOwner:'',
         isLoadingInput: false,
-        pms:[]
+        houses:[]
       }
     },
     computed: {
     },
     mounted () {
-      this.fetchPMs()
+      this.fetchHouses()
       this.fetechAllStreetName()
     },
     watch: {
@@ -159,50 +190,49 @@
         this.fetchCommunitiesByStreetName(val)
       },
       inputCommunityName: function (val) {
-        console.info('inputCommunityName', val)
         if (this.isLoadingInput ) return
         this.fetchXQByCommunityName(val)
       }
     },
     methods: {
       onAdd () {
-        this.showDialog = AddCountry
+        this.showAdd = true
       },
       onSearch () {
         //小区》社区》街道
         if (this.inputXiaoQu !== '') {
-          this.fetchPMKVs({xiaoQu: this.inputXiaoQu})
+          this.fetchHouseKVs({xiaoQu: this.inputXiaoQu})
           return
         }
         if (this.inputCommunityName !== '') {
-          this.fetchPMKVs({community: this.inputCommunityName})
+          this.fetchHouseKVs({community: this.inputCommunityName})
           return
         }
         if (this.inputStreetName !== '') {
-          this.fetchPMKVs({street: this.inputStreetName})
+          this.fetchHouseKVs({street: this.inputStreetName})
           return
         }
       },
-      fetchPMs () {
-        fetch(this.host + '/pm', {
+      fetchHouses () {
+        fetch(this.host + '/house', {
           method: 'POST',
           body: '{}'
         }).then(resp =>{
           return resp.json()
         }).then(body => {
-          console.info('fetchPMs', body)
-          if (body.error !== 1) this.pms = body.data
+          console.info('fetchHouses', body)
+          if (body.error !== 1) this.houses = body.data
         })
       },
-      fetchPMKVs (kvs) {
+      fetchHouseKVs (kvs) {
         fetch(this.host + '/pm/kvs', {
           method: 'POST',
           body: JSON.stringify(kvs)
         }).then(resp => {
           return resp.json()
         }).then(body => {
-          console.info('fetchPMKVs', body)
-          if (body.error !== 1) this.pms = body.data
+          console.info('fetchHouseKVs', body)
+          if (body.error !== 1) this.houses = body.data
         })
       },
       fetechAllStreetName () {
@@ -217,19 +247,16 @@
         })
       },
       fetchCommunitiesByStreetName (streetName) {
-        if (!streetName) return
         this.isLoadingInput = true
-        this.communityNames = []
-        this.inputCommunityName = ''
+        if (!streetName) return
         fetch(this.host + '/community/streetName/'+streetName, {
           method: 'POST'
         }).then(resp => {
           return resp.json()
         }).then( body => {
           console.info('fetchCommunitiesByStreetName', body)
-          if(body.error !== 0) {
-            console.error("Error: search CommunitiesByStreetName. Reason:" + body.data)
-          } else if (body.data !== null ) {
+          if(body.error !== 0) console.error("Error: search CommunitiesByStreetName. Reason:" + body.data)
+          else if (body.data !== null ) {
             this.communityNames = body.data.map(item => {
               return item.Name
             })
@@ -238,8 +265,8 @@
         })
       },
       fetchXQByCommunityName (communityName) {
-        if (!communityName) return
         this.isLoadingInput = true
+        if (!communityName) return
         fetch(this.host + '/xq/kvs', {
           method: 'POST',
           body: JSON.stringify({community: communityName})

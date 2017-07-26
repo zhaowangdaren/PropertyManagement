@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class='s.wrap'>
     <div :class='s.addDel'>
       <image-button :class='s.bt' :clickMethod='onAdd'
         text='新增'
@@ -48,6 +48,7 @@
 </template>
 
 <style lang="less" module='s'>
+.wrap{
   .addDel{
     display: flex;
     align-items: center;
@@ -65,6 +66,7 @@
       text-align: center;
       padding: 5px;
       border: solid 1px #ddd;
+      background: #f0f0f0;
     }
     td{
       padding: 5px;
@@ -82,6 +84,7 @@
       }
     }
   }
+}
 </style>
 
 <script type="text/javascript">

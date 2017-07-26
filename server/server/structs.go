@@ -2,7 +2,19 @@ package server
 
 type QueryBasic struct {
 	Name     string
-	PageNO   int
+	PageNo   int
+	PageSize int
+}
+
+type QueryHouse struct {
+	BuildNo  string
+	PageNo   int
+	PageSize int
+}
+
+type QueryGov struct {
+	UserName string
+	PageNo   int
 	PageSize int
 }
 

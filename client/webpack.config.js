@@ -19,13 +19,7 @@ module.exports = {
         test: /\.css$/,
         use: [
           'style-loader',
-          'css-loader',
-          {
-            loader: 'px2rem-loader',
-            options: {
-              remUnit: 75
-            }
-          }
+          'css-loader'
         ]
       },
       {
@@ -43,7 +37,11 @@ module.exports = {
           }
         }
       },
-      {test: /\.(png|jpe?g|gif|svg)(\?.*)?$/, use:'url-loader'}
+      {test: /\.(png|jpe?g|gif|svg)(\?.*)?$/, use:'url-loader?limit=8192'},
+      {
+        test: /\.(eot|svg|ttf|woff|woff2)(\?\S*)?$/,
+        loader: 'file-loader'
+      }
     ]
   },
   plugins:[

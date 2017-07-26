@@ -84,7 +84,7 @@ import InfosCountry from '@/components/InfosCountry'
             view: InfosCountry
           }
         ],
-        curView: InfosCountry
+        curView: InfosStreet
       } 
     },
     methods: {

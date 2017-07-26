@@ -1,6 +1,6 @@
 <template>
   <div :class='s.wrap'>
-    <div v-for='menu in menus' @click='onClick(menu)'>
+    <div v-for='menu in menus' @click='onClick(menu)' :class='{[s.active]: curPath == menu.path}'>
       <img :src="menu.icon">
       {{menu.text}}
     </div>
@@ -22,6 +22,9 @@
         margin-right: 10px;
       }
     }
+    .active{
+      background: #fff;
+    }
   }
 </style>
 <script type="text/javascript">
@@ -29,9 +32,19 @@
     props: {
       menus: Array
     },
+    data () {
+      return {
+        curPath: ''
+      }
+    },
+    mounted () {
+    },
     methods: {
       onClick (menu) {
         this.$router.push({path: menu.path})
+        this.$nextTick(() => {
+          this.curPath = this.$route.path
+        })
       }
     }
   }

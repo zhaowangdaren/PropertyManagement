@@ -60,26 +60,3 @@ func QueryXQKVs(db *mgo.Database, kvs map[string]interface{}) string {
 	result, _ := json.Marshal(finds)
 	return string(result)
 }
-
-//QueryGovInfo 查询小区infos
-func QueryGovInfo(db *mgo.Database, name string, pageNo int, pageSize int) string {
-	gov := table.Gov{}
-	gov.UserName = name
-
-	finds := table.FindGovs(db, gov, pageNo, pageSize)
-
-	result, _ := json.Marshal(finds)
-	return string(result)
-}
-
-//QueryHouse 查询街道用户结果集
-func QueryHouse(db *mgo.Database, buildNo string, pageNo int, pageSize int) string {
-
-	info := table.House{}
-	info.BuildNo = buildNo
-
-	finds := table.FindHouses(db, info, pageNo, pageSize)
-
-	result, _ := json.Marshal(finds)
-	return string(result)
-}

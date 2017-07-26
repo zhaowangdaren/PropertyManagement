@@ -55,6 +55,13 @@ export default {
       inputValue: ''
     }
   },
+  watch: {
+    values: function function_name(val) {
+      if (val.length == 0) {
+        this.updateValue('')
+      }
+    }
+  },
   computed: {
     showValues: function () {
       return this.values.filter(value => {

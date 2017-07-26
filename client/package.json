@@ -13,7 +13,10 @@
   "devDependencies": {
     "babel-core": "^6.25.0",
     "babel-loader": "^7.1.1",
+    "babel-plugin-component": "^0.10.0",
     "babel-preset-env": "^1.6.0",
+    "babel-preset-vue-app": "^1.2.0",
+    "cross-env": "^5.0.1",
     "css-loader": "^0.28.4",
     "file-loader": "^0.11.2",
     "html-webpack-plugin": "^2.29.0",
@@ -30,6 +33,7 @@
     "webpack-dev-server": "^2.5.1"
   },
   "dependencies": {
+    "element-ui": "^1.4.0",
     "whatwg-fetch": "^2.0.3"
   }
 }

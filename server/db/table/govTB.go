@@ -3,6 +3,8 @@ package table
 import (
 	"log"
 
+	"github.com/gin-gonic/gin"
+
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -43,17 +45,18 @@ func InsertGov(db *mgo.Database, info Gov) string {
 }
 
 //FindGovs 查询小区信息集
-func FindGovs(db *mgo.Database, gov Gov, pageNo int, pageSize int) Govs {
+func FindGovs(db *mgo.Database, userName string, pageNo int, pageSize int) interface{} {
 	c := db.C(GovTableName)
-	var result Govs
+	var result []Gov
 	var err error
-	if gov == (Gov{}) {
-		err = c.Find(nil).All(&result.Govs)
+	if userName == "" {
+		err = c.Find(nil).All(&result)
 	} else {
-		err = c.Find(bson.M{"username": gov.UserName}).All(&result.Govs)
+		err = c.Find(bson.M{"username": userName}).All(&result)
 	}
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return gin.H{"error": 1, "data": err.Error()}
 	}
-	return result
+	return gin.H{"error": 0, "data": result}
 }

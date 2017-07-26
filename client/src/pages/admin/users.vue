@@ -70,7 +70,7 @@ import InfosStreetUser from '@/components/InfosStreetUser'
       return {
         tabs: [
           {
-            name: 'Govs',//政府人员
+            name: 'Govs',//区政府人员
             view: InfosGov
           },
           {
@@ -78,7 +78,7 @@ import InfosStreetUser from '@/components/InfosStreetUser'
             view: InfosStreetUser
           }
         ],
-        curView: InfosStreetUser
+        curView: InfosGov
       } 
     },
     methods: {

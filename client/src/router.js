@@ -42,6 +42,14 @@ export default new Router({
           component: require('@/pages/admin/build')
         },
       ]
+    },
+    {
+      path: '/street',
+      component: require('@/pages/street')
+    },
+    {
+      path: '/gov',
+      component: require('@/pages/gov')
     }
   ]
 })

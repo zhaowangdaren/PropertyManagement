@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"net/url"
-	"strconv"
 	"strings"
 
 	mgo "gopkg.in/mgo.v2"
@@ -57,7 +56,7 @@ func Start() {
 		var queryInfo QueryBasic
 		err := c.BindJSON(&queryInfo)
 		if err == nil {
-			c.JSON(http.StatusOK, db.QueryStreetInfo(dbc, queryInfo.Name, queryInfo.PageNO, queryInfo.PageSize))
+			c.JSON(http.StatusOK, db.QueryStreetInfo(dbc, queryInfo.Name, queryInfo.PageNo, queryInfo.PageSize))
 		} else {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
 			log.Println(err)
@@ -100,7 +99,7 @@ func Start() {
 		var queryInfo QueryBasic
 		err := c.BindJSON(&queryInfo)
 		if err == nil {
-			c.JSON(http.StatusOK, db.QueryComunityInfo(dbc, queryInfo.Name, queryInfo.PageNO, queryInfo.PageSize))
+			c.JSON(http.StatusOK, db.QueryComunityInfo(dbc, queryInfo.Name, queryInfo.PageNo, queryInfo.PageSize))
 		} else {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
 			log.Println(err)
@@ -165,7 +164,7 @@ func Start() {
 		var queryInfo QueryBasic
 		err := c.BindJSON(&queryInfo)
 		if err == nil {
-			c.JSON(http.StatusOK, db.QueryXiaoQuInfo(dbc, queryInfo.Name, queryInfo.PageNO, queryInfo.PageSize))
+			c.JSON(http.StatusOK, db.QueryXiaoQuInfo(dbc, queryInfo.Name, queryInfo.PageNo, queryInfo.PageSize))
 		} else {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
 			log.Println(err)
@@ -212,19 +211,14 @@ func Start() {
 	})
 
 	//TODO 参照上面的xq的查、增加、删除，为下面的API增加相应接口
-	router.POST("/gov", func(c *gin.Context) {
-		username := c.PostForm("username")
-		pageNo, _ := strconv.Atoi(c.PostForm("pageNo"))
-		pageSize, _ := strconv.Atoi(c.PostForm("pageSize"))
-		c.String(http.StatusOK, db.QueryGovInfo(dbc, username, pageNo, pageSize))
-	})
+	startGov(router, dbc)
 
 	router.POST("/streetUser", func(c *gin.Context) {
 		var queryInfo QueryBasic
 		err := c.BindJSON(&queryInfo)
 		if err == nil {
 			c.JSON(http.StatusOK, table.FindStreetUsers(dbc, queryInfo.Name,
-				queryInfo.PageNO, queryInfo.PageSize))
+				queryInfo.PageNo, queryInfo.PageSize))
 		} else {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
 		}
@@ -247,7 +241,7 @@ func Start() {
 		err := c.BindJSON(&queryInfo)
 		if err == nil {
 			c.JSON(http.StatusOK, table.FindWXUsers(dbc, queryInfo.Name,
-				queryInfo.PageNO, queryInfo.PageSize))
+				queryInfo.PageNo, queryInfo.PageSize))
 		} else {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
 		}
@@ -264,7 +258,7 @@ func Start() {
 		err := c.BindJSON(&queryInfo)
 		if err == nil {
 			c.JSON(http.StatusOK, table.FindWuYes(dbc, queryInfo.Name,
-				queryInfo.PageNO, queryInfo.PageSize))
+				queryInfo.PageNo, queryInfo.PageSize))
 		} else {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
 		}
@@ -282,10 +276,14 @@ func Start() {
 	})
 
 	router.POST("/house", func(c *gin.Context) {
-		buildNo := c.PostForm("buildNo")
-		pageNo, _ := strconv.Atoi(c.PostForm("pageNo"))
-		pageSize, _ := strconv.Atoi(c.PostForm("pageSize"))
-		c.String(http.StatusOK, db.QueryHouse(dbc, buildNo, pageNo, pageSize))
+		var queryInfo QueryHouse
+		err := c.BindJSON(&queryInfo)
+		if err == nil {
+			c.JSON(http.StatusOK, table.FindHouses(dbc, queryInfo.BuildNo,
+				queryInfo.PageNo, queryInfo.PageSize))
+		} else {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+		}
 	})
 	router.Run(":3000")
 }
