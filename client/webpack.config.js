@@ -45,7 +45,7 @@ module.exports = {
     ]
   },
   plugins:[
-    new webpack.HotModuleReplacementPlugin(),
+    // new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
       title: 'OP.V2',
       filename: 'index.html',

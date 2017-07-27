@@ -18,6 +18,11 @@ type QueryGov struct {
 	PageSize int
 }
 
+type QueryEvent struct {
+	Index    string //事件编号
+	PageNo   int
+	PageSize int
+}
 type Values struct {
 	Values []string
 }

@@ -27,7 +27,7 @@ type Streets struct {
 	Streets []Street
 }
 
-//InsertStreetTB 插入
+//InsertStreet 插入
 func InsertStreet(db *mgo.Database, street Street) interface{} {
 	c := db.C(StreetTableName)
 	count, err := c.Find(bson.M{"name": street.Name}).Count()
@@ -57,11 +57,10 @@ func FindStreets(db *mgo.Database, street Street, pageNo int, pageSize int) inte
 		err = c.Find(bson.M{"name": street.Name}).All(&result)
 	}
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return gin.H{"error": 1, "data": err.Error()}
-	} else {
-		return gin.H{"error": 0, "data": result}
 	}
+	return gin.H{"error": 0, "data": result}
 }
 
 //FindStreetDistinct 筛选出key值不重复的value

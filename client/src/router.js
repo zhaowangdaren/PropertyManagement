@@ -45,7 +45,37 @@ export default new Router({
     },
     {
       path: '/street',
-      component: require('@/pages/street')
+      component: require('@/pages/street'),
+      children: [
+        {
+          path: '',
+          component: require('@/pages/street/index')
+        },
+        {
+          path: 'detail/:index',
+          component: require('@/components/DetailEvent')
+        },
+        {
+          path: 'handle',
+          component: require('@/components/InfosEventHandles')
+        },
+        {
+          path: 'pms',
+          component: require('@/components/InfosStreetPM')
+        },
+        {
+          path: 'pms/kpi',
+          component: require('@/components/InfosStreetPMsKPI')
+        },
+        {
+          path: 'court',
+          component: require('@/components/InfosCourt')
+        },
+        {
+          path: 'operationRecs',
+          component: require('@/components/InfosOperationRecs')
+        }
+      ]
     },
     {
       path: '/gov',

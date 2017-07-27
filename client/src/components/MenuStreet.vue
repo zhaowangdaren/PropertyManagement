@@ -19,27 +19,33 @@
         menus: [
           {
             icon: require('@/res/images/home.png'),
-            text:'首页'
+            path:'/street',
+            text:'Home'//首页
           },
           {
+            path:'/street/handle',
             icon: require('@/res/images/complaints.png'),
-            text:'居民物业纠纷处理'
+            text:'complaintsHandler' //居民物业纠纷处理
           },
           {
+            path:'/street/pms',
             icon: require('@/res/images/wuye.png'),
-            text:'物业信息管理'
+            text:'PM infos'//物业信息管理
           },
           {
+            path:'/street/pms/kpi',
             icon: require('@/res/images/kpi.png'),
-            text:'物业考核查询'
+            text:'PM KPI'//物业考核查询
           },
           {
+            path:'/street/court',
             icon: require('@/res/images/court.png'),
-            text:'申请法院调解请求'
+            text:'Court'//申请法院调解请求
           },
           {
+            path:'/street/operationRecs',
             icon: require('@/res/images/tasks.png'),
-            text:'操作记录管理'
+            text:'Operation recs'//操作记录管理
           }
         ]
       }

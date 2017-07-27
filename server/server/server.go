@@ -285,5 +285,8 @@ func Start() {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
 		}
 	})
+
+	startEvent(router, dbc)
+	startEventHandle(router, dbc)
 	router.Run(":3000")
 }
