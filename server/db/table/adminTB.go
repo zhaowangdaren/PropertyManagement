@@ -7,18 +7,19 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-//User 管理员表格
-type User struct {
+//Admin 管理员表格
+type Admin struct {
 	UserName string //用户名
 	Password string //
 	Level    string //权限等级
 }
 
-const userTableName = "User"
+//AdminTableName admin table name
+const AdminTableName = "Admin"
 
-//InsertUser 插入user
-func InsertUser(db *mgo.Database, user User) string {
-	c := db.C(userTableName)
+//InsertAdmin 插入user
+func InsertAdmin(db *mgo.Database, user Admin) string {
+	c := db.C(AdminTableName)
 	count, err := c.Find(bson.M{"username": user.UserName}).Count()
 	if err != nil { //查询出错或记录不存在
 		log.Fatal(err)
@@ -34,12 +35,12 @@ func InsertUser(db *mgo.Database, user User) string {
 	return Succ
 }
 
-//FindUser 查找用户
-func FindUser(db *mgo.Database, userName string) User {
-	c := db.C(userTableName)
+//FindAdmin 查找用户
+func FindAdmin(db *mgo.Database, userName string) Admin {
+	c := db.C(AdminTableName)
 	query := c.Find(bson.M{"username": userName})
 	count, _ := query.Count()
-	result := User{}
+	result := Admin{}
 	if count != 0 {
 		query.One(&result)
 	}

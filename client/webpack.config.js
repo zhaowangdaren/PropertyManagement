@@ -5,6 +5,7 @@ module.exports = {
   entry: ['whatwg-fetch','./src/app.js'],
   output: {
     path: path.resolve(__dirname, 'dist'),
+    publicPath: '/',
     filename:'[name].js'
   },
   resolve:{
@@ -43,7 +44,14 @@ module.exports = {
           }
         }
       },
-      {test: /\.(png|jpe?g|gif|svg)(\?.*)?$/, use:'url-loader?limit=8192'},
+      {
+        test: /\.(png|jpe?g|gif|svg)(\?.*)?$/, 
+        loader: 'url-loader',
+        query: {
+          limit: 8192,
+          name: 'images/[name].[ext]'
+        }
+      },
       {
         test: /\.(eot|svg|ttf|woff|woff2)(\?\S*)?$/,
         loader: 'file-loader'

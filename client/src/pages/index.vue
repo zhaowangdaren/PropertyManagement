@@ -41,6 +41,37 @@
   </div>
 </template>
 
+<script>
+  export default {
+    data () {
+      return {
+        bgs:[require('@/res/images/ysh1.jpg'),require('@/res/images/ysh2.jpg'),require('@/res/images/ysh3.jpg'),require('@/res/images/ysh4.jpg'),require('@/res/images/ysh5.jpg'),require('@/res/images/ysh6.jpg'),],
+        bgIndex: 0,
+        bgTimer: null
+      }
+    },
+    mounted () {
+      this.slideBg()
+    },
+    methods: {
+      slideBg () {
+        this.bgTimer = setInterval(() => {
+          this.bgIndex = ( this.bgIndex + 1 ) % this.bgs.length
+        }, 4000)
+      },
+      toAdmin () {
+        this.$router.push({path:'/login', query: {title: 'Admin', target: '/admin'}})
+      },
+      toStreet () {
+        this.$router.push({path:'/login', query: {title:'Street User', target:'/street'}})
+      },
+      toGov () {
+        this.$router.push({path:'/login', query: {title:'Gov User', target: '/gov'}})
+      }
+    }
+  }
+</script>
+
 <style lang="less" module='s'>
   .wrap{
     background-color: #f0f0f0;
@@ -125,35 +156,3 @@
     }
   }
 </style>
-
-<script>
-  export default {
-    data () {
-      return {
-        bgs:[require('@/res/images/ysh1.jpg'),require('@/res/images/ysh2.jpg'),require('@/res/images/ysh3.jpg'),require('@/res/images/ysh4.jpg'),require('@/res/images/ysh5.jpg'),require('@/res/images/ysh6.jpg'),],
-        bgIndex: 0,
-        bgTimer: null
-      }
-    },
-    mounted () {
-      this.slideBg()
-    },
-    methods: {
-      slideBg () {
-        this.bgTimer = setInterval(() => {
-          this.bgIndex = ( this.bgIndex + 1 ) % this.bgs.length
-        }, 4000)
-      },
-      toAdmin () {
-        this.$router.push({path:'/admin'})
-      },
-      toStreet () {
-        this.$router.push({path:'/street'})
-      },
-      toGov () {
-        this.$router.push({path:'/gov'})
-
-      }
-    }
-  }
-</script>

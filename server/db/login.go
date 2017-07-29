@@ -7,7 +7,7 @@ import (
 
 //Login 登录
 func Login(db *mgo.Database, userName string, password string) string {
-	result := table.FindUser(db, userName)
+	result := table.FindAdmin(db, userName)
 	if result.UserName == userName && result.Password == password {
 		return "succ"
 	} else if result.UserName != userName {

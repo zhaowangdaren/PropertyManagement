@@ -15,6 +15,10 @@ export default new Router({
       component: require('@/pages/index')
     },
     {
+      path: '/login',
+      component: require('@/pages/login')
+    },
+    {
       path: '/admin',
       component: require('@/pages/admin'),
       children: [

@@ -285,7 +285,7 @@ func Start() {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
 		}
 	})
-
+	startLogin(router, dbc)
 	startEvent(router, dbc)
 	startEventHandle(router, dbc)
 	startPMKPI(router, dbc)
