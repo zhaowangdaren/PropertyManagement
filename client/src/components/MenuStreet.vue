@@ -33,7 +33,7 @@
             text:'PM infos'//物业信息管理
           },
           {
-            path:'/street/pms/kpi',
+            path:'/street/pmkpis',
             icon: require('@/res/images/kpi.png'),
             text:'PM KPI'//物业考核查询
           },

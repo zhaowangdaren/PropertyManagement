@@ -2,6 +2,7 @@ package table
 
 import (
 	"log"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 
@@ -51,6 +52,22 @@ func FindEventHandle(db *mgo.Database, index string, pageNo int, pageSize int) i
 	} else {
 		err = c.Find(bson.M{"index": index}).All(&result)
 	}
+	if err != nil {
+		log.Println(err.Error())
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": result}
+}
+
+//FindEventHandlesByKV find by kvs
+func FindEventHandlesByKV(db *mgo.Database, kvs map[string]interface{}) interface{} {
+	query := make(map[string]interface{})
+	for k, v := range kvs {
+		query[strings.ToLower(k)] = v
+	}
+	c := db.C(EventHandleTableName)
+	var result []EventHandle
+	err := c.Find(query).All(&result)
 	if err != nil {
 		log.Println(err.Error())
 		return gin.H{"error": 1, "data": err.Error()}

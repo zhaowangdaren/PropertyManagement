@@ -2,6 +2,7 @@ package table
 
 import (
 	"log"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 
@@ -24,6 +25,7 @@ type Event struct {
 	Type        string //事件基本类别
 	Content     string //投诉内容
 	Time        string //提交时间
+	ToCourt     int8   //0-不推送至法院 1-推送至法院
 	Img1        string
 	Img2        string
 	Img3        string
@@ -61,6 +63,22 @@ func FindEvents(db *mgo.Database, index string, pageNo int, pageSize int) interf
 	}
 	if err != nil {
 		log.Println(err.Error())
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": result}
+}
+
+//FindEventKVs find key-value
+func FindEventKVs(db *mgo.Database, kvs map[string]interface{}) interface{} {
+	query := make(map[string]interface{})
+	for k, v := range kvs {
+		query[strings.ToLower(k)] = v
+	}
+	c := db.C(EventTableName)
+	var result []Event
+	err := c.Find(query).All(&result)
+	if err != nil {
+		log.Fatal(err)
 		return gin.H{"error": 1, "data": err.Error()}
 	}
 	return gin.H{"error": 0, "data": result}

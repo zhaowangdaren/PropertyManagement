@@ -288,5 +288,6 @@ func Start() {
 
 	startEvent(router, dbc)
 	startEventHandle(router, dbc)
+	startPMKPI(router, dbc)
 	router.Run(":3000")
 }

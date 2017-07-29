@@ -52,7 +52,8 @@ export default new Router({
           component: require('@/pages/street/index')
         },
         {
-          path: 'detail/:index',
+          path: 'eventDetail/:index',
+          name: 'eventDetail',
           component: require('@/components/DetailEvent')
         },
         {
@@ -61,11 +62,11 @@ export default new Router({
         },
         {
           path: 'pms',
-          component: require('@/components/InfosStreetPM')
+          component: require('@/pages/street/pms')
         },
         {
-          path: 'pms/kpi',
-          component: require('@/components/InfosStreetPMsKPI')
+          path: 'pmkpis',
+          component: require('@/pages/street/pmsKPI')
         },
         {
           path: 'court',
@@ -73,13 +74,38 @@ export default new Router({
         },
         {
           path: 'operationRecs',
-          component: require('@/components/InfosOperationRecs')
+          component: require('@/pages/street/recs')
         }
       ]
     },
     {
       path: '/gov',
-      component: require('@/pages/gov')
+      component: require('@/pages/gov'),
+      children: [
+        {
+          path:'',
+          component: require('@/pages/gov/index')
+        },
+        {
+          path:'eventHandle',
+          component: require('@/pages/gov/eventHandle')
+        },{
+          path:'pms',
+          component: require('@/pages/gov/pm')
+        },{
+          path:'build',
+          component: require('@/pages/gov/build')
+        },{
+          path:'pmkpis',
+          component: require('@/pages/gov/pmkpi')
+        },{
+          path:'court',
+          component: require('@/pages/gov/court')
+        },{
+          path:'announcement',
+          component: require('@/pages/gov/announcement')
+        },
+      ]
     }
   ]
 })

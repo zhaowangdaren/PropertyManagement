@@ -1,138 +1,23 @@
 <template>
-  <div>
-    <div :class='s.searchWrap'>
-    <!-- 街道名 -->
-      <div :class='s.title'>Street Name</div>
-      <div :class='s.inputWrap'>
-        <search-select v-model='inputStreetName' :values='streetNames' />
-      </div>
-      <!-- 社区名 -->
-      <div :class='s.title'>Community</div>
-      <div :class='s.inputWrap'>
-        <search-select v-model='inputCommunityName' :values='communityNames' />
-      </div>
-      <!-- 小区名 -->
-      <div :class='s.title'>country</div>
-      <div :class='s.inputWrap'>
-        <search-select v-model='inputXiaoQu' :values='xqNames' />
-      </div>
-    </div>
-    <div :class='s.addDel'>
-      <image-button :class='s.bt' :clickMethod='onAdd'
-        text='新增'
-        :img='require("@/res/images/add.png")'
-        bgColor='#3598dc'
-        />
-      
-      <image-button :class='s.searchBt' :clickMethod='onSearch'
-        text='查询'
-        :img='require("@/res/images/ic_serach.png")'
-        bgColor='#4c87b9'
-        color='#fff'
-      />
-    </div>
-    <table>
-      <tr >
-        <th>Country Name</th>
-        <!-- 小区名 -->
-        <th>PM Name</th>
-        <!-- 物业公司 -->
-        <th>LegalPerson</th>
-        <!-- 独立法人 -->
-        <th>WuYeZiZhi</th>
-        <!-- 物业资质 -->
-        <th>WuYeXinZhi</th>
-        <!-- 物业性质 -->
-        <th>操作</th>
-      </tr>
-      <tr v-for='item in pms' :class='s.street'>
-        <td v-text='item.XiaoQu'></td>
-        <td v-text='item.Name'></td>
-        <td v-text='item.LegalPerson'></td>
-        <td v-text='item.WuYeZiZhi'></td>
-        <td v-text='item.WuYeXinZhi'></td>
-        <td align="center">
-          <image-button :class='s.bt'
-            text='编辑'
-            :img='require("@/res/images/edit.png")'
-            bgColor='#26a69a'
-          />
-          <image-button :class='s.bt'
-            text='删除'
-            :img='require("@/res/images/delete.png")'
-            bgColor='#cb5a5e'
-            />
-        </td>
-      </tr>
-    </table>
+  <div :class='s.wrap'>
+    <div v-if='identityLevel !== 0 && curStreet !== ""' :class='s.street' v-text='curStreet'></div>
+    <pms></pms>
     <component :is='showDialog' @close='showDialog = ""' />
   </div>
 </template>
 
-<style lang="less" module='s'>
-  .searchWrap{
-    border: solid 1px #ddd;
-    display: flex;
-    align-items: center;
-    width: 100%;
-    position: relative;
-    .title{
-      background: #e0e0e0;
-      padding: 10px;
-      font-size: 20px;
-    }
-    .inputWrap{
-      position: relative;
-      font-size: 18px;
-      flex: 1;
-      margin-right: 5px;
-    }
-    .searchBt{
-      position: absolute;
-      right: 10px;
-    }
-  }
-  .addDel{
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    margin-top: 10px;
-    margin-right: 10px;
-    .bt{
-      margin: 5px;
-    }
-  }
-  table{
-    width: 99%;
-    font-size: 15px;
-    color: #555;
-    margin: 10px auto;
-    th{
-      text-align: center;
-      padding: 5px;
-      border: solid 1px #ddd;
-    }
-    td{
-      padding: 5px;
-      border: solid 1px #ddd;
-    }
-    .street{
-      &:hover {
-        background-color: #ddd;
-      }
-      .bt{
-        display: inline-block;
-      }
-    }
-  }
-</style>
-
-<script type="text/javascript">
-  import ImageButton from '@/components/ImageButton'
-  import SearchSelect from '@/components/SearchSelect'
+<script>
   import AddPM from '@/components/dialog/AddPM'
+  import PMs from '@/components/table/PMs'
   export default {
-    components: {ImageButton, AddPM, SearchSelect},
+    components: {AddPM, 'pms': PMs},
+    props: {
+      identityLevel: {//当前用户的等级 0为admin,
+        type: Number, 
+        default: 1
+      },
+      curStreet: String //传入的当前街道
+    },
     data () {
       return {
         host:'http://10.176.118.61:3000',
@@ -165,6 +50,9 @@
       }
     },
     methods: {
+      onEdit (item) {
+
+      },
       onAdd () {
         this.showDialog = AddCountry
       },
@@ -259,3 +147,17 @@
     }
   }
 </script>
+
+<style lang="less" module='s'>
+.wrap{
+  margin: 10px;
+  font-size: 15px;
+  .street{
+    background-color: #ddd;
+    width: 100%;
+    font-size: 25px;
+    padding: 5px;
+  }
+  
+}
+</style>

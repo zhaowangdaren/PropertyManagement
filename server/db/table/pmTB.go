@@ -11,19 +11,19 @@ import (
 )
 
 //WuYeTableName table name
-const WuYeTableName = "WuYe"
+const WuYeTableName = "PM"
 
 //WuYe 物业信息
 type WuYe struct {
 	Name                 string //物业公司名称
 	Street               string //所在街道
 	Community            string //所在社区
-	XiaoQu               string //所在小区
+	XQ                   string //所在小区
 	LegalPerson          string //独立法人
 	Tel                  string //
 	WuYeZiZhi            string //物业资质
 	WuYeXinZhi           string //物业性质
-	XiaoQuEnv            string //小区环境
+	XQEnv                string //小区环境
 	XiaoQuCleaning       string //小区保洁
 	GreenVegetatio       string //绿化植被
 	GuanYangBaoHu        string //管养保护

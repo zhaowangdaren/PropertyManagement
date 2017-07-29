@@ -19,31 +19,38 @@
         menus: [
           {
             icon: require('@/res/images/home.png'),
-            text:'首页'
+            text:'首页',
+            path:'/gov'
           },
           {
             icon: require('@/res/images/complaints.png'),
-            text:'居民物业纠纷处理'
+            text:'居民物业纠纷处理',
+            path:'/gov/eventHandle'
           },
           {
             icon: require('@/res/images/wuye.png'),
-            text:'查看物业信息'
-          },
-          {
-            icon: require('@/res/images/build.png'),
-            text:'查看建筑信息'
+            text:'查看物业信息',
+            path:'/gov/pms'
           },
           {
             icon: require('@/res/images/kpi.png'),
-            text:'物业考核查询'
+            text:'物业考核查询',
+            path:'/gov/pmkpis'
+          },
+          {
+            icon: require('@/res/images/build.png'),
+            text:'查看建筑信息',
+            path:'/gov/build'
           },
           {
             icon: require('@/res/images/court.png'),
-            text:'推送法院调解请求'
+            text:'推送法院调解请求',
+            path: '/gov/court'
           },
           {
             icon: require('@/res/images/gonggao.png'),
-            text:'推送政府公告'
+            text:'推送政府公告',
+            path: '/gov/announcement'
           }
         ]
       }

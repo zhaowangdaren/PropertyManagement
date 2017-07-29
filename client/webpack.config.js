@@ -19,7 +19,13 @@ module.exports = {
         test: /\.css$/,
         use: [
           'style-loader',
-          'css-loader'
+          'css-loader',
+          {
+            loader: 'px2rem-loader',
+            options: {
+              remUnit: 120
+            }
+          }
         ]
       },
       {

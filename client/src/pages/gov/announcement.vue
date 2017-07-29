@@ -1,5 +1,5 @@
 <template>
   <div>
-    InfosStreetPMsKPI
+    Announcement
   </div>
 </template>
