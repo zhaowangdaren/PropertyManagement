@@ -12,6 +12,7 @@
         :img='require("@/res/images/delete.png")'
         bgColor='#cb5a5e'
         fontSize='20px'
+        @click='onDel'
         />
     </div>
     <table>
@@ -55,6 +56,17 @@
       size='small'>
       <edit-street></edit-street>
     </el-dialog>
+    <el-dialog
+      title="提示"
+      :visible.sync="showDelConfirm"
+      size="tiny">
+      <div>请确认删除</div>
+      <div v-for='street in dels' v-text='street'></div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="onDelCancel">取 消</el-button>
+        <el-button type="primary" @click="onDelConfirm">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -70,7 +82,9 @@
       return {
         streets:[],
         showAddDialog: false,
-        showEditDialog: false
+        showEditDialog: false,
+        dels: [],
+        showDelConfirm: false
       }
     },
     mounted () {
@@ -105,6 +119,34 @@
       },
       onEdit (street) {
         this.showEditDialog = true
+      },
+      onDel () {
+        this.dels = this.streets.filter(item => {
+          return item.checked
+        }).map(item => {
+          return item.Name
+        })
+        console.info('Del', this.dels)
+        this.showDelConfirm = true
+      },
+      onDelCancel () {
+        this.showDelConfirm = false
+        this.dels = []
+      },
+      onDelConfirm () {
+        if (this.dels.length ===0) return
+        fetchpm(this, true, '/pm/street/del', {
+          method: 'POST',
+          body: {values: this.dels}
+        }).then(resp => {
+          return resp.json()
+        }).then(body => {
+          console.info('onDel', body)
+          if (body.error === 0 ) {
+            this.fetechStreets()
+          }
+          this.showDelConfirm = false
+        })
       }
     }
   }

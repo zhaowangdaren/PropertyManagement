@@ -10,7 +10,7 @@ const HOST = '//localhost:3000'
 export default function (vm, auth, path, options) {
   var token = sessionStorage.getItem('token')
 
-  if (options.method == 'POST' && !options.body) options.body = {}
+  if (options.method !== 'GET' && !options.body) options.body = {}
 
   if (auth) {
     if (token == null || token === '') {

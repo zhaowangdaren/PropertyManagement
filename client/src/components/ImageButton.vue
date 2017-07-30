@@ -52,13 +52,11 @@
       fontSize: {
         type: String,
         default: '15px'
-      },
-      clickMethod: Function
+      }
     },
     methods: {
       onClick () {
-        if (!this.clickMethod) return
-        this.clickMethod()
+        this.$emit('click')
       }
     }
   }

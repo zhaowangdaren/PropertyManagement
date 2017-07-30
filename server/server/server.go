@@ -36,7 +36,7 @@ func Start() {
 	router := gin.Default()
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:9000"},
-		AllowMethods:     []string{"GET", "POST"},
+		AllowMethods:     []string{"GET", "POST", "DELETE"},
 		AllowHeaders:     []string{"Authorization"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
