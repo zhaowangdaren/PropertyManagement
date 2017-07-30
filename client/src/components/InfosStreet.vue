@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class='s.wrap'>
     <div :class='s.addDel'>
       <image-button :class='s.bt' :clickMethod='onAdd'
         text='新增'
@@ -39,61 +39,38 @@
         <td v-text='street.AuthCode'></td>
         <td v-text='street.Intro'></td>
         <td>
-          <image-button
-            text='编辑'
-            :img='require("@/res/images/edit.png")'
-            bgColor='#26a69a'
-          />
+          <el-button type="primary" icon="edit" @click="onEdit(street)">编辑</el-button>
         </td>
       </tr>
     </table>
-    <component :is='showDialog' @close='showDialog = ""' />
+    <el-dialog 
+      title='Add Street'
+      :visible.sync='showAddDialog'
+      size='small'>
+      <add-street></add-street>
+    </el-dialog>
+    <el-dialog 
+      title='Edit Street'
+      :visible.sync='showEditDialog'
+      size='small'>
+      <edit-street></edit-street>
+    </el-dialog>
   </div>
 </template>
-
-<style lang="less" module='s'>
-  .addDel{
-    display: flex;
-    align-items: center;
-    margin-top: 10px;
-    .bt {
-      margin: 5px;
-    }
-  }
-  table{
-    width: 99%;
-    font-size: 15px;
-    color: #555;
-    margin: auto;
-    margin-top: 10px;
-    th{
-      text-align: center;
-      padding: 5px;
-      border: solid 1px #ddd;
-    }
-    td{
-      padding: 5px;
-      border: solid 1px #ddd;
-    }
-    .street{
-      &:hover {
-        background-color: #ddd;
-      }
-    }
-  }
-</style>
 
 <script type="text/javascript">
   import Ajax from '@/Ajax'
   import ImageButton from '@/components/ImageButton'
   import AddStreet from '@/components/dialog/AddStreet'
+  import EditStreet from '@/components/dialog/EditStreet'
+  import fetchpm from '@/fetchpm'
   export default {
-    components: {ImageButton, AddStreet},
+    components: {ImageButton, AddStreet, EditStreet},
     data () {
       return {
-        host:'http://10.176.118.61:3000/street',
         streets:[],
-        showDialog: ''
+        showAddDialog: false,
+        showEditDialog: false
       }
     },
     mounted () {
@@ -109,9 +86,8 @@
         //   if (data === null) return
         //   this.streets = JSON.parse(data).Streets
         // })
-        fetch(this.host, {
-          method: 'POST',
-          body: JSON.stringify({name:'', pageNo: 1, pageSize: 1})
+        fetchpm(this, true, '/pm/street',{
+          method: 'POST'
         }).then(resp => {
           console.info(resp)
           return resp.json()
@@ -125,8 +101,46 @@
       },
       onAdd () {
         console.info('onAdd')
-        this.showDialog = AddStreet
+        this.showAddDialog = true
+      },
+      onEdit (street) {
+        this.showEditDialog = true
       }
     }
   }
 </script>
+
+<style lang="less" module='s'>
+.wrap{
+  // margin: 10px;
+  .addDel{
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    .bt {
+      margin: 5px;
+    }
+  }
+  table{
+    width: 99%;
+    font-size: 15px;
+    color: #555;
+    margin: 10px auto;
+    text-align: center;
+    th{
+      text-align: center;
+      padding: 5px;
+      border: solid 1px #ddd;
+    }
+    td{
+      padding: 5px;
+      border: solid 1px #ddd;
+    }
+    .street{
+      &:hover {
+        background-color: #ddd;
+      }
+    }
+  }
+}
+</style>

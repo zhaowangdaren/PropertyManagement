@@ -153,6 +153,7 @@
   import Ajax from '@/Ajax'
   import ImageButton from '@/components/ImageButton'
   import AddCommunity from '@/components/dialog/AddCommunity'
+  import fetchpm from '@/fetchpm'
   export default {
     components: {ImageButton, AddCommunity},
     data () {
@@ -191,9 +192,8 @@
         //   this.communities = JSON.parse(data).Communities
         //   console.info(this.communities)
         // })
-        fetch(this.host + '/community', {
-          method: 'POST',
-          body: JSON.stringify({})
+        fetchpm(this, true, '/pm/community', {
+          method: 'POST'
         }).then(resp => {
           return resp.json()
         }).then(data => {
@@ -202,9 +202,8 @@
         })
       },
       fetchAllStreetName () {//获取所有街道名称
-        fetch( this.host + '/street/key/name', {
-          method: 'POST',
-          body: '{}'
+        fetchpm( this, true, '/pm/street/key/name', {
+          method: 'POST'
         }).then(resp => {
           return resp.json()
         }).then(body => {
@@ -213,7 +212,7 @@
       },
       fetchCommunitiesByStreetName (streetName) {
         if (!streetName) return
-        fetch(this.host + '/community/streetName/'+streetName, {
+        fetchpm(this, true, '/pm/community/streetName/'+streetName, {
           method: 'POST'
         }).then(resp => {
           return resp.json()

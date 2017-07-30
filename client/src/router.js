@@ -74,7 +74,7 @@ export default new Router({
         },
         {
           path: 'court',
-          component: require('@/components/InfosCourt')
+          component: require('@/components/table/Courts')
         },
         {
           path: 'operationRecs',

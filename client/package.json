@@ -33,7 +33,9 @@
     "webpack-dev-server": "^2.5.1"
   },
   "dependencies": {
+    "axios": "^0.16.2",
     "element-ui": "^1.4.0",
+    "vue-axios": "^2.0.2",
     "whatwg-fetch": "^2.0.3"
   }
 }

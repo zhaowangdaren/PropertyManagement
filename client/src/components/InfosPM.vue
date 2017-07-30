@@ -9,6 +9,7 @@
 <script>
   import AddPM from '@/components/dialog/AddPM'
   import PMs from '@/components/table/PMs'
+  import fetchpm from '@/fetchpm'
   export default {
     components: {AddPM, 'pms': PMs},
     props: {
@@ -72,9 +73,8 @@
         }
       },
       fetchPMs () {
-        fetch(this.host + '/pm', {
-          method: 'POST',
-          body: '{}'
+        fetchpm(this, true, '/pm/pm', {
+          method: 'POST'
         }).then(resp =>{
           return resp.json()
         }).then(body => {
@@ -83,9 +83,9 @@
         })
       },
       fetchPMKVs (kvs) {
-        fetch(this.host + '/pm/kvs', {
+        fetchpm(this, true, '/pm/pm/kvs', {
           method: 'POST',
-          body: JSON.stringify(kvs)
+          body: kvs
         }).then(resp => {
           return resp.json()
         }).then(body => {
@@ -94,9 +94,8 @@
         })
       },
       fetechAllStreetName () {
-        fetch(this.host + '/street/key/name', {
-          method: 'POST',
-          body: '{}'
+        fetchpm(this, true, '/pm/street/key/name', {
+          method: 'POST'
         }).then(resp => {
           return resp.json()
         }).then(body => {
@@ -109,7 +108,7 @@
         this.isLoadingInput = true
         this.communityNames = []
         this.inputCommunityName = ''
-        fetch(this.host + '/community/streetName/'+streetName, {
+        fetchpm(this, true, '/pm/community/streetName/'+streetName, {
           method: 'POST'
         }).then(resp => {
           return resp.json()
@@ -128,9 +127,9 @@
       fetchXQByCommunityName (communityName) {
         if (!communityName) return
         this.isLoadingInput = true
-        fetch(this.host + '/xq/kvs', {
+        fetchpm(this, true, '/pm/xq/kvs', {
           method: 'POST',
-          body: JSON.stringify({community: communityName})
+          body: {community: communityName}
         }).then(resp => {
           return resp.json()
         }).then( body => {

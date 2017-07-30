@@ -1,5 +1,5 @@
 <template>
   <div>
-    InfosCourt
+    Edit Street
   </div>
 </template>

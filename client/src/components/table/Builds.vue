@@ -1,5 +1,9 @@
 <template>
   <div :class='s.wrap'>
+    <div :class='s.title'>
+      <img src="~@/res/images/earth.png">
+      Build<!-- 物业信息管理 -->
+    </div>
     <table :class='s.searchWrap'>
       <tr>
         <td :class='s.title'>Street Name</td>
@@ -98,6 +102,7 @@
   import ImageButton from '@/components/ImageButton'
   import SearchSelect from '@/components/SearchSelect'
   import AddBuild from '@/components/dialog/AddBuild'
+  import fetchpm from '@/fetchpm'
   export default {
     props: {
       editable: Boolean
@@ -156,9 +161,8 @@
         }
       },
       fetchHouses () {
-        fetch(this.host + '/house', {
-          method: 'POST',
-          body: '{}'
+        fetchpm(this, true, '/pm/house', {
+          method: 'POST'
         }).then(resp =>{
           return resp.json()
         }).then(body => {
@@ -167,9 +171,9 @@
         })
       },
       fetchHouseKVs (kvs) {
-        fetch(this.host + '/pm/kvs', {
+        fetchpm(this, true, '/pm/pm/kvs', {
           method: 'POST',
-          body: JSON.stringify(kvs)
+          body: kvs
         }).then(resp => {
           return resp.json()
         }).then(body => {
@@ -178,9 +182,8 @@
         })
       },
       fetechAllStreetName () {
-        fetch(this.host + '/street/key/name', {
-          method: 'POST',
-          body: '{}'
+        fetchpm(this, true, '/pm/street/key/name', {
+          method: 'POST'
         }).then(resp => {
           return resp.json()
         }).then(body => {
@@ -191,7 +194,7 @@
       fetchCommunitiesByStreetName (streetName) {
         this.isLoadingInput = true
         if (!streetName) return
-        fetch(this.host + '/community/streetName/'+streetName, {
+        fetchpm(this, true, '/pm/community/streetName/'+streetName, {
           method: 'POST'
         }).then(resp => {
           return resp.json()
@@ -209,9 +212,9 @@
       fetchXQByCommunityName (communityName) {
         this.isLoadingInput = true
         if (!communityName) return
-        fetch(this.host + '/xq/kvs', {
+        fetchpm(this, true, '/pm/xq/kvs', {
           method: 'POST',
-          body: JSON.stringify({community: communityName})
+          body: {community: communityName}
         }).then(resp => {
           return resp.json()
         }).then( body => {
@@ -231,6 +234,18 @@
 
 <style lang="less" module='s'>
 .wrap{
+  .title{
+    color: #fff;
+    font-size: 20px;
+    background: #4c87b9;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    img{
+      width: 20px;
+      margin-right: 10px;
+    }
+  }
   .searchWrap{
     background-color: #fff;
     border: solid 1px #ddd;

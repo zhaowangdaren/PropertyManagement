@@ -160,6 +160,8 @@
 <script type="text/javascript">
   import ImageButton from '@/components/ImageButton'
   import AddCountry from '@/components/dialog/AddCountry'
+  import fetchpm from '@/fetchpm'
+
   export default {
     components: {ImageButton, AddCountry},
     data () {
@@ -201,9 +203,9 @@
         var params = {}
         if (this.inputStreetName !== '') params.street = this.inputStreetName
         if (this.inputXQName !== '') params.name = this.inputXQName
-        fetch(this.host + '/xq/kvs', {
+        fetchpm(this, true, '/pm/xq/kvs', {
           method: 'POST',
-          body:JSON.stringify(params)
+          body: params
         }).then( resp => {
           return resp.json()
         }).then( data => {
@@ -219,9 +221,8 @@
         // Ajax(request, data => {
         //   this.xiaoQus = JSON.parse(data).XiaoQus
         // })
-        fetch(this.host + '/xq', {
-          method: 'POST',
-          body: '{}'
+        fetchpm(this,true,'/pm/xq', {
+          method: 'POST'
         }).then(resp => {
           return resp.json()
         }).then(data => {
@@ -243,9 +244,8 @@
         // console.info(data)
         //   if (this.streetNames === null) return
         // })
-        fetch(this.host + '/street/key/name', {
-          method: 'POST',
-          body: '{}'
+        fetchpm(this, true,'/pm/street/key/name', {
+          method: 'POST'
         }).then(resp => {
           return resp.json()
         }).then(data => {
@@ -266,9 +266,8 @@
         //     console.info(data)
         //   this.xqNames = JSON.parse(data)
         // })
-        fetch(this.host + '/xq/key/name', {
-          method: 'POST',
-          body: '{}'
+        fetchpm(this, true,'/pm/xq/key/name', {
+          method: 'POST'
         }).then(resp => {
           return resp.json()
         }).then(data => {

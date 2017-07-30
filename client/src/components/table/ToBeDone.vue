@@ -39,6 +39,7 @@
 <script>
   import filterEventStatus from '@/filters/filterEventStatus'
   import filterEventLevel from '@/filters/filterEventLevel'
+  import fetchpm from '@/fetchpm'
   export default {
     filters: {filterEventStatus, filterEventLevel},
     data () {
@@ -55,9 +56,9 @@
         if (!index ) {
           console.info('index', index)
         }
-        fetch(this.host + '/event', {
+        fetchpm(this, true, '/pm/event', {
           method: 'POST',
-          body: JSON.stringify({index: index})
+          body: {index: index}
         }).then(resp => {
           return resp.json()
         }).then(body => {

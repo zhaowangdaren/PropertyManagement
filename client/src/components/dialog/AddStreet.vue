@@ -1,12 +1,6 @@
 <template>
   <div>
   <!-- 新增街道信息 -->
-    <basic-dialog 
-      title='Title' 
-      :onSave='onSave'
-      :onCancel='onCancel'
-      :warn='warn'
-      >
       <div :class='s.item'>
         <div :class='s.red'>*</div>
         name
@@ -37,7 +31,6 @@
         <!-- 描述 -->
         <input type="text" v-model='street.intro' @focus='onFocus'>
       </div>
-    </basic-dialog>
   </div>
 </template>
 

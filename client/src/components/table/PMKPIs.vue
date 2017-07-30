@@ -106,7 +106,7 @@
 <script type="text/javascript">
 import filterEventStatus from '@/filters/filterEventStatus'
 import filterEventLevel from '@/filters/filterEventLevel'
-
+import fetchpm from '@/fetchpm'
 export default {
   filters: {filterEventStatus, filterEventLevel},
   data () {
@@ -134,9 +134,9 @@ export default {
       if (!name ) {
         console.info('name', name)
       }
-      fetch(this.host + '/pmkpi', {
+      fetchpm(this,true,'/pm/pmkpi', {
         method: 'POST',
-        body: JSON.stringify({name: name})
+        body: {name: name}
       }).then(resp => {
         return resp.json()
       }).then(body => {

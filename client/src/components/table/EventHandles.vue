@@ -136,6 +136,7 @@
 <script>
   import filterEventStatus from '@/filters/filterEventStatus'
   import filterEventLevel from '@/filters/filterEventLevel'
+  import fetchpm from '@/fetchpm'
   export default {
     props: {
       editable: Boolean
@@ -167,9 +168,9 @@
         if (!index ) {
           console.info('index', index)
         }
-        fetch(this.host + '/eventHandles', {
+        fetchpm(this, true, '/pm/eventHandles', {
           method: 'POST',
-          body: JSON.stringify({index: index})
+          body: {index: index}
         }).then(resp => {
           return resp.json()
         }).then(body => {

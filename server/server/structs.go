@@ -1,5 +1,11 @@
 package server
 
+type QueryUser struct {
+	UserName string
+	Type     int
+	PageSize int
+	PageNo   int
+}
 type QueryBasic struct {
 	Name     string
 	PageNo   int
@@ -28,6 +34,6 @@ type Values struct {
 }
 
 type LoginForm struct {
-	User     string `form:"user" binding:"required"`
-	Password string `form:"password" binding:"required"`
+	UserName string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
 }

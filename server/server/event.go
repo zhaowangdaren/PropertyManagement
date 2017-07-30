@@ -9,7 +9,7 @@ import (
 	"gopkg.in/mgo.v2"
 )
 
-func startEvent(router *gin.Engine, dbc *mgo.Database) {
+func startEvent(router *gin.RouterGroup, dbc *mgo.Database) {
 	router.POST("/event", func(c *gin.Context) {
 		var queryInfo QueryEvent
 		err := c.BindJSON(&queryInfo)

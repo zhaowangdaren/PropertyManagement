@@ -131,7 +131,7 @@
 <script>
   import filterEventStatus from '@/filters/filterEventStatus'
   import filterEventLevel from '@/filters/filterEventLevel'
-
+  import fetchpm from '@/fetchpm'
   export default {
     filters: {filterEventStatus, filterEventLevel},
     data () {
@@ -160,9 +160,9 @@
         if (!index ) {
           console.info('index', index)
         }
-        fetch(this.host + '/eventHandle/kvs', {
+        fetchpm(this,true,'/pm/eventHandle/kvs', {
           method: 'POST',
-          body: JSON.stringify({AuthorName: 'jack'})
+          body: {AuthorName: 'jack'}
         }).then(resp => {
           return resp.json()
         }).then(body => {

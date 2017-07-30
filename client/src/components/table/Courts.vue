@@ -42,6 +42,7 @@
 <script>
   import filterEventStatus from '@/filters/filterEventStatus'
   import filterEventLevel from '@/filters/filterEventLevel'
+  import fetchpm from '@/fetchpm'
   export default {
     props: {
       editable: Boolean
@@ -65,9 +66,9 @@
           console.info('params', params)
           params = {}
         }
-        fetch(this.host + '/event/kvs', {
+        fetchpm(this, true, '/pm/event/kvs', {
           method: 'POST',
-          body: JSON.stringify(params)
+          body: params
         }).then(resp => {
           return resp.json()
         }).then(body => {

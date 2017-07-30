@@ -21,7 +21,7 @@
         <td v-text='gov.UserName'></td>
         <td v-text='gov.RealName'></td>
         <td v-text='gov.Password'></td>
-        <td v-text='gov.OfficeNumber'></td>
+        <td v-text='gov.Tel'></td>
         <td :class='s.operations' align="center">
           <image-button :class='s.bt'
             text='编辑'
@@ -85,11 +85,11 @@
   import Ajax from '@/Ajax'
   import ImageButton from '@/components/ImageButton'
   import AddGov from '@/components/dialog/AddGov'
+  import fetchpm from '@/fetchpm'
   export default {
     components: {ImageButton, AddGov},
     data () {
       return {
-        host:'http://10.176.118.61:3000',
         govs:[],
         showDialog: ''
       }
@@ -99,9 +99,9 @@
     },
     methods: {
       fetchGovs () {
-        fetch(this.host + '/gov', {
+        fetchpm(this, true, '/pm/users', {
           method: "POST",
-          body: '{}'
+          body: {type : 2}
         }).then(resp => {
           return resp.json()
         }).then(body => {

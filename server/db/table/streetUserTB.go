@@ -45,6 +45,18 @@ func InsertStreetUser(db *mgo.Database, info StreetUser) interface{} {
 	return gin.H{"error": 0, "data": Succ}
 }
 
+//FindStreetUser 通过用户名查找单个用户
+func FindStreetUser(db *mgo.Database, userName string) StreetUser {
+	c := db.C(StreetUserTableName)
+	query := c.Find(bson.M{"username": userName})
+	count, _ := query.Count()
+	var result StreetUser
+	if count != 0 {
+		query.One(&result)
+	}
+	return result
+}
+
 //FindStreetUsers 如果userName为""，则查询所有的街道信息,
 func FindStreetUsers(db *mgo.Database, userName string, pageNo int,
 	pageSize int) interface{} {

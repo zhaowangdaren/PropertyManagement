@@ -8,7 +8,7 @@ import (
 	"gopkg.in/mgo.v2"
 )
 
-func startEventHandle(router *gin.Engine, dbc *mgo.Database) {
+func startEventHandle(router *gin.RouterGroup, dbc *mgo.Database) {
 	// 按index 查询事件，如果index==“”则查询所有的
 	router.POST("/eventHandles", func(c *gin.Context) {
 		var queryInfo QueryEvent

@@ -3,7 +3,7 @@
     <div :class='s.content'>
       <div :class='s.title'>
         <img src="~@/res/images/earth.png">
-        PM infos<!-- 居民物业纠纷处理 -->
+        PM infos<!--  -->
       </div>
       <div :class='s.searchWrap'>
         <table>
@@ -83,6 +83,7 @@
 
 <script>
 import AddPM from '@/components/dialog/AddPM'
+import fetchpm from '@/fetchpm'
 export default {
   components: {AddPM},
   props: {
@@ -106,7 +107,7 @@ export default {
   },
   mounted () {
     this.fetchPMs()
-    this.fetechAllStreetName()
+    this.editable ? this.fetechAllStreetName() : this.fetchCommunitiesByStreetName('1')
   },
   watch: {
     inputStreetName: function (val) {
@@ -142,9 +143,8 @@ export default {
       }
     },
     fetchPMs () {
-      fetch(this.host + '/pm', {
-        method: 'POST',
-        body: '{}'
+      fetchpm(this, true, '/pm/pm', {
+        method: 'POST'
       }).then(resp =>{
         return resp.json()
       }).then(body => {
@@ -153,9 +153,9 @@ export default {
       })
     },
     fetchPMKVs (kvs) {
-      fetch(this.host + '/pm/kvs', {
+      fetchpm(this, true, '/pm/pm/kvs', {
         method: 'POST',
-        body: JSON.stringify(kvs)
+        body: kvs
       }).then(resp => {
         return resp.json()
       }).then(body => {
@@ -164,9 +164,8 @@ export default {
       })
     },
     fetechAllStreetName () {
-      fetch(this.host + '/street/key/name', {
-        method: 'POST',
-        body: '{}'
+      fetchpm(this, true, '/pm/street/key/name', {
+        method: 'POST'
       }).then(resp => {
         return resp.json()
       }).then(body => {
@@ -179,7 +178,7 @@ export default {
       this.isLoadingInput = true
       this.communityNames = []
       this.inputCommunityName = ''
-      fetch(this.host + '/community/streetName/'+streetName, {
+      fetchpm(this, true, '/pm/community/streetName/'+streetName, {
         method: 'POST'
       }).then(resp => {
         return resp.json()
@@ -198,9 +197,9 @@ export default {
     fetchXQByCommunityName (communityName) {
       if (!communityName) return
       this.isLoadingInput = true
-      fetch(this.host + '/xq/kvs', {
+      fetchpm(this, true, '/pm/xq/kvs', {
         method: 'POST',
-        body: JSON.stringify({community: communityName})
+        body: {community: communityName}
       }).then(resp => {
         return resp.json()
       }).then( body => {

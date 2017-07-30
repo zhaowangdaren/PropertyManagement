@@ -1,14 +1,21 @@
 <template>
   <div :class='s.wrap'>
-    <div :class='s.title'>
-      <img src="~@/res/images/earth.png">
-      Build<!-- 物业信息管理 -->
-    </div>
-    <div :class='s.content'>
-      <component :is='curView' :class='s.view'/>
-    </div>
+    <builds></builds>
   </div>
 </template>
+
+<script type="text/javascript">
+import Builds from '@/components/table/Builds'
+  export default {
+    components: { Builds},
+    data () {
+      return {
+      } 
+    },
+    methods: {
+    }
+  }
+</script>
 
 <style lang="less" module='s'>
 .wrap{
@@ -56,17 +63,3 @@
 
 }
 </style>
-
-<script type="text/javascript">
-import InfosBuild from '@/components/InfosBuild'
-  export default {
-    components: { InfosBuild},
-    data () {
-      return {
-        curView: InfosBuild
-      } 
-    },
-    methods: {
-    }
-  }
-</script>

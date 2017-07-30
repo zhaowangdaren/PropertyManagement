@@ -1,6 +1,5 @@
 <template>
-  <div>
-    Request
+  <div :class='s.wrap'>
     <table>
       <tr >
         <th>序号</th>
@@ -34,7 +33,46 @@
   </div>
 </template>
 
+<script type="text/javascript">
+  import Ajax from '@/Ajax'
+  import ImageButton from '@/components/ImageButton'
+  import fetchpm from '@/fetchpm'
+  export default {
+    components: {ImageButton},
+    data () {
+      return {
+        host:'http://10.176.118.61:3000',
+        users:[],
+        showDialog: ''
+      }
+    },
+    mounted () {
+      this.fetechWX()
+    },
+    methods: {
+      fetechWX () {
+        fetchpm(this, true, '/pm/wxUser', {
+          method: 'POST',
+          body: {name:name, pageNo: 1, pageSize: 1}
+        }).then(resp => {
+          console.info(resp)
+          return resp.json()
+        }).then( data => {
+          console.info('fetechusers', data)
+          if (data.error === 0 ) {
+            this.users = data.data
+          }
+        })
+      },
+      onAdd () {
+        console.info('onAdd')
+      }
+    }
+  }
+</script>
+
 <style lang="less" module='s'>
+.wrap{
   .addDel{
     display: flex;
     align-items: center;
@@ -52,6 +90,7 @@
       text-align: center;
       padding: 5px;
       border: solid 1px #ddd;
+      background-color: #f0f0f0;
     }
     td{
       padding: 5px;
@@ -69,45 +108,6 @@
         }
       }
     }
-    .noData{
-      background: #eee;
-    }
   }
+}
 </style>
-
-<script type="text/javascript">
-  import Ajax from '@/Ajax'
-  import ImageButton from '@/components/ImageButton'
-  export default {
-    components: {ImageButton},
-    data () {
-      return {
-        host:'http://10.176.118.61:3000',
-        users:[],
-        showDialog: ''
-      }
-    },
-    mounted () {
-      this.fetechWX()
-    },
-    methods: {
-      fetechWX () {
-        // fetch(this.host + '/streetUser', {
-        //   method: 'POST',
-        //   body: JSON.stringify({name:'', pageNo: 1, pageSize: 1})
-        // }).then(resp => {
-        //   console.info(resp)
-        //   return resp.json()
-        // }).then( data => {
-        //   console.info('fetechusers', data)
-        //   if (data.error === 0) {
-        //     this.users = data.data
-        //   }
-        // })
-      },
-      onAdd () {
-        console.info('onAdd')
-      }
-    }
-  }
-</script>

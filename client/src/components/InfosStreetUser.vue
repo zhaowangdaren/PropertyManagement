@@ -42,6 +42,9 @@
           />
         </td>
       </tr>
+      <tr v-if='users.length == 0'>
+        <td colspan="6">无记录</td>
+      </tr>
     </table>
     <component :is='showDialog' @close='showDialog = ""' />
   </div>
@@ -62,6 +65,7 @@
     font-size: 15px;
     color: #555;
     margin: 10px auto;
+    text-align: center;
     th{
       text-align: center;
       padding: 5px;
@@ -91,11 +95,11 @@
   import Ajax from '@/Ajax'
   import ImageButton from '@/components/ImageButton'
   import AddStreetUser from '@/components/dialog/AddStreetUser'
+  import fetchpm from '@/fetchpm'
   export default {
     components: {ImageButton, AddStreetUser},
     data () {
       return {
-        host:'http://10.176.118.61:3000',
         users:[],
         showDialog: ''
       }
@@ -105,15 +109,15 @@
     },
     methods: {
       fetechUsers () {
-        fetch(this.host + '/streetUser', {
+        fetchpm(this, true, '/pm/users', {
           method: 'POST',
-          body: JSON.stringify({name:'', pageNo: 1, pageSize: 1})
+          body: {type: 3}
         }).then(resp => {
           console.info(resp)
           return resp.json()
         }).then( data => {
           console.info('fetechusers', data)
-          if (data.error === 0) {
+          if (data.error === 0 && data.data !== null) {
             this.users = data.data
           }
         })

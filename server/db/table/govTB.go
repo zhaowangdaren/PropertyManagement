@@ -1,6 +1,7 @@
 package table
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -44,9 +45,22 @@ func InsertGov(db *mgo.Database, info Gov) string {
 	return Succ
 }
 
-//FindGovs 查询小区信息集
+//FindGov 查找单个用户
+func FindGov(db *mgo.Database, userName string) Gov {
+	c := db.C(GovTableName)
+	query := c.Find(bson.M{"username": userName})
+	count, _ := query.Count()
+	var result Gov
+	if count != 0 {
+		query.One(&result)
+	}
+	return result
+}
+
+//FindGovs 查询Gov用户信息集
 func FindGovs(db *mgo.Database, userName string, pageNo int, pageSize int) interface{} {
 	c := db.C(GovTableName)
+	fmt.Println("FindGovs", userName)
 	var result []Gov
 	var err error
 	if userName == "" {

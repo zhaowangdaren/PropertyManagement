@@ -25,11 +25,10 @@
 </template>
 
 <script type="text/javascript">
-
+import fetchpm from '@/fetchpm'
 export default {
   data () {
     return {
-      host:'//localhost:3000',
       sourceParams: {
         title: 'Title',
         target: '' // /admin  /street  /gov
@@ -47,28 +46,18 @@ export default {
   },
   methods: {
     onLogin () {
-      var path = this.host
-      switch (this.sourceParams.target) {
-        case '/admin':
-          path += '/admin/login'
-          break;
-        case '/street':
-          path += '/street/login'
-          break;
-        case '/gov':
-          path += '/gov/login'
-          break;
-      }
-      fetch(path, {
+      fetchpm(this, false, '/login', {
         method: 'POST',
-        body: JSON.stringify(this.login)
+        body: this.login
       }).then(resp => {
         return resp.json()
       }).then( body => {
         console.info('onLogin',body)
-        if (body.error === 0)  this.$router.push({path: this.sourceParams.target})
+        if (body.token && body.token !== "")  {
+          sessionStorage.setItem('token', body.token)
+          this.$router.push({path: this.sourceParams.target})
+        }
       })
-     
     },
     onCancel () {
       this.$router.go(-1);
