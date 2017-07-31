@@ -15,11 +15,12 @@ const CommunityTableName = "Community"
 
 //Community 社区
 type Community struct {
-	Name           string //社区名
-	PersonInCharge string //负责人
-	Tel            string //社区联系电话
-	StreetName     string //所属街道
-	Intro          string //介绍
+	ID             bson.ObjectId `bson:"_id"`
+	Name           string        //社区名
+	PersonInCharge string        //负责人
+	Tel            string        //社区联系电话
+	StreetID       string        //所属街道
+	Intro          string        //介绍
 }
 
 //Communities 社区集
@@ -38,9 +39,20 @@ func InsertCommunity(db *mgo.Database, comm Community) interface{} {
 	if count > 0 {
 		return gin.H{"error": 1, "data": "已存在community" + comm.Name + ", 请重新设置name"}
 	}
+	comm.ID = bson.NewObjectId()
 	err = c.Insert(&comm)
 	if err != nil {
 		log.Fatal(err)
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": Succ}
+}
+
+//UpdateCommunity update street
+func UpdateCommunity(db *mgo.Database, comm Community) interface{} {
+	c := db.C(CommunityTableName)
+	err := c.Update(bson.M{"_id": comm.ID}, comm)
+	if err != nil {
 		return gin.H{"error": 1, "data": err.Error()}
 	}
 	return gin.H{"error": 0, "data": Succ}
@@ -110,7 +122,7 @@ func DelCommunities(db *mgo.Database, names []string) interface{} {
 	var err error
 	result := ""
 	for _, v := range names {
-		err = c.Remove(bson.M{"name": v})
+		err = c.Remove(bson.M{"_id": bson.ObjectIdHex(v)})
 		if err != nil {
 			log.Println(err.Error())
 			result += err.Error()

@@ -27,5 +27,14 @@ export default function (vm, auth, path, options) {
   if(options.method == 'POST')
     options.body = JSON.stringify(options.body)
   console.info(path, options)
-  return fetch(path, options)
+  return fetch(path, options).then(resp => {
+    if (resp.status == 401 ) {//认证失败，重新登录
+      vm.$router.push({path:'/'})
+      var error = new Error(resp.statusText)
+      error.response = resp
+      throw error
+    } else {
+      return resp
+    }
+  })
 }

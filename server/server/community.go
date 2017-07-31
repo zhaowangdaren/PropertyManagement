@@ -44,6 +44,17 @@ func startCommunity(router *gin.RouterGroup, dbc *mgo.Database) {
 			c.JSON(http.StatusOK, table.DelCommunities(dbc, names.Values))
 		}
 	})
+
+	router.POST("/community/update", func(c *gin.Context) {
+		var jsonObj table.Community
+		err := c.BindJSON(&jsonObj)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": "params error"})
+			log.Println(err)
+		} else {
+			c.JSON(http.StatusOK, table.UpdateCommunity(dbc, jsonObj))
+		}
+	})
 	//localhost:3000/communityInfo/key?key=name
 	router.POST("/community/key/:key", func(c *gin.Context) {
 		key := c.Param("key")
@@ -59,16 +70,6 @@ func startCommunity(router *gin.RouterGroup, dbc *mgo.Database) {
 		} else {
 			c.JSON(http.StatusOK, table.FindCommunitiesKV(dbc, params))
 		}
-
-		// queryStr := c.PostForm("query")
-		// var query map[string]interface{}
-		// err := json.Unmarshal([]byte(queryStr), &query)
-		// if err != nil {
-		// 	log.Fatal(err)
-		// }
-		// fmt.Println("query", query)
-		// result := db.QueryComunityKVs(dbc, query)
-		// c.String(http.StatusOK, result)
 	})
 
 	router.POST("/community/streetName/:streetName", func(c *gin.Context) {

@@ -15,10 +15,11 @@ const XiaoQuTableName = "XiaoQu"
 
 //XiaoQu 小区信息
 type XiaoQu struct {
+	ID          bson.ObjectId `bson:"_id"`
 	Name        string
 	Address     string //地理位置
-	Street      string //所属街道
-	Community   string //管辖社区
+	StreetID    string //所属街道
+	CommunityID string //管辖社区
 	ContactName string //联系人姓名
 	Tel         string //联系人号码
 	Intro       string //介绍
@@ -40,9 +41,20 @@ func InsertXQ(db *mgo.Database, info XiaoQu) interface{} {
 	if count > 0 {
 		return gin.H{"error": 1, "data": "已存在country：" + info.Name + ", 请重新设置name"}
 	}
+	info.ID = bson.NewObjectId()
 	err = c.Insert(&info)
 	if err != nil {
 		log.Print(err)
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": Succ}
+}
+
+//UpdateXQ update street
+func UpdateXQ(db *mgo.Database, info XiaoQu) interface{} {
+	c := db.C(XiaoQuTableName)
+	err := c.Update(bson.M{"_id": info.ID}, info)
+	if err != nil {
 		return gin.H{"error": 1, "data": err.Error()}
 	}
 	return gin.H{"error": 0, "data": Succ}
@@ -92,9 +104,6 @@ func FindXQKVs(db *mgo.Database, kvs map[string]interface{}) interface{} {
 		log.Fatal(err)
 		return gin.H{"error": 1, "data": err.Error()}
 	}
-	if result == nil {
-		return gin.H{"error": 1, "data": "没有查询到结果"}
-	}
 	return gin.H{"error": 0, "data": result}
 }
 
@@ -104,7 +113,7 @@ func DelXQs(db *mgo.Database, names []string) interface{} {
 	var err error
 	result := ""
 	for _, v := range names {
-		err = c.Remove(bson.M{"name": v})
+		err = c.Remove(bson.M{"_id": bson.ObjectIdHex(v)})
 		if err != nil {
 			log.Println(err.Error())
 			result += err.Error()

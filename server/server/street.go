@@ -34,6 +34,17 @@ func startStreet(router *gin.RouterGroup, dbc *mgo.Database) {
 			c.JSON(http.StatusOK, table.InsertStreet(dbc, jsonStreet))
 		}
 	})
+
+	router.POST("/street/update", func(c *gin.Context) {
+		var jsonStreet table.Street
+		err := c.BindJSON(&jsonStreet)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": "params error"})
+			log.Println(err)
+		} else {
+			c.JSON(http.StatusOK, table.UpdateStreet(dbc, jsonStreet))
+		}
+	})
 	//按street的name删数据, 删除多个
 	router.POST("/street/del", func(c *gin.Context) {
 		var names Values
@@ -51,4 +62,13 @@ func startStreet(router *gin.RouterGroup, dbc *mgo.Database) {
 		c.JSON(http.StatusOK, table.FindStreetDistinct(dbc, key))
 	})
 
+	router.POST("/street/ids", func(c *gin.Context) {
+		var ids Values
+		err := c.BindJSON(&ids)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+		} else {
+			c.JSON(http.StatusOK, table.FindStreetsByIDs(dbc, ids.Values))
+		}
+	})
 }

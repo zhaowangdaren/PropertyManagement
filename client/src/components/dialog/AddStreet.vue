@@ -1,62 +1,59 @@
 <template>
-  <div>
+  <div :class='s.wrap'>
+    <div :class='s.warn' v-if='warn !== ""' v-text='warn'></div>
   <!-- 新增街道信息 -->
-      <div :class='s.item'>
-        <div :class='s.red'>*</div>
-        name
-        <!-- 街道名 -->
-        <input type="text" v-model='street.name' @focus='onFocus'>
-      </div>
-      <div :class='s.item'>
-        <div :class='s.red'>*</div>
-        charger
-        <!-- 负责人 -->
-        <input type="text" v-model='street.personInCharge' @focus='onFocus'>
-      </div>
-      <div :class='s.item'>
-        <div :class='s.red'>*</div>
-        tel
-        <!-- 电话号码 -->
-        <input type="text" v-model='street.tel' @focus='onFocus'>
-      </div>
-      <div :class='s.item'>
-        <div :class='s.red'>*</div>
-        authCode
-        <!-- 授权码 -->
-        <input type="text" v-model='street.authCode' @focus='onFocus'>
-      </div>
-      <div :class='s.item'>
-        <div :class='s.red'>*</div>
-        intro
-        <!-- 描述 -->
-        <input type="text" v-model='street.intro' @focus='onFocus'>
-      </div>
+    <div :class='s.item'>
+      <div :class='s.red'>*</div>
+      name
+      <!-- 街道名 -->
+      <el-input :class='s.elInput' v-model="street.name" placeholder="请输入street name" @focus='onFocus'></el-input>
+    </div>
+    <div :class='s.item'>
+      <div :class='s.red'>*</div>
+      charger
+      <!-- 负责人 -->
+      <el-input :class='s.elInput' v-model="street.personInCharge" placeholder="请输入" @focus='onFocus'></el-input>
+    </div>
+    <div :class='s.item'>
+      <div :class='s.red'>*</div>
+      tel
+      <!-- 电话号码 -->
+      <el-input
+        :class='s.elInput'
+        v-model="street.tel" 
+        placeholder="请输入" 
+        @focus='onFocus'></el-input>
+    </div>
+    <div :class='s.item'>
+      <div :class='s.red'>*</div>
+      authCode
+      <!-- 授权码 -->
+      <el-input :class='s.elInput' v-model="street.authCode" placeholder="请输入authCode" @focus='onFocus'></el-input>
+    </div>
+    <div :class='s.item'>
+      <div :class='s.red'>*</div>
+      intro
+      <!-- 描述 -->
+      <el-input 
+        :class='s.elInput'
+        type="textarea"
+        autosize
+        v-model="street.intro" 
+        placeholder="请输入intro" 
+        @focus='onFocus'>
+      </el-input>
+    </div>
+    <div :class='s.item'>
+      <el-button @click='onSave' type='primary'>提交</el-button>
+      <el-button @click='onCancel'>取消</el-button>
+    </div>
   </div>
 </template>
 
-<style lang="less" module='s'>
-  .item{
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    padding: 10px 40px;
-    font-size: 18px;
-    .red{
-      color: red;
-    }
-    input {
-      flex: 1;
-      margin-left: 10px;
-    }
-  }
-  
-</style>
-
 <script>
-  import BasicDialog from '@/components/dialog/index'
-
+import fetchpm from '@/fetchpm'
   export default {
-    components: { BasicDialog },
+    components: {},
     data () {
       return {
         street: {
@@ -78,7 +75,8 @@
       },
       onCancel () {
         console.info('onCancel')
-        this.$emit('close')
+        this.$emit('cancel')
+        this.warn = ''
       },
       checkStreet () {
         if( this.street.name !== ''
@@ -89,26 +87,16 @@
         return false
       },
       addStreet () {
-        // var request = {
-        //   method: 'POST',
-        //   url:'http://10.176.118.61:3000/street',
-        //   query: {
-        //     // put: JSON.stringify(this.street)
-        //     put:''
-        //   }
-        // }
-        // Ajax(request, data => {
-        //   console.info('addStreet',data)
-        // })
-        fetch('http://10.176.118.61:3000/street/add', {
+        fetchpm(this, true, '/pm/street/add', {
           method: 'POST',
-          body: JSON.stringify(this.street)
+          body: this.street
         }).then(resp => {
           console.info(resp)
           return resp.json()
         }).then(body => {
           if(body.error ==1) this.warn = body.data
           else {
+            this.$emit('addSucc')
             this.warn = '街道新增成功'
             this.street.name = '',
             this.street.personInCharge = ''
@@ -124,3 +112,27 @@
     }
   }
 </script>
+
+<style lang="less" module='s'>
+.wrap{
+  width: 100%;
+  .warn{
+    text-align: center;
+    color: red;
+  }
+  .item{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 10px 0px;
+    font-size: 18px;
+    .red{
+      color: red;
+    }
+    .elInput{
+      width: 75%;
+      margin-left: 10px
+    }
+  }
+}
+</style>

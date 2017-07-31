@@ -1,7 +1,7 @@
 <template>
   <div :class='s.wrap'>
     <div :class='s.addDel'>
-      <image-button :class='s.bt' :clickMethod='onAdd'
+      <image-button :class='s.bt' @click='onAdd'
         text='新增'
         :img='require("@/res/images/add.png")'
         bgColor='#3598dc'
@@ -48,20 +48,20 @@
       title='Add Street'
       :visible.sync='showAddDialog'
       size='small'>
-      <add-street></add-street>
+      <add-street v-if='showAddDialog' @cancel='showAddDialog = false' @addSucc='onAddSucc'></add-street>
     </el-dialog>
     <el-dialog 
       title='Edit Street'
       :visible.sync='showEditDialog'
       size='small'>
-      <edit-street></edit-street>
+      <edit-street v-if='showEditDialog' :street='editingStreet' @cancel='showEditDialog = false'></edit-street>
     </el-dialog>
     <el-dialog
       title="提示"
       :visible.sync="showDelConfirm"
       size="tiny">
       <div>请确认删除</div>
-      <div v-for='street in dels' v-text='street'></div>
+      <div v-for='item in dels' v-text='item.Name'></div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="onDelCancel">取 消</el-button>
         <el-button type="primary" @click="onDelConfirm">确 定</el-button>
@@ -84,7 +84,8 @@
         showAddDialog: false,
         showEditDialog: false,
         dels: [],
-        showDelConfirm: false
+        showDelConfirm: false,
+        editingStreet: null
       }
     },
     mounted () {
@@ -117,16 +118,19 @@
         console.info('onAdd')
         this.showAddDialog = true
       },
+      onAddSucc () {
+        this.fetechStreets()
+      },
       onEdit (street) {
+        this.editingStreet = street
         this.showEditDialog = true
       },
       onDel () {
         this.dels = this.streets.filter(item => {
           return item.checked
-        }).map(item => {
-          return item.Name
         })
         console.info('Del', this.dels)
+        if (this.dels.length ===0) return
         this.showDelConfirm = true
       },
       onDelCancel () {
@@ -137,15 +141,18 @@
         if (this.dels.length ===0) return
         fetchpm(this, true, '/pm/street/del', {
           method: 'POST',
-          body: {values: this.dels}
+          body: {values: this.dels.map(item => {
+                            return item.ID
+                          })
+          }
         }).then(resp => {
           return resp.json()
         }).then(body => {
           console.info('onDel', body)
           if (body.error === 0 ) {
             this.fetechStreets()
+            this.showDelConfirm = false
           }
-          this.showDelConfirm = false
         })
       }
     }

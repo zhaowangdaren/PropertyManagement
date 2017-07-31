@@ -15,11 +15,12 @@ const StreetTableName = "Street"
 
 //Street 街道
 type Street struct {
-	Name           string //街道名
-	PersonInCharge string //街道负责人
-	Tel            string //街道联系电话
-	AuthCode       string //授权码
-	Intro          string //介绍
+	ID             bson.ObjectId `bson:"_id"`
+	Name           string        //街道名
+	PersonInCharge string        //街道负责人
+	Tel            string        //街道联系电话
+	AuthCode       string        //授权码
+	Intro          string        //介绍
 }
 
 //Streets 查询街道信息，返回给前端的集合
@@ -38,12 +39,37 @@ func InsertStreet(db *mgo.Database, street Street) interface{} {
 	if count > 0 {
 		return gin.H{"error": 1, "data": "已存在街道\"" + street.Name + "\", 请重新设置街道名"}
 	}
+	street.ID = bson.NewObjectId()
 	err = c.Insert(&street)
 	if err != nil {
 		log.Fatal(err)
 		return gin.H{"error": 1, "data": err.Error()}
 	}
 	return gin.H{"error": 0, "data": Succ}
+}
+
+//UpdateStreet update street
+func UpdateStreet(db *mgo.Database, street Street) interface{} {
+	c := db.C(StreetTableName)
+	err := c.Update(bson.M{"_id": street.ID}, street)
+	if err != nil {
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": Succ}
+}
+
+//FindStreetsByIDs Find Streets
+func FindStreetsByIDs(db *mgo.Database, ids []string) interface{} {
+	c := db.C(StreetTableName)
+	var result []Street
+	for _, id := range ids {
+		var street Street
+		c.Find(bson.M{"_id": bson.ObjectIdHex(id)}).One(&street)
+		if street != (Street{}) {
+			result = append(result, street)
+		}
+	}
+	return gin.H{"error": 0, "data": result}
 }
 
 //FindStreets 如果street.Name为""，则查询所有的街道信息,
@@ -81,7 +107,7 @@ func DelStreets(db *mgo.Database, names []string) interface{} {
 	var err error
 	result := ""
 	for _, v := range names {
-		err = c.Remove(bson.M{"name": v})
+		err = c.Remove(bson.M{"_id": bson.ObjectIdHex(v)})
 		if err != nil {
 			log.Println(err.Error())
 			result += err.Error()

@@ -19,7 +19,7 @@
       <div :class='s.red'>*</div>
       Community
       <!-- 社区名称 -->
-      <el-select :class='s.elInput' v-model="country.CommunityID" placeholder="请选择">
+      <el-select :class='s.elInput' v-model="searchCommunityID" placeholder="请选择">
         <el-option
           v-for="item in communities"
           :key="item.ID"
@@ -78,30 +78,31 @@ import SearchSelect from '@/components/SearchSelect'
 import fetchpm from '@/fetchpm'
 export default {
   components: { BasicDialog, SearchSelect },
+  props: {
+    country: Object
+  },
   data () {
     return {
       warn: '',
       streets: [],
-      searchStreetID: '',
       communities: [],
-      country: {
-        Name: '',
-        Address: '',
-        StreetID: '',
-        CommunityID: '',
-        ContactName: '',//联系人
-        Tel: '',
-        Intro:''
-      }
+      searchStreetID: '',
+      searchCommunityID:''
     }
   },
   mounted () {
+    this.searchStreetID = this.country.StreetID
+
     this.fetchAllStreets()
+    this.fetchAllCommunities()
+    // this.fetchAllCommunitiesByStreetID(this.country.StreetID)
   },
   watch: {
-    searchStreetID: function (val, old) {
-      console.info(val)
-      this.fetchAllCommunities(val)
+    searchStreetID: function (value) {
+      if (this.searchStreetID == this.country.StreetID) this.searchCommunityID = this.country.CommunityID
+      else this.searchCommunityID = ''
+      
+      this.fetchAllCommunitiesByStreetID(value)
     }
   },
   methods: {
@@ -110,9 +111,10 @@ export default {
     },
     onSave () {
       this.country.StreetID = this.searchStreetID
+      this.country.CommunityID = this.searchCommunityID
       console.info(this.country)
       if (!this.checkCountry()) return
-      this.addCountry()
+      this.updateCountry()
       console.info('onSave')
     },
     onCancel () {
@@ -128,8 +130,8 @@ export default {
         && this.country.Intro !== '') return true
       return false
     },
-    addCountry () {
-      fetchpm(this,true,'/pm/xq/add', {
+    updateCountry () {
+      fetchpm(this,true,'/pm/xq/update', {
         method: 'POST',
         body:this.country
       }).then(resp => {
@@ -138,16 +140,8 @@ export default {
         console.info('addCountry', body)
         if(body.error === 1) this.warn = body.data
         else {
-          this.$emit('addSucc')
-          this.warn = 'Add Succ'
-          this.searchStreetID = ''
-          this.country.Name = ''
-          this.country.Address = ''
-          this.country.StreetID = ''
-          this.country.CommunityID = ''
-          this.country.ContactName = ''
-          this.country.Tel = ''
-          this.country.Intro = ''
+          this.$emit('editSucc')
+          this.warn = 'Edit Succ'
         }
       })
     },
@@ -160,7 +154,17 @@ export default {
         this.streets = body.data
       })
     },
-    fetchAllCommunities (streetID) {
+    fetchAllCommunities () {
+      fetchpm( this, true, '/pm/community', {
+        method: 'POST'
+      }).then(resp => {
+        return resp.json()
+      }).then(body => {
+        console.info('fetchAllCommunities', body)
+        this.communities = body.data
+      })
+    },
+    fetchAllCommunitiesByStreetID (streetID) {
       if ( !streetID || streetID == '') return null
       fetchpm( this, true, '/pm/community/kvs', {
         method: 'POST',

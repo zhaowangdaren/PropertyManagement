@@ -35,7 +35,7 @@
     </div>
     <div :class='s.item'>
       <div :class='s.red'>*</div>
-      Intro
+      intro
       <!-- 描述 -->
       <el-input 
         :class='s.elInput'
@@ -59,18 +59,14 @@ import SearchSelect from '@/components/SearchSelect'
 import fetchpm from '@/fetchpm' 
 export default {
   components: { BasicDialog, SearchSelect },
+  props: {
+    community: Object
+  },
   data () {
     return {
       host: 'http://10.176.118.61:3000',
       inputWord: '',
       streets: [],
-      community: {
-        Name: '',
-        PsersonInCharge:'',
-        Tel:'',
-        StreetID:'',
-        Intro: ''
-      },
       warn:''
     }
   },
@@ -90,15 +86,15 @@ export default {
       this.$emit('cancel')
     },
     checkCommunity () {
-      if( this.community.Name !== ''
-        && this.community.PersonInCharge !== ''
-        && this.community.Tel !== ''
-        && this.community.StreetID !== ''
-        && this.community.Intro !== '') return true
+      if( this.community.name !== ''
+        && this.community.personInCharge !== ''
+        && this.community.tel !== ''
+        && this.community.streetName !== ''
+        && this.community.intro !== '') return true
       return false
     },
     addCommunity () {
-      fetchpm(this, true, '/pm/community/add', {
+      fetchpm(this, true, '/pm/community/update', {
         method: 'POST',
         body: this.community
       }).then(resp => {
@@ -107,13 +103,8 @@ export default {
       }).then(body => {
         if(body.error ==1) this.warn = body.data
         else {
-          this.$emit('addSucc')
-          this.warn = 'Add succ' //街道新增成功
-          this.community.Name = '',
-          this.community.PersonInCharge = ''
-          this.community.Tel = ''
-          this.community.StreetID = ''
-          this.community.Intro = ''
+          this.warn = '修改成功' //
+          this.$emit('editSucc')
         }
       })
     },

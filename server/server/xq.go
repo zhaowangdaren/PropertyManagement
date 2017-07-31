@@ -33,6 +33,17 @@ func startXQ(router *gin.RouterGroup, dbc *mgo.Database) {
 		}
 	})
 
+	router.POST("/xq/update", func(c *gin.Context) {
+		var jsonObj table.XiaoQu
+		err := c.BindJSON(&jsonObj)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": "params error"})
+			log.Println(err)
+		} else {
+			c.JSON(http.StatusOK, table.UpdateXQ(dbc, jsonObj))
+		}
+	})
+
 	//按xq的name值删数据，传入数据为json:{values: []}
 	router.POST("/xq/del", func(c *gin.Context) {
 		var names Values
