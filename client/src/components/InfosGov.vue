@@ -1,7 +1,7 @@
 <template>
   <div :class='s.wrap'>
     <div :class='s.addDel'>
-      <image-button :class='s.bt' :clickMethod='onAdd'
+      <image-button :class='s.bt' @click='showAddDialog = true'
         text='新增'
         :img='require("@/res/images/add.png")'
         bgColor='#3598dc'
@@ -37,8 +37,79 @@
         </td>
       </tr>
     </table>
+    <el-dialog 
+      title='Add User'
+      :visible.sync='showAddDialog'
+      size='small'>
+      <add-user v-if='showAddDialog' @cancel='showAddDialog = false' @addSucc='onAddSucc' :userType='userType'></add-user>
+    </el-dialog>
+    <el-dialog 
+      title='Edit Community'
+      :visible.sync='showEditDialog'
+      size='small'>
+      <edit-user v-if='showEditDialog' :country='editingXQ' @cancel='showEditDialog = false'></edit-user>
+    </el-dialog>
+    <el-dialog
+      title="提示"
+      :visible.sync="showDelConfirm"
+      size="tiny">
+      <div>请确认删除</div>
+      <div v-text='delUser.UserName'></div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="showDelConfirm = false">取 消</el-button>
+        <el-button type="primary" @click="onDelConfirm">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
+
+<script type="text/javascript">
+  import Ajax from '@/Ajax'
+  import ImageButton from '@/components/ImageButton'
+  import AddUser from '@/components/dialog/AddUser'
+  import EditUser from '@/components/dialog/EditUser'
+
+  import fetchpm from '@/fetchpm'
+  export default {
+    components: {ImageButton, AddUser, EditUser},
+    data () {
+      return {
+        userType: 2,
+        govs:[],
+        showAddDialog: false,
+        showEditDialog: false,
+        showDelConfirm: false,
+        delUser: {}
+      }
+    },
+    mounted () {
+      this.fetchGovs()
+    },
+    methods: {
+      onAddSucc () {
+        this.fetchGovs()
+      },
+      onDelConfirm () {
+
+      },
+      fetchGovs () {
+        fetchpm(this, true, '/pm/users', {
+          method: "POST",
+          body: {type : 2}
+        }).then(resp => {
+          return resp.json()
+        }).then(body => {
+          console.info('fetchGovs', body)
+          if(body.error !== 1) this.govs = body.data
+        })
+      },
+      onAdd () {
+        console.info('onAdd')
+        this.showDialog = AddGov
+      }
+    }
+  }
+</script>
 
 <style lang="less" module='s'>
 .wrap{
@@ -80,39 +151,3 @@
   }
 }
 </style>
-
-<script type="text/javascript">
-  import Ajax from '@/Ajax'
-  import ImageButton from '@/components/ImageButton'
-  import AddGov from '@/components/dialog/AddGov'
-  import fetchpm from '@/fetchpm'
-  export default {
-    components: {ImageButton, AddGov},
-    data () {
-      return {
-        govs:[],
-        showDialog: ''
-      }
-    },
-    mounted () {
-      this.fetchGovs()
-    },
-    methods: {
-      fetchGovs () {
-        fetchpm(this, true, '/pm/users', {
-          method: "POST",
-          body: {type : 2}
-        }).then(resp => {
-          return resp.json()
-        }).then(body => {
-          console.info('fetchGovs', body)
-          if(body.error !== 1) this.govs = body.data
-        })
-      },
-      onAdd () {
-        console.info('onAdd')
-        this.showDialog = AddGov
-      }
-    }
-  }
-</script>

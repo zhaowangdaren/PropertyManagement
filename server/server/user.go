@@ -21,4 +21,25 @@ func startUser(router *gin.RouterGroup, dbc *mgo.Database) {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
 		}
 	})
+
+	router.POST("/user/add", func(c *gin.Context) {
+		var user table.User
+		err := c.BindJSON(&user)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+		} else {
+			c.JSON(http.StatusOK, table.InsertUser(dbc, user))
+		}
+	})
+
+	router.POST("/users/del", func(c *gin.Context) {
+		var ids Values
+		err := c.BindJSON(&ids)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+		} else {
+			c.JSON(http.StatusOK, table.DelUsers(dbc, ids.Values))
+		}
+
+	})
 }
