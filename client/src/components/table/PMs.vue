@@ -8,36 +8,36 @@
       <div :class='s.searchWrap'>
         <table>
           <tr>
-            <td :class='s.key' v-if='editable'>Street Name</td>
-            <td v-if='editable'>
-              <el-select v-model="inputStreetName" filterable placeholder="select Street">
+            <td :class='s.key' v-if='EDITABLE'>Street Name</td>
+            <td v-if='EDITABLE'>
+              <el-select v-model="inputStreetID" filterable placeholder="select Street">
                 <el-option
-                  v-for="item in streetNames"
-                  :key="item"
-                  :label="item"
-                  :value="item">
+                  v-for="item in streets"
+                  :key="item.ID"
+                  :label="item.Name"
+                  :value="item.ID">
                 </el-option>
               </el-select>
             </td>
             <td :class='s.key'>Community</td>
             <td>
-              <el-select v-model="inputCommunityName" filterable placeholder="select community">
+              <el-select v-model="inputCommunityID" filterable placeholder="select community">
                 <el-option
-                  v-for="item in communityNames"
-                  :key="item"
-                  :label="item"
-                  :value="item">
+                  v-for="item in communities"
+                  :key="item.ID"
+                  :label="item.Name"
+                  :value="item.ID">
                 </el-option>
               </el-select>
             </td>
             <td :class='s.key'>country</td>
             <td>
-              <el-select v-model="inputXiaoQu" filterable placeholder="select xqNames">
+              <el-select v-model="inputXQID" filterable placeholder="select xqNames">
                 <el-option
-                  v-for="item in xqNames"
-                  :key="item"
-                  :label="item"
-                  :value="item">
+                  v-for="item in xqs"
+                  :key="item.ID"
+                  :label="item.Name"
+                  :value="item.ID">
                 </el-option>
               </el-select>
             </td>
@@ -45,7 +45,7 @@
         </table>
       </div>
       <div :class='s.addDel'>
-        <el-button type="primary" icon="plus" @click='onAdd' v-if='editable'>新增</el-button>
+        <el-button type="primary" icon="plus" @click='onAdd' v-if='EDITABLE'>新增</el-button>
         <el-button type="primary" icon="search" @click='onSearch'>查询</el-button>
       </div>
       <div :class='s.table'>
@@ -70,75 +70,135 @@
             <td v-text='item.WuYeZiZhi'></td>
             <td v-text='item.WuYeXinZhi'></td>
             <td align="center">
-              <el-button v-if='editable' type="primary" icon="edit" @click='onEdit(item)'>编辑</el-button>
-              <el-button v-if='editable' type="primary" icon="delete" @click='onDel(item)'>删除</el-button>
-              <el-button type='primary'>查看</el-button>
+              <el-button v-if='EDITABLE' type="primary" icon="edit" @click='onEdit(item)'>编辑</el-button>
+              <el-button v-if='EDITABLE' type="primary" icon="delete" @click='onDel(item)'>删除</el-button>
+              <el-button v-if='!EDITABLE' type='primary'>查看</el-button>
             </td>
           </tr>
         </table>
       </div>
     </div>
+    <el-dialog 
+      title='Add PM'
+      :visible.sync='showAddDialog'
+      size='small'>
+      <add-p-m v-if='showAddDialog' @cancel='showAddDialog = false' @addSucc='onAddSucc'></add-p-m>
+    </el-dialog>
+    <el-dialog 
+      title='Edit PM'
+      :visible.sync='showEditDialog'
+      size='small'>
+      <edit-p-m v-if='showEditDialog' :PM='editingPM' @cancel='showEditDialog = false' @editSucc='onEditSucc'></edit-p-m>
+    </el-dialog>
+    <el-dialog
+      title="提示"
+      :visible.sync="showDelConfirm"
+      size="tiny">
+      <div :class='s.warn' v-if='warn !== ""' v-text='warn'></div>
+      <div>请确认删除</div>
+      <div v-text='delPM.Name'></div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="showDelConfirm = false">取 消</el-button>
+        <el-button type="primary" @click="onDelConfirm">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import AddPM from '@/components/dialog/AddPM'
+import EditPM from '@/components/dialog/EditPM'
+
 import fetchpm from '@/fetchpm'
 export default {
-  components: {AddPM},
+  components: {AddPM, EditPM},
   props: {
-    editable: Boolean//是否可编辑
+    EDITABLE: Boolean,//是否可编辑
+    STREET_ID: String//所在街道ID
   },
   data () {
     return {
       host:'http://10.176.118.61:3000',
-      showDialog: '',
-      streetNames: [],
-      communityNames: [],
-      xqNames: [],
-      inputStreetName:'',
-      inputCommunityName: '',
-      inputXiaoQu:'',
+      streets: [],
+      communities: [],
+      xqs: [],
+      inputStreetID:'',
+      inputCommunityID: '',
+      inputXQID:'',
       isLoadingInput: false,
-      pms:[]
+      pms:[],
+      showAddDialog: false,
+      showEditDialog: false,
+      showDelConfirm: false,
+      delPM: {},
+      warn:'',
+      editingPM: {}
     }
   },
   computed: {
   },
   mounted () {
     this.fetchPMs()
-    this.editable ? this.fetechAllStreetName() : this.fetchCommunitiesByStreetName('1')
+    this.EDITABLE ? this.fetechAllStreets() : this.fetchCommunitiesByStreetID  (this.STREET_ID)
   },
   watch: {
-    inputStreetName: function (val) {
+    inputStreetID: function (val) {
       if (this.isLoadingInput ) return
-      this.fetchCommunitiesByStreetName(val)
+      this.fetchCommunitiesByStreetID(val)
     },
-    inputCommunityName: function (val) {
-      console.info('inputCommunityName', val)
+    inputCommunityID: function (val) {
+      console.info('inputCommunityID', val)
       if (this.isLoadingInput ) return
-      this.fetchXQByCommunityName(val)
+      this.fetchXQByCommunityID(val)
     }
   },
   methods: {
+    onDel (pm) {
+      this.delPM = pm
+      this.showDelConfirm = true
+    },
+    onDelConfirm () {
+      fetchpm(this, true, '/pm/pms/del', {
+        method: 'POST',
+        body: {values: [this.delPM.ID]}
+      }).then(resp => {
+        return resp.json()
+      }).then(body => {
+        console.info('onDelConfirm', body)
+        if (body.error == 1) {
+          this.warn = body.data
+        } else {
+          this.showDelConfirm = false
+          this.delPM = {}
+          this.fetchPMs()
+        }
+      })
+    },
     onEdit (item) {
-
+      this.editingPM = item
+      this.showEditDialog = true
+    },
+    onEditSucc () {
+      this.fetchPMs()
     },
     onAdd () {
-      this.showDialog = AddCountry
+      this.showAddDialog = true
+    },
+    onAddSucc () {
+      this.fetchPMs()
     },
     onSearch () {
       //小区》社区》街道
-      if (this.inputXiaoQu !== '') {
-        this.fetchPMKVs({xiaoQu: this.inputXiaoQu})
+      if (this.inputXQID !== '') {
+        this.fetchPMKVs({XQID: this.inputXQID})
         return
       }
-      if (this.inputCommunityName !== '') {
-        this.fetchPMKVs({community: this.inputCommunityName})
+      if (this.inputCommunityID !== '') {
+        this.fetchPMKVs({communityID: this.inputCommunityID})
         return
       }
-      if (this.inputStreetName !== '') {
-        this.fetchPMKVs({street: this.inputStreetName})
+      if (this.inputStreetID !== '') {
+        this.fetchPMKVs({streetID: this.inputStreetID})
         return
       }
     },
@@ -163,23 +223,27 @@ export default {
         if (body.error !== 1) this.pms = body.data
       })
     },
-    fetechAllStreetName () {
-      fetchpm(this, true, '/pm/street/key/name', {
-        method: 'POST'
+    fetechAllStreets() {
+      fetchpm(this, true, '/pm/street',{
+          method: 'POST'
       }).then(resp => {
+        console.info(resp)
         return resp.json()
-      }).then(body => {
-        console.info('fetechAllStreetName',body)
-        if (body.error !== 1) this.streetNames = body.data
+      }).then( data => {
+        if (data.error === 0) {
+          console.info (data)
+          this.streets = data.data
+        }
       })
     },
-    fetchCommunitiesByStreetName (streetName) {
-      if (!streetName) return
+    fetchCommunitiesByStreetID (streetID) {
+      if (!streetID) return
       this.isLoadingInput = true
-      this.communityNames = []
-      this.inputCommunityName = ''
-      fetchpm(this, true, '/pm/community/streetName/'+streetName, {
-        method: 'POST'
+      this.communities = []
+      this.inputCommunityID = ''
+      fetchpm(this, true, '/pm/community/kvs', {
+        method: 'POST',
+        body: {streetID: streetID}
       }).then(resp => {
         return resp.json()
       }).then( body => {
@@ -187,28 +251,24 @@ export default {
         if(body.error !== 0) {
           console.error("Error: search CommunitiesByStreetName. Reason:" + body.data)
         } else if (body.data !== null ) {
-          this.communityNames = body.data.map(item => {
-            return item.Name
-          })
+          this.communities = body.data
         }
         this.isLoadingInput = false
       })
     },
-    fetchXQByCommunityName (communityName) {
-      if (!communityName) return
+    fetchXQByCommunityID (communityID) {
+      if (!communityID) return
       this.isLoadingInput = true
       fetchpm(this, true, '/pm/xq/kvs', {
         method: 'POST',
-        body: {community: communityName}
+        body: {communityID: communityID}
       }).then(resp => {
         return resp.json()
       }).then( body => {
         console.info('fetchXQByCommunityName', body)
         if(body.error !== 0) console.error("Error: search fetchXQByCommunityName. Reason:" + body.data)
         else if (body.data !== null ) {
-          this.xqNames = body.data.map(item => {
-            return item.Name
-          })
+          this.xqs = body.data
         }
         this.isLoadingInput = false
       })
@@ -269,7 +329,7 @@ export default {
           text-align: center;
           padding: 5px;
           border: solid 1px #ddd;
-          background-color: #ddd;
+          background-color: #f0f0f0;
         }
         td{
           padding: 5px;

@@ -1,6 +1,6 @@
 <template>
   <div :class='s.wrap'>
-    <p-ms></p-ms>
+    <p-ms :EDITABLE='editable'></p-ms>
   </div>
 </template>
 
@@ -10,6 +10,7 @@ import PMs from '@/components/table/PMs'
     components: { PMs},
     data () {
       return {
+        editable: true
       } 
     },
     methods: {

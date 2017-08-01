@@ -38,7 +38,7 @@ type GinJWTMiddleware struct {
 	// Callback function that should perform the authentication of the user based on userID and
 	// password. Must return true on success, false on failure. Required.
 	// Option return user id, if so, user id will be stored in Claim Array.
-	Authenticator func(userID string, password string, c *gin.Context) (string, bool)
+	Authenticator func(userID string, password string, userType int, c *gin.Context) (string, bool)
 
 	// Callback function that should perform the authorization of the authenticated user. Called
 	// only after an authentication success. Must return true on success, false on failure.
@@ -79,6 +79,7 @@ type GinJWTMiddleware struct {
 type Login struct {
 	Username string `form:"username" json:"username" binding:"required"`
 	Password string `form:"password" json:"password" binding:"required"`
+	Type     int    `form:"type" json:"type" binding:"required"`
 }
 
 // MiddlewareInit initialize jwt configs.
@@ -194,7 +195,7 @@ func (mw *GinJWTMiddleware) LoginHandler(c *gin.Context) {
 		return
 	}
 
-	userID, ok := mw.Authenticator(loginVals.Username, loginVals.Password, c)
+	userID, ok := mw.Authenticator(loginVals.Username, loginVals.Password, loginVals.Type, c)
 
 	if !ok {
 		mw.unauthorized(c, http.StatusUnauthorized, "Incorrect Username / Password")

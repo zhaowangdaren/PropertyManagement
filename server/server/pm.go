@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -29,6 +30,40 @@ func startPM(router *gin.RouterGroup, dbc *mgo.Database) {
 			log.Println(err.Error())
 		} else {
 			c.JSON(http.StatusOK, table.FindWuYeKVs(dbc, params))
+		}
+	})
+
+	router.POST("/pm/add", func(c *gin.Context) {
+		var pm table.PM
+		err := c.BindJSON(&pm)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			log.Println(err.Error())
+		} else {
+			c.JSON(http.StatusOK, table.InsertPM(dbc, pm))
+		}
+	})
+
+	router.POST("/pm/update", func(c *gin.Context) {
+		var update table.PM
+		err := c.BindJSON(&update)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			log.Println(err)
+		} else {
+			c.JSON(http.StatusOK, table.UpdatePM(dbc, update))
+		}
+	})
+
+	//按street的name删数据, 删除多个
+	router.POST("/pms/del", func(c *gin.Context) {
+		var names Values
+		err := c.BindJSON(&names)
+		fmt.Println("/street/del names", names)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+		} else {
+			c.JSON(http.StatusOK, table.DelPMs(dbc, names.Values))
 		}
 	})
 }

@@ -35,7 +35,8 @@ export default {
       },
       login: {
         username:'',
-        password:''
+        password:'',
+        type: 0
       },
       bgImg: require('@/res/images/bottom_bg.png')
     }
@@ -43,6 +44,17 @@ export default {
   mounted () {
     this.sourceParams.title = this.$route.query.title
     this.sourceParams.target = this.$route.query.target
+    switch (this.sourceParams.target) {
+      case '/admin':
+        this.login.type = 1
+        break
+      case '/street':
+        this.login.type = 2
+        break
+      case '/gov':
+        this.login.type = 3
+        break
+    }
   },
   methods: {
     onLogin () {

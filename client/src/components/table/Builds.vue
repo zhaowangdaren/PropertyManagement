@@ -1,6 +1,6 @@
 <template>
   <div :class='s.wrap'>
-    <div :class='s.title'>
+    <div :class='s.tab'>
       <img src="~@/res/images/earth.png">
       Build<!-- 物业信息管理 -->
     </div>
@@ -8,34 +8,34 @@
       <tr>
         <td :class='s.title'>Street Name</td>
         <td>
-          <el-select v-model="inputStreetName" filterable placeholder="全部">
+          <el-select v-model="inputStreetID" filterable placeholder="全部">
             <el-option
-              v-for="item in streetNames"
-              :key="item"
-              :label="item"
-              :value="item">
+              v-for="item in streets"
+              :key="item.ID"
+              :label="item.Name"
+              :value="item.ID">
             </el-option>
           </el-select>
         </td>
         <td :class='s.title'>Community</td>
         <td>
-          <el-select v-model="inputCommunityName" filterable placeholder="全部">
+          <el-select v-model="inputCommunityID" filterable placeholder="全部">
             <el-option
-              v-for="item in communityNames"
-              :key="item"
-              :label="item"
-              :value="item">
+              v-for="item in communities"
+              :key="item.ID"
+              :label="item.Name"
+              :value="item.ID">
             </el-option>
           </el-select>
         </td>
         <td :class='s.title'>Country</td>
         <td>
-          <el-select v-model="inputXiaoQu" filterable placeholder="全部">
+          <el-select v-model="inputXQID" filterable placeholder="全部">
             <el-option
-              v-for="item in xqNames"
-              :key="item"
-              :label="item"
-              :value="item">
+              v-for="item in xqs"
+              :key="item.ID"
+              :label="item.Name"
+              :value="item.ID">
             </el-option>
           </el-select>
         </td>
@@ -57,7 +57,7 @@
       </tr>
     </table>
     <div :class='s.addDel'>
-      <el-button v-if='editable' type="primary" icon="plus" @click='onAdd'>新增</el-button>
+      <el-button v-if='EDITABLE' type="primary" icon="plus" @click='showAddDialog = true'>新增</el-button>
       <el-button type="primary" icon="search" @click='onSearch'>查询</el-button>
     </div>
     <table>
@@ -81,8 +81,8 @@
         <td v-text='item.HouseNo'></td>
         <td v-text='item.HouseType'></td>
         <td align="center">
-          <el-button v-if='editable' type="primary" icon="edit" @click='onEdit(item)'>编辑</el-button>
-          <el-button v-if='editable' type="primary" icon="delete" @click='onDel(item)'>删除</el-button>
+          <el-button v-if='EDITABLE' type="primary" icon="edit" @click='onEdit(item)'>编辑</el-button>
+          <el-button v-if='EDITABLE' type="primary" icon="delete" @click='onDel(item)'>删除</el-button>
           <el-button type='primary'>查看</el-button>
         </td>
       </tr>
@@ -90,10 +90,11 @@
     <el-dialog 
       title='Add Build'
       size='large'
-      :visible.sync="showAdd"
-    >
-      <add-build @close='showAdd = false'
-      @save='showAdd = false'></add-build>
+      :visible.sync="showAddDialog">
+        <add-build 
+          @close='showAddDialog = false'
+          @addSucc='onAddSucc'>
+        </add-build>
     </el-dialog>
   </div>
 </template>
@@ -105,58 +106,64 @@
   import fetchpm from '@/fetchpm'
   export default {
     props: {
-      editable: Boolean
+      EDITABLE: Boolean
     },
     components: {ImageButton, AddBuild, SearchSelect},
     data () {
       return {
         host:'http://10.176.118.61:3000',
-        showAdd: false,
-        streetNames: [],
-        communityNames: [],
-        xqNames: [],
-        inputStreetName:'',
-        inputCommunityName: '',
-        inputXiaoQu:'',
+        showAddDialog: false,
+        streets: [],
+        communities: [],
+        xqs: [],
+        inputStreetID:'',
+        inputCommunityID: '',
+        inputXQID:'',
         inputHouseBuildNo:'',
         inputHouseNo:'',
         inputOwner:'',
         isLoadingInput: false,
-        houses:[]
+        houses:[],
+        editingHouse: {}
       }
     },
     computed: {
     },
     mounted () {
       this.fetchHouses()
-      this.fetechAllStreetName()
+      this.fetechAllStreets()
     },
     watch: {
-      inputStreetName: function (val) {
+      inputStreetID: function (val) {
+        this.inputCommunityID = ''
         if (this.isLoadingInput ) return
-        this.fetchCommunitiesByStreetName(val)
+        this.fetchAllCommunitiesByStreetID(val)
       },
-      inputCommunityName: function (val) {
+      inputCommunityID: function (val) {
+        this.inputXQID = ''
         if (this.isLoadingInput ) return
-        this.fetchXQByCommunityName(val)
+        this.fetchAllXQByCommunityID(val)
       }
     },
     methods: {
-      onAdd () {
-        this.showAdd = true
+      onAddSucc () {
+        this.fetchHouses()
+      },
+      onEdit (house) {
+        this.editingHouse = house
       },
       onSearch () {
         //小区》社区》街道
-        if (this.inputXiaoQu !== '') {
-          this.fetchHouseKVs({xiaoQu: this.inputXiaoQu})
+        if (this.inputXQID !== '') {
+          this.fetchHouseKVs({XQID: this.inputXQID})
           return
         }
-        if (this.inputCommunityName !== '') {
-          this.fetchHouseKVs({community: this.inputCommunityName})
+        if (this.inputCommunityID !== '') {
+          this.fetchHouseKVs({communityID: this.inputCommunityID})
           return
         }
-        if (this.inputStreetName !== '') {
-          this.fetchHouseKVs({street: this.inputStreetName})
+        if (this.inputStreetID !== '') {
+          this.fetchHouseKVs({streetID: this.inputStreetID})
           return
         }
       },
@@ -171,7 +178,7 @@
         })
       },
       fetchHouseKVs (kvs) {
-        fetchpm(this, true, '/pm/pm/kvs', {
+        fetchpm(this, true, '/pm/house/kvs', {
           method: 'POST',
           body: kvs
         }).then(resp => {
@@ -181,51 +188,38 @@
           if (body.error !== 1) this.houses = body.data
         })
       },
-      fetechAllStreetName () {
-        fetchpm(this, true, '/pm/street/key/name', {
+      fetechAllStreets () {
+        fetchpm(this, true, '/pm/street', {
           method: 'POST'
         }).then(resp => {
           return resp.json()
         }).then(body => {
           console.info('fetechAllStreetName',body)
-          if (body.error !== 1) this.streetNames = body.data
+          if (body.error !== 1) this.streets = body.data
         })
       },
-      fetchCommunitiesByStreetName (streetName) {
-        this.isLoadingInput = true
-        if (!streetName) return
-        fetchpm(this, true, '/pm/community/streetName/'+streetName, {
-          method: 'POST'
-        }).then(resp => {
-          return resp.json()
-        }).then( body => {
-          console.info('fetchCommunitiesByStreetName', body)
-          if(body.error !== 0) console.error("Error: search CommunitiesByStreetName. Reason:" + body.data)
-          else if (body.data !== null ) {
-            this.communityNames = body.data.map(item => {
-              return item.Name
-            })
-          }
-          this.isLoadingInput = false
-        })
-      },
-      fetchXQByCommunityName (communityName) {
-        this.isLoadingInput = true
-        if (!communityName) return
-        fetchpm(this, true, '/pm/xq/kvs', {
+      fetchAllCommunitiesByStreetID (streetID) {
+        if ( !streetID || streetID == '') return null
+        fetchpm( this, true, '/pm/community/kvs', {
           method: 'POST',
-          body: {community: communityName}
+          body: {streetID: streetID}
         }).then(resp => {
           return resp.json()
-        }).then( body => {
-          console.info('fetchXQByCommunityName', body)
-          if(body.error !== 0) console.error("Error: search fetchXQByCommunityName. Reason:" + body.data)
-          else if (body.data !== null ) {
-            this.xqNames = body.data.map(item => {
-              return item.Name
-            })
-          }
-          this.isLoadingInput = false
+        }).then(body => {
+          console.info('fetchAllCommunities', body)
+          this.communities = body.data
+        })
+      },
+      fetchAllXQByCommunityID (communityID) {
+        if ( !communityID || communityID == '') return null
+        fetchpm( this, true, '/pm/xq/kvs', {
+          method: 'POST',
+          body: {communityID: communityID}
+        }).then(resp => {
+          return resp.json()
+        }).then(body => {
+          console.info('fetchAllXQByCommunityID', body)
+          this.xqs = body.data
         })
       }
     }
@@ -234,7 +228,7 @@
 
 <style lang="less" module='s'>
 .wrap{
-  .title{
+  .tab{
     color: #fff;
     font-size: 20px;
     background: #4c87b9;
@@ -290,7 +284,7 @@
       text-align: center;
       padding: 5px;
       border: solid 1px #ddd;
-      background: #eee;
+      background: #f0f0f0;
     }
     td{
       padding: 5px;

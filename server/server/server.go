@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"log"
 	"net/url"
 	"strings"
@@ -47,9 +48,10 @@ func Start() {
 		Key:        []byte("123456"),
 		Timeout:    time.Hour,
 		MaxRefresh: time.Hour,
-		Authenticator: func(userName string, password string, c *gin.Context) (string, bool) {
-			result := table.FindUser(dbc, userName)
-			if userName == result.UserName && password == result.Password {
+		Authenticator: func(userName string, password string, userType int, c *gin.Context) (string, bool) {
+			result := table.FindUser(dbc, userName, userType)
+			fmt.Println("Authenticator", result)
+			if userName == result.UserName && password == result.Password && userType == result.Type {
 				return userName, true
 			}
 			return userName, false

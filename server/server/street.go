@@ -28,7 +28,7 @@ func startStreet(router *gin.RouterGroup, dbc *mgo.Database) {
 		var jsonStreet table.Street
 		err := c.BindJSON(&jsonStreet)
 		if err != nil {
-			c.JSON(http.StatusOK, gin.H{"error": 1, "data": "params error"})
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
 			panic(err)
 		} else {
 			c.JSON(http.StatusOK, table.InsertStreet(dbc, jsonStreet))

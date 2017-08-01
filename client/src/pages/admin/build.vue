@@ -1,6 +1,6 @@
 <template>
   <div :class='s.wrap'>
-    <builds></builds>
+    <builds :EDITABLE='editable'></builds>
   </div>
 </template>
 
@@ -10,6 +10,7 @@ import Builds from '@/components/table/Builds'
     components: { Builds},
     data () {
       return {
+        editable: true
       } 
     },
     methods: {

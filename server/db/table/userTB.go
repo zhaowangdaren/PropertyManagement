@@ -1,6 +1,7 @@
 package table
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -17,15 +18,16 @@ type User struct {
 	Password string
 	RealName string //真实姓名
 	Tel      string
-	Street   string //所在街道
+	StreetID string //所在街道
 	Type     int    //1-admin 2-gov 3-street
 }
 
 //FindUser 查找用户信息
-func FindUser(db *mgo.Database, userName string) User {
+func FindUser(db *mgo.Database, userName string, userType int) User {
 	c := db.C(UserTableName)
 	var result User
-	err := c.Find(bson.M{"username": userName}).One(&result)
+	fmt.Println("FindUser", userName+" "+string(userType))
+	err := c.Find(bson.M{"username": userName, "type": userType}).One(&result)
 	if err != nil {
 		log.Println(err)
 	}

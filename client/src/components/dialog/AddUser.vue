@@ -7,6 +7,19 @@
       <!-- 用户名 -->
       <el-input :class='s.elInput' v-model="user.UserName" placeholder="请输入" @focus='onFocus'></el-input>
     </div>
+    <div :class='s.item' v-if='USER_TYPE == 3'>
+      <div :class='s.red'>*</div>
+      StreetName
+      <!-- 用户名 -->
+      <el-select :class='s.elInput' v-model="user.StreetID" placeholder="请选择">
+        <el-option
+          v-for="item in streets"
+          :key="item.ID"
+          :label="item.Name"
+          :value="item.ID">
+        </el-option>
+      </el-select>
+    </div>
     <div :class='s.item'>
       <div :class='s.red'>*</div>
       RealName
@@ -36,7 +49,7 @@
 import fetchpm from '@/fetchpm'
 export default {
   props: {
-    userType: Number
+    USER_TYPE: Number
   },
   data () {
     return {
@@ -45,13 +58,16 @@ export default {
         UserName: '',
         Password: '',
         RealName: '',
+        StreetID:'',
         Tel: '',
         Type: -1
-      }
+      },
+      streets:[]
     }
   },
   mounted () {
-    this.user.Type = this.userType
+    this.user.Type = this.USER_TYPE
+    this.fetchAllStreets()
   },
   methods: {
     resetData () {
@@ -60,7 +76,7 @@ export default {
         Password: '',
         RealName: '',
         Tel: '',
-        Type: this.userType
+        Type: this.USER_TYPE
       }
     },
     onFocus () {
@@ -98,6 +114,19 @@ export default {
           this.$emit('addSucc')
           this.warn = '添加成功'
           this.resetData()
+        }
+      })
+    },
+    fetchAllStreets () {
+      fetchpm(this, true, '/pm/street',{
+          method: 'POST'
+      }).then(resp => {
+        console.info(resp)
+        return resp.json()
+      }).then( data => {
+        if (data.error === 0) {
+          console.info (data)
+          this.streets = data.data
         }
       })
     }

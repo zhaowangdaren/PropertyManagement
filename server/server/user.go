@@ -32,6 +32,7 @@ func startUser(router *gin.RouterGroup, dbc *mgo.Database) {
 		}
 	})
 
+	//发送{values: [id,id,...]}，可支持删除多个id的用户
 	router.POST("/users/del", func(c *gin.Context) {
 		var ids Values
 		err := c.BindJSON(&ids)
@@ -40,6 +41,15 @@ func startUser(router *gin.RouterGroup, dbc *mgo.Database) {
 		} else {
 			c.JSON(http.StatusOK, table.DelUsers(dbc, ids.Values))
 		}
+	})
 
+	router.POST("/user/update", func(c *gin.Context) {
+		var user table.User
+		err := c.BindJSON(&user)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+		} else {
+			c.JSON(http.StatusOK, table.UpdateUser(dbc, user))
+		}
 	})
 }

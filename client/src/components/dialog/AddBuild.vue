@@ -1,24 +1,26 @@
 <template>
-  <div>
-    <!-- 新增建筑信息 -->
+  <div :class='s.wrap'>
+    <div :class='s.warn' v-if='warn !== ""' v-text='warn'></div>
+    <div :class='s.content'>
+      <!-- 新增建筑信息 -->
       <table :class='s.searchWrap'>
         <tr>
           <td :class='s.title'>BuildNo</td>
           <td>
             <div :class='s.inputWrap'>
-              <input type="text" v-model='house.BuildNo'>
+              <el-input v-model='house.BuildNo'></el-input>
             </div>
           </td>
           <td :class='s.title'>Owner</td>
           <td>
             <div :class='s.inputWrap'>
-              <input type="text" v-model='house.Owner'>
+              <el-input v-model='house.Owner'></el-input>
             </div>
           </td>
           <td :class='s.title'>Type</td>
           <td>
             <div :class='s.inputWrap'>
-              <input type="text" v-model='house.HouseType'>
+              <el-input v-model='house.HouseType'></el-input>
             </div>
           </td>
         </tr>
@@ -26,15 +28,36 @@
         <!-- 街道 社区 小区 -->
           <td :class='s.title'>Street</td>
           <td>
-            <search-select v-model='house.Street' :values='streets'/>
+            <el-select :class='s.elSelect' v-model="inputStreetID" placeholder="请选择">
+              <el-option
+                v-for="item in streets"
+                :key="item.ID"
+                :label="item.Name"
+                :value="item.ID">
+              </el-option>
+            </el-select>
           </td>
           <td :class='s.title'>Community</td>
           <td>
-            <search-select v-model='house.Community' :values='communities'/>
+            <el-select :class='s.elSelect' v-model="inputCommunityID" placeholder="请选择">
+              <el-option
+                v-for="item in communities"
+                :key="item.ID"
+                :label="item.Name"
+                :value="item.ID">
+              </el-option>
+            </el-select>
           </td>
           <td :class='s.title'>XQ</td>
           <td>
-            <search-select v-model='house.XQ' :values='xqNames' />
+            <el-select :class='s.elSelect' v-model="inputXQID" placeholder="请选择">
+              <el-option
+                v-for="item in xqs"
+                :key="item.ID"
+                :label="item.Name"
+                :value="item.ID">
+              </el-option>
+            </el-select>
           </td>
         </tr>
         <tr>
@@ -42,19 +65,19 @@
           <td :class='s.title'>HouseBuildNo</td>
           <td>
             <div :class='s.inputWrap'>
-              <input type="text" v-model='house.HouseBuildNo'>
+              <el-input v-model='house.HouseBuildNo'></el-input>
             </div>
           </td>
           <td :class='s.title'>HouseNo</td>
           <td>
             <div :class='s.inputWrap'>
-              <input type="text" v-model='house.HouseNo'>
+              <el-input v-model='house.HouseNo'></el-input>
             </div>
           </td>
           <td :class='s.title'>Year</td>
           <td>
             <div :class='s.inputWrap'>
-              <input type="text" v-model='house.Year'>
+              <el-input v-model='house.Year'></el-input>
             </div>
           </td>
         </tr>
@@ -62,42 +85,42 @@
       <div :class='s.item'>
       <!-- 房屋使用变更 -->
         UseChange
-        <textarea v-model='house.UseChange'></textarea>
+        <el-input :class='s.elInput' v-model='house.UseChange' type='textarea'></el-input>
       </div>
       <div :class='s.item'>
       <!-- 主题结构裂缝情况 -->
         MainCrack
-        <textarea v-model='house.MainCrack'></textarea>
+        <el-input :class='s.elInput' v-model='house.MainCrack' type='textarea'></el-input>
       </div>
       <div :class='s.item'>
       <!-- 地基沉降 -->
         FoundationDown
-        <textarea v-model='house.FoundationDown'></textarea>
+        <el-input :class='s.elInput' v-model='house.FoundationDown' type='textarea'></el-input>
       </div>
       <div :class='s.item'>
       <!-- 主题结构倾斜状况 -->
         MainSlant
-        <textarea v-model='house.MainSlant'></textarea>
+        <el-input :class='s.elInput' v-model='house.MainSlant' type='textarea'></el-input>
       </div>
       <div :class='s.item'>
       <!-- 悬梁结构破坏 -->
         CantileverCrack
-        <textarea v-model='house.CantileverCrack'></textarea>
+        <el-input :class='s.elInput' v-model='house.CantileverCrack' type='textarea'></el-input>
       </div>
       <div :class='s.item'>
       <!-- 女儿墙脱落情况 -->
         ParapetFallOff
-        <textarea v-model='house.ParapetOff'></textarea>
+        <el-input :class='s.elInput' v-model='house.ParapetOff' type='textarea'></el-input>
       </div>
       <div :class='s.item'>
       <!-- 外墙抹灰层剥落情况 -->
         OuterLloatedCoatOff
-        <textarea v-model='house.OuterLloatedCoatOff'></textarea>
+        <el-input :class='s.elInput' v-model='house.OuterLloatedCoatOff' type='textarea'></el-input>
       </div>
       <div :class='s.item'>
       <!-- 房屋变形 -->
         HouseDeform
-        <textarea v-model='house.HouseDeform'></textarea>
+        <el-input :class='s.elInput' v-model='house.HouseDeform' type='textarea'></el-input>
       </div>
       <!-- 地质灾害
       排水系统
@@ -108,27 +131,27 @@
       房屋图片 -->
       <div :class='s.item'>
         Disaster
-        <textarea v-model='house.Disaster'></textarea>
+        <el-input :class='s.elInput' v-model='house.Disaster' type='textarea'></el-input>
       </div>
       <div :class='s.item'>
         DisasterManage
-        <textarea v-model='house.DisasterManage'></textarea>
+        <el-input :class='s.elInput' v-model='house.DisasterManage' type='textarea'></el-input>
       </div>
       <div :class='s.item'>
         DrainageSsystem
-        <textarea v-model='house.DrainageSsystem'></textarea>
+        <el-input :class='s.elInput' v-model='house.DrainageSsystem' type='textarea'></el-input>
       </div>
       <div :class='s.item'>
         InnerChange
-        <textarea v-model='house.InnerChange'></textarea>
+        <el-input :class='s.elInput' v-model='house.InnerChange' type='textarea'></el-input>
       </div>
       <div :class='s.item'>
         IllegalBuild
-        <textarea v-model='house.IllegalBuild'></textarea>
+        <el-input :class='s.elInput' v-model='house.IllegalBuild' type='textarea'></el-input>
       </div>
       <div :class='s.item'>
         RankAppraisal
-        <textarea v-model='house.RankAppraisal'></textarea>
+        <el-input :class='s.elInput' v-model='house.RankAppraisal' type='textarea'></el-input>
       </div>
       <div :class='s.item'>
         <div :class='s.title'>Images</div>
@@ -142,92 +165,55 @@
           </el-upload>
         </div>
       </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="onCancel">取 消</el-button>
-        <el-button type="primary" @click="onSave">提 交</el-button>
-      </div>
+    </div>
+    <div slot="footer" :class="s.bts">
+      <el-button @click="onCancel">取 消</el-button>
+      <el-button type="primary" @click="onAdd">提 交</el-button>
+    </div>
     <el-dialog v-model="dialogVisible" size='tiny'>
       <img width="100%" :src="dialogImageUrl" alt="">
     </el-dialog>
   </div>
 </template>
 
-<style lang="less" module='s'>
-  .searchWrap{
-    border: solid 1px #ddd;
-    .title{
-      background: #f0f0f0;
-      padding: 10px;
-      font-size: 20px;
-    }
-    .inputWrap {
-        position: relative;
-        font-size: 18px;
-        flex: 1;
-        margin-left: 10px;
-      input{
-        width: 100%;
-        border: solid 1px #ddd;
-        height: 30px;
-      }
-    } 
-    .searchBt{
-      position: absolute;
-      right: 10px;
-    }
-  }
-  .item{
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    padding: 10px 0px;
-    font-size: 18px;
-    .red{
-      color: red;
-    }
-    textarea {
-      flex: 1;
-      margin-left: 10px;
-      height: 30px;
-    }
-    .uploadWrap{
-      flex: 1;
-      padding: 24px;
-    }
-  }
-  
-</style>
-
 <script>
 import BasicDialog from '@/components/dialog/index'
 import SearchSelect from '@/components/SearchSelect'
+import fetchpm from '@/fetchpm'
 export default {
   components: { BasicDialog, SearchSelect },
   data () {
     return {
-      host: 'http://10.176.118.61:3000',
-      showSelf: false,
+      warn:'',
       warn: '',
+      inputStreetID: '',
+      inputCommunityID: '',
+      inputXQID: '',
       streets: [],
       communities: [],
-      xqNames: [],
+      xqs: [],
       house: {
-        name: '',
-        address: '',
-        street: '',
-        community: '',
-        contactName: '',//联系人
-        tel: '',
-        intro:''
+        BuildNo:'',
+        Owner: '',
+        StreetID: '',
+        CommunityID: '',
+        XQID: ''
       },
       dialogImageUrl: '',
-      dialogVisible: false
+      dialogVisible: false,
+
+    }
+  },
+  watch: {
+    inputStreetID: function (val) {
+      this.fetchAllCommunitiesByStreetID(val)
+    },
+    inputCommunityID: function (val) {
+      this.fetchAllXQByCommunityID(val)
     }
   },
   mounted () {
-    this.showSelf = true
-    this.fetchAllStreetName()
-    this.fetchAllCommunityName()
+    this.fetchAllStreets()
   },
   methods: {
     handleRemove(file, fileList) {
@@ -243,29 +229,41 @@ export default {
     onFocus () {
       this.warn = ''
     },
-    onSave () {
-      if (!this.checkCountry()) return
-      this.addCountry()
+    onAdd () {
+      this.house.StreetID = this.inputStreetID
+      this.house.CommunityID = this.inputCommunityID
+      this.house.XQID = this.inputXQID
+      if (!this.checkHouse()) return
+      this.addHouse()
       console.info('onSave')
-      this.$emit('save')
+      this.$emit('add')
     },
     onCancel () {
       this.$emit('close')
     },
-    checkCountry () {
-      if (this.country.name !== ''
-        && this.country.address !== ''
-        && this.country.street !== ''
-        && this.country.community !== ''
-        && this.country.contactName !== ''
-        && this.country.tel !== ''
-        && this.country.intro !== '') return true
-      return false
+    checkHouse () {
+      if (this.house.BuildNo == ''){
+        this.warn = '请填写BuildNo'
+        return false
+      }
+      if (this.house.Owner == ''){
+        this.warn = '请填写Owner'
+        return false
+      }
+      if (this.house.StreetID == ''){
+        this.warn = '请选择StreetID'
+        return false
+      }
+      if (this.house.CommunityID == ''){
+        this.warn = '请填写CommunityID'
+        return false
+      }
+      return true
     },
-    addCountry () {
-      fetch(this.host + '/xq/add', {
+    addHouse () {
+      fetchpm(this, true, '/pm/house/add', {
         method: 'POST',
-        body:JSON.stringify(this.country)
+        body:this.house
       }).then(resp => {
         return resp.json()
       }).then(body => {
@@ -273,40 +271,90 @@ export default {
         if(body.error === 1) this.warn = body.data
         else {
           this.warn = 'Add Succ'
-          this.country.name = ''
-          this.country.address = ''
-          this.country.street = ''
-          this.country.community = ''
-          this.country.contactName = ''
-          this.country.tel = ''
-          this.country.intro = ''
+          this.$emit('addSucc')
         }
       })
     },
-    fetchAllStreetName () {//获取所有街道名称
-      fetch( this.host + '/street/key/name', {
-        method: 'POST',
-        body: '{}'
+    fetchAllStreets () {//获取所有街道名称
+      fetchpm( this, true, '/pm/street', {
+        method: 'POST'
       }).then(resp => {
         return resp.json()
       }).then(body => {
         this.streets = body.data
       })
     },
-    fetchAllCommunityName () {
-      fetch( this.host + '/community/key/name', {
+    fetchAllCommunitiesByStreetID (streetID) {
+      fetchpm( this, true, '/pm/community/kvs', {
         method: 'POST',
-        body: '{}'
+        body: {streetID: streetID}
       }).then(resp => {
         return resp.json()
       }).then(body => {
-        console.info('fetchAllCommunityName', body)
+        console.info('fetchAllCommunities', body)
         this.communities = body.data
+      })
+    },
+    fetchAllXQByCommunityID (communityID) {
+      if ( !communityID || communityID == '') return null
+      fetchpm( this, true, '/pm/xq/kvs', {
+        method: 'POST',
+        body: {communityID: communityID}
+      }).then(resp => {
+        return resp.json()
+      }).then(body => {
+        console.info('fetchAllXQByCommunityID', body)
+        this.xqs = body.data
       })
     }
   },
   beforeDestroy() {
-    this.showSelf = false
   }
 }
 </script>
+
+<style lang="less" module='s'>
+.wrap{
+  width: 100%;
+  .warn{
+    text-align: center;
+    color: red;
+  }
+  .content{
+    // width: 100%;
+    overflow-y: scroll;
+    height: 500px;
+    .searchWrap{
+      border: solid 1px #ddd;
+      .title{
+        background: #f0f0f0;
+        padding: 10px;
+        font-size: 20px;
+      }
+      .elSelect{
+        width: 100%;
+      }
+    }
+    .item{
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      // padding: 10px 0px;
+      font-size: 18px;
+      margin: 20px;
+      .red{
+        color: red;
+      }
+      .elInput{
+        width: 75%;
+        margin-left: 10px
+      }
+    }
+  }
+  .bts{
+    padding-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+</style>

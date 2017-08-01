@@ -170,6 +170,9 @@
 <script>
 import fetchpm from '@/fetchpm'
 export default {
+  props: {
+    PM: Object
+  },
   data () {
     return {
       warn: '',
@@ -201,6 +204,10 @@ export default {
     }
   },
   mounted () {
+    Object.assign(this.pm, this.PM)
+    this.inputStreetID = this.pm.StreetID
+    this.inputCommunityID = this.pm.CommunityID
+    this.inputXQID = this.pm.XQID
     this.fetchAllStreets()
   },
   watch: {
@@ -225,7 +232,7 @@ export default {
       this.pm.CommunityID = this.inputCommunityID
       this.pm.XQID = this.inputXQID
       if(!this.checkPM()) return
-      fetchpm(this, true, '/pm/pm/add', {
+      fetchpm(this, true, '/pm/pm/update', {
         method: 'POST',
         body: this.pm
       }).then(resp => {
@@ -235,7 +242,8 @@ export default {
         if (body.error == 1) {
           this.warn = body.data
         } else {
-          this.$emit('addSucc')
+          this.warn = '修改成功'
+          this.$emit('editSucc')
         }
       })
     },
