@@ -44,7 +44,6 @@
     filters: {filterEventStatus, filterEventLevel},
     data () {
       return {
-        host: '//localhost:3000',
         events: []
       }
     },
@@ -69,7 +68,7 @@
       toDetails (event) {
         console.info('toDetails', event.Index)
         // this.$router.push({path:'/street/detail/', params:{index: event.Index}})
-        this.$router.push({path:'/street/detail/' + event.Index})
+        this.$router.push({name:'eventDetail', params: { index: event.Index}})
       }
     }
   }
@@ -79,7 +78,6 @@
 .wrap{
   .content{
     border: solid 1px #4c87b9;
-    margin-top: 50px;
     .title{
       color: #fff;
       font-size: 20px;

@@ -4,7 +4,7 @@
     <div :class='s.content'>
       <menu-gov :class='s.menu'></menu-gov>
       <div :class='s.body'>
-        <div :class='s.userName'>UserName</div>
+        <div :class='s.userName' v-text='userRealName'></div>
         <router-view></router-view>
       </div>
     </div>
@@ -15,7 +15,15 @@
 import MenuGov from '@/components/MenuGov'
 import ActionBar from '@/components/ActionBar'
 export default {
-  components: {MenuGov, ActionBar}
+  components: {MenuGov, ActionBar},
+  data () {
+    return {
+      userRealName: ''
+    }
+  },
+  mounted () {
+    this.userRealName = sessionStorage.getItem('RealName')
+  }
 }
 </script>
 
@@ -35,6 +43,7 @@ export default {
           background-color: #ddd;
           font-size: 20px;
           padding: 5px;
+          margin-bottom: 20px;
         }
       }
 

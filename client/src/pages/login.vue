@@ -31,7 +31,7 @@ export default {
     return {
       sourceParams: {
         title: 'Title',
-        target: '' // /admin  /street  /gov
+        target: '' // /admin /gov /street  
       },
       login: {
         username:'',
@@ -48,10 +48,10 @@ export default {
       case '/admin':
         this.login.type = 1
         break
-      case '/street':
+      case '/gov':
         this.login.type = 2
         break
-      case '/gov':
+      case '/street':
         this.login.type = 3
         break
     }
@@ -67,6 +67,8 @@ export default {
         console.info('onLogin',body)
         if (body.token && body.token !== "")  {
           sessionStorage.setItem('token', body.token)
+          sessionStorage.setItem('StreetID', body.StreetID)
+          sessionStorage.setItem('RealName', body.RealName)
           this.$router.push({path: this.sourceParams.target})
         }
       })

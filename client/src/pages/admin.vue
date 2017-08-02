@@ -3,7 +3,7 @@
     <action-bar></action-bar>
     <div :class='s.content'>
       <menu-admin :class='s.menu'/>
-      <router-view></router-view>
+      <router-view :class='s.body'></router-view>
     </div>
   </div>
 </template>
@@ -13,10 +13,13 @@
     display: flex;
     flex-direction: column;
     .content{
+      display: flex;
       .menu{
         height: 100%;
       }
-      display: flex;
+      .body{
+        flex: 1;
+      }
     }
   }
 </style>

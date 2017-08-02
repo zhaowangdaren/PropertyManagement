@@ -8,6 +8,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"gopkg.in/dgrijalva/jwt-go.v3"
+
+	"../db/table"
 )
 
 // GinJWTMiddleware provides a Json-Web-Token authentication implementation. On failure, a 401 HTTP response
@@ -38,12 +40,12 @@ type GinJWTMiddleware struct {
 	// Callback function that should perform the authentication of the user based on userID and
 	// password. Must return true on success, false on failure. Required.
 	// Option return user id, if so, user id will be stored in Claim Array.
-	Authenticator func(userID string, password string, userType int, c *gin.Context) (string, bool)
+	Authenticator func(userID string, password string, userType int, c *gin.Context) (table.User, bool)
 
 	// Callback function that should perform the authorization of the authenticated user. Called
 	// only after an authentication success. Must return true on success, false on failure.
 	// Optional, default to success.
-	Authorizator func(userID string, c *gin.Context) bool
+	Authorizator func(userID string, userType int, c *gin.Context) bool
 
 	// Callback function that will be called during login.
 	// Using this function it is possible to add additional payload data to the webtoken.
@@ -107,7 +109,7 @@ func (mw *GinJWTMiddleware) MiddlewareInit() error {
 	}
 
 	if mw.Authorizator == nil {
-		mw.Authorizator = func(userID string, c *gin.Context) bool {
+		mw.Authorizator = func(userID string, userType int, c *gin.Context) bool {
 			return true
 		}
 	}
@@ -166,8 +168,7 @@ func (mw *GinJWTMiddleware) middlewareImpl(c *gin.Context) {
 	id := mw.IdentityHandler(claims)
 	c.Set("JWT_PAYLOAD", claims)
 	c.Set("userID", id)
-
-	if !mw.Authorizator(id, c) {
+	if !mw.Authorizator(id, int(claims["user_type"].(float64)), c) {
 		mw.unauthorized(c, http.StatusForbidden, "You don't have permission to access.")
 		return
 	}
@@ -195,7 +196,7 @@ func (mw *GinJWTMiddleware) LoginHandler(c *gin.Context) {
 		return
 	}
 
-	userID, ok := mw.Authenticator(loginVals.Username, loginVals.Password, loginVals.Type, c)
+	user, ok := mw.Authenticator(loginVals.Username, loginVals.Password, loginVals.Type, c)
 
 	if !ok {
 		mw.unauthorized(c, http.StatusUnauthorized, "Incorrect Username / Password")
@@ -211,13 +212,15 @@ func (mw *GinJWTMiddleware) LoginHandler(c *gin.Context) {
 			claims[key] = value
 		}
 	}
-
-	if userID == "" {
-		userID = loginVals.Username
+	//TODO  完善登录身份控制
+	if user == (table.User{}) {
+		// userID = loginVals.Username
+		user.UserName = loginVals.Username
 	}
 
 	expire := mw.TimeFunc().Add(mw.Timeout)
-	claims["id"] = userID
+	claims["id"] = user.ID
+	claims["user_type"] = user.Type
 	claims["exp"] = expire.Unix()
 	claims["orig_iat"] = mw.TimeFunc().Unix()
 
@@ -229,8 +232,10 @@ func (mw *GinJWTMiddleware) LoginHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"token":  tokenString,
-		"expire": expire.Format(time.RFC3339),
+		"token":    tokenString,
+		"expire":   expire.Format(time.RFC3339),
+		"StreetID": user.StreetID,
+		"RealName": user.UserName,
 	})
 }
 

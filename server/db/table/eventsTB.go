@@ -17,9 +17,9 @@ const EventTableName = "Event"
 type Event struct {
 	Index       string //事件编号
 	Complainant string //投诉人
-	Street      string //街道
-	Community   string //社区
-	XQ          string //投诉小区名
+	StreetID    string //街道
+	CommunityID string //社区
+	XQID        string //投诉小区名
 	Status      int    //事件状态  1-居民提交 2-待审核 3-待处理 4-已处理
 	EventLevel  int    //事件等级  1-特急、2-加急、3-急
 	Type        string //事件基本类别

@@ -10,7 +10,10 @@
     <action-bar></action-bar>
     <div :class='s.content'>
       <menu-street :class='s.menu'/>
-      <router-view></router-view>
+      <div :class='s.body'>
+        <div :class='s.street'>Street</div>
+        <router-view></router-view>
+      </div>
     </div>
   </div>
 </template>
@@ -20,10 +23,20 @@
     display: flex;
     flex-direction: column;
     .content{
+      display: flex;
+      // flex-direction: row;
       .menu{
         height: 100%;
       }
-      display: flex;
+      .body{
+        flex: 1;
+        .street{
+          background-color: #ddd;
+          font-size: 25px;
+          padding: 5px;
+          margin-bottom: 20px;
+        }
+      }
     }
   }
 </style>

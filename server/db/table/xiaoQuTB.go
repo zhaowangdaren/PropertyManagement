@@ -125,3 +125,17 @@ func DelXQs(db *mgo.Database, names []string) interface{} {
 	}
 	return gin.H{"error": 0, "data": Succ}
 }
+
+//FindCommunitiesByIDs Find Streets
+func FindXQsByIDs(db *mgo.Database, ids []string) interface{} {
+	c := db.C(XiaoQuTableName)
+	var result []XiaoQu
+	for _, id := range ids {
+		var info XiaoQu
+		c.Find(bson.M{"_id": bson.ObjectIdHex(id)}).One(&info)
+		if info != (XiaoQu{}) {
+			result = append(result, info)
+		}
+	}
+	return gin.H{"error": 0, "data": result}
+}

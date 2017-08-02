@@ -62,6 +62,7 @@ func startStreet(router *gin.RouterGroup, dbc *mgo.Database) {
 		c.JSON(http.StatusOK, table.FindStreetDistinct(dbc, key))
 	})
 
+	//通过ID数组查找街道，返回的信息也是数组
 	router.POST("/street/ids", func(c *gin.Context) {
 		var ids Values
 		err := c.BindJSON(&ids)

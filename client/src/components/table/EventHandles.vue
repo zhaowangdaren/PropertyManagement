@@ -191,7 +191,6 @@
 .wrap{
   .content{
     border: solid 1px #4c87b9;
-    margin-top: 50px;
     .title{
       color: #fff;
       font-size: 20px;

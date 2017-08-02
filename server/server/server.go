@@ -48,16 +48,19 @@ func Start() {
 		Key:        []byte("123456"),
 		Timeout:    time.Hour,
 		MaxRefresh: time.Hour,
-		Authenticator: func(userName string, password string, userType int, c *gin.Context) (string, bool) {
+		Authenticator: func(userName string, password string, userType int, c *gin.Context) (table.User, bool) {
 			result := table.FindUser(dbc, userName, userType)
 			fmt.Println("Authenticator", result)
 			if userName == result.UserName && password == result.Password && userType == result.Type {
-				return userName, true
+				return result, true
 			}
-			return userName, false
+			return result, false
 		},
-		Authorizator: func(userName string, c *gin.Context) bool {
-			return true
+		Authorizator: func(userID string, userType int, c *gin.Context) bool {
+			// fmt.Println("userType", userType)
+			// fmt.Println("Path", c.Request.URL.Path)
+			return AuthControl(c.Request.URL.Path, userType)
+			// return true
 		},
 		Unauthorized: func(c *gin.Context, code int, message string) {
 			c.JSON(code, gin.H{

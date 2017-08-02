@@ -86,6 +86,7 @@
 
 <style lang="less" module='s'>
 .wrap{
+  width: 100%;
   .content{
     border: solid 1px #4c87b9;
     margin-top: 20px;

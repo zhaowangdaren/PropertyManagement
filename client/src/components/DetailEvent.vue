@@ -37,15 +37,15 @@
             </tr>
             <tr>
               <td :class='s.key'>Street</td>
-              <td :class='s.value' v-text='event.Street'></td>
+              <td :class='s.value' v-text='streetName'></td>
             </tr>
             <tr>
               <td :class='s.key'>Community</td>
-              <td :class='s.value' v-text='event.Community'></td>
+              <td :class='s.value' v-text='communityName'></td>
             </tr>
             <tr>
               <td :class='s.key'>XQ</td>
-              <td :class='s.value' v-text='event.XQ'></td>
+              <td :class='s.value' v-text='xqName'></td>
             </tr>
             <tr>
               <td :class='s.key'>Time</td>
@@ -105,7 +105,7 @@
 <script>
   import filterEventStatus from '@/filters/filterEventStatus'
   import filterEventLevel from '@/filters/filterEventLevel'
-
+  import fetchpm from '@/fetchpm'
   export default {
     filters: {filterEventStatus, filterEventLevel},
     props: {
@@ -113,8 +113,19 @@
     },
     data () {
       return {
-        host: '//localhost:3000',
-        event: {},
+        event: {
+          Index: '',
+          StreetID: '',
+          CommunityID: '',
+          XQID: '',
+          Time: '',
+          Type: '',
+          Status: 0,
+          EventLevel: 0
+        },
+        streetName:'',
+        communityName: '',
+        xqName: '',
         eventHandles:[{}],
         imgVisible: false,
         showHandleDetails: false
@@ -122,22 +133,78 @@
     },
     mounted () {
       console.info(this.$route)
-      this.fetchEvents(this.$route.params.index)
+      this.fetchEvent(this.$route.params.index)
+      this.fetchEventDetails(this.$route.params.index)
     },
     methods: {
-      fetchEvents (index) {
+      fetchEvent (eventIndex) {
+        fetchpm(this, true, '/pm/event/kvs', {
+          method: 'POST',
+          body: {index: eventIndex}
+        }).then(resp => {
+          return resp.json()
+        }).then( body => {
+          console.info('fetchEvent', body)
+          if (body.error == 0 && body.data.length > 0) {
+            this.event = body.data[0]
+            this.fetchStreet(this.event.StreetID)
+            this.fetchCommunity(this.event.CommunityID)
+            this.fetchXQ(this.event.XQID)
+          }
+        })
+      },
+      fetchEventDetails (index) {
         if (!index ) {
           console.info('index', index)
           index = ''
         }
-        fetch(this.host + '/eventHandle/' + index, {
+        fetchpm(this, true, '/pm/eventHandle/detail/' + index, {
           method: 'POST',
-          body: JSON.stringify({index: index})
+          body: {index: index}
         }).then(resp => {
           return resp.json()
         }).then(body => {
           console.info('fetchEventHandle', body)
           this.eventHandles = body.data
+        })
+      },
+      fetchStreet (id) {
+        fetchpm(this, true, '/pm/street/ids', {
+          method: 'POST',
+          body: {values: [id]}
+        }).then(resp => {
+          return resp.json()
+        }).then(body => {
+          console.info('fetchStreet', body)
+          if (body.error == 0 && body.data.length > 0) {
+            this.streetName = body.data[0].Name
+          }
+        })
+      },
+      fetchXQ (id) {
+        fetchpm(this, true, '/pm/xq/ids', {
+          method: 'POST',
+          body: {values: [id]}
+        }).then(resp => {
+          return resp.json()
+        }).then(body => {
+          console.info('fetchXQ', body)
+          if (body.error == 0 && body.data.length > 0) {
+            this.xqName = body.data[0].Name
+          }
+        })
+      },
+      fetchCommunity (id) {
+        fetchpm(this, true, '/pm/community/ids', {
+          method: 'POST',
+          body: {values: [id]}
+        }).then(resp => {
+          return resp.json()
+        }).then(body => {
+          console.info('fetchCommunity', body)
+          if (body.error == 0 && body.data.length > 0) {
+            this.communityName = body.data[0].Name
+          }
         })
       }
     }

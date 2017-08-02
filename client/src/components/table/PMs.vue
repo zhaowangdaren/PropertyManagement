@@ -114,11 +114,10 @@ export default {
   components: {AddPM, EditPM},
   props: {
     EDITABLE: Boolean,//是否可编辑
-    STREET_ID: String//所在街道ID
   },
   data () {
     return {
-      host:'http://10.176.118.61:3000',
+      userStreetID: '',
       streets: [],
       communities: [],
       xqs: [],
@@ -145,9 +144,11 @@ export default {
     } 
   },
   mounted () {
+
     this.fetchPMs()
     this.fetchAllXQs()
-    this.EDITABLE ? this.fetechAllStreets() : this.fetchCommunitiesByStreetID(this.STREET_ID)
+    this.userStreetID = sessionStorage.getItem('StreetID')
+    this.EDITABLE ? this.fetechAllStreets() : this.fetchCommunitiesByStreetID(this.userStreetID)
   },
   watch: {
     inputStreetID: function (val) {

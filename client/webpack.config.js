@@ -58,6 +58,9 @@ module.exports = {
       }
     ]
   },
+  externals: {
+    "vue": "Vue"
+  },
   plugins:[
     // new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({

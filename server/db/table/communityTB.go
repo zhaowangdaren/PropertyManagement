@@ -134,3 +134,20 @@ func DelCommunities(db *mgo.Database, names []string) interface{} {
 	}
 	return gin.H{"error": 0, "data": Succ}
 }
+
+//FindCommunitiesByIDs Find Streets
+func FindCommunitiesByIDs(db *mgo.Database, ids []string) interface{} {
+	c := db.C(CommunityTableName)
+	var result []Community
+	for _, id := range ids {
+		if id == "" {
+			continue
+		}
+		var info Community
+		c.Find(bson.M{"_id": bson.ObjectIdHex(id)}).One(&info)
+		if info != (Community{}) {
+			result = append(result, info)
+		}
+	}
+	return gin.H{"error": 0, "data": result}
+}

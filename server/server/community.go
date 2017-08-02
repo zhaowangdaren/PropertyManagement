@@ -77,4 +77,15 @@ func startCommunity(router *gin.RouterGroup, dbc *mgo.Database) {
 		log.Println("streetName", streetName)
 		c.JSON(http.StatusOK, table.FindCommunityByStreetName(dbc, streetName))
 	})
+
+	//通过ID数组查找街道，返回的信息也是数组
+	router.POST("/community/ids", func(c *gin.Context) {
+		var ids Values
+		err := c.BindJSON(&ids)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+		} else {
+			c.JSON(http.StatusOK, table.FindCommunitiesByIDs(dbc, ids.Values))
+		}
+	})
 }

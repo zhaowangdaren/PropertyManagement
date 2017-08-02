@@ -62,7 +62,7 @@ export default new Router({
         },
         {
           path: 'handle',
-          component: require('@/components/InfosEventHandles')
+          component: require('@/components/table/EventHandles')
         },
         {
           path: 'pms',
