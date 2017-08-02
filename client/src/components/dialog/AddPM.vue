@@ -235,6 +235,7 @@ export default {
         if (body.error == 1) {
           this.warn = body.data
         } else {
+          this.warn = '提交成功'
           this.$emit('addSucc')
         }
       })

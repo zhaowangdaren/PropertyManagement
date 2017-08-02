@@ -168,7 +168,7 @@
     </div>
     <div slot="footer" :class="s.bts">
       <el-button @click="onCancel">取 消</el-button>
-      <el-button type="primary" @click="onAdd">提 交</el-button>
+      <el-button type="primary" @click="onSave">提 交</el-button>
     </div>
     <el-dialog v-model="dialogVisible" size='tiny'>
       <img width="100%" :src="dialogImageUrl" alt="">
@@ -177,11 +177,13 @@
 </template>
 
 <script>
-import BasicDialog from '@/components/dialog/index'
 import SearchSelect from '@/components/SearchSelect'
 import fetchpm from '@/fetchpm'
 export default {
-  components: { BasicDialog, SearchSelect },
+  components: {},
+  props: {
+    HOUSE: Object
+  },
   data () {
     return {
       warn:'',
@@ -197,23 +199,32 @@ export default {
         Owner: '',
         StreetID: '',
         CommunityID: '',
-        XQID: ''
+        XQID: '',
+        Year:''
       },
       dialogImageUrl: '',
-      dialogVisible: false,
-
+      dialogVisible: false
     }
   },
   watch: {
-    inputStreetID: function (val) {
+    inputStreetID: function (val, old) {
+      if (old == this.house.StreetID) this.inputCommunityID = ''
       this.fetchAllCommunitiesByStreetID(val)
     },
-    inputCommunityID: function (val) {
+    inputCommunityID: function (val, old) {
+      if (old == this.house.CommunityID) this.inputXQID = ''
       this.fetchAllXQByCommunityID(val)
     }
   },
   mounted () {
+    Object.assign(this.house, this.HOUSE)
+    this.inputStreetID = this.house.StreetID
+    this.inputCommunityID = this.house.CommunityID
+    this.inputXQID = this.house.XQID
+    this.fetchAllXQs()
+    this.fetchAllCommunities()
     this.fetchAllStreets()
+    
   },
   methods: {
     handleRemove(file, fileList) {
@@ -229,12 +240,12 @@ export default {
     onFocus () {
       this.warn = ''
     },
-    onAdd () {
+    onSave () {
       this.house.StreetID = this.inputStreetID
       this.house.CommunityID = this.inputCommunityID
       this.house.XQID = this.inputXQID
       if (!this.checkHouse()) return
-      this.addHouse()
+      this.updateHouse()
       console.info('onSave')
       this.$emit('add')
     },
@@ -260,18 +271,18 @@ export default {
       }
       return true
     },
-    addHouse () {
-      fetchpm(this, true, '/pm/house/add', {
+    updateHouse () {
+      fetchpm(this, true, '/pm/house/update', {
         method: 'POST',
         body:this.house
       }).then(resp => {
         return resp.json()
       }).then(body => {
-        console.info('addCountry', body)
+        console.info('updateHouse', body)
         if(body.error === 1) this.warn = body.data
         else {
-          this.warn = 'Add Succ'
-          this.$emit('addSucc')
+          this.warn = '修改成功'
+          this.$emit('editSucc')
         }
       })
     },
@@ -284,7 +295,6 @@ export default {
         this.streets = body.data
       })
     },
-    
     fetchAllCommunitiesByStreetID (streetID) {
       fetchpm( this, true, '/pm/community/kvs', {
         method: 'POST',
@@ -292,18 +302,8 @@ export default {
       }).then(resp => {
         return resp.json()
       }).then(body => {
-        console.info('fetchAllCommunitiesByStreetID', body)
+        console.info('fetchAllCommunities', body)
         this.communities = body.data
-      })
-    },
-    fetchAllXQs () {
-      fetchpm( this, true, '/pm/xq', {
-        method: 'POST'
-      }).then(resp => {
-        return resp.json()
-      }).then(body => {
-        console.info('fetchAllXQs', body)
-        this.xqs = body.data
       })
     },
     fetchAllXQByCommunityID (communityID) {
@@ -317,7 +317,27 @@ export default {
         console.info('fetchAllXQByCommunityID', body)
         this.xqs = body.data
       })
-    }
+    },
+    fetchAllCommunities () {
+      fetchpm( this, true, '/pm/community', {
+        method: 'POST'
+      }).then(resp => {
+        return resp.json()
+      }).then(body => {
+        console.info('fetchAllCommunities', body)
+        this.communities = body.data
+      })
+    },
+    fetchAllXQs () {
+      fetchpm( this, true, '/pm/xq', {
+        method: 'POST'
+      }).then(resp => {
+        return resp.json()
+      }).then(body => {
+        console.info('fetchAllXQs', body)
+        this.xqs = body.data
+      })
+    },
   },
   beforeDestroy() {
   }

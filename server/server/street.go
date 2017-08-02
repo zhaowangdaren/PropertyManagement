@@ -36,13 +36,13 @@ func startStreet(router *gin.RouterGroup, dbc *mgo.Database) {
 	})
 
 	router.POST("/street/update", func(c *gin.Context) {
-		var jsonStreet table.Street
-		err := c.BindJSON(&jsonStreet)
+		var update table.Street
+		err := c.BindJSON(&update)
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": "params error"})
 			log.Println(err)
 		} else {
-			c.JSON(http.StatusOK, table.UpdateStreet(dbc, jsonStreet))
+			c.JSON(http.StatusOK, table.UpdateStreet(dbc, update))
 		}
 	})
 	//按street的name删数据, 删除多个

@@ -91,28 +91,52 @@
       title='Add Build'
       size='large'
       :visible.sync="showAddDialog">
-        <add-build 
-          @close='showAddDialog = false'
-          @addSucc='onAddSucc'>
-        </add-build>
+      <add-build 
+        @close='showAddDialog = false'
+        @addSucc='onAddSucc'>
+      </add-build>
+    </el-dialog>
+    <el-dialog 
+      title='Add Build'
+      size='large'
+      :visible.sync="showEditDialog">
+      <edit-build 
+        :HOUSE='editingHouse'
+        @close='showEditDialog = false'
+        @editSucc='onEditSucc'>
+      </edit-build>
+    </el-dialog>
+    <el-dialog
+      title="提示"
+      :visible.sync="showDelConfirm"
+      size="tiny">
+      <div :class='s.warn' v-if='warn !== ""' v-text='warn'></div>
+      <div>请确认删除</div>
+      <div v-text='delHouse.BuildNo'></div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="showDelConfirm = false">取 消</el-button>
+        <el-button type="primary" @click="onDelConfirm">确 定</el-button>
+      </span>
     </el-dialog>
   </div>
 </template>
 
 <script type="text/javascript">
-  import ImageButton from '@/components/ImageButton'
   import SearchSelect from '@/components/SearchSelect'
   import AddBuild from '@/components/dialog/AddBuild'
+  import EditBuild from '@/components/dialog/EditBuild'
   import fetchpm from '@/fetchpm'
   export default {
     props: {
       EDITABLE: Boolean
     },
-    components: {ImageButton, AddBuild, SearchSelect},
+    components: {AddBuild, EditBuild},
     data () {
       return {
-        host:'http://10.176.118.61:3000',
+        warn: '',
         showAddDialog: false,
+        showEditDialog: false,
+        showDelConfirm: false,
         streets: [],
         communities: [],
         xqs: [],
@@ -124,7 +148,8 @@
         inputOwner:'',
         isLoadingInput: false,
         houses:[],
-        editingHouse: {}
+        editingHouse: {},
+        delHouse: {}
       }
     },
     computed: {
@@ -151,6 +176,30 @@
       },
       onEdit (house) {
         this.editingHouse = house
+        this.showEditDialog = true
+      },
+      onEditSucc () {
+        this.fetchHouses()
+      },
+      onDel (delHouse) {
+        this.delHouse = delHouse
+        this.showDelConfirm = true
+      },
+      onDelConfirm () {
+        fetchpm(this, true, '/pm/houses/del', {
+          method: 'POST',
+          body: {values: [this.delHouse.ID]}
+        }).then(resp => {
+          return resp.json()
+        }).then(body => {
+          console.info('onDelConfirm', body)
+          if (body.error == 1) {
+            this.warn = body.data
+          } else {
+            this.fetchHouses()
+            this.showDelConfirm = false
+          }
+        })
       },
       onSearch () {
         //小区》社区》街道
@@ -298,6 +347,10 @@
         display: inline-block;
       }
     }
+  }
+  .warn{
+    color: red;
+    text-align: center;
   }
 }
 </style>

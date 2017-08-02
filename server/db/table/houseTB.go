@@ -75,6 +75,16 @@ func InsertHouse(db *mgo.Database, house House) interface{} {
 	return gin.H{"error": 0, "data": Succ}
 }
 
+//UpdateStreet update street
+func UpdateHouse(db *mgo.Database, update House) interface{} {
+	c := db.C(HouseTabelName)
+	err := c.Update(bson.M{"_id": update.ID}, update)
+	if err != nil {
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": Succ}
+}
+
 //FindHouses 查询小区信息集
 func FindHouses(db *mgo.Database, buildNO string, pageNo int, pageSize int) interface{} {
 	c := db.C(HouseTabelName)
@@ -109,4 +119,23 @@ func FindHouseKVs(db *mgo.Database, kvs map[string]interface{}) interface{} {
 		return gin.H{"error": 1, "data": "没有查询到结果"}
 	}
 	return gin.H{"error": 0, "data": result}
+}
+
+//DelHouses 删除
+func DelHouses(db *mgo.Database, ids []string) interface{} {
+	c := db.C(HouseTabelName)
+	var err error
+	result := ""
+	for _, v := range ids {
+		err = c.Remove(bson.M{"_id": bson.ObjectIdHex(v)})
+		if err != nil {
+			log.Println(err.Error())
+			result += err.Error()
+			err = nil
+		}
+	}
+	if result != "" {
+		return gin.H{"error": 1, "data": result}
+	}
+	return gin.H{"error": 0, "data": Succ}
 }

@@ -112,7 +112,7 @@ func UpdatePM(db *mgo.Database, pm PM) interface{} {
 	return gin.H{"error": 0, "data": Succ}
 }
 
-//DelStreets 删除
+//DelPMs 删除
 func DelPMs(db *mgo.Database, ids []string) interface{} {
 	c := db.C(PMTableName)
 	var err error

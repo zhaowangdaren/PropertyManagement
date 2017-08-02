@@ -63,8 +63,8 @@
             <!-- 物业性质 -->
             <th>操作</th>
           </tr>
-          <tr v-for='item in pms'>
-            <td v-text='item.XQ'></td>
+          <tr v-for='(item, index) in pms'>
+            <td v-text='xqNames[index]'></td>
             <td v-text='item.Name'></td>
             <td v-text='item.LegalPerson'></td>
             <td v-text='item.WuYeZiZhi'></td>
@@ -136,17 +136,27 @@ export default {
     }
   },
   computed: {
+    xqNames: function () {
+      return this.pms.map(pm => {
+        for (var i = 0; i < this.xqs.length; i++) {
+          if (this.xqs[i].ID == pm.XQID) return this.xqs[i].Name
+        }
+      })
+    } 
   },
   mounted () {
     this.fetchPMs()
-    this.EDITABLE ? this.fetechAllStreets() : this.fetchCommunitiesByStreetID  (this.STREET_ID)
+    this.fetchAllXQs()
+    this.EDITABLE ? this.fetechAllStreets() : this.fetchCommunitiesByStreetID(this.STREET_ID)
   },
   watch: {
     inputStreetID: function (val) {
+      this.inputCommunityID = ''
       if (this.isLoadingInput ) return
       this.fetchCommunitiesByStreetID(val)
     },
     inputCommunityID: function (val) {
+      this.inputXQID = ''
       console.info('inputCommunityID', val)
       if (this.isLoadingInput ) return
       this.fetchXQByCommunityID(val)
@@ -234,6 +244,16 @@ export default {
           console.info (data)
           this.streets = data.data
         }
+      })
+    },
+    fetchAllXQs () {
+      fetchpm( this, true, '/pm/xq', {
+        method: 'POST'
+      }).then(resp => {
+        return resp.json()
+      }).then(body => {
+        console.info('fetchAllXQs', body)
+        this.xqs = body.data
       })
     },
     fetchCommunitiesByStreetID (streetID) {
@@ -325,6 +345,7 @@ export default {
         color: #555;
         margin: 10px auto;
         background-color: #fff;
+        text-align: center;
         th{
           text-align: center;
           padding: 5px;

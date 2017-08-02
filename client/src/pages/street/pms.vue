@@ -1,10 +1,6 @@
 <template>
   <div :class='s.wrap'>
-    <infospm 
-      :identityLevel='identityLevel'
-      :curStreet='curStreet'
-      >
-    </infospm>
+    <p-ms :EDITABLE='editable'></p-ms>
   </div>
 </template>
 
@@ -15,13 +11,12 @@
 </style>
 
 <script type="text/javascript">
-  import InfosPM from '@/components/InfosPM'
+  import PMs from '@/components/table/PMs'
   export default {
-    components: { 'infospm': InfosPM },
+    components: { PMs },
     data () {
       return {
-        identityLevel: 1,
-        curStreet:'Street'
+        editable: false
       }
     }
   }

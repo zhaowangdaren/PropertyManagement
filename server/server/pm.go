@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -59,7 +58,6 @@ func startPM(router *gin.RouterGroup, dbc *mgo.Database) {
 	router.POST("/pms/del", func(c *gin.Context) {
 		var names Values
 		err := c.BindJSON(&names)
-		fmt.Println("/street/del names", names)
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
 		} else {

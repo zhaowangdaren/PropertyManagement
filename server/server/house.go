@@ -41,4 +41,26 @@ func startHouse(router *gin.RouterGroup, dbc *mgo.Database) {
 			c.JSON(http.StatusOK, table.FindHouseKVs(dbc, params))
 		}
 	})
+
+	router.POST("/house/update", func(c *gin.Context) {
+		var update table.House
+		err := c.BindJSON(&update)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": "params error"})
+			log.Println(err)
+		} else {
+			c.JSON(http.StatusOK, table.UpdateHouse(dbc, update))
+		}
+	})
+
+	//按street的name删数据, 删除多个
+	router.POST("/houses/del", func(c *gin.Context) {
+		var names Values
+		err := c.BindJSON(&names)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+		} else {
+			c.JSON(http.StatusOK, table.DelHouses(dbc, names.Values))
+		}
+	})
 }
