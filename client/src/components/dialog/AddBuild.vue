@@ -216,6 +216,15 @@ export default {
     this.fetchAllStreets()
   },
   methods: {
+    resetData () {
+      this.house = {
+        BuildNo:'',
+        Owner: '',
+        StreetID: '',
+        CommunityID: '',
+        XQID: ''
+      }
+    },
     handleRemove(file, fileList) {
       console.log(file, fileList);
     },
@@ -272,6 +281,7 @@ export default {
         else {
           this.warn = 'Add Succ'
           this.$emit('addSucc')
+          this.resetData()
         }
       })
     },
@@ -294,16 +304,6 @@ export default {
       }).then(body => {
         console.info('fetchAllCommunitiesByStreetID', body)
         this.communities = body.data
-      })
-    },
-    fetchAllXQs () {
-      fetchpm( this, true, '/pm/xq', {
-        method: 'POST'
-      }).then(resp => {
-        return resp.json()
-      }).then(body => {
-        console.info('fetchAllXQs', body)
-        this.xqs = body.data
       })
     },
     fetchAllXQByCommunityID (communityID) {
@@ -330,6 +330,7 @@ export default {
   .warn{
     text-align: center;
     color: red;
+    font-size: 30px;
   }
   .content{
     // width: 100%;
