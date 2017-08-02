@@ -2,12 +2,12 @@
   <div :class='s.wrap' :style='{backgroundImage: "url(" + bgImg +  ")"}'>
     <div :class='s.formWrap'>
       <div :class='s.title' v-text='sourceParams.title'></div>
-      <div :class='s.body'>
+      <form :class='s.body'>
         <div :class='s.row'>
           <div :class='s.icon'>
             <i class='iconfont icon-user'></i>
           </div>
-          <input type="text" name="" :class='s.input' v-model='login.username'>
+          <input type="text" name="" :class='s.input' v-model='login.username' autofocus>
         </div>
         <div :class='s.row'>
           <div :class='s.icon'>
@@ -16,10 +16,10 @@
           <input type="text" name="" :class='s.input' v-model='login.password'>
         </div>
         <div :class='s.bottom'>
-          <el-button :class='s.login' @click='onLogin'>登录</el-button>
-          <el-button @click='onCancel'>取消</el-button>
+          <input type="submit" name="" value='登 录' @click='onLogin' :class='s.login'>
+          <span :class='s.cancel' @click='onCancel'>取 消</span>
         </div>
-      </div>
+      </form>
     </div>
   </div>
 </template>
@@ -124,6 +124,7 @@ export default {
           height:46px;
           border: solid 1px #ddd;
           background-color: rgb(250, 255, 189);
+          font-size: 20px;
         }
       }
       .bottom{
@@ -132,9 +133,17 @@ export default {
         .login{
           background-color: #1ea5f3;
           border: solid 1px transparent;
+          padding: 5px 15px;
+          font-size: 18px;
           &:hover{
             color: #fff;
           }
+        }
+        .cancel{
+          background-color: #fff;
+          border: solid 1px transparent;
+          padding: 5px 15px;
+          font-size: 18px;
         }
       }
     }

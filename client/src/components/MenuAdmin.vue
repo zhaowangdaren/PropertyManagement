@@ -18,37 +18,37 @@
       return {
         menus: [
           {
-            icon: require('@/res/images/home.png'),
+            icon: 'icon-home',
             text:'Home',//基础信息维护
-            path:'/admin/'
+            path:'/admin'
           },
           {
-            icon: require('@/res/images/refresh.png'),
+            icon: 'icon-shuaxin',
             text:'Init',//数据初始化
             path:'/admin/init'
           },
           {
-            icon: require('@/res/images/users.png'),
+            icon: 'icon-users',
             text:'Users',//用户数据管理
             path:'/admin/users'
           },
           {
-            icon: require('@/res/images/wechat.png'),
+            icon: 'icon-wechat',
             text:'wx',//微信用户绑定管理
             path:'/admin/wx'
           },
           {
-            icon: require('@/res/images/complaints.png'),
+            icon: 'icon-tousu',
             text:'complaints',//微信用户绑定管理
             path:'/admin/complaints'
           },
           {
-            icon: require('@/res/images/wuye.png'),
+            icon: 'icon-wuyeguanli',
             text:'pm',//物业信息管理
             path:'/admin/pm'
           },
           {
-            icon: require('@/res/images/build.png'),
+            icon: 'icon-build',
             text:'build',//物业信息管理
             path:'/admin/build'
           }

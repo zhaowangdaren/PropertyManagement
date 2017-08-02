@@ -33,6 +33,12 @@ export default {
     flex-direction: column;
     .content{
       display: flex;
+      height: 100%;
+      position: absolute;
+      top: 100px;
+      bottom: 0;
+      left: 0;
+      width: 100%;
       .menu{
         height: 100%;
       }

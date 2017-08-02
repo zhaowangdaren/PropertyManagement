@@ -83,8 +83,8 @@
         streets:[],
         showAddDialog: false,
         showEditDialog: false,
-        dels: [],
         showDelConfirm: false,
+        dels: [],
         editingStreet: null
       }
     },
@@ -93,14 +93,6 @@
     },
     methods: {
       fetechStreets () {
-        // var request = {
-        //   method: 'POST',
-        //   url:'http://10.176.118.61:3000/streetInfo'
-        // }
-        // Ajax(request, data => {
-        //   if (data === null) return
-        //   this.streets = JSON.parse(data).Streets
-        // })
         fetchpm(this, true, '/pm/street',{
           method: 'POST'
         }).then(resp => {
@@ -130,7 +122,7 @@
           return item.checked
         })
         console.info('Del', this.dels)
-        if (this.dels.length ===0) return
+        if (this.dels.length == 0) return
         this.showDelConfirm = true
       },
       onDelCancel () {

@@ -24,7 +24,12 @@
     flex-direction: column;
     .content{
       display: flex;
-      // flex-direction: row;
+      height: 100%;
+      position: absolute;
+      top: 100px;
+      bottom: 0;
+      left: 0;
+      width: 100%;
       .menu{
         height: 100%;
       }
