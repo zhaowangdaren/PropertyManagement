@@ -36,7 +36,8 @@ func Start() {
 
 	router := gin.Default()
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:9000"},
+		AllowOrigins: []string{"http://localhost:9000"},
+		// AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"GET", "POST", "DELETE"},
 		AllowHeaders:     []string{"Authorization"},
 		AllowCredentials: true,
@@ -44,7 +45,8 @@ func Start() {
 	}))
 
 	authMid := &jwt.GinJWTMiddleware{
-		Realm:      ".localhost:9000",
+		// Realm:      ".localhost:9000",
+		Realm:      "test zone",
 		Key:        []byte("123456"),
 		Timeout:    time.Hour,
 		MaxRefresh: time.Hour,
@@ -81,7 +83,6 @@ func Start() {
 		startStreet(authorized, dbc)
 		startCommunity(authorized, dbc)
 		startXQ(authorized, dbc)
-		startStreetUser(authorized, dbc)
 		startWXUser(authorized, dbc)
 		startPM(authorized, dbc)
 		startHouse(authorized, dbc)
@@ -90,5 +91,9 @@ func Start() {
 		startPMKPI(authorized, dbc)
 	}
 
+	open := router.Group("/open")
+	{
+		startOpen(open, dbc)
+	}
 	router.Run(":3000")
 }

@@ -7,7 +7,7 @@ export default new Router({
   // mode: 'history',
   routes: [
     {
-      path: '/test',
+      path: '/testapi',
       component: require('@/pages/testAPI')
     },
     {
@@ -118,6 +118,18 @@ export default new Router({
     {
       path: '/wx/complaint/street',
       component: require('@/pages/wx/selectStreet')
+    },
+    {
+      path: '/wx/complaint/community',
+      component: require('@/pages/wx/selectCommunity')
+    },
+    {
+      path: '/wx/complaint/xq',
+      component: require('@/pages/wx/selectXQ')
+    },
+    {
+      path: '/wx/complaint/addEvent',
+      component: require('@/pages/wx/addEvent')
     }
   ]
 })

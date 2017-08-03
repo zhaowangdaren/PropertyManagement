@@ -2,8 +2,8 @@
   <div :class='s.wrap'>
     <action-bar :OPTIONS='headerOptions'></action-bar>
     <div :class='s.body'>
-      <div :class='s.item' v-for='street in streets' @click='onStreet(street)'>
-        <div v-text='street.Name' :class='s.name'></div>
+      <div :class='s.item' v-for='community in communities' @click='onCommunity(community)'>
+        <div v-text='community.Name' :class='s.name'></div>
         <i class='iconfont icon-next'></i>
       </div>
     </div>
@@ -17,33 +17,34 @@ export default {
   data () {
     return {
       headerOptions: {
-        title: 'Select Street',
-        rightBtns: ['Cancel']
+        leftBtns: ['上一步'],
+        title: 'Select Community',
+        rightBtns: []
       },
-      streets: [],
+      communities: [],
       host:'http://10.176.118.61:3000'
     }
   },
   mounted () {
-    this.fetchStreets()
+    this.fetchCommunities(this.$route.query.streetID)
   },
   methods: {
-    fetchStreets () {
-      fetch(this.host + '/open/street',{
+    onCommunity (community) {
+      this.$router.push({path: '/wx/complaint/xq', query: {communityID: community.ID}})
+    },
+    fetchCommunities (streetID) {
+      fetch(this.host + '/open/community/kvs',{
         method: 'POST',
-        body: '{}'
+        body: JSON.stringify({streetID: streetID})
       }).then(resp => {
         console.info(resp)
         return resp.json()
       }).then( data => {
         if (data.error === 0) {
           console.info (data)
-          this.streets = data.data
+          this.communities = data.data
         }
       })
-    },
-    onStreet (street) {
-      this.$router.push({path: '/wx/complaint/community', query: {streetID: street.ID}})
     }
   }
 }

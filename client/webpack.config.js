@@ -1,8 +1,12 @@
 var path = require('path');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var DashboardPlugin = require('webpack-dashboard/plugin');
 var px2rem = require('postcss-px2rem');
-module.exports = {
+
+const vuxLoader = require('vux-loader')
+
+const webpackConfig = {
   entry: ['whatwg-fetch','./src/app.js'],
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -17,19 +21,7 @@ module.exports = {
   },
   module: {
     rules:[
-      {
-        test: /\.css$/,
-        use: [
-          'style-loader',
-          'css-loader',
-          {
-            loader: 'px2rem-loader',
-            options: {
-              remUnit: 120
-            }
-          }
-        ]
-      },
+      { test: /\.css$/, loader: 'style-loader!css-loader!px2rem-loader?remUnit=150&remPrecision=8' },
       {
         test: /\.js$/,
         loader:'babel-loader',
@@ -66,7 +58,9 @@ module.exports = {
     "vue": "Vue"
   },
   plugins:[
-    // new webpack.HotModuleReplacementPlugin(),
+    new DashboardPlugin(),
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NoEmitOnErrorsPlugin(),
     new HtmlWebpackPlugin({
       title: 'OP.V2',
       filename: 'index.html',
@@ -77,7 +71,13 @@ module.exports = {
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
     compress: true,
-    port: 9000
+    port: 9000,
+    host: '0.0.0.0',
+    disableHostCheck: true
   }
 }
 
+// module.exports = vuxLoader.merge(webpackConfig, {
+//   plugins: ['vux-ui']
+// })
+module.exports = webpackConfig

@@ -89,17 +89,16 @@
       }
     },
     mounted () {
-      this.fetechStreets()
+      this.fetchStreets()
     },
     methods: {
-      fetechStreets () {
+      fetchStreets () {
         fetchpm(this, true, '/pm/street',{
           method: 'POST'
         }).then(resp => {
           console.info(resp)
           return resp.json()
         }).then( data => {
-          // console.info('fetechStreets', data)
           if (data.error === 0) {
             console.info (data)
             this.streets = data.data
@@ -111,7 +110,7 @@
         this.showAddDialog = true
       },
       onAddSucc () {
-        this.fetechStreets()
+        this.fetchStreets()
       },
       onEdit (street) {
         this.editingStreet = street
@@ -142,7 +141,7 @@
         }).then(body => {
           console.info('onDel', body)
           if (body.error === 0 ) {
-            this.fetechStreets()
+            this.fetchStreets()
             this.showDelConfirm = false
           }
         })
