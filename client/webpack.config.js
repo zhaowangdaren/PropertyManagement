@@ -1,6 +1,7 @@
 var path = require('path');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var px2rem = require('postcss-px2rem');
 module.exports = {
   entry: ['whatwg-fetch','./src/app.js'],
   output: {
@@ -41,6 +42,9 @@ module.exports = {
           cssModules: {
             localIdentName: '[local]-[hash:base64:5]',
             camelCase: true
+          },
+          postcss: function() {
+            return [px2rem({remUnit: 150})];
           }
         }
       },

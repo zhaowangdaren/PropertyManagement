@@ -18,16 +18,19 @@ export default {
 
 <style lang="less" module='s'>
   .wrap{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     .content{
+      flex: 1;
+      margin-top: 100px;
       display: flex;
-      height: 100%;
-      position: absolute;
-      top: 100px;
-      bottom: 0;
-      left: 0;
       width: 100%;
+      
       .menu{
         height: 100%;
         // position: fixed;

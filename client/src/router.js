@@ -110,6 +110,14 @@ export default new Router({
           component: require('@/pages/gov/announcement')
         },
       ]
+    },
+    {
+      path: '/wx/complaint',
+      component: require('@/pages/wx/complaint')
+    },
+    {
+      path: '/wx/complaint/street',
+      component: require('@/pages/wx/selectStreet')
     }
   ]
 })
