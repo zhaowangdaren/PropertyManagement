@@ -1,11 +1,11 @@
 <template>
   <div :class='s.wrap'>
     <div :class='s.leftBtns'>
-      <div :class='s.btn' v-for='leftBtn in OPTIONS.leftBtns' v-text='leftBtn'></div>
+      <div :class='s.btn' v-for='leftBtn in OPTIONS.leftBtns' v-text='leftBtn.text' @click='onLeft(leftBtn)'></div>
     </div>
     <div v-text='OPTIONS.title' :class='s.title'></div>
     <div :class='s.rightBtns'>
-      <div :class='s.btn' v-for='leftBtn in OPTIONS.rightBtns' v-text='leftBtn'></div>
+      <div :class='s.btn' v-for='rightBtn in OPTIONS.rightBtns' v-text='rightBtn.text' @click='onRight(rightBtn)'></div>
     </div>
   </div>
 </template>
@@ -22,6 +22,14 @@ export default {
           rightBtns: []
         }
       }
+    }
+  },
+  methods: {
+    onLeft (leftBtn) {
+      if (leftBtn.event) leftBtn.event()
+    },
+    onRight (rightBtn) {
+      if (rightBtn.event) rightBtn.event()
     }
   }
 }

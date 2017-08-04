@@ -1,8 +1,10 @@
 package table
 
 import (
+	"fmt"
 	"log"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 
@@ -22,7 +24,7 @@ type Event struct {
 	XQID        string //投诉小区名
 	Status      int    //事件状态  1-居民提交 2-待审核 3-待处理 4-已处理
 	EventLevel  int    //事件等级  1-特急、2-加急、3-急
-	Type        string //事件基本类别
+	Type        int8   //事件基本类别
 	Content     string //投诉内容
 	Time        string //提交时间
 	ToCourt     int8   //0-不推送至法院 1-推送至法院
@@ -30,10 +32,21 @@ type Event struct {
 	Img2        string
 	Img3        string
 	Img4        string
+	Img5        string
+	Img6        string
+	Img7        string
+	Img8        string
+	Img9        string
 }
 
-//InsertEventTB 插入
-func InsertEventTB(db *mgo.Database, event Event) string {
+func createEventIndex() string {
+	curTime := time.Now()
+	result := curTime.Format("20060102150405")
+	return result + fmt.Sprint(curTime.Unix())
+}
+
+//InsertEvent 插入
+func InsertEvent(db *mgo.Database, event Event) interface{} {
 	c := db.C(EventTableName)
 	count, err := c.Find(bson.M{"index": event.Index}).Count()
 	if err != nil {
@@ -41,14 +54,80 @@ func InsertEventTB(db *mgo.Database, event Event) string {
 		return err.Error()
 	}
 	if count > 0 {
-		return "事件已经存在，编号为" + event.Index
+		return gin.H{"error": 1, "data": "事件已经存在，编号为" + event.Index}
 	}
+	event.Index = createEventIndex()
+	event.Time = fmt.Sprint(time.Now().Unix())
+	fmt.Println("event index=", event.Index)
 	err = c.Insert(&event)
 	if err != nil {
 		log.Fatal(err)
-		return err.Error()
+		return gin.H{"error": 1, "data": err.Error()}
 	}
-	return Succ
+	return gin.H{"error": 0, "data": event.Index}
+}
+
+//UpdateEvent update event
+func UpdateEvent(db *mgo.Database, info Event) interface{} {
+	c := db.C(EventTableName)
+	err := c.Update(bson.M{"index": info.Index}, info)
+	if err != nil {
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": info.Index}
+}
+
+//AddEventImgs add event imgs
+func AddEventImgs(db *mgo.Database, index string, imgs []string) interface{} {
+	c := db.C(EventTableName)
+	var event Event
+	err := c.Find(bson.M{"index": index}).One(&event)
+	if err != nil {
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	for i, img := range imgs {
+		if i == 0 {
+			event.Img1 = img
+			continue
+		}
+		if i == 1 {
+			event.Img2 = img
+			continue
+		}
+		if i == 2 {
+			event.Img3 = img
+			continue
+		}
+		if i == 3 {
+			event.Img4 = img
+			continue
+		}
+		if i == 4 {
+			event.Img5 = img
+			continue
+		}
+		if i == 5 {
+			event.Img6 = img
+			continue
+		}
+		if i == 6 {
+			event.Img7 = img
+			continue
+		}
+		if i == 7 {
+			event.Img8 = img
+			continue
+		}
+		if i == 8 {
+			event.Img9 = img
+			continue
+		}
+	}
+	err = c.Update(bson.M{"index": event.Index}, event)
+	if err != nil {
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": ""}
 }
 
 //FindEvents 按编号index查询事件

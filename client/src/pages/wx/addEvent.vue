@@ -6,30 +6,22 @@
         <span :class='s.name' v-text='xq.Name'></span>
         XQ
       </div>
+      <div :class='s.warn' v-text='warn'></div>
       <div :class='s.item'>
         <div :class='s.title'>Event Type:</div>
-        <popup-picker
-          :class='s.value'
-          :data='eventTypes'
-          :value='selectedEventType.value'
-          @change='onEventTypePick'
-          @onScroll='onEventTypePick'>
-          <div 
-            :class='s.typeValue'>
-            <span
-              v-if='selectedEventType.index > 0' 
-              v-text='eventTypes[0][selectedEventType.index].name'
-              ></span>
-            <span v-else :class='s.typeValueEmpty'>--请选择--</span>
-            <i class="iconfont icon-unfold"></i>
-          </div>
-        </popup-picker>
+        <select v-model='selectedEventType' :class='s.value' @focus='onFocus'>
+          <option disabled value="">请选择</option>
+          <option v-for='type in eventTypes' :value='type'>{{type.name}}</option>
+          </option>
+        </select>
       </div>
       <div :class='s.item'>
         <div :class='s.title'>联系电话:</div>
         <input 
           :class='s.value'
-          type="number">
+          type="number"
+          v-model='event.Tel'
+          @focus='onFocus'>
       </div>
       <div :class='s.contentWrap'>
         <div :class='s.title'>Content</div>
@@ -38,54 +30,100 @@
             rows='10'
             placeholder="请输入内容"
             v-model="event.Content" 
-            ></textarea>
+            @focus='onFocus'></textarea>
         </div>
       </div>
-      <div :class='s.btn'>下一步</div>
     </div>
   </div>
 </template>
 
 <script>
 import ActionBar from '@/components/mobile/ActionBar'
-import PopupPicker from '@/components/popup-picker'
 export default{
-  components: { ActionBar, PopupPicker },
+  components: { ActionBar },
   data () {
     return {
       headerOptions: {
-        leftBtns: ['上一步'],
+        leftBtns: [{text:'上一步', event: null}],
         title: 'Fill in Event',
-        rightBtns: ['下一步']
+        rightBtns: [{text:'下一步', event: null}]
       },
       xq: {
         ID: '',
         Name: ''
       },
       event: {
-        Content: ''
+        Content: '',
+        StreetID:'',
+        CommunityID: '',
+        XQID: '',
+        Complainant:'',//投诉人
+        Type: '',//事件类型
+        Tel:''
       },
-      eventTypes: [[
-        {name:'Type1', value:'0'},
-        {name:'Type2', value:'1'},
-        {name:'Type3', value:'2'},
-        {name:'Type4', value:'3'},
-        {name:'Type5', value:'4'},
-        {name:'Type6', value:'5'}
-      ]],
-      selectedEventType:{index: -1, value:['']},
-      host:'http://10.176.118.61:3000'
+      eventTypes: [
+        {name:'Type1', value:0},
+        {name:'Type2', value:1},
+        {name:'Type3', value:2},
+        {name:'Type4', value:3},
+        {name:'Type5', value:4},
+        {name:'Type6', value:5}
+      ],
+      selectedEventType:"",
+      host:'http://10.176.118.61:3000',
+      warn:''
     }
   },
   mounted () {
-    this.xq.CommunityID = this.$route.query.XQID
+    this.xq.ID = this.$route.query.XQID
     this.xq.Name = this.$route.query.XQName
+    this.headerOptions.leftBtns[0].event = this.onReturn
+    this.headerOptions.rightBtns[0].event = this.onNext
   },
   methods: {
+    onReturn () {
+      this.$router.go(-1)
+    },
     onEventTypePick (value) {
-      console.info('onEventTypePick', value)
-      this.selectedEventType.value[0] = value
-      this.selectedEventType.index = parseInt(value)
+      console.info('onEventTypePick', value[0])
+      this.selectedEventType.value[0] = value[0]
+      this.selectedEventType.index = parseInt(value[0])
+      console.info(this.selectedEventType)
+    },
+    onNext () {
+      this.event.StreetID = sessionStorage.getItem('cpStreetID')
+      this.event.CommunityID = sessionStorage.getItem('cpCommunityID')
+      this.event.XQID = this.xq.ID
+      this.event.Type = this.selectedEventType.value
+      if(!this.checkEvent()) return
+      this.addEvent()
+    },
+    addEvent () {
+      fetch(this.host + '/open/event/add', {
+        method: 'POST',
+        body: JSON.stringify(this.event)
+      }).then(resp => {
+        return resp.json()
+      }).then(body => {
+        console.info('addEvent', body)
+        if (body.error === 0) {
+          this.$router.push({path: '/wx/complaint/uploadImage', query: {id: body.data}})
+        }
+      })
+    },
+    checkEvent () {
+      if (this.event.Type === undefined || this.event.Type === '') {
+        this.warn = '请选择事件类型'
+        return false
+      }
+      if (this.event.Content === '') {
+        this.warn = '请填写内容'
+        return false
+      }
+      return true
+    },
+    onFocus () {
+      this.warn = ''
     }
   }
 }
@@ -97,19 +135,24 @@ export default{
     margin-top: 80px;
     .header{
       font-size: 30px;
-      margin: 10px;
+      margin: 20px 10px;
       font-weight: bold;
       color: #999;
       .name{
         color: #000;
       }
     }
+    .warn{
+      color: red;
+      text-align: center;
+      font-size: 20px;
+    }
     .item{
       margin: 10px auto;
       font-size: 25px;
       display: flex;
       padding: 0px 10px;
-      background-color: #fff;
+      // background-color: #fff;
       .title{
         padding: 15px 0;
         color: #999;
@@ -122,16 +165,8 @@ export default{
         border-right: solid 0;
         flex: 1;
         font-size: 30px;
-        .typeValue{
-          display: flex;
-          align-items: center;
-          span{
-            flex: 1;
-          }
-          .typeValueEmpty{
-            color: #999;
-          }
-        }
+        background-color: transparent;
+        
       }
     }
     .contentWrap{
@@ -140,6 +175,7 @@ export default{
       .title{
         margin: 10px;
         font-size: 30px;
+        color: #999;
       }
       .value{
         width: 90%;

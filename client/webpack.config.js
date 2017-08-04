@@ -4,7 +4,10 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 var DashboardPlugin = require('webpack-dashboard/plugin');
 var px2rem = require('postcss-px2rem');
 
-const vuxLoader = require('vux-loader')
+
+function resolve (dir) {
+  return path.join(__dirname, '..', dir)
+}
 
 const webpackConfig = {
   entry: ['whatwg-fetch','./src/app.js'],
@@ -21,11 +24,31 @@ const webpackConfig = {
   },
   module: {
     rules:[
-      { test: /\.css$/, loader: 'style-loader!css-loader!px2rem-loader?remUnit=150&remPrecision=8' },
+      {
+        test: /\.(less|css)$/,
+        use: [
+          {
+              loader: "style-loader" // creates style nodes from JS strings
+          },
+          {
+              loader: "css-loader" // translates CSS into CommonJS
+          },
+          {
+              loader: "less-loader" // compiles Less to CSS
+          },
+          {
+            loader: "px2rem-loader",
+            options: {
+              remUnit: 150
+            }
+          }
+        ]
+      },
       {
         test: /\.js$/,
-        loader:'babel-loader',
-        exclude: /node_modules/
+        loader:'babel-loader'
+        // exclude: /node_modules/
+        // include: [resolve('src'), resolve('test'), resolve('node_modules/vux')]
       },
       {
         test: /\.vue$/,
@@ -77,7 +100,4 @@ const webpackConfig = {
   }
 }
 
-// module.exports = vuxLoader.merge(webpackConfig, {
-//   plugins: ['vux-ui']
-// })
 module.exports = webpackConfig

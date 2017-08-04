@@ -18,16 +18,20 @@ export default {
     return {
       headerOptions: {
         title: 'Select Street',
-        rightBtns: ['Cancel']
+        rightBtns: [{text:'Cancel', event: null}]
       },
       streets: [],
       host:'http://10.176.118.61:3000'
     }
   },
   mounted () {
+    this.headerOptions.rightBtns[0].event = this.onCancel
     this.fetchStreets()
   },
   methods: {
+    onCancel () {
+      this.$router.go(-1)
+    },
     fetchStreets () {
       fetch(this.host + '/open/street',{
         method: 'POST',
@@ -43,7 +47,7 @@ export default {
       })
     },
     onStreet (street) {
-      this.$router.push({path: '/wx/complaint/community', query: {streetID: street.ID}})
+      this.$router.push({path: '/wx/complaint/selectCommunity', query: {streetID: street.ID}})
     }
   }
 }

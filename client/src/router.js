@@ -116,20 +116,28 @@ export default new Router({
       component: require('@/pages/wx/complaint')
     },
     {
-      path: '/wx/complaint/street',
+      path: '/wx/complaint/selectStreet',
       component: require('@/pages/wx/selectStreet')
     },
     {
-      path: '/wx/complaint/community',
+      path: '/wx/complaint/selectCommunity',
       component: require('@/pages/wx/selectCommunity')
     },
     {
-      path: '/wx/complaint/xq',
+      path: '/wx/complaint/selectXQ',
       component: require('@/pages/wx/selectXQ')
     },
     {
       path: '/wx/complaint/addEvent',
       component: require('@/pages/wx/addEvent')
+    },
+    {
+      path: '/wx/complaint/uploadImage',
+      component: require('@/pages/wx/uploadImage')
+    },
+    {
+      path: '/wx/complaint/finish',
+      component: require('@/pages/wx/finish')
     }
   ]
 })

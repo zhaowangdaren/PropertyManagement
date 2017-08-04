@@ -29,6 +29,11 @@ type QueryEvent struct {
 	PageNo   int
 	PageSize int
 }
+
+type AddEventImg struct {
+	Index string   //事件编号
+	Imgs  []string //图片名称
+}
 type Values struct {
 	Values []string
 }

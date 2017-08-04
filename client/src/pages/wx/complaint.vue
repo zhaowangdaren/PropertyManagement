@@ -8,7 +8,7 @@
 export default {
   methods: {
     onStart () {
-      this.$router.push({path: '/wx/complaint/street'})
+      this.$router.push({path: '/wx/complaint/selectStreet'})
     }
   }
 }

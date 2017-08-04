@@ -17,7 +17,7 @@ export default {
   data () {
     return {
       headerOptions: {
-        leftBtns: ['上一步'],
+        leftBtns: [{text:'上一步', event: null}],
         title: 'Select XQ',
         rightBtns: []
       },
@@ -26,9 +26,14 @@ export default {
     }
   },
   mounted () {
+    this.headerOptions.leftBtns[0].event = this.onReturn
     this.fetchXQs(this.$route.query.communityID)
+    sessionStorage.setItem('cpCommunityID', this.$route.query.communityID)
   },
   methods: {
+    onReturn () {
+      this.$router.go(-1)
+    },
     onXQ (xq) {
       this.$router.push({path: '/wx/complaint/addEvent', query: {XQID: xq.ID, XQName: xq.Name}})
     },

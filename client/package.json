@@ -32,7 +32,6 @@
     "vue-loader": "^12.2.2",
     "vue-router": "^2.7.0",
     "vue-template-compiler": "^2.4.2",
-    "vux-loader": "^1.1.4",
     "webpack": "^3.3.0",
     "webpack-dashboard": "^0.4.0",
     "webpack-dev-server": "^2.5.1",
@@ -45,7 +44,6 @@
     "axios": "^0.16.2",
     "element-ui": "^1.4.0",
     "vue-axios": "^2.0.2",
-    "vux": "^2.5.6",
     "whatwg-fetch": "^2.0.3"
   }
 }

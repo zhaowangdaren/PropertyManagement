@@ -2,6 +2,7 @@ package jwt
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -171,8 +172,10 @@ func (mw *GinJWTMiddleware) middlewareImpl(c *gin.Context) {
 	if !mw.Authorizator(id, int(claims["user_type"].(float64)), c) {
 		mw.unauthorized(c, http.StatusForbidden, "You don't have permission to access.")
 		return
+	} else { //静默延长Token
+		claims["orig_iat"] = mw.TimeFunc().Unix()
 	}
-
+	fmt.Println("middlewareImpl", claims)
 	c.Next()
 }
 

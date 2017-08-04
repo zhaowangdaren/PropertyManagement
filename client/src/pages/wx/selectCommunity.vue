@@ -17,20 +17,24 @@ export default {
   data () {
     return {
       headerOptions: {
-        leftBtns: ['上一步'],
-        title: 'Select Community',
-        rightBtns: []
+        leftBtns: [{text:'上一步', event: null}],
+        title: 'Select Community'
       },
       communities: [],
       host:'http://10.176.118.61:3000'
     }
   },
   mounted () {
+    this.headerOptions.leftBtns[0].event = this.onReturn
     this.fetchCommunities(this.$route.query.streetID)
+    sessionStorage.setItem('cpStreetID', this.$route.query.streetID)
   },
   methods: {
+    onReturn () {
+      this.$router.go(-1)
+    },
     onCommunity (community) {
-      this.$router.push({path: '/wx/complaint/xq', query: {communityID: community.ID}})
+      this.$router.push({path: '/wx/complaint/selectXQ', query: {communityID: community.ID}})
     },
     fetchCommunities (streetID) {
       fetch(this.host + '/open/community/kvs',{

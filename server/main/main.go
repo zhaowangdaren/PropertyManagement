@@ -1,11 +1,10 @@
 package main
 
 import (
-	"../pm"
 	"../server"
 )
 
 func main() {
-	pm.Init()
+	// pm.Init()
 	server.Start()
 }
