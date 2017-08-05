@@ -118,8 +118,11 @@ func (mw *GinJWTMiddleware) MiddlewareInit() error {
 	if mw.Unauthorized == nil {
 		mw.Unauthorized = func(c *gin.Context, code int, message string) {
 			c.JSON(code, gin.H{
-				"code":    code,
-				"message": message,
+				"error": 1,
+				"data": gin.H{
+					"code":    code,
+					"message": message,
+				},
 			})
 		}
 	}
@@ -165,6 +168,7 @@ func (mw *GinJWTMiddleware) middlewareImpl(c *gin.Context) {
 	}
 
 	claims := token.Claims.(jwt.MapClaims)
+	fmt.Println("middlewareImpl", claims)
 
 	id := mw.IdentityHandler(claims)
 	c.Set("JWT_PAYLOAD", claims)
@@ -175,7 +179,6 @@ func (mw *GinJWTMiddleware) middlewareImpl(c *gin.Context) {
 	} else { //静默延长Token
 		claims["orig_iat"] = mw.TimeFunc().Unix()
 	}
-	fmt.Println("middlewareImpl", claims)
 	c.Next()
 }
 
@@ -202,7 +205,7 @@ func (mw *GinJWTMiddleware) LoginHandler(c *gin.Context) {
 	user, ok := mw.Authenticator(loginVals.Username, loginVals.Password, loginVals.Type, c)
 
 	if !ok {
-		mw.unauthorized(c, http.StatusUnauthorized, "Incorrect Username / Password")
+		mw.unauthorized(c, http.StatusUnauthorized, "用户名或密码错误")
 		return
 	}
 
@@ -235,10 +238,13 @@ func (mw *GinJWTMiddleware) LoginHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"token":    tokenString,
-		"expire":   expire.Format(time.RFC3339),
-		"StreetID": user.StreetID,
-		"RealName": user.UserName,
+		"error": 0,
+		"data": gin.H{
+			"token":    tokenString,
+			"expire":   expire.Format(time.RFC3339),
+			"StreetID": user.StreetID,
+			"RealName": user.UserName,
+		},
 	})
 }
 
@@ -277,8 +283,11 @@ func (mw *GinJWTMiddleware) RefreshHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"token":  tokenString,
-		"expire": expire.Format(time.RFC3339),
+		"error": 0,
+		"data": gin.H{
+			"token":  tokenString,
+			"expire": expire.Format(time.RFC3339),
+		},
 	})
 }
 

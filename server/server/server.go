@@ -66,8 +66,11 @@ func Start() {
 		},
 		Unauthorized: func(c *gin.Context, code int, message string) {
 			c.JSON(code, gin.H{
-				"code":    code,
-				"message": message,
+				"error": 1,
+				"data": gin.H{
+					"code":    code,
+					"message": message,
+				},
 			})
 		},
 		TokenLookup:   "header:Authorization",

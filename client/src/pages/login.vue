@@ -3,6 +3,7 @@
     <div :class='s.formWrap'>
       <div :class='s.title' v-text='sourceParams.title'></div>
       <form :class='s.body'>
+        <p :class="s.warn" v-text='warn'></p>
         <div :class='s.row'>
           <div :class='s.icon'>
             <i class='iconfont icon-user'></i>
@@ -29,9 +30,10 @@ import fetchpm from '@/fetchpm'
 export default {
   data () {
     return {
+      warn: '',
       sourceParams: {
         title: 'Title',
-        target: '' // /admin /gov /street  
+        target: '' // /admin /gov /street
       },
       login: {
         username:'',
@@ -65,11 +67,13 @@ export default {
         return resp.json()
       }).then( body => {
         console.info('onLogin',body)
-        if (body.token && body.token !== "")  {
-          sessionStorage.setItem('token', body.token)
-          sessionStorage.setItem('StreetID', body.StreetID)
-          sessionStorage.setItem('RealName', body.RealName)
+        if (body.error == 0 && body.data.token && body.data.token !== "")  {
+          sessionStorage.setItem('token', body.data.token)
+          sessionStorage.setItem('StreetID', body.data.StreetID)
+          sessionStorage.setItem('RealName', body.data.RealName)
           this.$router.push({path: this.sourceParams.target})
+        } else {
+          this.warn = body.data.message
         }
       })
     },
@@ -94,12 +98,18 @@ export default {
   justify-content: center;
   align-items: center;
   .formWrap{
-      width: 40%;
+    width: 40%;
     .title{
       font-size: 30px;
       text-align: center;
       padding: 10px 0;
       background-color: #fff;
+    }
+    .warn{
+      color: red;
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
     }
     .body{
       background-color: rgba(254,254,254, 0.3);

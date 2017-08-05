@@ -17,12 +17,8 @@
         <td v-text='user.OpenID'></td>
         <td v-text='user.Tel'></td>
         <td :class='s.operations'>
-          <image-button :class='s.bt'
-            text='强制解绑'
-            :img='require("@/res/images/delete.png")'
-            bgColor='##c23f44'
-            fontSize='20px'
-          />
+          <el-button type='success'>允许</el-button>
+          <el-button type='warning'>拒绝</el-button>
         </td>
       </tr>
       <tr v-if='users.length === 0' :class='s.noData'>

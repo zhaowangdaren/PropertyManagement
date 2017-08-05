@@ -2,7 +2,7 @@
   <div :class='s.wrap'>
     <div :class='s.title'>
       <img src="~@/res/images/earth.png">
-      数据清除
+      投诉数据
     </div>
     <div :class="s.content">
       <div :class="s.left">

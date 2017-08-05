@@ -28,12 +28,7 @@
         <td v-text='user.OpenID'></td>
         <td v-text='user.Tel'></td>
         <td align="center">
-          <image-button
-            text='强制解绑'
-            :img='require("@/res/images/delete.png")'
-            bgColor='#c23f44'
-            fontSize='20px'
-          />
+          <el-button type="danger" icon="delete">强制解绑</el-button>
         </td>
       </tr>
     </table>
