@@ -1,6 +1,5 @@
 <template>
   <div :class='s.wrap'>
-    <div :class='s.street'>Street</div>
     <div :class='s.content'>
       <div :class='s.title'>
         <img src="~@/res/images/earth.png">
@@ -8,7 +7,7 @@
       </div>
       <div :class='s.body'>
         <table>
-        <!-- 
+        <!--
           事件编号
           事件等级
           事件类型
@@ -97,7 +96,7 @@
                 </el-option>
               </el-select>
             </td>
-          </tr>   
+          </tr>
         </table>
         <!-- search result -->
         <table>
@@ -216,7 +215,7 @@
         }
         th{
           background-color: #ddd;
-        } 
+        }
         tr{
           &:hover {
             // background-color: #ddd;
@@ -226,7 +225,7 @@
           background-color: #ddd;
         }
       }
-    }    
+    }
   }
 }
 </style>

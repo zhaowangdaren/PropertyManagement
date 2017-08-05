@@ -18,37 +18,37 @@
       return {
         menus: [
           {
-            icon: require('@/res/images/home.png'),
+            icon: 'icon-home',
             text:'首页',
             path:'/gov'
           },
           {
-            icon: require('@/res/images/complaints.png'),
+            icon: 'icon-tousu',
             text:'居民物业纠纷处理',
             path:'/gov/eventHandle'
           },
           {
-            icon: require('@/res/images/wuye.png'),
+            icon: 'icon-wuyeguanli',
             text:'查看物业信息',
             path:'/gov/pms'
           },
           {
-            icon: require('@/res/images/kpi.png'),
+            icon: 'icon-kaohe',
             text:'物业考核查询',
             path:'/gov/pmkpis'
           },
           {
-            icon: require('@/res/images/build.png'),
+            icon: 'icon-build',
             text:'查看建筑信息',
             path:'/gov/build'
           },
           {
-            icon: require('@/res/images/court.png'),
+            icon: 'icon-court',
             text:'推送法院调解请求',
             path: '/gov/court'
           },
           {
-            icon: require('@/res/images/gonggao.png'),
+            icon: 'icon-fabugonggao',
             text:'推送政府公告',
             path: '/gov/announcement'
           }

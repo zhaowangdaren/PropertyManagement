@@ -18,33 +18,33 @@
       return {
         menus: [
           {
-            icon: require('@/res/images/home.png'),
+            icon: 'icon-home',
             path:'/street',
             text:'Home'//首页
           },
           {
             path:'/street/handle',
-            icon: require('@/res/images/complaints.png'),
+            icon: 'icon-chulizhong',
             text:'complaintsHandler' //居民物业纠纷处理
           },
           {
             path:'/street/pms',
-            icon: require('@/res/images/wuye.png'),
+            icon: 'icon-wuyeguanli',
             text:'PM infos'//物业信息管理
           },
           {
             path:'/street/pmkpis',
-            icon: require('@/res/images/kpi.png'),
+            icon: 'icon-kaohe',
             text:'PM KPI'//物业考核查询
           },
           {
             path:'/street/court',
-            icon: require('@/res/images/court.png'),
+            icon: 'icon-court',
             text:'Court'//申请法院调解请求
           },
           {
             path:'/street/operationRecs',
-            icon: require('@/res/images/tasks.png'),
+            icon: 'icon-records',
             text:'Operation recs'//操作记录管理
           }
         ]
