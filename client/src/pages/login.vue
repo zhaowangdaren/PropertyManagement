@@ -60,18 +60,17 @@ export default {
   },
   methods: {
     onLogin () {
-      fetchpm(this, false, '/login', {
+      fetch('http://localhost:3000/login', {
         method: 'POST',
-        body: this.login
+        body: JSON.stringify(this.login)
       }).then(resp => {
         return resp.json()
       }).then( body => {
         console.info('onLogin',body)
         if (body.error == 0 && body.data.token && body.data.token !== "")  {
-          sessionStorage.setItem('token', body.data.token)
-          sessionStorage.setItem('StreetID', body.data.StreetID)
-          sessionStorage.setItem('RealName', body.data.RealName)
+          sessionStorage.setItem('user', JSON.stringify(body.data))
           this.$router.push({path: this.sourceParams.target})
+          console.info('expire',new Date(body.data.expire))
         } else {
           this.warn = body.data.message
         }

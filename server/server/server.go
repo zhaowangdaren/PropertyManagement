@@ -82,6 +82,7 @@ func Start() {
 
 	authorized.Use(authMid.MiddlewareFunc())
 	{
+		authorized.POST("/refresh_token", authMid.RefreshHandler)
 		startUser(authorized, dbc)
 		startStreet(authorized, dbc)
 		startCommunity(authorized, dbc)

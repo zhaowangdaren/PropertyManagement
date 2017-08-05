@@ -168,7 +168,7 @@ func (mw *GinJWTMiddleware) middlewareImpl(c *gin.Context) {
 	}
 
 	claims := token.Claims.(jwt.MapClaims)
-	fmt.Println("middlewareImpl", claims)
+	fmt.Println("middlewareImpl", claims["orig_iat"])
 
 	id := mw.IdentityHandler(claims)
 	c.Set("JWT_PAYLOAD", claims)
@@ -176,8 +176,6 @@ func (mw *GinJWTMiddleware) middlewareImpl(c *gin.Context) {
 	if !mw.Authorizator(id, int(claims["user_type"].(float64)), c) {
 		mw.unauthorized(c, http.StatusForbidden, "You don't have permission to access.")
 		return
-	} else { //静默延长Token
-		claims["orig_iat"] = mw.TimeFunc().Unix()
 	}
 	c.Next()
 }
