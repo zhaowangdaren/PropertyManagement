@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack-dashboard -- webpack-dev-server --inline --hot --no-info --config webpack.config.js"
+    "dev": "webpack-dashboard -- webpack-dev-server --hot --no-info --config webpack.config.js"
   },
   "keywords": [],
   "author": "",

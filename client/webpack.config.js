@@ -46,8 +46,8 @@ const webpackConfig = {
       },
       {
         test: /\.js$/,
-        loader:'babel-loader'
-        // exclude: /node_modules/
+        loader:'babel-loader',
+        exclude: /node_modules/
         // include: [resolve('src'), resolve('test'), resolve('node_modules/vux')]
       },
       {
@@ -64,7 +64,7 @@ const webpackConfig = {
         }
       },
       {
-        test: /\.(png|jpe?g|gif|svg)(\?.*)?$/, 
+        test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
         loader: 'url-loader',
         query: {
           limit: 8192,
@@ -82,7 +82,7 @@ const webpackConfig = {
   },
   plugins:[
     new DashboardPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
+    // new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new HtmlWebpackPlugin({
       title: 'OP.V2',

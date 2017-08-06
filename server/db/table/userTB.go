@@ -99,3 +99,30 @@ func UpdateUser(db *mgo.Database, update User) interface{} {
 	return gin.H{"error": 0, "data": Succ}
 
 }
+
+//ChangePassword 修改密码
+func ChangePassword(db *mgo.Database, userType int, userName string, password string, newPassword string) interface{} {
+	c := db.C(UserTableName)
+	var user User
+	err := c.Find(bson.M{"username": userName, "type": userType}).One(&user)
+	if err != nil {
+		log.Println("Error ChangePassword", err.Error())
+		return gin.H{"error": 1, "data": "查询用户信息失败"}
+	}
+
+	if user == (User{}) {
+		return gin.H{"error": 1, "data": "用户信息失效"}
+	}
+
+	if user.Password != password {
+		return gin.H{"error": 1, "data": "密码错误"}
+	}
+
+	user.Password = newPassword
+	err = c.Update(bson.M{"_id": user.ID}, user)
+	if err != nil {
+		log.Println("Error ChangePassword", err.Error())
+		return gin.H{"error": 1, "data": "修改密码失败，请重试"}
+	}
+	return gin.H{"error": 0, "data": "密码修改成功"}
+}

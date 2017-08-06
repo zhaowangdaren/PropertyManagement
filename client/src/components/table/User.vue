@@ -1,12 +1,16 @@
 <template>
   <div :class='s.wrap'>
     <div :class='s.addDel'>
-      <image-button :class='s.bt' @click='showAddDialog = true'
+      <!-- <image-button :class='s.bt' @click='showAddDialog = true'
         text='新增'
         :img='require("@/res/images/add.png")'
         bgColor='#3598dc'
         fontSize='20px'
-        />
+        /> -->
+      <el-button
+        @click='showAddDialog = true'
+        type='primary'
+        icon='plus'>新增</el-button>
     </div>
     <table>
       <tr>
@@ -25,29 +29,37 @@
         <td v-text='user.Password'></td>
         <td v-text='user.Tel'></td>
         <td :class='s.operations' align="center">
-          <image-button :class='s.bt'
+          <!-- <image-button :class='s.bt'
             text='编辑'
             :img='require("@/res/images/edit.png")'
             bgColor='#26a69a'
             @click='onEdit(user)'
-          />
-          <image-button :class='s.bt'
+          /> -->
+          <el-button
+            @click='onEdit(user)'
+            type='primary'
+            icon='edit'>编辑</el-button>
+          <!-- <image-button :class='s.bt'
             text='删除'
             :img='require("@/res/images/delete.png")'
             bgColor='#cb5a5e'
             fontSize='20px'
             @click='onDel(user)'
-          />
+          /> -->
+          <el-button
+            @click='onDel(user)'
+            type='danger'
+            icon='delete'>删除</el-button>
         </td>
       </tr>
     </table>
-    <el-dialog 
+    <el-dialog
       title='Add User'
       :visible.sync='showAddDialog'
       size='small'>
       <add-user v-if='showAddDialog' @cancel='showAddDialog = false' @addSucc='onAddSucc' :USER_TYPE='USER_TYPE'></add-user>
     </el-dialog>
-    <el-dialog 
+    <el-dialog
       title='Edit Community'
       :visible.sync='showEditDialog'
       size='small'>
@@ -173,10 +185,7 @@
   .addDel{
     display: flex;
     align-items: center;
-    margin-top: 10px;
-    .bt {
-      margin: 5px;
-    }
+    margin: 10px;
   }
   table{
     width: 99%;

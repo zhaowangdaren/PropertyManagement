@@ -1,33 +1,31 @@
 <template>
   <div :class='s.wrap'>
-    <div v-for='menu in menus' @click='onClick(menu)' :class='{[s.active]: curPath == menu.path}'>
+    <div v-for='menu in menus' @click='onClick(menu)' :class='{[s.active]: NEXT == menu.path}'>
       <i :class='"iconfont" + " " + menu.icon'></i>
       {{menu.text}}
     </div>
   </div>
 </template>
 
-<script type="text/javascript">
+<script>
   export default {
     props: {
-      menus: Array
+      menus: Array,
+      NEXT: String
     },
     data () {
       return {
-        curPath: ''
       }
     },
     mounted () {
       console.info('menuPath', this.$route.path)
-      this.curPath = this.$route.path
-      console.info(this.menus)
+      if (this.NEXT == '') this.NEXT = this.$route.path
+      console.warn('NEXT', this.NEXT)
+      console.info('menus', this.menus)
     },
     methods: {
       onClick (menu) {
         this.$router.push({path: menu.path})
-        this.$nextTick(() => {
-          this.curPath = this.$route.path
-        })
       }
     }
   }
@@ -50,7 +48,7 @@
       }
     }
     .active{
-      background: #379ad3;
+      background: #20a0ff;
       color: #fff;
     }
   }

@@ -13,27 +13,40 @@
           </el-option>
         </el-select>
       </div>
-      <image-button :class='s.searchBt' @click='onSearch'
+      <!-- <image-button :class='s.searchBt' @click='onSearch'
         text='查询'
         :img='require("@/res/images/ic_serach.png")'
         bgColor='#4c87b9'
         color='#fff'
-      />
+      /> -->
+      <el-button
+        :class='s.searchBt'
+        @click='onSearch'
+        type='primary'
+        icon='search'>查询</el-button>
     </div>
     <div :class='s.addDel'>
-      <image-button :class='s.bt' @click='onAdd'
+      <!-- <image-button :class='s.bt' @click='onAdd'
         text='新增'
         :img='require("@/res/images/add.png")'
         bgColor='#3598dc'
         fontSize='20px'
-        />
-      <image-button :class='s.bt'
+        /> -->
+      <el-button
+        @click='onAdd'
+        type='primary'
+        icon='plus'>新增</el-button>
+      <!-- <image-button :class='s.bt'
         text='删除'
         :img='require("@/res/images/delete.png")'
         bgColor='#cb5a5e'
         fontSize='20px'
         @click='onDel'
-        />
+        /> -->
+      <el-button
+        @click='onDel'
+        type='danger'
+        icon='delete'>删除</el-button>
     </div>
     <table>
       <tr>
@@ -59,33 +72,37 @@
         <td v-text='item.Tel'></td>
         <td v-text='item.Intro'></td>
         <td>
-          <image-button
+          <!-- <image-button
             text='编辑'
             :img='require("@/res/images/edit.png")'
             bgColor='#26a69a'
             @click='onEdit(item)'
-          />
+          /> -->
+          <el-button
+            @click='onEdit(item)'
+            type='primary'
+            icon='edit'>编辑</el-button>
         </td>
       </tr>
       <tr v-if='communities == null || communities.length == 0'>
         <td colspan="7">无记录</td>
       </tr>
     </table>
-    <el-dialog 
+    <el-dialog
       title='Add Community'
       :visible.sync='showAddDialog'
       size='small'>
-      <add-community 
-        v-if='showAddDialog' 
-        @cancel='onAddCancel' 
+      <add-community
+        v-if='showAddDialog'
+        @cancel='onAddCancel'
         @addSucc='onAddSucc'></add-community>
     </el-dialog>
-    <el-dialog 
+    <el-dialog
       title='Edit Community'
       :visible.sync='showEditDialog'
       size='small'>
-      <edit-community v-if='showEditDialog' 
-        :community='editingCommunity' 
+      <edit-community v-if='showEditDialog'
+        :community='editingCommunity'
         @cancel='showEditDialog = false'
         @editSucc='fetchCommunities'></edit-community>
     </el-dialog>
@@ -272,10 +289,7 @@
   .addDel{
     display: flex;
     align-items: center;
-    margin-top: 10px;
-    .bt {
-      margin: 5px;
-    }
+    margin: 10px;
   }
   table{
     width: 99%;

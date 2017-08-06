@@ -52,4 +52,14 @@ func startUser(router *gin.RouterGroup, dbc *mgo.Database) {
 			c.JSON(http.StatusOK, table.UpdateUser(dbc, user))
 		}
 	})
+
+	router.POST("/user/changePassword", func(c *gin.Context) {
+		var info ChangePassword
+		err := c.BindJSON(&info)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+		} else {
+			c.JSON(http.StatusOK, table.ChangePassword(dbc, info.Type, info.UserName, info.Password, info.NewPassword))
+		}
+	})
 }

@@ -2,9 +2,9 @@
   <div :class='s.wrap'>
     <action-bar></action-bar>
     <div :class='s.content'>
-      <menu-gov :class='s.menu'></menu-gov>
+      <menu-gov :class='s.menu' :menus='menus' :NEXT='nextPath'/>
       <div :class='s.body'>
-        <div :class='s.userName' v-text='userRealName'></div>
+        <div :class='s.userName'>{{realName}}</div>
         <router-view></router-view>
       </div>
     </div>
@@ -12,17 +12,64 @@
 </template>
 
 <script>
-import MenuGov from '@/components/MenuGov'
+import MenuGov from '@/components/Menu'
 import ActionBar from '@/components/ActionBar'
 export default {
   components: {MenuGov, ActionBar},
+  beforeRouteUpdate(to, from, next) {
+    console.info('beforeRouteUpdate', to)
+    this.nextPath = to.path
+    next()
+  },
   data () {
     return {
-      userRealName: ''
+      realName: '',
+      nextPath: '',
+      menus: [
+        {
+          path: '/gov',
+          icon: 'icon-home',
+          text:'Home'
+        },
+        {
+          icon: 'icon-tousu',
+          text:'居民物业纠纷处理',
+          path:'/gov/eventHandle'
+        },
+        {
+          icon: 'icon-wuyeguanli',
+          text:'查看物业信息',
+          path:'/gov/pms'
+        },
+        {
+          icon: 'icon-kaohe',
+          text:'物业考核查询',
+          path:'/gov/pmkpis'
+        },
+        {
+          icon: 'icon-build',
+          text:'查看建筑信息',
+          path:'/gov/build'
+        },
+        {
+          icon: 'icon-court',
+          text:'推送法院调解请求',
+          path: '/gov/court'
+        },
+        {
+          icon: 'icon-fabugonggao',
+          text:'推送政府公告',
+          path: '/gov/announcement'
+        }
+      ]
     }
   },
-  mounted () {
-    this.userRealName = sessionStorage.getItem('RealName')
+  created () {
+    var user = JSON.parse(sessionStorage.getItem('user'))
+    if (user == null) user = {}
+    else {
+      this.realName = user.RealName
+    }
   }
 }
 </script>

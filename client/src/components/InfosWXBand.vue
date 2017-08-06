@@ -4,12 +4,17 @@
       WXName
       <!-- 微信用户绑定名称（包含） -->
       <search-select v-model='wxName' :values='wxNames' :class='s.searchSelect'/>
-      <image-button :class='s.searchBt' :clickMethod='onSearch'
+      <!-- <image-button :class='s.searchBt' :clickMethod='onSearch'
         text='查询'
         :img='require("@/res/images/ic_serach.png")'
         bgColor='#4c87b9'
         color='#fff'
-      />
+      /> -->
+      <el-button
+        :class='s.searchBt'
+        @click='onSearch'
+        type='primary'
+        icon='search'>查询</el-button>
     </div>
     <table>
       <tr >

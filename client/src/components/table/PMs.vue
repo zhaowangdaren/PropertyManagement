@@ -8,8 +8,8 @@
       <div :class='s.searchWrap'>
         <table>
           <tr>
-            <td :class='s.key' v-if='EDITABLE'>Street Name</td>
-            <td v-if='EDITABLE'>
+            <td :class='s.key' v-if='STREET_ID === ""'>Street Name</td>
+            <td v-if='STREET_ID === ""'>
               <el-select v-model="inputStreetID" filterable placeholder="select Street">
                 <el-option
                   v-for="item in streets"
@@ -71,20 +71,20 @@
             <td v-text='item.WuYeXinZhi'></td>
             <td align="center">
               <el-button v-if='EDITABLE' type="primary" icon="edit" @click='onEdit(item)'>编辑</el-button>
-              <el-button v-if='EDITABLE' type="primary" icon="delete" @click='onDel(item)'>删除</el-button>
+              <el-button v-if='EDITABLE' type="danger" icon="delete" @click='onDel(item)'>删除</el-button>
               <el-button v-if='!EDITABLE' type='primary'>查看</el-button>
             </td>
           </tr>
         </table>
       </div>
     </div>
-    <el-dialog 
+    <el-dialog
       title='Add PM'
       :visible.sync='showAddDialog'
       size='small'>
       <add-p-m v-if='showAddDialog' @cancel='showAddDialog = false' @addSucc='onAddSucc'></add-p-m>
     </el-dialog>
-    <el-dialog 
+    <el-dialog
       title='Edit PM'
       :visible.sync='showEditDialog'
       size='small'>
@@ -114,6 +114,10 @@ export default {
   components: {AddPM, EditPM},
   props: {
     EDITABLE: Boolean,//是否可编辑
+    STREET_ID: {
+      type: String,
+      default: ''
+    }
   },
   data () {
     return {
@@ -141,14 +145,14 @@ export default {
           if (this.xqs[i].ID == pm.XQID) return this.xqs[i].Name
         }
       })
-    } 
+    }
   },
   mounted () {
 
     this.fetchPMs()
     this.fetchAllXQs()
-    this.userStreetID = sessionStorage.getItem('StreetID')
-    this.EDITABLE ? this.fetechAllStreets() : this.fetchCommunitiesByStreetID(this.userStreetID)
+    this.inputStreetID = this.STREET_ID
+    this.fetechAllStreets()
   },
   watch: {
     inputStreetID: function (val) {

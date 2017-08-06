@@ -6,6 +6,12 @@ type QueryUser struct {
 	PageSize int
 	PageNo   int
 }
+type ChangePassword struct {
+	Type        int
+	UserName    string
+	Password    string
+	NewPassword string
+}
 type QueryBasic struct {
 	Name     string
 	PageNo   int

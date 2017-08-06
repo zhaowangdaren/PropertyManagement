@@ -241,7 +241,8 @@ func (mw *GinJWTMiddleware) LoginHandler(c *gin.Context) {
 			"token":    tokenString,
 			"expire":   expire.Format(time.RFC3339),
 			"StreetID": user.StreetID,
-			"RealName": user.UserName,
+			"UserName": user.UserName,
+			"RealName": user.RealName,
 		},
 	})
 }

@@ -3,8 +3,8 @@
     <img src="~@/res/images/logo_jh.png" :class='s.logo'>
     <div :class='s.title'>Title</div>
     <div :class='s.noticeWrap'>
-      <img src="~@/res/images/notice.png" :class='s.notice'>
-      <div :class='s.noticeNum'>0</div>
+      <i :class='"iconfont icon-notice " + s.notice'></i>
+      <span :class='s.noticeNum'>0</span>
     </div>
     <live-user/>
   </div>
@@ -26,7 +26,7 @@ export default {
   .wrap{
     position: fixed;
     left: 0;
-    z-index: 99;
+    z-index: 2;
     top: 0;
     width: 100%;
     display: flex;
@@ -49,20 +49,25 @@ export default {
     .noticeWrap{
       position: relative;
       .notice{
-        width: 40px;
+        font-size: 30px;
+        vertical-align: middle;
+        color: #fff;
       }
       .noticeNum{
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 0.15rem;
-        height: 0.15rem;
-        border-radius: 50%;
-        background-color: red;
-        color: #fff;
+        min-width: 14px;
         text-align: center;
-        line-height: 0.15rem;
-        font-size: 0.12rem;
+        line-height: 14px;
+        display: inline-block;
+        position: absolute;
+        right: -5px;
+        top: -8px;
+        background: red;
+        color: #fff;
+        border-radius: 17px;
+        padding: 6px;
+        font-size: 16px;
+        transform: scale(.7);
+        font-family: Tahoma!important;
       }
     }
   }

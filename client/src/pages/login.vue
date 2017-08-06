@@ -14,7 +14,7 @@
           <div :class='s.icon'>
             <i class='iconfont icon-lock'></i>
           </div>
-          <input type="text" name="" :class='s.input' v-model='login.password'>
+          <input type="password" name="" :class='s.input' v-model='login.password'>
         </div>
         <div :class='s.bottom'>
           <input type="submit" name="" value='登 录' @click='onLogin' :class='s.login'>
@@ -68,6 +68,7 @@ export default {
       }).then( body => {
         console.info('onLogin',body)
         if (body.error == 0 && body.data.token && body.data.token !== "")  {
+          body.data.type = this.login.type
           sessionStorage.setItem('user', JSON.stringify(body.data))
           this.$router.push({path: this.sourceParams.target})
           console.info('expire',new Date(body.data.expire))
@@ -140,19 +141,18 @@ export default {
         text-align: center;
         margin-top: 10px;
         .login{
-          background-color: #1ea5f3;
+          background-color: #4db3ff;
           border: solid 1px transparent;
           padding: 5px 15px;
           font-size: 18px;
-          &:hover{
-            color: #fff;
-          }
+          color: #fff;
         }
         .cancel{
           background-color: #fff;
-          border: solid 1px transparent;
+          border: solid 1px #4db3ff;
           padding: 5px 15px;
           font-size: 18px;
+          color: #4db3ff;
         }
       }
     }

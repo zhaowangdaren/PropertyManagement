@@ -1,19 +1,27 @@
 <template>
   <div :class='s.wrap'>
     <div :class='s.addDel'>
-      <image-button :class='s.bt' @click='onAdd'
+      <!-- <image-button :class='s.bt' @click='onAdd'
         text='新增'
         :img='require("@/res/images/add.png")'
         bgColor='#3598dc'
         fontSize='20px'
-        />
-      <image-button :class='s.bt'
+        /> -->
+      <el-button
+        @click='onAdd'
+        type='primary'
+        icon='plus'>新增</el-button>
+      <!-- <image-button :class='s.bt'
         text='删除'
         :img='require("@/res/images/delete.png")'
         bgColor='#cb5a5e'
         fontSize='20px'
         @click='onDel'
-        />
+        /> -->
+      <el-button
+        @click='onDel'
+        type='danger'
+        icon='delete'>删除</el-button>
     </div>
     <table>
       <tr >
@@ -44,13 +52,13 @@
         </td>
       </tr>
     </table>
-    <el-dialog 
+    <el-dialog
       title='Add Street'
       :visible.sync='showAddDialog'
       size='small'>
       <add-street v-if='showAddDialog' @cancel='showAddDialog = false' @addSucc='onAddSucc'></add-street>
     </el-dialog>
-    <el-dialog 
+    <el-dialog
       title='Edit Street'
       :visible.sync='showEditDialog'
       size='small'>
@@ -156,10 +164,7 @@
   .addDel{
     display: flex;
     align-items: center;
-    margin-top: 10px;
-    .bt {
-      margin: 5px;
-    }
+    margin: 10px;
   }
   table{
     width: 99%;

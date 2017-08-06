@@ -82,25 +82,25 @@
         <td v-text='item.HouseType'></td>
         <td align="center">
           <el-button v-if='EDITABLE' type="primary" icon="edit" @click='onEdit(item)'>编辑</el-button>
-          <el-button v-if='EDITABLE' type="primary" icon="delete" @click='onDel(item)'>删除</el-button>
+          <el-button v-if='EDITABLE' type="danger" icon="delete" @click='onDel(item)'>删除</el-button>
           <el-button type='primary'>查看</el-button>
         </td>
       </tr>
     </table>
-    <el-dialog 
+    <el-dialog
       title='Add Build'
       size='large'
       :visible.sync="showAddDialog">
-      <add-build 
+      <add-build
         @close='showAddDialog = false'
         @addSucc='onAddSucc'>
       </add-build>
     </el-dialog>
-    <el-dialog 
+    <el-dialog
       title='Add Build'
       size='large'
       :visible.sync="showEditDialog">
-      <edit-build 
+      <edit-build
         :HOUSE='editingHouse'
         @close='showEditDialog = false'
         @editSucc='onEditSucc'>
@@ -307,7 +307,7 @@
         border: solid 1px #ddd;
         height: 30px;
       }
-    } 
+    }
     .searchBt{
       position: absolute;
       right: 10px;
