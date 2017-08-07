@@ -19,27 +19,27 @@
           <tr>
             <td :class='s.key'>Index</td>
             <td>
-              <el-input v-model="eventHandle.Index" placeholder="请输入事件编号"></el-input>
+              <el-input v-model="inputIndex" placeholder="请输入事件编号"></el-input>
             </td>
             <td :class='s.key'>EventLevel</td>
             <td>
-              <el-select v-model="eventHandle.eventLevel" filterable placeholder="全部">
+              <el-select v-model="inputEventLevel" filterable placeholder="全部">
                 <el-option
                   v-for="item in eventLevels"
-                  :key="item"
-                  :label="item"
-                  :value="item">
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
                 </el-option>
               </el-select>
             </td>
             <td :class='s.key'>EventType</td>
             <td>
-              <el-select v-model="eventHandle.eventType" filterable placeholder="全部">
+              <el-select v-model="inputType" filterable placeholder="全部">
                 <el-option
                   v-for="item in eventTypes"
-                  :key="item"
-                  :label="item"
-                  :value="item">
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
                 </el-option>
               </el-select>
             </td>
@@ -48,7 +48,7 @@
             <td :class='s.key'>StartTime</td>
             <td>
               <el-date-picker
-                v-model="eventHandle.startTime"
+                v-model="inputStartTime"
                 type="datetime"
                 placeholder="选择日期时间">
               </el-date-picker>
@@ -56,19 +56,19 @@
             <td :class='s.key'>To</td>
             <td>
               <el-date-picker
-                v-model="eventHandle.endTime"
+                v-model="inputEndTime"
                 type="datetime"
                 placeholder="选择日期时间">
               </el-date-picker>
             </td>
             <td :class='s.key'>EventStatus</td>
             <td>
-              <el-select v-model="eventHandle.eventStatus" filterable placeholder="全部">
+              <el-select v-model="inputEventStatus" filterable placeholder="全部">
                 <el-option
                   v-for="item in eventStatus"
-                  :key="item"
-                  :label="item"
-                  :value="item">
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
                 </el-option>
               </el-select>
             </td>
@@ -76,25 +76,28 @@
           <tr>
             <td :class='s.key'>Community</td>
             <td>
-              <el-select v-model="eventHandle.community" filterable placeholder="全部">
+              <el-select v-model="inputCommunityID" filterable placeholder="全部">
                 <el-option
                   v-for="item in communities"
-                  :key="item"
-                  :label="item"
-                  :value="item">
+                  :key="item.ID"
+                  :label="item.Name"
+                  :value="item.ID">
                 </el-option>
               </el-select>
             </td>
             <td :class='s.key'>XQs</td>
             <td>
-              <el-select v-model="eventHandle.xq" filterable placeholder="全部">
+              <el-select v-model="inputXQID" filterable placeholder="全部">
                 <el-option
                   v-for="item in xqs"
-                  :key="item"
-                  :label="item"
-                  :value="item">
+                  :key="item.ID"
+                  :label="item.Name"
+                  :value="item.ID">
                 </el-option>
               </el-select>
+            </td>
+            <td colspan="2" style="text-align:right;">
+              <el-button type='primary' icon='search' @click='onSearch'>查询</el-button>
             </td>
           </tr>   
         </table>
@@ -112,20 +115,23 @@
             <th>Type</th>
             <th>操作</th>
           </tr>
-          <tr v-for='handle in searchResult'>
+          <tr v-for='handle in events'>
             <td>
               <i class="iconfont icon-gaojing"></i>
             </td>
             <td v-text='handle.Index'></td>
             <td v-text='handle.Time'></td>
-            <td v-text='handle.Community'></td>
-            <td v-text='handle.XQ'></td>
+            <td v-text='handle.CommunityID'></td>
+            <td v-text='handle.XQID'></td>
             <td>{{handle.Status | filterEventStatus }}</td>
             <td>{{handle.EventLevel | filterEventLevel }}</td>
             <td v-text='handle.Type'></td>
             <td>
               <el-button type="primary" icon="search" @click='toDetails(handle)'>查看</el-button>
             </td>
+          </tr>
+          <tr v-if='events.length == 0'>
+            <td colspan="9">没有记录</td>
           </tr>
         </table>
       </div>
@@ -144,38 +150,106 @@
     filters: {filterEventStatus, filterEventLevel},
     data () {
       return {
+        userStreetID: '',
+
         host: '//localhost:3000',
-        eventHandle: {
-          eventLevel:'',
-          eventType: '',
-          startTime:'',
-          endTime:''
-        },
-        searchResult:[{}],
-        eventHandles: [],
-        eventLevels:["全部", "特急", "加急", "急"],
-        eventTypes: ["全部", "type1", "type2", 'type3'],
-        eventStatus: ["全部", 'status1', 'status2', 'status3', 'status4'],
+        //user Input
+        inputCommunityID: '',
+        inputXQID: '',
+        inputIndex: '',
+        inputType:'',
+        inputEventLevel:'',
+        inputStartTime:'',
+        inputEndTime: '',
+        inputEventStatus: '',
+
+        events: [],
+        eventLevels:[{value: 0, label:"全部"}, {value: 1, label:"特急"}, {value: 2, label: "加急"}, {value: 3, label: "急"}],
+        eventTypes: [{value: 0,label: "全部"}, {value: 1, label:"type1"}, {value: 2, label:"type2"}, {value: 3, label: 'type3'}],
+        eventStatus: [{value: 0, label:"全部"}, {value: 1, label: 'status1'}, {value: 2, label:'status2'}, {value: 3, label: 'status3'}, {value: 4, label:'status4'}],
         communities: [],
         xqs:[]
       }
     },
     mounted () {
       this.fetchEvents('')
+      var user = JSON.parse(sessionStorage.getItem('user')) || {}
+      this.userStreetID = user.StreetID
+      this.fetchCommunitiesByStreetID(this.userStreetID)
+    },
+    watch: {
+      inputCommunityID: function (value) {
+        this.fetchXQByCommunityID(value)
+      }
     },
     methods: {
+      onSearch () {
+        var search = this.formatInputData()
+        fetchpm(this, true, '/pm/event/kvs', {
+          method: 'POST',
+          body: search
+        }).then(resp => {
+          return resp.json()
+        }).then(body => {
+          console.info('onSearch', body)
+          if (body.error !== 1) this.events = body.data || []
+        })
+      },
+      formatInputData () {
+        console.info('inputCommunityID', this.inputCommunityID)
+        console.info('inputXQID', this.inputXQID)
+        console.info('inputIndex', this.inputIndex)
+        console.info('inputType', this.inputType)
+        console.info('inputStartTime', this.inputStartTime)
+        var result = {}
+        if (this.inputIndex !== '') result.Index = this.inputIndex
+        if (this.inputEventLevel !== '' && this.inputEventLevel !== 0) result.EventLevel = this.inputEventLevel
+        if (this.inputType !== '' && this.inputType !== 0) result.Type = this.inputType
+        if (this.inputEventStatus !== '' && this.inputEventStatus !== 0) result.EventStatus = this.inputEventStatus
+        if (this.inputStartTime !== '') result.StartTime = this.inputStartTime.getTime() / 1000
+        if (this.inputEndTime !== '') result.EndTime = this.inputEndTime.getTime() / 1000
+        if (this.inputCommunityID !== '') result.CommunityID = this.inputCommunityID
+        if (this.inputXQID !== '') result.XQID = this.inputXQID
+        return result
+      },
+      fetchCommunitiesByStreetID (streetID) {
+        fetchpm(this, true, '/pm/community/kvs', {
+          method: 'POST',
+          body: {streetID: streetID}
+        }).then(resp => {
+          return resp.json()
+        }).then(body => {
+          console.info('fetchCommunitiesByStreetID', body)
+          this.communities = body.data
+        })
+      },
+      fetchXQByCommunityID (communityID) {
+        if (!communityID) return
+        fetchpm(this, true, '/pm/xq/kvs', {
+          method: 'POST',
+          body: {communityID: communityID}
+        }).then(resp => {
+          return resp.json()
+        }).then( body => {
+          console.info('fetchXQByCommunityName', body)
+          if(body.error !== 0) console.error("Error: search fetchXQByCommunityName. Reason:" + body.data)
+          else if (body.data !== null ) {
+            this.xqs = body.data
+          }
+        })
+      },
       fetchEvents (index) {
         if (!index ) {
           console.info('index', index)
         }
-        fetchpm(this, true, '/pm/eventHandles', {
+        fetchpm(this, true, '/pm/event', {
           method: 'POST',
           body: {index: index}
         }).then(resp => {
           return resp.json()
         }).then(body => {
           console.info('fetchEvents', body)
-          this.searchResult = body.data
+          this.events = body.data
         })
       },
       toDetails (event) {
@@ -191,6 +265,8 @@
 .wrap{
   .content{
     border: solid 1px #4c87b9;
+    margin: 10px;
+    background-color: #fff;
     .title{
       color: #fff;
       font-size: 20px;
@@ -209,6 +285,7 @@
         width: 100%;
         font-size: 15px;
         color: #555;
+        margin-top: 10px;
         th, td {
           padding: 5px;
           border: solid 1px #ddd;

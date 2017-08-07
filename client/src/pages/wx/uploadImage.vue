@@ -33,7 +33,9 @@ export default {
         title: '上传图片',
         rightBtns: ['完成']
       },
-      event:{},
+      event:{
+        Imgs: ''//以逗号为分隔符
+      },
       host:'http://10.176.118.61:3000',
       imgs:[],
       warn:''
@@ -74,7 +76,8 @@ export default {
         return false
       }
       for (var i = 0; i < this.imgs.length; i++) {
-        this.event['Img' + (i + 1)] = this.imgs[i].response.data.md5
+        // this.event['Img' + (i + 1)] = this.imgs[i].response.data.md5
+        this.event.Imgs += this.imgs[i].response.data.md5 + ','
       }
       return true
     },

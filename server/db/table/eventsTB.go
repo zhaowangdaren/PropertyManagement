@@ -26,17 +26,9 @@ type Event struct {
 	EventLevel  int    //事件等级  1-特急、2-加急、3-急
 	Type        int8   //事件基本类别
 	Content     string //投诉内容
-	Time        string //提交时间
+	Time        int64  //提交时间
 	ToCourt     int8   //0-不推送至法院 1-推送至法院
-	Img1        string
-	Img2        string
-	Img3        string
-	Img4        string
-	Img5        string
-	Img6        string
-	Img7        string
-	Img8        string
-	Img9        string
+	Imgs        string //图片表格，以逗号为分割符
 }
 
 func createEventIndex() string {
@@ -57,7 +49,7 @@ func InsertEvent(db *mgo.Database, event Event) interface{} {
 		return gin.H{"error": 1, "data": "事件已经存在，编号为" + event.Index}
 	}
 	event.Index = createEventIndex()
-	event.Time = fmt.Sprint(time.Now().Unix())
+	event.Time = time.Now().Unix()
 	fmt.Println("event index=", event.Index)
 	err = c.Insert(&event)
 	if err != nil {
@@ -85,44 +77,12 @@ func AddEventImgs(db *mgo.Database, index string, imgs []string) interface{} {
 	if err != nil {
 		return gin.H{"error": 1, "data": err.Error()}
 	}
-	for i, img := range imgs {
-		if i == 0 {
-			event.Img1 = img
-			continue
-		}
-		if i == 1 {
-			event.Img2 = img
-			continue
-		}
-		if i == 2 {
-			event.Img3 = img
-			continue
-		}
-		if i == 3 {
-			event.Img4 = img
-			continue
-		}
-		if i == 4 {
-			event.Img5 = img
-			continue
-		}
-		if i == 5 {
-			event.Img6 = img
-			continue
-		}
-		if i == 6 {
-			event.Img7 = img
-			continue
-		}
-		if i == 7 {
-			event.Img8 = img
-			continue
-		}
-		if i == 8 {
-			event.Img9 = img
-			continue
-		}
+
+	imgsStr := ""
+	for _, v := range imgs {
+		imgsStr += v + ","
 	}
+	event.Imgs = imgsStr
 	err = c.Update(bson.M{"index": event.Index}, event)
 	if err != nil {
 		return gin.H{"error": 1, "data": err.Error()}
@@ -150,7 +110,22 @@ func FindEvents(db *mgo.Database, index string, pageNo int, pageSize int) interf
 //FindEventKVs find key-value
 func FindEventKVs(db *mgo.Database, kvs map[string]interface{}) interface{} {
 	query := make(map[string]interface{})
+	var startTime int64
+	var endTime int64
+	startTime = 0
+	endTime = 9223372036854775807
+	hasTime := false
 	for k, v := range kvs {
+		if k == "StartTime" {
+			startTime = int64(v.(float64))
+			hasTime = true
+			continue
+		}
+		if k == "EndTime" {
+			endTime = int64(v.(float64))
+			hasTime = true
+			continue
+		}
 		query[strings.ToLower(k)] = v
 	}
 	c := db.C(EventTableName)
@@ -159,6 +134,16 @@ func FindEventKVs(db *mgo.Database, kvs map[string]interface{}) interface{} {
 	if err != nil {
 		log.Fatal(err)
 		return gin.H{"error": 1, "data": err.Error()}
+	}
+
+	var timeResult []Event
+	if hasTime {
+		for _, item := range result {
+			if startTime <= item.Time && item.Time <= endTime {
+				timeResult = append(timeResult, item)
+			}
+		}
+		return gin.H{"error": 0, "data": timeResult}
 	}
 	return gin.H{"error": 0, "data": result}
 }

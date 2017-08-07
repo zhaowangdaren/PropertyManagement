@@ -1,6 +1,5 @@
 <template>
   <div :class='s.wrap'>
-    <div :class='s.street'>Event Details</div>
     <div :class='s.content'>
       <div :class='s.title'>
         <img src="~@/res/images/earth.png">
@@ -8,17 +7,17 @@
       </div>
       <div :class='s.body'>
         <div :class='s.left'>
-          First time Image
-          <div>
-            <img src="~@/res/images/test.png" @click='imgVisible = true' :class='s.eventImg'>
-            <el-dialog v-model="imgVisible" size="tiny">
-              <img width="100%" src="~@/res/images/test.png" alt="">
-            </el-dialog>
+          用户上传
+          <div :class='s.imgs'>
+            <img v-for='img in eventImgs' :src='"//localhost:3000/open/image/" + img' @click='onImg(img)' :class='s.eventImg'>
           </div>
+          <el-dialog v-model="imgVisible" size="tiny">
+            <img width="100%" :src='"//localhost:3000/open/image/" + showingImg' alt="">
+          </el-dialog>
         </div>
         <div :class='s.right'>
           <table>
-          <!-- 警告类型： 
+          <!-- 警告类型：
   事件编号： 071320171902051386
   所在街道： 江东街道
   所在社区： 金瑞社区
@@ -63,11 +62,20 @@
               <td :class='s.key'>Event Level</td>
               <td :class='s.value'>{{event.EventLevel | filterEventLevel }}</td>
             </tr>
+            <tr>
+              <td :class='s.key'>操作</td>
+              <td :class='s.value'>
+                <el-button type='success'>推送至PM</el-button>
+                <el-button type='primary'>审核等级</el-button>
+                <el-button type='primary' @click='onHandle(event.Index)'>询问</el-button>
+                <el-button type='danger'>申请关闭</el-button>
+              </td>
+            </tr>
           </table>
         </div>
-        
+
       </div>
-      
+
     </div>
     <div :class='s.handleContent'>
       <div :class='s.title'>
@@ -121,11 +129,14 @@
           Time: '',
           Type: '',
           Status: 0,
-          EventLevel: 0
+          EventLevel: 0,
+          Imgs:''//以逗号为分隔符
         },
+        eventImgs: [],
         streetName:'',
         communityName: '',
         xqName: '',
+        showingImg: '',
         eventHandles:[{}],
         imgVisible: false,
         showHandleDetails: false
@@ -137,6 +148,13 @@
       this.fetchEventDetails(this.$route.params.index)
     },
     methods: {
+      onHandle (eventIndex) {//事件处理
+
+      },
+      onImg (img) {
+        this.showingImg = img
+        this.imgVisible = true
+      },
       fetchEvent (eventIndex) {
         fetchpm(this, true, '/pm/event/kvs', {
           method: 'POST',
@@ -147,11 +165,16 @@
           console.info('fetchEvent', body)
           if (body.error == 0 && body.data.length > 0) {
             this.event = body.data[0]
+            this.initEventImgs(this.event.Imgs)
             this.fetchStreet(this.event.StreetID)
             this.fetchCommunity(this.event.CommunityID)
             this.fetchXQ(this.event.XQID)
           }
         })
+      },
+      initEventImgs (imgs) {
+        this.eventImgs = imgs.split(',')
+        if (this.eventImgs[this.eventImgs.length - 1] == '') this.eventImgs = this.eventImgs.slice(0, this.eventImgs.length - 1)
       },
       fetchEventDetails (index) {
         if (!index ) {
@@ -213,7 +236,7 @@
 <style lang="less" module='s'>
 .wrap{
   margin: 10px;
-  width: 100%;
+  // width: 100%;
   .street{
     background-color: #ddd;
     width: 100%;
@@ -222,7 +245,7 @@
   }
   .content{
     border: solid 1px #4c87b9;
-    margin-top: 50px;
+    margin-top: 10px;
     .title{
       color: #fff;
       font-size: 20px;
@@ -239,25 +262,32 @@
       display: flex;
       width: 100%;
       font-size: 18px;
+      background-color: #fff; 
       .left{
         padding: 20px;
         text-align: center;
         flex: 1;
-        .eventImg{
-          overflow: hidden;
-          background-color: #fff;
-          border: 1px solid #c0ccda;
-          border-radius: 6px;
-          box-sizing: border-box;
-          width: 148px;
-          height: 148px;
-          margin: 10px 8px 8px 0;
-          display: inline-block;
+        .imgs{
+          overflow-y: scroll;
+          height: 300px;
+          .eventImg{
+            overflow: hidden;
+            background-color: #fff;
+            border: 1px solid #c0ccda;
+            border-radius: 6px;
+            box-sizing: border-box;
+            width: 148px;
+            height: 148px;
+            margin: 10px 8px 8px 0;
+            display: inline-block;
+          }
         }
       }
       .right{
-        flex: 1;
+        flex: 2;
         margin: 10px;
+        display: flex;
+        align-items: center;
         table{
           color: #555;
           width: 100%;
@@ -271,6 +301,9 @@
               background-color: #ddd;
             }
           }
+          .key{
+            background-color: #f0f0f0;
+          }
           .value{
             width: 60%;
           }
@@ -281,6 +314,7 @@
   .handleContent{
     border: solid 1px #4c87b9;
     margin-top: 50px;
+    background-color: #fff; 
     .title{
       color: #fff;
       font-size: 20px;
@@ -299,6 +333,7 @@
         width: 100%;
         font-size: 15px;
         color: #555;
+        background-color: #fff;
         th, td {
           padding: 5px;
           border: solid 1px #ddd;
@@ -306,7 +341,7 @@
         }
         th{
           background-color: #ddd;
-        } 
+        }
         tr{
           &:hover {
             background-color: #ddd;
