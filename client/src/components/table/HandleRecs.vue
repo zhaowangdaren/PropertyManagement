@@ -17,7 +17,7 @@
         <tr v-for='handle in eventHandles'>
           <td v-text='handle.AuthorCategory'></td>
           <td v-text='handle.AuthorName'></td>
-          <td v-text='handle.Time'></td>
+          <td>{{ handle.Time | filterTime }}</td>
           <td v-text='handle.HandleInfo'></td>
           <td>
             <el-button type="primary" icon="search" @click='onHandleDetails(handle)'>详情</el-button>
@@ -39,8 +39,10 @@
 <script>
 import DetailsEventHandle from '@/components/dialog/DetailsEventHandle'
 import fetchpm from '@/fetchpm'
+import filterTime from '@/filters/filterTime'
 export default {
   components: { DetailsEventHandle },
+  filters: { filterTime },
   data () {
     return {
       showHandleDetails: false,
