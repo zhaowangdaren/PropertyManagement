@@ -112,8 +112,8 @@ export default new Router({
       ]
     },
     {
-      path: '/wx/complaint',
-      component: require('@/pages/wx/complaint')
+      path: '/wx/startComplaint',
+      component: require('@/pages/wx/startComplaint')
     },
     {
       path: '/wx/complaint/selectStreet',
@@ -138,6 +138,10 @@ export default new Router({
     {
       path: '/wx/complaint/finish',
       component: require('@/pages/wx/finish')
+    },
+    {
+      path: '/wx/viewProgress',
+      component: require('@/pages/wx/viewProgress')
     }
   ]
 })
