@@ -21,6 +21,15 @@ func startEventHandle(router *gin.RouterGroup, dbc *mgo.Database) {
 		}
 	})
 
+	router.POST("/eventHandle/add", func(c *gin.Context) {
+		var info table.EventHandle
+		err := c.BindJSON(&info)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+		} else {
+			c.JSON(http.StatusOK, table.InsertEventHandle(dbc, info))
+		}
+	})
 	router.POST("/eventHandle/detail/:index", func(c *gin.Context) {
 		index := c.Param("index")
 		c.JSON(http.StatusOK, table.FindEventHandle(dbc, index,

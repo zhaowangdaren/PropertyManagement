@@ -66,8 +66,25 @@
               <td :class='s.key'>操作</td>
               <td :class='s.value'>
                 <el-button type='success'>推送至PM</el-button>
-                <el-button type='primary'>审核等级</el-button>
-                <el-button type='primary' @click='onHandle(event.Index)'>询问</el-button>
+                <el-button type='primary' @click='showAduitEventLevel = true'>审核等级</el-button>
+                <basic-dialog
+                  title='审核等级'
+                  :visible.sync='showAduitEventLevel'>
+                  <aduit-event-level 
+                    :event='event'
+                    @cancel='showAduitEventLevel = false'
+                    @succ='onAduitLevelSucc' />
+                </basic-dialog>
+                <el-button type='primary' @click='showAddEventHandle = true'>询问</el-button>
+                <el-dialog
+                  title='询问事件'
+                  :visible.sync='showAddEventHandle'>
+                  <add-event-handle 
+                    :eventIndex='event.Index' 
+                    @succ='onAddEventHandleSucc'
+                    @cancel='showAddEventHandle = false'>
+                  </add-event-handle>
+                </el-dialog>
                 <el-button type='danger'>申请关闭</el-button>
               </td>
             </tr>
@@ -100,7 +117,7 @@
             <td>
               <el-button type="primary" icon="search" @click='showHandleDetails = true'>详情</el-button>
               <el-dialog v-model="showHandleDetails" size="tiny" title='Event Handle Details'>
-                <div v-text='handle.HandleInfo'></div>
+                <details-event-handle :eventHandle='handle'></details-event-handle>
               </el-dialog>
             </td>
           </tr>
@@ -114,7 +131,14 @@
   import filterEventStatus from '@/filters/filterEventStatus'
   import filterEventLevel from '@/filters/filterEventLevel'
   import fetchpm from '@/fetchpm'
+  import BasicDialog from '@/components/dialog/BasicDialog'
+  import AduitEventLevel from '@/components/dialog/AduitEventLevel'
+  import AddEventHandle from '@/components/dialog/AddEventHandle'
+  import DetailsEventHandle from '@/components/dialog/DetailsEventHandle'
   export default {
+    components: {
+      BasicDialog, AduitEventLevel, AddEventHandle, DetailsEventHandle
+    },
     filters: {filterEventStatus, filterEventLevel},
     props: {
       eventIndex: String
@@ -137,9 +161,11 @@
         communityName: '',
         xqName: '',
         showingImg: '',
-        eventHandles:[{}],
+        eventHandles:[],
         imgVisible: false,
-        showHandleDetails: false
+        showHandleDetails: false,//查看详情
+        showAduitEventLevel: false,
+        showAddEventHandle: false//询问
       }
     },
     mounted () {
@@ -148,6 +174,12 @@
       this.fetchEventDetails(this.$route.params.index)
     },
     methods: {
+      onAddEventHandleSucc (eventHandle) {
+        this.eventHandles.push(eventHandle)
+      },
+      onAduitLevelSucc (eventLevel) {
+        this.event.EventLevel = eventLevel
+      },
       onHandle (eventIndex) {//事件处理
 
       },
@@ -188,7 +220,10 @@
           return resp.json()
         }).then(body => {
           console.info('fetchEventHandle', body)
-          this.eventHandles = body.data
+          if (body.error === 0) {
+            this.eventHandles = body.data || []
+          }
+          
         })
       },
       fetchStreet (id) {
@@ -298,7 +333,7 @@
           }
           tr{
             &:hover {
-              background-color: #ddd;
+              background-color: #f0f0f0;
             }
           }
           .key{
@@ -340,11 +375,11 @@
           text-align: center;
         }
         th{
-          background-color: #ddd;
+          background-color: #f0f0f0;
         }
         tr{
           &:hover {
-            background-color: #ddd;
+            background-color: #f0f0f0;
           }
         }
       }

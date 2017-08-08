@@ -31,4 +31,14 @@ func startEvent(router *gin.RouterGroup, dbc *mgo.Database) {
 			c.JSON(http.StatusOK, table.FindEventKVs(dbc, params))
 		}
 	})
+
+	router.POST("/event/update", func(c *gin.Context) {
+		var info table.Event
+		err := c.BindJSON(&info)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+		} else {
+			c.JSON(http.StatusOK, table.UpdateEvent(dbc, info))
+		}
+	})
 }

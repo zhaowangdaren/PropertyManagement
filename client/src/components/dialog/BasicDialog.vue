@@ -27,12 +27,13 @@ export default {
 <style lang="less" module='s'>
 .wrap{
   position: fixed;
-  z-index: 9999;
+  z-index: 2000;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   background-color: rgba(0,0,0,0.3);
+  border-radius: 2px;
   .body{
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
     top: 15%;
@@ -53,6 +54,7 @@ export default {
         font-size: 20px;
         font-weight: bold;
         flex: 1;
+        // text-align: left;
       }
       i{
         color: #bfcbd9;

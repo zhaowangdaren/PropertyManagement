@@ -28,7 +28,7 @@ type Event struct {
 	Content     string //投诉内容
 	Time        int64  //提交时间
 	ToCourt     int8   //0-不推送至法院 1-推送至法院
-	Imgs        string //图片表格，以逗号为分割符
+	Imgs        string //图片表格，以,为分割符
 }
 
 func createEventIndex() string {
