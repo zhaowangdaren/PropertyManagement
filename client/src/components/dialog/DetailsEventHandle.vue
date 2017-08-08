@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class='s.wrap'>
     <div :class='s.imgs'>
       <img :src='host + "/open/image/" +img' v-for='img in imgs'>
     </div>
@@ -31,13 +31,16 @@ export default {
 </script>
 
 <style lang="less" module='s'>
-.imgs{
-  margin: 10px;
-  img{
-    width: 148px;
-    height: 148px;
-    border-radius: 5px;
-    border: solid 1px #c0ccda;
+.wrap{
+  text-align: center;
+  .imgs{
+    margin: 10px;
+    img{
+      width: 148px;
+      height: 148px;
+      border-radius: 5px;
+      border: solid 1px #c0ccda;
+    }
   }
 }
 </style>

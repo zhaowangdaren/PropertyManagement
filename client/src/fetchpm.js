@@ -1,5 +1,5 @@
 const HOST = '//localhost:3000'
-const TenMinute = 10 * 60 * 1000
+const TenMinute = 30 * 60 * 1000
 function refreshToken () {
   return new Promise((resolve, reject) => {
     var user = JSON.parse(sessionStorage.getItem('user')) || {}

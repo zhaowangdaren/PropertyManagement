@@ -48,7 +48,7 @@ export default {
     this.eventHandle.Index = this.eventIndex
     var user = JSON.parse(sessionStorage.getItem('user')) || {}
     this.eventHandle.AuthorCategory = user.type
-    this.eventHandle.AuthorName = user.RealName
+    this.eventHandle.AuthorName = user.UserName
   },
   methods: {
     onSave () {
