@@ -11,7 +11,7 @@
     <div :class='s.content'>
       <menu-street :class='s.menu' :menus='menus' :NEXT='nextPath'/>
       <div :class='s.body'>
-        <div :class='s.street'>Street</div>
+        <div :class='s.street'>Street Name: {{streetName}}</div>
         <router-view></router-view>
       </div>
     </div>
@@ -21,6 +21,7 @@
 <script>
 import MenuStreet from '@/components/Menu'
 import ActionBar from '@/components/ActionBar'
+import fetchpm from '@/fetchpm'
 export default {
   components: {MenuStreet, ActionBar},
   beforeRouteUpdate(to, from, next) {
@@ -31,6 +32,7 @@ export default {
   data () {
     return {
       nextPath: '',
+      streetName: '',
       menus: [
         {
           icon: 'icon-home',
@@ -64,6 +66,25 @@ export default {
         }
       ]
     }
+  },
+  mounted () {
+    this.fetchUserStreet()
+  },
+  methods: {
+    fetchUserStreet() {
+      var user = JSON.parse(sessionStorage.getItem('user')) || {}
+      fetchpm(this, true, '/pm/street/ids', {
+        method: 'POST',
+        body:{values: [user.StreetID]}
+      }).then(resp => {
+        return resp.json()
+      }).then(body => {
+        console.info('fetchUserStreet', body)
+        if (body.error === 0 && body.data != null && body.data.length > 0 ) {
+          this.streetName = body.data[0].Name
+        }
+      })
+    }
   }
 }
 </script>
@@ -74,16 +95,19 @@ export default {
     flex-direction: column;
     .content{
       display: flex;
-      height: 100%;
+      // height: 100%;
       position: absolute;
-      top: 100px;
+      top: 0;
       bottom: 0;
       left: 0;
       width: 100%;
+      // z-index: 2;
+      margin-top: 100px;
       .menu{
         height: 100%;
       }
       .body{
+        overflow-y: scroll;
         flex: 1;
         .street{
           background-color: #ddd;

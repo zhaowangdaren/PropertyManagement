@@ -14,13 +14,17 @@ const PMKPITableName = "PMKPI"
 
 //PMKPI PMKPI
 type PMKPI struct {
-	Year    string
-	Quarter int     //季度
-	Name    string  // PM 公司名
-	YWNo    int     //黄色警告次数
-	RWNo    int     //红色警告次数
-	IWNo    int     //重大警告次数
-	Score   float32 //得分
+	PMID        string //PM ID
+	Name        string // PM 公司名
+	StreetID    string //所在街道ID
+	CommunityID string //所在社区ID
+	XQID        string //所在小区ID
+	Year        int
+	Quarter     int     //季度
+	YWNo        int     //黄色警告次数
+	RWNo        int     //红色警告次数
+	IWNo        int     //重大警告次数
+	Score       float32 //得分
 }
 
 //FindPMKPIsByName 通过Name查询PMKPI

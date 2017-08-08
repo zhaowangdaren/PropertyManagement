@@ -24,9 +24,8 @@ export default {
 
 <style lang="less" module='s'>
   .wrap{
-    position: fixed;
+    position: absolute;
     left: 0;
-    z-index: 2;
     top: 0;
     width: 100%;
     display: flex;

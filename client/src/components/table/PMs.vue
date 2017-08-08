@@ -72,7 +72,7 @@
             <td align="center">
               <el-button v-if='EDITABLE' type="primary" icon="edit" @click='onEdit(item)'>编辑</el-button>
               <el-button v-if='EDITABLE' type="danger" icon="delete" @click='onDel(item)'>删除</el-button>
-              <el-button v-if='!EDITABLE' type='primary'>查看</el-button>
+              <el-button v-if='!EDITABLE' type='primary' @click='onDetails(item)'>查看</el-button>
             </td>
           </tr>
         </table>
@@ -102,16 +102,22 @@
         <el-button type="primary" @click="onDelConfirm">确 定</el-button>
       </span>
     </el-dialog>
+    <el-dialog
+      title='Edit PM'
+      :visible.sync='showDetailDialog'
+      size='small'>
+      <details-p-m :pm='showingPM'></details-p-m>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import AddPM from '@/components/dialog/AddPM'
 import EditPM from '@/components/dialog/EditPM'
-
+import DetailsPM from '@/components/dialog/DetailsPM'
 import fetchpm from '@/fetchpm'
 export default {
-  components: {AddPM, EditPM},
+  components: {AddPM, EditPM, DetailsPM},
   props: {
     EDITABLE: Boolean,//是否可编辑
     STREET_ID: {
@@ -133,9 +139,11 @@ export default {
       showAddDialog: false,
       showEditDialog: false,
       showDelConfirm: false,
+      showDetailDialog: false,
       delPM: {},
       warn:'',
-      editingPM: {}
+      editingPM: {},
+      showingPM: {}
     }
   },
   computed: {
@@ -168,6 +176,10 @@ export default {
     }
   },
   methods: {
+    onDetails (pm) {
+      this.showingPM = pm
+      this.showDetailDialog = true
+    },
     onDel (pm) {
       this.delPM = pm
       this.showDelConfirm = true
@@ -306,7 +318,8 @@ export default {
 .wrap{
   .content{
     border: solid 1px #4c87b9;
-    // margin-top: 50px;
+    background-color: #fff;
+    margin: 10px;
     .title{
       color: #fff;
       font-size: 20px;

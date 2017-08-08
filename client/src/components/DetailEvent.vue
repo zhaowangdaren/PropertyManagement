@@ -67,14 +67,15 @@
               <td :class='s.value'>
                 <el-button type='success'>推送至PM</el-button>
                 <el-button type='primary' @click='showAduitEventLevel = true'>审核等级</el-button>
-                <basic-dialog
+                <el-dialog
                   title='审核等级'
+                  size='tiny'
                   :visible.sync='showAduitEventLevel'>
                   <aduit-event-level 
                     :event='event'
                     @cancel='showAduitEventLevel = false'
                     @succ='onAduitLevelSucc' />
-                </basic-dialog>
+                </el-dialog>
                 <el-button type='primary' @click='showAddEventHandle = true'>询问</el-button>
                 <el-dialog
                   title='询问事件'

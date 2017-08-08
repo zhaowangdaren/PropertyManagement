@@ -20,11 +20,11 @@
     </div>
     <i :class='"iconfont icon-tuichu " + s.logout'
       @click='onLogout'></i>
-    <basic-dialog
+    <el-dialog
       title='修改密码'
       :visible.sync='showChangePassword'>
       <change-password v-if='showChangePassword' />
-    </basic-dialog>
+    </el-dialog>
   </div>
 </template>
 
