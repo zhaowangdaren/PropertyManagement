@@ -3,7 +3,7 @@
     <action-bar :OPTIONS='headerOptions'></action-bar>
     <div :class='s.content'>
       <div :class='s.item'>
-        Evnet Status
+        <span :class='s.key'>Evnet Status</span>
         <select v-model='selectedStatus'>
           <option v-for='status in eventStatus' 
             :value='status.value'
@@ -11,7 +11,7 @@
         </select>
       </div>
       <div :class='s.item'>
-        Time
+        <span :class='s.key'>Time</span>
         <select v-model='selectedTime'>
           <option v-for='time in times' 
             :value='time.value'
@@ -19,7 +19,7 @@
         </select>
       </div>
       <div v-for='event in events' :class='s.event'>
-        <div>编号<span v-text='event.Index'></span></div>
+        <div><span :class='s.key'>编号：</span><span v-text='event.Index'></span></div>
       </div>
       <div v-if='events.length == 0' :class='s.event + " "+ s.tip'>无记录</div>
     </div>
@@ -69,10 +69,14 @@ export default {
 .content{
   margin-top: 80px;
   font-size: 25px;
+  // color: #555;
   .item{
     padding: 10px;
     display: flex;
     align-items: center;
+    .key{
+      color: #555;
+    }
     select{
       flex: 1;
       padding: 10px;
@@ -83,6 +87,9 @@ export default {
   .event{
     border-top: solid 1px #000;
     width: 100%;
+    .key{
+      color: #555;
+    }
   }
   .tip{
     text-align: center;

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div :class='s.searchWrap'>
-      <div :class='s.title'>name</div>
+      <div :class='s.title'>Street Name</div>
       <!-- 街道名 -->
       <div :class='s.inputWrap'>
         <el-select :class='s.elInput' v-model="searchStreetID" placeholder="请选择">
@@ -199,10 +199,7 @@
         this.editingCommunity = community
         this.showEditDialog = true
       },
-      onSearch (streetID) {
-        if (streetID && streetID !== '') {
-          this.searchStreetID = streetID
-        }
+      onSearch () {
         console.info('onSearch', this.searchStreetID)
         if (!this.searchStreetID && this.searchStreetID === '') return
         this.fetchCommunitiesByStreetID(this.searchStreetID)
