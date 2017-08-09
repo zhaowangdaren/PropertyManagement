@@ -3,7 +3,7 @@ var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var DashboardPlugin = require('webpack-dashboard/plugin');
 var px2rem = require('postcss-px2rem');
-
+var OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
@@ -58,9 +58,49 @@ const webpackConfig = {
             localIdentName: '[local]-[hash:base64:5]',
             camelCase: true
           },
-          postcss: function() {
-            return [px2rem({remUnit: 150})];
+          loaders: {
+            css: [
+              "vue-style-loader",
+              {
+                loader: "css-loader",
+                options: {
+                  minimize: false,
+                  sourceMap: false
+                }
+              },
+              {
+                loader: "px2rem-loader",
+                options: {
+                  remUnit: 150
+                }
+              }
+            ],
+            less: [
+              "vue-style-loader",
+              {
+                loader: "css-loader",
+                options: {
+                  minimize: false,
+                  sourceMap: false
+                }
+              },
+              {
+                loader: "px2rem-loader",
+                options: {
+                  remUnit: 150
+                }
+              },
+              {
+                loader: "less-loader",
+                options: {
+                  sourceMap: false
+                }
+              }
+            ]
           }
+          // postcss: function() {
+          //   return [px2rem({remUnit: 150})];
+          // }
         }
       },
       {
@@ -82,21 +122,27 @@ const webpackConfig = {
   },
   plugins:[
     new DashboardPlugin(),
-    // new webpack.HotModuleReplacementPlugin(),
+    new webpack.HotModuleReplacementPlugin(),
+    // 当接收到热更新信号时，在浏览器console控制台打印更多可读性高的模块名称等信息
+    // new webpack.NamedModulesPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new HtmlWebpackPlugin({
       title: 'OP.V2',
       filename: 'index.html',
       template: 'index.html'
-    })
+    }),
+    // Compress extracted CSS. We are using this plugin so that possible
+    // duplicated CSS from different components can be deduped.
+    new OptimizeCSSPlugin()
   ],
   devtool: 'source-map',
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
-    compress: true,
+    compress: false,
     port: 9000,
     host: '0.0.0.0',
-    disableHostCheck: true
+    disableHostCheck: true,
+    hot: true
   }
 }
 
