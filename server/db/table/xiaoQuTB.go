@@ -130,12 +130,16 @@ func DelXQs(db *mgo.Database, names []string) interface{} {
 func FindXQsByIDs(db *mgo.Database, ids []string) interface{} {
 	c := db.C(XiaoQuTableName)
 	var result []XiaoQu
+	var err error
 	for _, id := range ids {
 		var info XiaoQu
-		c.Find(bson.M{"_id": bson.ObjectIdHex(id)}).One(&info)
-		if info != (XiaoQu{}) {
+		err = c.Find(bson.M{"_id": bson.ObjectIdHex(id)}).One(&info)
+		if err != nil {
+			result = append(result, (XiaoQu{}))
+		} else {
 			result = append(result, info)
 		}
+		err = nil
 	}
 	return gin.H{"error": 0, "data": result}
 }

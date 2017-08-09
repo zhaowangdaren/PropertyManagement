@@ -142,6 +142,11 @@ export default new Router({
     {
       path: '/wx/viewProgress',
       component: require('@/pages/wx/viewProgress')
+    },
+    {
+      path: '/wx/detailsComplaint',
+      name: 'wxDetailsComplaint',
+      component: require('@/pages/wx/detailsComplaint')
     }
   ]
 })

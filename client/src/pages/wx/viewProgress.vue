@@ -18,8 +18,16 @@
             v-text='time.label'></option>
         </select>
       </div>
-      <div v-for='event in events' :class='s.event'>
-        <div><span :class='s.key'>编号：</span><span v-text='event.Index'></span></div>
+      <div v-for='event, index in events' :class='s.event'>
+        <div :class='s.left'>
+          <div><span :class='s.key'>编号：</span><span v-text='event.Index'></span></div>
+          <div><span :class='s.key'>XQ Name：</span><span v-if='xqs[index]' v-text='xqs[index].Name'></span></div>
+          <div><span :class='s.key'>进度：</span><span>{{event.Status | filterEventStatus}}</span></div>
+          <div><span :class='s.key'>提交时间:</span><span>{{event.Time | filterTime}}</span></div>
+        </div>
+        <div :class='s.btn' @click='onDetails(event)'>
+          查看<br/>详情
+        </div>
       </div>
       <div v-if='events.length == 0' :class='s.event + " "+ s.tip'>无记录</div>
     </div>
@@ -28,8 +36,11 @@
 
 <script>
 import ActionBar from '@/components/mobile/ActionBar'
+import filterEventStatus from '@/filters/filterEventStatus'
+import filterTime from '@/filters/filterTime'
 export default {
   components: { ActionBar },
+  filters: { filterEventStatus, filterTime },
   data () {
     return {
       host:'http://10.176.118.61:3000',
@@ -37,6 +48,7 @@ export default {
         title: '查看进度'
       },
       events: [],
+      xqs:[],
       host:'http://localhost:3000',
       selectedStatus: 0,
       eventStatus:[{value: 0, label:"全部"}, {value: 4, label: '已解决'}, {value: 1, label:'未解决'}],
@@ -48,6 +60,9 @@ export default {
     this.fetchEvents({})
   },
   methods: {
+    onDetails (event) {
+      this.$router.push({name:'wxDetailsComplaint', query: {index: event.Index, status: event.Status}})
+    },
     fetchEvents (query){
       fetch(this.host + '/open/event/kvs', {
         method: 'POST',
@@ -58,6 +73,22 @@ export default {
         console.info('fetchEvents', body)
         if (body.error === 0) {
           this.events = body.data || []
+          let xqIDs = this.events.map((item) => {
+            return item.XQID
+          })
+          this.fetchXQs(xqIDs)
+        }
+      })
+    },
+    fetchXQs(ids){
+      fetch(this.host + '/open/xq/ids', {
+        method: 'POST',
+        body:JSON.stringify({values: ids})
+      }).then(resp => {
+        return resp.json()
+      }).then(body => {
+        if (body.error === 0){
+          this.xqs = body.data || []
         }
       })
     }
@@ -86,10 +117,24 @@ export default {
   }
   .event{
     border-top: solid 1px #000;
-    width: 100%;
-    .key{
-      color: #555;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .left{
+      flex: 1;
+      .key{
+        color: #555;
+      }
     }
+    .btn{
+      background-color: #20a0ff;
+      border-radius: 2px;
+      padding: 10px;
+      color: #fff;
+      font-size: 20px;
+    }
+    
   }
   .tip{
     text-align: center;

@@ -22,19 +22,20 @@ type Event struct {
 	StreetID    string //街道
 	CommunityID string //社区
 	XQID        string //投诉小区名
-	Status      int    //事件状态  1-居民提交 2-待审核 3-待处理 4-已处理
+	Status      int    //事件状态  -1-用户撤销 0-居民提交 1-已审核待处理 2-已解决 3-已关闭
 	EventLevel  int    //事件等级  1-特急、2-加急、3-急
 	Type        int8   //事件基本类别
 	Content     string //投诉内容
 	Time        int64  //提交时间
 	ToCourt     int8   //0-不推送至法院 1-推送至法院
 	Imgs        string //图片表格，以,为分割符
+
 }
 
 func createEventIndex() string {
 	curTime := time.Now()
 	result := curTime.Format("20060102150405")
-	return result + fmt.Sprint(curTime.Unix())
+	return result + fmt.Sprint(curTime.Clock())
 }
 
 //InsertEvent 插入

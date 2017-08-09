@@ -11,6 +11,7 @@ function resolve (dir) {
 
 const webpackConfig = {
   entry: ['whatwg-fetch','./src/app.js'],
+  // entry: ['./src/app.js'],
   output: {
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/',
