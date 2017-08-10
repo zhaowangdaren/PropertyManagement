@@ -37,6 +37,10 @@ const WXComplaintUploadImage = resolve => require(['@/pages/wx/complaint/uploadI
 const WXComplaintFinish = resolve => require(['@/pages/wx/complaint/finish'], resolve)
 const WXViewProgress = resolve => require(['@/pages/wx/viewProgress'], resolve)
 const WXDetailsProgress = resolve => require(['@/pages/wx/progress/detailsProgress'], resolve)
+const WXCheckPM = resolve => require(['@/pages/wx/checkPM'], resolve)
+const WXPMSelectCommunity = resolve => require(['@/pages/wx/pm/selectCommunity'], resolve)
+const WXPMSelectXQ = resolve => require(['@/pages/wx/pm/selectXQ'], resolve)
+const WXPMDetails = resolve => require(['@/pages/wx/pm/details'], resolve)
 
 export default new Router({
   // mode: 'history',
@@ -182,6 +186,22 @@ export default new Router({
       path: '/wx/detailsProgress',
       name: 'detailsProgress',
       component: WXDetailsProgress
+    },
+    {
+      path: '/wx/checkPM',
+      component: WXCheckPM
+    },
+    {
+      path: '/wx/pm/selectCommunity',
+      component: WXPMSelectCommunity
+    },
+    {
+      path: '/wx/pm/selectXQ',
+      component: WXPMSelectXQ
+    },
+    {
+      path: '/wx/pm/details',
+      component: WXPMDetails
     }
   ]
 })
