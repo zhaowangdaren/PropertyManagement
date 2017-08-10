@@ -1,7 +1,7 @@
 <template>
   <div :class='s.wrap'>
     <div :class='s.searchWrap'>
-      WXName
+      微信用户绑定名称(包含)
       <!-- 微信用户绑定名称（包含） -->
       <search-select v-model='wxName' :values='wxNames' :class='s.searchSelect'/>
       <!-- <image-button :class='s.searchBt' :clickMethod='onSearch'
@@ -19,11 +19,11 @@
     <table>
       <tr >
         <th>序号</th>
-        <th>WXName</th>
+        <th>微信绑定名</th>
         <!-- 用户名 -->
         <th>OpenID</th>
         <!-- OPenID -->
-        <th>Tel</th>
+        <th>电话</th>
         <!-- 电话 -->
         <th>操作</th>
       </tr>

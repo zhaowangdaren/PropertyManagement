@@ -2,7 +2,7 @@
   <div :class='s.wrap'>
     <div :class='s.title'>
       <img src="~@/res/images/earth.png">
-      users<!--   用户管理 -->
+      用户管理<!--   用户管理 -->
     </div>
     <div :class='s.content'>
       <div :class='s.tabs'>
@@ -70,11 +70,11 @@ import InfosStreetUser from '@/components/InfosStreetUser'
       return {
         tabs: [
           {
-            name: 'Govs',//区政府人员
+            name: '区政府人员',//区政府人员
             view: InfosGov
           },
           {
-            name: 'Street users',//街道用户
+            name: '街道用户',//街道用户
             view: InfosStreetUser
           }
         ],

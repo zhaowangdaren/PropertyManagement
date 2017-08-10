@@ -8,7 +8,7 @@ export default function (time) {
   return result.getFullYear() + '年' 
       + (result.getMonth() + 1 ) + '月' 
       + result.getDate() +'日 '
-      + ((result.getHours() + 1) > 9 ? (result.getHours() + 1) : '0' + (result.getHours() + 1)) + ':'
-      + (result.getMinutes() > 9 ? result.getMinutes() : '0' + result.getMinutes()) + ':'
-      + (result.getSeconds() > 9 ? result.getSeconds() : '0' + result.getSeconds())
+      + (result.getHours() + 1) + ':'
+      + result.getMinutes() + ':'
+      + result.getSeconds()
 }

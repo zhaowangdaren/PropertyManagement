@@ -2,7 +2,7 @@
   <div :class='s.wrap'>
     <div :class='s.searchWrap'>
     <!-- 街道名 -->
-      <div :class='s.title'>Street Name</div>
+      <div :class='s.title'>街道名</div>
       <div :class='s.inputWrap'>
         <el-select :class='s.elInput' v-model="searchStreetID" placeholder="请选择">
           <el-option
@@ -14,7 +14,7 @@
         </el-select>
       </div>
       <!-- 小区名 -->
-      <div :class='s.title'>Community</div>
+      <div :class='s.title'>社区名</div>
       <div :class='s.inputWrap'>
         <el-select :class='s.elInput' v-model="searchCommunityID" placeholder="请选择">
           <el-option
@@ -64,17 +64,17 @@
       <tr >
         <th>选择</th>
         <!-- 街道名 -->
-        <th>Street</th>
+        <th>街道名</th>
         <!-- 社区名 -->
-        <th>Community</th>
+        <th>社区名</th>
         <!-- 小区名 -->
-        <th>country</th>
+        <th>小区名</th>
         <!-- 位置 -->
-        <th>address</th>
+        <th>位置</th>
         <!-- 负责人 -->
-        <th>charger</th>
+        <th>负责人</th>
         <!-- 电话号码 -->
-        <th>tel</th>
+        <th>电话号码</th>
         <th :class='s.descr'>描述</th>
         <th>操作</th>
       </tr>
@@ -207,6 +207,7 @@
       },
       onAddSucc () {
         this.fetchXQs()
+        this.$router.go(0)
       },
       onDel () {
         this.dels = this.xqs.filter(item => {

@@ -69,17 +69,6 @@ func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
 		}
 	})
 
-	//通过ID数组查找街道，返回的信息也是数组
-	router.POST("/xq/ids", func(c *gin.Context) {
-		var ids Values
-		err := c.BindJSON(&ids)
-		if err != nil {
-			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
-		} else {
-			c.JSON(http.StatusOK, table.FindXQsByIDs(dbc, ids.Values))
-		}
-	})
-
 	router.POST("/upload", func(c *gin.Context) {
 		file, _ := c.FormFile("file")
 		log.Println(file.Filename)
@@ -148,16 +137,6 @@ func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
 			log.Println(err.Error())
 		} else {
 			c.JSON(http.StatusOK, table.FindEventKVs(dbc, params))
-		}
-	})
-
-	router.POST("/eventHandle/kvs", func(c *gin.Context) {
-		params := make(map[string]interface{})
-		err := c.BindJSON(&params)
-		if err != nil {
-			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
-		} else {
-			c.JSON(http.StatusOK, table.FindEventHandlesByKV(dbc, params))
 		}
 	})
 }

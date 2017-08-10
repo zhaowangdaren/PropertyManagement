@@ -3,18 +3,18 @@
     <div :class='s.content'>
       <div :class='s.title'>
         <img src="~@/res/images/earth.png">
-        Waiting<!-- 待办事件 -->
+        待办事项<!-- 待办事件 -->
       </div>
       <table>
         <!-- 警告类型 事件编号  开始时间  所在小区  事件状态  事件等级  事件类别  操作 -->
         <tr>
-          <th>Warning</th>
-          <th>Index</th>
-          <th>Time</th>
-          <th>XQ</th>
-          <th>Status</th>
-          <th>EventLevel</th>
-          <th>Type</th>
+          <th>警告类型</th>
+          <th>事件编号</th>
+          <th>开始时间</th>
+          <th>所在小区</th>
+          <th>事件状态</th>
+          <th>事件等级</th>
+          <th>时间类别</th>
           <th>操作</th>
         </tr>
         <tr v-for='event in events'>

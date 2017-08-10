@@ -117,37 +117,31 @@ export default new Router({
     },
     {
       path: '/wx/complaint/selectStreet',
-      component: require('@/pages/wx/complaint/selectStreet')
+      component: require('@/pages/wx/selectStreet')
     },
     {
       path: '/wx/complaint/selectCommunity',
-      component: require('@/pages/wx/complaint/selectCommunity')
+      component: require('@/pages/wx/selectCommunity')
     },
     {
       path: '/wx/complaint/selectXQ',
-      component: require('@/pages/wx/complaint/selectXQ')
+      component: require('@/pages/wx/selectXQ')
     },
     {
       path: '/wx/complaint/addEvent',
-      component: require('@/pages/wx/complaint/addEvent')
+      component: require('@/pages/wx/addEvent')
     },
     {
       path: '/wx/complaint/uploadImage',
-      component: require('@/pages/wx/complaint/uploadImage')
+      component: require('@/pages/wx/uploadImage')
     },
     {
       path: '/wx/complaint/finish',
-      component: require('@/pages/wx/complaint/finish')
+      component: require('@/pages/wx/finish')
     },
     {
       path: '/wx/viewProgress',
       component: require('@/pages/wx/viewProgress')
-    },
-    {
-      path: '/wx/detailsProgress',
-      name: 'detailsProgress',
-      component: require('@/pages/wx/progress/detailsProgress')
     }
-
   ]
 })

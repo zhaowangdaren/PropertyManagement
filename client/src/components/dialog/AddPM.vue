@@ -11,7 +11,7 @@
     <div :class='s.content' v-if='curView == 0'>
       <div :class='s.item' >
         <div :class='s.red'>*</div>
-        StreetName
+        街道名称
         <!-- 用户名 -->
         <el-select :class='s.elInput' v-model="inputStreetID" placeholder="请选择">
             <el-option
@@ -24,7 +24,7 @@
       </div>
       <div :class='s.item' >
         <div :class='s.red'>*</div>
-        Community
+        社区名称
         <!-- 用户名 -->
         <el-select :class='s.elInput' v-model="inputCommunityID" placeholder="请选择">
           <el-option
@@ -37,7 +37,7 @@
       </div>
       <div :class='s.item' >
         <div :class='s.red'>*</div>
-        Community
+        小区名称
         <!-- 用户名 -->
         <el-select :class='s.elInput' v-model="inputXQID" placeholder="请选择">
           <el-option
@@ -50,112 +50,114 @@
       </div>
       <div :class='s.item'>
         <div :class='s.red'>*</div>
-        Name
+        物业公司名称
         <!-- 用户名 -->
-        <el-input :class='s.elInput' v-model="pm.Name" placeholder="请输入" @focus='onFocus'></el-input>
+        <el-input :class='s.elInput' v-model="pm.Name" placeholder="请输入物业公司名称" @focus='onFocus'></el-input>
       </div>
       <div :class='s.item'>
         <div :class='s.red'>*</div>
-        LegalPerson
+        独立法人
         <!-- 独立法人 -->
-        <el-input :class='s.elInput' v-model="pm.LegalPerson" placeholder="请输入" @focus='onFocus'></el-input>
+        <el-input :class='s.elInput' v-model="pm.LegalPerson" placeholder="请输入独立法人" @focus='onFocus'></el-input>
       </div>
       <div :class='s.item'>
         <div :class='s.red'>*</div>
-        WuYeZiZhi
+        物业资质
         <!-- 独立法人 -->
-        <el-input :class='s.elInput' v-model="pm.WuYeZiZhi" placeholder="请输入" @focus='onFocus'></el-input>
+        <el-input :class='s.elInput' v-model="pm.WuYeZiZhi" placeholder="请输入物业资质" @focus='onFocus'></el-input>
       </div>
       <div :class='s.item'>
         <div :class='s.red'>*</div>
-        WuYeXinZhi
+        物业类型
         <!-- 独立法人 -->
-        <el-input :class='s.elInput' v-model="pm.WuYeXinZhi" placeholder="请输入" @focus='onFocus'></el-input>
+        <el-input :class='s.elInput' v-model="pm.WuYeXinZhi" placeholder="请输入物业类型" @focus='onFocus'></el-input>
       </div>
       <div :class='s.item'>
         <div :class='s.red'>*</div>
-        Tel
+        联系方式
         <!-- 独立法人 -->
-        <el-input :class='s.elInput' v-model="pm.Tel" placeholder="请输入" @focus='onFocus'></el-input>
+        <el-input :class='s.elInput' v-model="pm.Tel" placeholder="请输入联系方式" @focus='onFocus'></el-input>
       </div>
     </div>
     <!-- Tab 2 -->
     <!-- Tab 2 -->
     <div :class='s.content' v-if='curView == 1'>
+      <!--
       <div :class='s.item'>
+      
         <div :class='s.red'>*</div>
-        XQEnv
-        <!-- 独立法人 -->
+        
+        
         <el-input 
           type='textarea'
           :class='s.elInput' 
           v-model="pm.XQEnv" 
           placeholder="请输入" 
           @focus='onFocus'></el-input>
-      </div>
+      </div> -->
       <div :class='s.item'>
         <div :class='s.red'>*</div>
-        XQEnv
+        小区环境
         <!-- 独立法人 -->
         <el-input type='textarea' :class='s.elInput' v-model="pm.XQEnv" placeholder="请输入" @focus='onFocus'></el-input>
       </div>
       <div :class='s.item'>
         <div :class='s.red'>*</div>
-        XiaoQuCleaning
+        小区保洁
         <!-- 独立法人 -->
         <el-input type='textarea' :class='s.elInput' v-model="pm.XiaoQuCleaning" placeholder="请输入" @focus='onFocus'></el-input>
       </div>
       <div :class='s.item'>
         <div :class='s.red'>*</div>
-        GreenVegetatio
+        绿化植被
         <!-- 绿化 -->
         <el-input type='textarea' :class='s.elInput' v-model="pm.GreenVegetatio" placeholder="请输入" @focus='onFocus'></el-input>
       </div>
       <div :class='s.item'>
         <div :class='s.red'>*</div>
-        GuanYangBaoHu
+        管养保护
         <!-- 独立法人 -->
         <el-input type='textarea' :class='s.elInput' v-model="pm.GuanYangBaoHu" placeholder="请输入" @focus='onFocus'></el-input>
       </div>
       <div :class='s.item'>
         <div :class='s.red'>*</div>
-        XiaoFanJianCha
+        消防检查
         <!-- 独立法人 -->
         <el-input type='textarea' :class='s.elInput' v-model="pm.XiaoFanJianCha" placeholder="请输入" @focus='onFocus'></el-input>
       </div>
       <div :class='s.item'>
         <div :class='s.red'>*</div>
-        DianTiBaoYang
+        电梯保养
         <!-- 独立法人 -->
         <el-input type='textarea' :class='s.elInput' v-model="pm.DianTiBaoYang" placeholder="请输入" @focus='onFocus'></el-input>
       </div>
       <div :class='s.item'>
         <div :class='s.red'>*</div>
-        CarParkInOrder
+        车辆有序停放
         <!-- 独立法人 -->
         <el-input type='textarea' :class='s.elInput' v-model="pm.CarParkInOrder" placeholder="请输入" @focus='onFocus'></el-input>
       </div>
       <div :class='s.item'>
         <div :class='s.red'>*</div>
-        YeZhuCommunity
+        业主委员会
         <!-- 独立法人 -->
         <el-input type='textarea' :class='s.elInput' v-model="pm.YeZhuCommunity" placeholder="请输入" @focus='onFocus'></el-input>
       </div>
       <div :class='s.item'>
         <div :class='s.red'>*</div>
-        YeZhuCommunityTel
+        业主委员会联系方式
         <!-- 独立法人 -->
         <el-input type='textarea' :class='s.elInput' v-model="pm.YeZhuCommunityTel" placeholder="请输入" @focus='onFocus'></el-input>
       </div>
       <div :class='s.item'>
         <div :class='s.red'>*</div>
-        PastYearLevel
+        上一年物业等级
         <!-- 独立法人 -->
         <el-input type='textarea' :class='s.elInput' v-model="pm.PastYearLevel" placeholder="请输入" @focus='onFocus'></el-input>
       </div>
       <div :class='s.item'>
         <div :class='s.red'>*</div>
-        JianYiZhengGaiCuoShi
+        建议整改措施
         <!-- 独立法人 -->
         <el-input type='textarea' :class='s.elInput' v-model="pm.JianYiZhengGaiCuoShi" placeholder="请输入" @focus='onFocus'></el-input>
       </div>
@@ -175,11 +177,11 @@ export default {
       warn: '',
       tabs: [
         {
-          name: 'basic',//基本信息
+          name: '基本信息',//基本信息
           view: 0
         },
         {
-          name: 'details',//详细信息
+          name: '详细信息',//详细信息
           view: 1
         }
       ],

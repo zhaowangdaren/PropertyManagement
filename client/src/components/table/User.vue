@@ -6,7 +6,7 @@
         :img='require("@/res/images/add.png")'
         bgColor='#3598dc'
         fontSize='20px'
-        /> -->
+        /> --> 
       <el-button
         @click='showAddDialog = true'
         type='primary'
@@ -15,11 +15,11 @@
     <table>
       <tr>
       <!-- 用户名 真实姓名  密码  电话  操作 -->
-        <th>UserName</th>
-        <th>RealName</th>
-        <th v-if='USER_TYPE == 3' >StreetName</th>
-        <th>Password</th>
-        <th>OfficeNumber</th>
+        <th>用户名</th>
+        <th>真实姓名</th>
+        <th v-if='USER_TYPE == 3' >街道名</th>
+        <th>密码</th>
+        <th>电话</th>
         <th>操作</th>
       </tr>
       <tr v-for='(user, index) in users' :class='s.gov'>
@@ -54,13 +54,13 @@
       </tr>
     </table>
     <el-dialog
-      title='Add User'
+      title='新增用户信息'
       :visible.sync='showAddDialog'
       size='small'>
       <add-user v-if='showAddDialog' @cancel='showAddDialog = false' @addSucc='onAddSucc' :USER_TYPE='USER_TYPE'></add-user>
     </el-dialog>
     <el-dialog
-      title='Edit Community'
+      title='编辑用户信息'
       :visible.sync='showEditDialog'
       size='small'>
       <edit-user v-if='showEditDialog' :USER='editingUser' @cancel='showEditDialog = false' @editSucc='onEditSucc'></edit-user>

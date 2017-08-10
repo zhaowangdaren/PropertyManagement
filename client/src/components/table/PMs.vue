@@ -3,14 +3,14 @@
     <div :class='s.content'>
       <div :class='s.title'>
         <img src="~@/res/images/earth.png">
-        PM infos<!--  -->
+        物业信息管理<!--  -->
       </div>
       <div :class='s.searchWrap'>
         <table>
           <tr>
-            <td :class='s.key' v-if='STREET_ID === ""'>Street Name</td>
+            <td :class='s.key' v-if='STREET_ID === ""'>所在街道</td>
             <td v-if='STREET_ID === ""'>
-              <el-select v-model="inputStreetID" filterable placeholder="select Street">
+              <el-select v-model="inputStreetID" filterable placeholder="选择街道">
                 <el-option
                   v-for="item in streets"
                   :key="item.ID"
@@ -19,9 +19,9 @@
                 </el-option>
               </el-select>
             </td>
-            <td :class='s.key'>Community</td>
+            <td :class='s.key'>所在社区</td>
             <td>
-              <el-select v-model="inputCommunityID" filterable placeholder="select community">
+              <el-select v-model="inputCommunityID" filterable placeholder="选择社区">
                 <el-option
                   v-for="item in communities"
                   :key="item.ID"
@@ -30,9 +30,9 @@
                 </el-option>
               </el-select>
             </td>
-            <td :class='s.key'>country</td>
+            <td :class='s.key'>所在小区</td>
             <td>
-              <el-select v-model="inputXQID" filterable placeholder="select xqNames">
+              <el-select v-model="inputXQID" filterable placeholder="选择小区">
                 <el-option
                   v-for="item in xqs"
                   :key="item.ID"
@@ -51,15 +51,15 @@
       <div :class='s.table'>
         <table>
           <tr >
-            <th>Country Name</th>
+            <th>小区名</th>
             <!-- 小区名 -->
-            <th>PM Name</th>
+            <th>物业公司</th>
             <!-- 物业公司 -->
-            <th>LegalPerson</th>
+            <th>独立法人</th>
             <!-- 独立法人 -->
-            <th>WuYeZiZhi</th>
+            <th>物业资质</th>
             <!-- 物业资质 -->
-            <th>WuYeXinZhi</th>
+            <th>物业性质</th>
             <!-- 物业性质 -->
             <th>操作</th>
           </tr>
@@ -79,13 +79,13 @@
       </div>
     </div>
     <el-dialog
-      title='Add PM'
+      title='新增物业信息'
       :visible.sync='showAddDialog'
       size='small'>
       <add-p-m v-if='showAddDialog' @cancel='showAddDialog = false' @addSucc='onAddSucc'></add-p-m>
     </el-dialog>
     <el-dialog
-      title='Edit PM'
+      title='编辑物业信息'
       :visible.sync='showEditDialog'
       size='small'>
       <edit-p-m v-if='showEditDialog' :PM='editingPM' @cancel='showEditDialog = false' @editSucc='onEditSucc'></edit-p-m>
@@ -213,6 +213,7 @@ export default {
     },
     onAddSucc () {
       this.fetchPMs()
+      this.$router.go(0)
     },
     onSearch () {
       //小区》社区》街道

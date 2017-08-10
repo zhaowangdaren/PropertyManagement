@@ -3,13 +3,13 @@
     <div :class='s.warn' v-if='warn !== ""' v-text='warn'></div>
     <div :class='s.item'>
       <div :class='s.red'>*</div>
-      UserName
+      用户名
       <!-- 用户名 -->
-      <el-input :class='s.elInput' v-model="user.UserName" placeholder="请输入" @focus='onFocus'></el-input>
+      <el-input :class='s.elInput' v-model="user.UserName" placeholder="请输入用户名" @focus='onFocus'></el-input>
     </div>
     <div :class='s.item' v-if='USER_TYPE == 3'>
       <div :class='s.red'>*</div>
-      StreetName
+      街道名
       <!-- 用户名 -->
       <el-select :class='s.elInput' v-model="user.StreetID" placeholder="请选择">
         <el-option
@@ -22,21 +22,21 @@
     </div>
     <div :class='s.item'>
       <div :class='s.red'>*</div>
-      RealName
+      真实姓名
       <!-- 用户名 -->
-      <el-input :class='s.elInput' v-model="user.RealName" placeholder="请输入" @focus='onFocus'></el-input>
+      <el-input :class='s.elInput' v-model="user.RealName" placeholder="请输入真实姓名" @focus='onFocus'></el-input>
     </div>
     <div :class='s.item'>
       <div :class='s.red'>*</div>
-      Password
+      密码
       <!-- 用户名 -->
-      <el-input :class='s.elInput' v-model="user.Password" placeholder="请输入" @focus='onFocus'></el-input>
+      <el-input :class='s.elInput' v-model="user.Password" placeholder="请输入密码" @focus='onFocus'></el-input>
     </div>
     <div :class='s.item'>
       <div :class='s.red'>*</div>
-      OfficeNumber
+      电话号码
       <!-- 用户名 -->
-      <el-input :class='s.elInput' v-model="user.Tel" placeholder="请输入" @focus='onFocus'></el-input>
+      <el-input :class='s.elInput' v-model="user.Tel" placeholder="请输入电话号码" @focus='onFocus'></el-input>
     </div>
     <div :class='s.item'>
       <el-button @click='onSave' type='primary'>提交</el-button>

@@ -3,21 +3,21 @@
     <div :class='s.content'>
       <div :class='s.title'>
         <img src="~@/res/images/earth.png">
-        Courts<!-- 推送法院调解请求 -->
+        申请法院调解请求<!-- 推送法院调解请求 -->
       </div>
       <div :class='s.body'>
         <!-- search result -->
         <table>
         <!-- 事件编号 开始时间  所在街道  所在社区  所在小区  事件状态  事件等级  事件类别  操作 -->
           <tr>
-            <th>Index</th>
-            <th>Time</th>
-            <th>Street</th>
-            <th>Community</th>
-            <th>XQ</th>
-            <th>Status</th>
-            <th>EventLevel</th>
-            <th>Type</th>
+            <th>事件编号</th>
+            <th>开始时间</th>
+            <th>所在街道</th>
+            <th>所在社区</th>
+            <th>所在小区</th>
+            <th>事件状态</th>
+            <th>事件等级</th>
+            <th>事件类别</th>
             <th>操作</th>
           </tr>
           <tr v-for='handle in searchResult'>

@@ -1,7 +1,7 @@
 <template>
   <div :class='s.wrap' :style='{backgroundImage: "url(" + bgImg +  ")"}'>
-    <img src="~@/res/images/logo_jh.png" :class='s.logo'>
-    <div :class='s.title'>Title</div>
+    <img src="~@/res/images/logo.png" :class='s.logo'>
+    <div :class='s.title'>互联网+花山区物业管理平台与居民建筑系统</div>
     <div :class='s.noticeWrap'>
       <i :class='"iconfont icon-notice " + s.notice'></i>
       <span :class='s.noticeNum'>0</span>

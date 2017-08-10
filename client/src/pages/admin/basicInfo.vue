@@ -2,7 +2,7 @@
   <div :class='s.wrap'>
     <div :class='s.title'>
       <img src="~@/res/images/earth.png">
-      Home<!-- 基础信息维护 -->
+      基础信息维护
     </div>
     <div :class='s.content'>
       <div :class='s.tabs'>
@@ -72,15 +72,15 @@ import InfosCountry from '@/components/InfosCountry'
       return {
         tabs: [
           {
-            name: 'street',//街道信息维护
+            name: '街道信息维护',//街道信息维护
             view: InfosStreet
           },
           {
-            name: 'community',//社区信息维护
+            name: '社区信息维护',//社区信息维护
             view: InfosCommunity
           },
           {
-            name: 'country',//社区信息维护
+            name: '小区信息维护',//社区信息维护
             view: InfosCountry
           }
         ],

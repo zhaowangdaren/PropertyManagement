@@ -191,7 +191,7 @@ func (mw *GinJWTMiddleware) LoginHandler(c *gin.Context) {
 	var loginVals Login
 
 	if c.BindJSON(&loginVals) != nil {
-		mw.unauthorized(c, http.StatusBadRequest, "Missing Username or Password")
+		mw.unauthorized(c, http.StatusBadRequest, "用户或密码为空")
 		return
 	}
 

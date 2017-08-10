@@ -3,11 +3,11 @@
     <table>
       <tr >
         <th>序号</th>
-        <th>WXName</th>
+        <th>微信绑定名</th>
         <!-- 用户名 -->
         <th>OpenID</th>
         <!-- OPenID -->
-        <th>Tel</th>
+        <th>电话<th>
         <!-- 电话 -->
         <th>操作</th>
       </tr>

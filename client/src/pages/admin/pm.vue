@@ -7,7 +7,7 @@
 <script type="text/javascript">
 import PMs from '@/components/table/PMs'
   export default {
-    components: { PMs},
+    components: {PMs},
     data () {
       return {
         editable: true

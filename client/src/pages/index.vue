@@ -10,10 +10,11 @@
     
     <div :class='s.content'>
       <div :class='s.titleWrap'>
-        <img src="~@/res/images/logo_jh.png">
-        TitleTitleTitleTitleTitleTitle
+        <img src="~@/res/images/logo.png">
+        <div></div>
+         &nbsp;&nbsp;互联网+花山区物业管理平台与居民建筑管理系统
       </div>
-      <div :class='s.body'>
+      <div :class='s.body'> 
         <div :class='s.left'>
           <div :class='s.adminWrap' @click='toAdmin'>
             <div>
@@ -24,16 +25,16 @@
             </div>
           </div>
           <div :class='s.streetWrap' @click='toStreet'>
-            Street User
+            街道工作人员
             <div :class='s.hide'>
-              <span :class='s.yellow'>Street User</span>user user
+              <span :class='s.yellow'>街道工作人员</span>:居民物业纠纷处理
             </div>
           </div>
         </div>
         <div :class='s.right' @click='toGov'>
-          Gov
+          花山区住房管理中心工作人员
           <div :class='s.hide'>
-            <span :class='s.yellow'>Gov User</span>user user
+            <span :class='s.yellow'>花山区住房管理中心工作人员</span>:纠纷、法院调解、推送政府
           </div>
         </div>
       </div>
@@ -60,13 +61,13 @@
         }, 4000)
       },
       toAdmin () {
-        this.$router.push({path:'/login', query: {title: 'Admin', target: '/admin'}})
+        this.$router.push({path:'/login', query: {title: '管理员登陆入口', target: '/admin'}})
       },
       toStreet () {
-        this.$router.push({path:'/login', query: {title:'Street User', target:'/street'}})
+        this.$router.push({path:'/login', query: {title:'街道工作人员登陆入口', target:'/street'}})
       },
       toGov () {
-        this.$router.push({path:'/login', query: {title:'Gov User', target: '/gov'}})
+        this.$router.push({path:'/login', query: {title:'管理中心工作人员登陆入口', target: '/gov'}})
       }
     }
   }
@@ -100,7 +101,7 @@
       // background-color: #fff;
       width: 80%;
       .titleWrap{
-        font-size: 50px;
+        font-size: 40px;
         display: flex;
         justify-content: center;
         align-items: center;

@@ -3,7 +3,7 @@
     <div :class='s.content'>
       <div :class='s.title'>
         <img src="~@/res/images/earth.png">
-        Event handles<!-- 居民物业纠纷处理 -->
+        居民物业纠纷处理<!-- 居民物业纠纷处理 -->
       </div>
       <div :class='s.body'>
         <table>
@@ -17,11 +17,11 @@
           所在小区
            -->
           <tr>
-            <td :class='s.key'>Index</td>
+            <td :class='s.key'>事件编号</td>
             <td>
               <el-input v-model="inputIndex" placeholder="请输入事件编号"></el-input>
             </td>
-            <td :class='s.key'>EventLevel</td>
+            <td :class='s.key'>事件等级</td>
             <td>
               <el-select v-model="inputEventLevel" filterable placeholder="全部">
                 <el-option
@@ -32,7 +32,7 @@
                 </el-option>
               </el-select>
             </td>
-            <td :class='s.key'>EventType</td>
+            <td :class='s.key'>事件类型</td>
             <td>
               <el-select v-model="inputType" filterable placeholder="全部">
                 <el-option
@@ -45,7 +45,7 @@
             </td>
           </tr>
           <tr>
-            <td :class='s.key'>StartTime</td>
+            <td :class='s.key'>起始时间</td>
             <td>
               <el-date-picker
                 v-model="inputStartTime"
@@ -53,7 +53,7 @@
                 placeholder="选择日期时间">
               </el-date-picker>
             </td>
-            <td :class='s.key'>To</td>
+            <td :class='s.key'>至</td>
             <td>
               <el-date-picker
                 v-model="inputEndTime"
@@ -61,7 +61,7 @@
                 placeholder="选择日期时间">
               </el-date-picker>
             </td>
-            <td :class='s.key'>EventStatus</td>
+            <td :class='s.key'>事件状态</td>
             <td>
               <el-select v-model="inputEventStatus" filterable placeholder="全部">
                 <el-option
@@ -74,7 +74,7 @@
             </td>
           </tr>
           <tr>
-            <td :class='s.key'>Community</td>
+            <td :class='s.key'>所在社区</td>
             <td>
               <el-select v-model="inputCommunityID" filterable placeholder="全部">
                 <el-option
@@ -85,7 +85,7 @@
                 </el-option>
               </el-select>
             </td>
-            <td :class='s.key'>XQs</td>
+            <td :class='s.key'>所在小区</td>
             <td>
               <el-select v-model="inputXQID" filterable placeholder="全部">
                 <el-option
@@ -105,14 +105,14 @@
         <table>
         <!-- 警告类型 事件编号  开始时间  所在小区  事件状态  事件等级  事件类别  操作 -->
           <tr>
-            <th>Warning</th>
-            <th>Index</th>
-            <th>Time</th>
-            <th>Community</th>
-            <th>XQ</th>
-            <th>Status</th>
-            <th>EventLevel</th>
-            <th>Type</th>
+            <th>警告类型</th>
+            <th>事件编号</th>
+            <th>开始时间</th>
+            <th>所在社区</th>
+            <th>所在小区</th>
+            <th>事件状态</th>
+            <th>事件等级</th>
+            <th>事件类别</th>
             <th>操作</th>
           </tr>
           <tr v-for='handle in events'>

@@ -4,7 +4,7 @@
     <div :class='s.content'>
       <menu-gov :class='s.menu' :menus='menus' :NEXT='nextPath'/>
       <div :class='s.body'>
-        <div :class='s.userName'>{{realName}}</div>
+        <div :class='s.userName'>你好，{{realName}}</div>
         <router-view></router-view>
       </div>
     </div>
@@ -29,7 +29,7 @@ export default {
         {
           path: '/gov',
           icon: 'icon-home',
-          text:'Home'
+          text:'首页'
         },
         {
           icon: 'icon-tousu',

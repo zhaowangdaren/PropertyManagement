@@ -2,7 +2,7 @@
   <div :class='s.wrap'>
     <div :class='s.title'>
       <img src="~@/res/images/earth.png">
-      WX User<!-- 微信绑定用户 -->
+      微信用户绑定<!-- 微信绑定用户 -->
     </div>
     <div :class='s.content'>
       <div :class='s.tabs'>
@@ -70,11 +70,11 @@ import InfosWXRequest from '@/components/InfosWXRequest'
       return {
         tabs: [
           {
-            name: 'Band',//已绑定用户
+            name: '已绑定用户',//已绑定用户
             view: InfosWXBand
           },
           {
-            name: 'Requesting',//申请中
+            name: '申请绑定用户',//申请中
             view: InfosWXRequest
           }
         ],

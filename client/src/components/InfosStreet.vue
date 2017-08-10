@@ -26,15 +26,15 @@
     <table>
       <tr >
         <th>选择</th>
-        <th>name</th>
+        <th>街道名</th>
         <!-- 街道名 -->
-        <th>charger</th>
+        <th>负责人</th>
         <!-- 负责人 -->
-        <th>Tel</th>
+        <th>电话号码</th>
         <!-- 电话号码 -->
-        <th>code</th>
+        <th>授权码</th>
         <!-- 授权码 -->
-        <th :class='s.descr'>intro</th>
+        <th :class='s.descr'>描述</th>
         <!-- 描述 -->
         <th>操作</th>
       </tr>
@@ -53,13 +53,13 @@
       </tr>
     </table>
     <el-dialog
-      title='Add Street'
+      title='新增街道信息'
       :visible.sync='showAddDialog'
       size='small'>
       <add-street v-if='showAddDialog' @cancel='showAddDialog = false' @addSucc='onAddSucc'></add-street>
     </el-dialog>
     <el-dialog
-      title='Edit Street'
+      title='编辑街道信息'
       :visible.sync='showEditDialog'
       size='small'>
       <edit-street v-if='showEditDialog' :street='editingStreet' @cancel='showEditDialog = false'></edit-street>
@@ -119,6 +119,7 @@
       },
       onAddSucc () {
         this.fetchStreets()
+        this.$router.go(0)      
       },
       onEdit (street) {
         this.editingStreet = street

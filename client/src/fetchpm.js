@@ -56,6 +56,7 @@ export default function (vm, auth, path, options) {
     path = HOST + path
     if(options.method == 'POST') options.body = JSON.stringify(options.body)
     console.info(path, options)
+    //进入后台了
     return fetch(path, options).then(resp => {
       if (resp.status == 401 && vm.$route.path !== '/login') {//认证失败，重新登录
           vm.$router.push({path:'/'})
