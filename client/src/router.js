@@ -117,36 +117,37 @@ export default new Router({
     },
     {
       path: '/wx/complaint/selectStreet',
-      component: require('@/pages/wx/selectStreet')
+      component: require('@/pages/wx/complaint/selectStreet')
     },
     {
       path: '/wx/complaint/selectCommunity',
-      component: require('@/pages/wx/selectCommunity')
+      component: require('@/pages/wx/complaint/selectCommunity')
     },
     {
       path: '/wx/complaint/selectXQ',
-      component: require('@/pages/wx/selectXQ')
+      component: require('@/pages/wx/complaint/selectXQ')
     },
     {
       path: '/wx/complaint/addEvent',
-      component: require('@/pages/wx/addEvent')
+      component: require('@/pages/wx/complaint/addEvent')
     },
     {
       path: '/wx/complaint/uploadImage',
-      component: require('@/pages/wx/uploadImage')
+      component: require('@/pages/wx/complaint/uploadImage')
     },
     {
       path: '/wx/complaint/finish',
-      component: require('@/pages/wx/finish')
+      component: require('@/pages/wx/complaint/finish')
     },
     {
       path: '/wx/viewProgress',
       component: require('@/pages/wx/viewProgress')
     },
     {
-      path: '/wx/detailsComplaint',
-      name: 'wxDetailsComplaint',
-      component: require('@/pages/wx/detailsComplaint')
+      path: '/wx/detailsProgress',
+      name: 'detailsProgress',
+      component: require('@/pages/wx/progress/detailsProgress')
     }
+
   ]
 })

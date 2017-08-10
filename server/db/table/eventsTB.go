@@ -29,7 +29,7 @@ type Event struct {
 	Time        int64  //提交时间
 	ToCourt     int8   //0-不推送至法院 1-推送至法院
 	Imgs        string //图片表格，以,为分割符
-
+	Tel         string //联系电话
 }
 
 func createEventIndex() string {

@@ -2,21 +2,23 @@
   <div>
     <action-bar :OPTIONS='headerOptions'></action-bar>
     <div :class='s.content'>
-      <div :class='s.item'>
-        <span :class='s.key'>Evnet Status</span>
-        <select v-model='selectedStatus'>
-          <option v-for='status in eventStatus' 
-            :value='status.value'
-            v-text='status.label'></option>
-        </select>
-      </div>
-      <div :class='s.item'>
-        <span :class='s.key'>Time</span>
-        <select v-model='selectedTime'>
-          <option v-for='time in times' 
-            :value='time.value'
-            v-text='time.label'></option>
-        </select>
+      <div :class='s.up'>
+        <div :class='s.item'>
+          <span :class='s.key'>Evnet Status</span>
+          <select v-model='selectedStatus'>
+            <option v-for='status in eventStatus' 
+              :value='status.value'
+              v-text='status.label'></option>
+          </select>
+        </div>
+        <div :class='s.item'>
+          <span :class='s.key'>Time</span>
+          <select v-model='selectedTime'>
+            <option v-for='time in times' 
+              :value='time.value'
+              v-text='time.label'></option>
+          </select>
+        </div>
       </div>
       <div v-for='event, index in events' :class='s.event'>
         <div :class='s.left'>
@@ -61,7 +63,7 @@ export default {
   },
   methods: {
     onDetails (event) {
-      this.$router.push({name:'wxDetailsComplaint', query: {index: event.Index, status: event.Status}})
+      this.$router.push({name:'detailsProgress', query: {index: event.Index, status: event.Status}})
     },
     fetchEvents (query){
       fetch(this.host + '/open/event/kvs', {
@@ -100,23 +102,29 @@ export default {
 .content{
   margin-top: 80px;
   font-size: 25px;
-  // color: #555;
-  .item{
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    .key{
-      color: #555;
-    }
-    select{
-      flex: 1;
+  .up{
+    background-color: #fff;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    .item{
       padding: 10px;
-      border-radius: 5px;
-      margin: 10px;
+      display: flex;
+      align-items: center;
+      .key{
+        color: #555;
+      }
+      select{
+        flex: 1;
+        padding: 10px;
+        border-radius: 5px;
+        margin: 10px;
+      }
     }
   }
+  
   .event{
-    border-top: solid 1px #000;
+    margin: 10px;
+    background-color: #fff;
+    border-radius: 2px;
     padding: 10px;
     display: flex;
     justify-content: center;
@@ -129,10 +137,10 @@ export default {
     }
     .btn{
       background-color: #20a0ff;
-      border-radius: 2px;
+      border-radius: 5px;
       padding: 10px;
       color: #fff;
-      font-size: 20px;
+      font-size: 12px;
     }
     
   }

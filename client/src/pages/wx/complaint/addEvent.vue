@@ -135,9 +135,10 @@ export default{
     margin-top: 80px;
     .header{
       font-size: 30px;
-      margin: 20px 10px;
+      padding: 20px 10px;
       font-weight: bold;
       color: #999;
+      background-color: #fff;
       .name{
         color: #000;
       }
@@ -152,7 +153,7 @@ export default{
       font-size: 25px;
       display: flex;
       padding: 0px 10px;
-      // background-color: #fff;
+      background-color: #fff;
       .title{
         padding: 15px 0;
         color: #999;
@@ -172,6 +173,7 @@ export default{
     .contentWrap{
       font-size:25px;
       margin-top: 20px;
+      background-color: #fff;
       .title{
         margin: 10px;
         font-size: 30px;
@@ -183,6 +185,7 @@ export default{
         textarea{
           width: 100%;
           min-width: 50px;
+          background-color: #f0f0f0;
         }
       }
     }
