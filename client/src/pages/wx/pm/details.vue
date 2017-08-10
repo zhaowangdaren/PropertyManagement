@@ -8,7 +8,18 @@
 <script>
 import ActionBar from '@/components/mobile/ActionBar'
 export default {
-  components: { ActionBar }
+  components: { ActionBar },
+  data () {
+    return {
+      headerOptions: {
+        leftBtns: [{text:'上一步', event: null}],
+        title: 'PM Details',
+        rightBtns: []
+      },
+      xqs: [],
+      host:'http://10.176.118.61:3000'
+    }
+  }
 }
 </script>
 
