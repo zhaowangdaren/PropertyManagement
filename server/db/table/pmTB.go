@@ -25,7 +25,7 @@ type PM struct {
 	WuYeZiZhi            string        //物业资质
 	WuYeXinZhi           string        //物业性质
 	XQEnv                string        //小区环境
-	XiaoQuCleaning       string        //小区保洁
+	XQCleaning           string        //小区保洁
 	GreenVegetatio       string        //绿化植被
 	GuanYangBaoHu        string        //管养保护
 	XiaoFanJianCha       string        //消防检查
@@ -35,11 +35,7 @@ type PM struct {
 	YeZhuCommunityTel    string        //业主委员会联系方式
 	PastYearLevel        string        //上一年物业等级
 	JianYiZhengGaiCuoShi string        //建议整改措施
-	Img1                 string
-	Img2                 string
-	Img3                 string
-	Img4                 string
-	Img5                 string
+	Imgs                 string        //图片列表，以,为分隔符
 }
 
 //PMs 集合

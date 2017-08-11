@@ -41,6 +41,7 @@ const WXCheckPM = resolve => require(['@/pages/wx/checkPM'], resolve)
 const WXPMSelectCommunity = resolve => require(['@/pages/wx/pm/selectCommunity'], resolve)
 const WXPMSelectXQ = resolve => require(['@/pages/wx/pm/selectXQ'], resolve)
 const WXPMDetails = resolve => require(['@/pages/wx/pm/details'], resolve)
+const WXPMBind = resolve => require(['@/pages/wx/pm/bind'], resolve)
 
 export default new Router({
   // mode: 'history',
@@ -202,6 +203,10 @@ export default new Router({
     {
       path: '/wx/pm/details',
       component: WXPMDetails
+    },
+    {
+      path: '/wx/pm/bind',
+      component: WXPMBind
     }
   ]
 })

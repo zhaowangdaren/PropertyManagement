@@ -160,4 +160,26 @@ func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
 			c.JSON(http.StatusOK, table.FindEventHandlesByKV(dbc, params))
 		}
 	})
+
+	router.POST("/pm/kvs", func(c *gin.Context) {
+		params := make(map[string]interface{})
+		err := c.BindJSON(&params)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			log.Println(err.Error())
+		} else {
+			c.JSON(http.StatusOK, table.FindWuYeKVs(dbc, params))
+		}
+	})
+
+	router.POST("/pm/bind", func(c *gin.Context) {
+		var info table.WXUser
+		err := c.BindJSON(&info)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1})
+			log.Println(err.Error())
+		} else {
+			c.JSON(http.StatusOK, table.InsertWXUser(dbc, info))
+		}
+	})
 }

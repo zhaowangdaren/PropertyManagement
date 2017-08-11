@@ -28,21 +28,21 @@ type WXUsers struct {
 const WXUserTableName = "WXUser"
 
 //InsertWXUser 插入user
-func InsertWXUser(db *mgo.Database, info WXUser) string {
+func InsertWXUser(db *mgo.Database, info WXUser) interface{} {
 	c := db.C(WXUserTableName)
 	count, err := c.Find(bson.M{"openid": info.OpenID}).Count()
 	if err != nil { //查询出错或记录不存在
 		log.Fatal(err)
 	}
 	if count > 0 {
-		return "微信ID：" + info.OpenID + "已绑定过"
+		return gin.H{"error": 1, "data": "微信号已申请了绑定"}
 	}
 	err = c.Insert(&info)
 	if err != nil {
-		log.Fatal(err)
-		return err.Error()
+		log.Println(err)
+		return gin.H{"error": 1, "data": err.Error()}
 	}
-	return Succ
+	return gin.H{"error": 0, "data": ""}
 }
 
 //FindWXUsers 查询小区信息集

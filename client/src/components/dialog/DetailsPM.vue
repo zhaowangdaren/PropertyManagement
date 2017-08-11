@@ -101,9 +101,9 @@
       </div>
       <div :class='s.item'>
         <div :class='s.red'>*</div>
-        XiaoQuCleaning
+        XQCleaning
         <!-- 独立法人 -->
-        <el-input type='textarea' disabled :class='s.elInput' v-model="pm.XiaoQuCleaning" @focus='onFocus'></el-input>
+        <el-input type='textarea' disabled :class='s.elInput' v-model="pm.XQCleaning" @focus='onFocus'></el-input>
       </div>
       <div :class='s.item'>
         <div :class='s.red'>*</div>
