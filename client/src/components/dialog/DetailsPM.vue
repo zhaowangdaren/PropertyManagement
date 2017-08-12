@@ -10,71 +10,41 @@
     </div>
     <div :class='s.content' v-if='curView == 0'>
       <div :class='s.item' >
-        <div :class='s.red'>*</div>
-        StreetName
+        街道名
         <!-- 用户名 -->
-        <el-select :class='s.elInput' disabled v-model="pm.StreetID">
-            <el-option
-              v-for="item in streets"
-              :key="item.ID"
-              :label="item.Name"
-              :value="item.ID">
-            </el-option>
-          </el-select>
+        <el-input :class='s.elInput' disabled v-model="street.Name" @focus='onFocus'></el-input>
       </div>
       <div :class='s.item' >
-        <div :class='s.red'>*</div>
-        Community
+        社区名
         <!-- 用户名 -->
-        <el-select :class='s.elInput' disabled v-model="pm.CommunityID">
-          <el-option
-            v-for="item in communities"
-            :key="item.ID"
-            :label="item.Name"
-            :value="item.ID">
-          </el-option>
-        </el-select>
+        <el-input :class='s.elInput' disabled v-model="community.Name" @focus='onFocus'></el-input>
       </div>
       <div :class='s.item' >
-        <div :class='s.red'>*</div>
-        Community
-        <!-- 用户名 -->
-        <el-select :class='s.elInput' disabled v-model="pm.XQID">
-          <el-option
-            v-for="item in xqs"
-            :key="item.ID"
-            :label="item.Name"
-            :value="item.ID">
-          </el-option>
-        </el-select>
+        小区名
+        <el-input :class='s.elInput' disabled v-model="xq.Name" @focus='onFocus'></el-input>
       </div>
       <div :class='s.item'>
-        <div :class='s.red'>*</div>
-        Name
+        物业公司名称
         <!-- 用户名 -->
         <el-input :class='s.elInput' disabled v-model="pm.Name" @focus='onFocus'></el-input>
       </div>
       <div :class='s.item'>
-        <div :class='s.red'>*</div>
-        LegalPerson
+        独立法人
         <!-- 独立法人 -->
         <el-input :class='s.elInput' disabled v-model="pm.LegalPerson" @focus='onFocus'></el-input>
       </div>
       <div :class='s.item'>
-        <div :class='s.red'>*</div>
-        WuYeZiZhi
+        物业资质
         <!-- 独立法人 -->
         <el-input :class='s.elInput' disabled v-model="pm.WuYeZiZhi" @focus='onFocus'></el-input>
       </div>
       <div :class='s.item'>
-        <div :class='s.red'>*</div>
-        WuYeXinZhi
+        物业性质
         <!-- 独立法人 -->
         <el-input :class='s.elInput' disabled v-model="pm.WuYeXinZhi" @focus='onFocus'></el-input>
       </div>
       <div :class='s.item'>
-        <div :class='s.red'>*</div>
-        Tel
+        联系电话
         <!-- 独立法人 -->
         <el-input :class='s.elInput' disabled v-model="pm.Tel" @focus='onFocus'></el-input>
       </div>
@@ -83,81 +53,64 @@
     <!-- Tab 2 -->
     <div :class='s.content' v-if='curView == 1'>
       <div :class='s.item'>
-        <div :class='s.red'>*</div>
-        XQEnv
-        <!-- 独立法人 -->
-        <el-input 
-          disabled 
-          type='textarea'
-          :class='s.elInput' 
-          v-model="pm.XQEnv" 
-          @focus='onFocus'></el-input>
-      </div>
-      <div :class='s.item'>
-        <div :class='s.red'>*</div>
-        XQEnv
+        小区环境
         <!-- 独立法人 -->
         <el-input type='textarea' disabled :class='s.elInput' v-model="pm.XQEnv" @focus='onFocus'></el-input>
       </div>
       <div :class='s.item'>
-        <div :class='s.red'>*</div>
-        XQCleaning
+        小区保洁
         <!-- 独立法人 -->
         <el-input type='textarea' disabled :class='s.elInput' v-model="pm.XQCleaning" @focus='onFocus'></el-input>
       </div>
       <div :class='s.item'>
-        <div :class='s.red'>*</div>
-        GreenVegetatio
+        小区绿化
         <!-- 绿化 -->
         <el-input type='textarea' disabled :class='s.elInput' v-model="pm.GreenVegetatio" @focus='onFocus'></el-input>
       </div>
       <div :class='s.item'>
-        <div :class='s.red'>*</div>
-        GuanYangBaoHu
+        管养保护
         <!-- 独立法人 -->
         <el-input type='textarea' disabled :class='s.elInput' v-model="pm.GuanYangBaoHu" @focus='onFocus'></el-input>
       </div>
       <div :class='s.item'>
-        <div :class='s.red'>*</div>
-        XiaoFanJianCha
+        消防检查
         <!-- 独立法人 -->
         <el-input type='textarea' disabled :class='s.elInput' v-model="pm.XiaoFanJianCha" @focus='onFocus'></el-input>
       </div>
       <div :class='s.item'>
-        <div :class='s.red'>*</div>
-        DianTiBaoYang
+        电梯保养
         <!-- 独立法人 -->
         <el-input type='textarea' disabled :class='s.elInput' v-model="pm.DianTiBaoYang" @focus='onFocus'></el-input>
       </div>
       <div :class='s.item'>
-        <div :class='s.red'>*</div>
-        CarParkInOrder
+        车辆有序停放
         <!-- 独立法人 -->
         <el-input type='textarea' disabled :class='s.elInput' v-model="pm.CarParkInOrder" @focus='onFocus'></el-input>
       </div>
       <div :class='s.item'>
-        <div :class='s.red'>*</div>
-        YeZhuCommunity
+        业主委员会
         <!-- 独立法人 -->
         <el-input type='textarea' disabled :class='s.elInput' v-model="pm.YeZhuCommunity" @focus='onFocus'></el-input>
       </div>
       <div :class='s.item'>
-        <div :class='s.red'>*</div>
-        YeZhuCommunityTel
+        业主委员会联系方式
         <!-- 独立法人 -->
         <el-input type='textarea' disabled :class='s.elInput' v-model="pm.YeZhuCommunityTel" @focus='onFocus'></el-input>
       </div>
       <div :class='s.item'>
-        <div :class='s.red'>*</div>
-        PastYearLevel
+        上一年物业等级
         <!-- 独立法人 -->
         <el-input type='textarea' disabled :class='s.elInput' v-model="pm.PastYearLevel" @focus='onFocus'></el-input>
       </div>
       <div :class='s.item'>
-        <div :class='s.red'>*</div>
-        JianYiZhengGaiCuoShi
+        建议整改措施
         <!-- 独立法人 -->
         <el-input type='textarea' disabled :class='s.elInput' v-model="pm.JianYiZhengGaiCuoShi" @focus='onFocus'></el-input>
+      </div>
+    </div>
+    <div :class='s.content' v-show='curView == 2'>
+      <div v-show='curView == 2'>
+        <div ref='map' :class='s.map'>Map</div>
       </div>
     </div>
   </div>
@@ -174,25 +127,33 @@ export default {
       warn: '',
       tabs: [
         {
-          name: 'basic',//基本信息
+          name: '基本信息',//基本信息
           view: 0
         },
         {
-          name: 'details',//详细信息
+          name: '详细信息',//详细信息
           view: 1
+        },
+        {
+          name: '小区位置',//详细信息
+          view: 2
         }
       ],
       curView: 0,
-      streets: [],
-      communities: [],
-      xqs: [],
+      street: {},
+      community: {},
+      xq: {},
       inputStreetID: '',
       inputCommunityID:'',
-      inputXQID: ''
+      inputXQID: '',
+      map: null,
+      placeSearch: null
     }
   },
   mounted () {
-    this.fetchAllStreets()
+    this.fetchStreet(this.pm.StreetID)
+    this.fetchCommunity(this.pm.CommunityID)
+    this.fetchXQ(this.pm.XQID)
   },
   watch: {
     inputStreetID: function (val) {
@@ -207,91 +168,64 @@ export default {
   methods: {
     onTab (tab) {
       this.curView = tab.view
-    },
-    onFocus () {
-      this.warn = ''
-    },
-    onSave () {
-      this.pm.StreetID = this.inputStreetID
-      this.pm.CommunityID = this.inputCommunityID
-      this.pm.XQID = this.inputXQID
-      if(!this.checkPM()) return
-      fetchpm(this, true, '/pm/pm/add', {
-        method: 'POST',
-        body: this.pm
-      }).then(resp => {
-        return resp.json()
-      }).then(body => {
-        console.info('onSave', body)
-        if (body.error == 1) {
-          this.warn = body.data
-        } else {
-          this.warn = '提交成功'
-          this.$emit('addSucc')
-        }
+      this.$nextTick(() => {
+        if (this.curView == 2) this.initMap()
       })
     },
-    checkPM () {
-      if (this.pm.StreetID == ''){
-        this.warn = '请选择Street'
-        return false
-      }
-      if (this.pm.CommunityID == ''){
-        this.warn = 'Community'
-        return false
-      }
-      if (this.pm.XQID == ''){
-        this.warn = '请选择XQ'
-        return false
-      }
-      if (this.pm.Name == ''){
-        this.warn = '请输入名称'
-        return false
-      }
-      if (this.pm.LegalPerson == ''){
-        this.warn = '请输入法人代表'
-        return false
-      }
-      return true
+    initMap () {
+      if (this.map !== null) return 
+      this.map = new AMap.Map(this.$refs.map, {
+        zoom: 10
+      })
+      AMap.service(['AMap.PlaceSearch'], () => {
+        this.placeSearch = new AMap.PlaceSearch({
+          pageSize: 5,
+          pageIndex: 1,
+          city: '0555',
+          map: this.map
+        })
+        this.placeSearch.search(this.xq.Address, (status, result) => {
+          console.info('placeSearch status'+ status, result)
+        })
+      })
+      
     },
-    onCancel () {
-      this.$emit('cancel')
-    },
-    fetchAllStreets () {
-      fetchpm(this, true, '/pm/street',{
-          method: 'POST'
+    fetchStreet (id) {
+      fetchpm(this, true, '/pm/street/ids',{
+          method: 'POST',
+          body: {values: [id]}
       }).then(resp => {
         console.info(resp)
         return resp.json()
       }).then( data => {
         if (data.error === 0) {
           console.info (data)
-          this.streets = data.data
+          this.street = data.data[0] || {}
         }
       })
     },
-    fetchAllCommunitiesByStreetID (streetID) {
-      if ( !streetID || streetID == '') return null
-      fetchpm( this, true, '/pm/community/kvs', {
+    fetchCommunity (id) {
+      if ( !id || id == '') return null
+      fetchpm( this, true, '/pm/community/ids', {
         method: 'POST',
-        body: {streetID: streetID}
+        body: {values: [id]}
       }).then(resp => {
         return resp.json()
       }).then(body => {
         console.info('fetchAllCommunities', body)
-        this.communities = body.data
+        this.community = body.data[0] || {}
       })
     },
-    fetchAllXQByCommunityID (communityID) {
-      if ( !communityID || communityID == '') return null
-      fetchpm( this, true, '/pm/xq/kvs', {
+    fetchXQ (id) {
+      if ( !id || id == '') return null
+      fetchpm( this, true, '/pm/xq/ids', {
         method: 'POST',
-        body: {communityID: communityID}
+        body: {values: [id]}
       }).then(resp => {
         return resp.json()
       }).then(body => {
         console.info('fetchAllXQByCommunityID', body)
-        this.xqs = body.data
+        this.xq = body.data[0] || {}
       })
     }
   }
@@ -338,6 +272,10 @@ export default {
         width: 75%;
         margin-left: 10px
       }
+    }
+    .map{
+      width: 100%;
+      height: 300px;
     }
   }
   .bts{

@@ -19,37 +19,37 @@ export default {
       menus:[
         {
           icon: 'icon-home',
-          text:'Home',//基础信息维护
+          text:'基础信息维护',//基础信息维护
           path:'/admin'
         },
         {
           icon: 'icon-shuaxin',
-          text:'Init',//数据初始化
+          text:'数据初始化',//数据初始化
           path:'/admin/init'
         },
         {
           icon: 'icon-users',
-          text:'Users',//用户数据管理
+          text:'用户数据管理',//用户数据管理
           path:'/admin/users'
         },
         {
           icon: 'icon-wechat',
-          text:'wx',//微信用户绑定管理
+          text:'微信用户绑定管理',//微信用户绑定管理
           path:'/admin/wx'
         },
         {
           icon: 'icon-tousu',
-          text:'complaints',//微信用户绑定管理
+          text:'投诉数据维护',//微信用户绑定管理
           path:'/admin/complaints'
         },
         {
           icon: 'icon-wuyeguanli',
-          text:'pm',//物业信息管理
+          text:'物业信息管理',//物业信息管理
           path:'/admin/pm'
         },
         {
           icon: 'icon-build',
-          text:'build',//物业信息管理
+          text:'建筑信息管理',//物业信息管理
           path:'/admin/build'
         }
       ]

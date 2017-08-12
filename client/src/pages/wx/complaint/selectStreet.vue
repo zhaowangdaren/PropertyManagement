@@ -21,7 +21,7 @@ export default {
         rightBtns: [{text:'Cancel', event: null}]
       },
       streets: [],
-      host:'http://10.176.118.61:3000'
+      host:'https://127.0.0.1:3000'
     }
   },
   mounted () {

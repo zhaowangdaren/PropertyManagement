@@ -1,7 +1,9 @@
 <template>
   <div :class='s.wrap' :style='{backgroundImage: "url(" + bgImg +  ")"}'>
-    <img src="~@/res/images/logo_jh.png" :class='s.logo'>
-    <div :class='s.title'>Title</div>
+    <img src="~@/res/images/logo.png" :class='s.logo'>
+    <div :class='s.title'>
+      <img src="~@/res/images/title.png">
+    </div>
     <div :class='s.noticeWrap'>
       <i :class='"iconfont icon-notice " + s.notice'></i>
       <span :class='s.noticeNum'>0</span>
@@ -44,6 +46,10 @@ export default {
       flex: 1;
       margin-left: 5px;
       font-size: 40px;
+      color: #fff;
+      img{
+        width: 90%;
+      }
     }
     .noticeWrap{
       position: relative;

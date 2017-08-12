@@ -17,7 +17,7 @@ const HouseTabelName = "House"
 type House struct {
 	ID                  bson.ObjectId `bson:"_id"`
 	BuildNo             string        //建筑编号
-	Owner               string        //房屋登记人
+	Owner               string        //房产登记人
 	StreetID            string        //所属街道
 	CommunityID         string        //所属社区
 	XQID                string        //房屋所属小区名
@@ -39,15 +39,7 @@ type House struct {
 	InnerChange         string        //房屋内部装修主体结构变更破坏情况
 	IllegalBuild        string        //违规搭建加层
 	RankAppraisal       string        //房屋鉴定等级
-	Img1                string        //图片
-	Img2                string
-	Img3                string
-	Img4                string
-	Img5                string //图片
-	Img6                string
-	Img7                string
-	Img8                string
-	Img9                string
+	Imgs                string
 }
 
 //Houses 集合

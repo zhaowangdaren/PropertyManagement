@@ -2,7 +2,7 @@
   <div :class='s.wrap'>
     <div :class='s.searchWrap'>
     <!-- 街道名 -->
-      <div :class='s.title'>Street Name</div>
+      <div :class='s.title'>街道名</div>
       <div :class='s.inputWrap'>
         <el-select :class='s.elInput' v-model="searchStreetID" placeholder="请选择">
           <el-option
@@ -14,7 +14,7 @@
         </el-select>
       </div>
       <!-- 小区名 -->
-      <div :class='s.title'>Community</div>
+      <div :class='s.title'>社区名</div>
       <div :class='s.inputWrap'>
         <el-select :class='s.elInput' v-model="searchCommunityID" placeholder="请选择">
           <el-option
@@ -64,17 +64,17 @@
       <tr >
         <th>选择</th>
         <!-- 街道名 -->
-        <th>Street</th>
+        <th>街道名</th>
         <!-- 社区名 -->
-        <th>Community</th>
+        <th>社区名</th>
         <!-- 小区名 -->
-        <th>country</th>
+        <th>小区名</th>
         <!-- 位置 -->
-        <th>address</th>
+        <th>地址</th>
         <!-- 负责人 -->
-        <th>charger</th>
+        <th>负责人</th>
         <!-- 电话号码 -->
-        <th>tel</th>
+        <th>电话号码</th>
         <th :class='s.descr'>描述</th>
         <th>操作</th>
       </tr>
@@ -107,13 +107,13 @@
       </tr>
     </table>
     <el-dialog
-      title='Add Country'
+      title='新增小区'
       :visible.sync='showAddDialog'
       size='small'>
       <add-country v-if='showAddDialog' @cancel='showAddDialog = false' @addSucc='onAddSucc'></add-country>
     </el-dialog>
     <el-dialog
-      title='Edit Community'
+      title='编辑小区'
       :visible.sync='showEditDialog'
       size='small'>
       <edit-country v-if='showEditDialog' :country='editingXQ' @cancel='showEditDialog = false'></edit-country>
@@ -310,7 +310,7 @@
 <style lang="less" module='s'>
 .wrap{
   .searchWrap{
-    border: solid 1px #ddd;
+    border-bottom: solid 1px #ddd;
     display: flex;
     align-items: center;
     width: 100%;
@@ -337,7 +337,7 @@
   .addDel{
     display: flex;
     align-items: center;
-    margin-top: 10px;
+    margin: 10px;
     .bt{
       margin: 5px;
     }
@@ -346,8 +346,7 @@
     width: 99%;
     font-size: 15px;
     color: #555;
-    margin: auto;
-    margin-top: 10px;
+    margin: 10px auto;
     th{
       text-align: center;
       padding: 5px;

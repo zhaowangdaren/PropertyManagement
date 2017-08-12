@@ -20,7 +20,6 @@ import PMs from '@/components/table/PMs'
 
 <style lang="less" module='s'>
 .wrap{
-  margin: 10px;
   border: solid 1px #4c87b9;
   width: 100%;
   background: #fff;

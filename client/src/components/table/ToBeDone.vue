@@ -3,18 +3,18 @@
     <div :class='s.content'>
       <div :class='s.title'>
         <img src="~@/res/images/earth.png">
-        Waiting<!-- 待办事件 -->
+        待办事件<!-- 待办事件 -->
       </div>
       <table>
         <!-- 警告类型 事件编号  开始时间  所在小区  事件状态  事件等级  事件类别  操作 -->
         <tr>
-          <th>Warning</th>
-          <th>Index</th>
-          <th>Time</th>
-          <th>XQ</th>
-          <th>Status</th>
-          <th>EventLevel</th>
-          <th>Type</th>
+          <th>警告类型</th>
+          <th>事件编号</th>
+          <th>开始事件</th>
+          <th>所在小区</th>
+          <th>事件状态</th>
+          <th>事件等级</th>
+          <th>事件类别</th>
           <th>操作</th>
         </tr>
         <tr v-for='event in events'>
@@ -78,6 +78,7 @@
 .wrap{
   .content{
     border: solid 1px #4c87b9;
+    background-color: #fff;
     .title{
       color: #fff;
       font-size: 20px;
@@ -94,15 +95,14 @@
       width: 99%;
       font-size: 15px;
       color: #555;
-      margin: auto;
-      margin-top: 10px;
+      margin: 10px auto;
       th, td {
         padding: 5px;
         border: solid 1px #ddd;
         text-align: center;
       }
       th{
-        background-color: #ddd;
+        background-color: #f0f0f0;
       } 
       tr{
         &:hover {

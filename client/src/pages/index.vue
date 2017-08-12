@@ -10,8 +10,8 @@
     
     <div :class='s.content'>
       <div :class='s.titleWrap'>
-        <img src="~@/res/images/logo_jh.png">
-        TitleTitleTitleTitleTitleTitle
+        <img src="~@/res/images/logo.png">
+        <img src="~@/res/images/title.png">
       </div>
       <div :class='s.body'>
         <div :class='s.left'>
@@ -24,16 +24,17 @@
             </div>
           </div>
           <div :class='s.streetWrap' @click='toStreet'>
-            Street User
+            街道工作人员
             <div :class='s.hide'>
-              <span :class='s.yellow'>Street User</span>user user
+              <span :class='s.yellow'>街道工作人员</span>居民纠纷处理
             </div>
           </div>
         </div>
         <div :class='s.right' @click='toGov'>
-          Gov
+          花山区住房管理中心工作人员
           <div :class='s.hide'>
-            <span :class='s.yellow'>Gov User</span>user user
+            <span :class='s.yellow'>花山区住房管理<br/>中心工作人员</span>
+            <br/>纠纷、法院调解、推送政府公告
           </div>
         </div>
       </div>
@@ -120,12 +121,19 @@
           flex-direction: column;
           .adminWrap > .hide, .streetWrap > .hide {
             display: none;
+            font-size: 15px;
+            .yellow{
+              color: yellow;
+              font-size: 25px;
+              font-style:italic;
+            }
           }
           .adminWrap{
             margin: 5px;
             flex: 1;
             background-color: rgb(0,191,254);
             height: 150px;
+            padding: 5px;
             &:hover .hide{
               display: block;
             }
@@ -133,6 +141,7 @@
           .streetWrap{
             margin: 5px;
             flex: 1;
+            padding: 5px;
             background-color: rgb(158,152,74);
             height: 150px;
             &:hover .hide{
@@ -144,9 +153,20 @@
           flex: 1;
           height: 310px;
           margin: 5px;
+          padding: 10px;
           background-color: rgb(27,185,127);
+          position: relative;
           .hide{
             display: none;
+            font-size: 15px;
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            .yellow{
+              color: yellow;
+              font-size: 25px;
+              font-style:italic;
+            }
           }
           &:hover .hide{
             display: block;

@@ -3,14 +3,14 @@
     <div :class='s.content'>
       <div :class='s.title'>
         <img src="~@/res/images/earth.png">
-        PM infos<!--  -->
+        物业信息<!--  -->
       </div>
       <div :class='s.searchWrap'>
         <table>
           <tr>
-            <td :class='s.key' v-if='STREET_ID === ""'>Street Name</td>
+            <td :class='s.key' v-if='STREET_ID === ""'>街道名</td>
             <td v-if='STREET_ID === ""'>
-              <el-select v-model="inputStreetID" filterable placeholder="select Street">
+              <el-select v-model="inputStreetID" filterable placeholder="选择街道">
                 <el-option
                   v-for="item in streets"
                   :key="item.ID"
@@ -19,9 +19,9 @@
                 </el-option>
               </el-select>
             </td>
-            <td :class='s.key'>Community</td>
+            <td :class='s.key'>社区名</td>
             <td>
-              <el-select v-model="inputCommunityID" filterable placeholder="select community">
+              <el-select v-model="inputCommunityID" filterable placeholder="选择社区">
                 <el-option
                   v-for="item in communities"
                   :key="item.ID"
@@ -30,9 +30,9 @@
                 </el-option>
               </el-select>
             </td>
-            <td :class='s.key'>country</td>
+            <td :class='s.key'>小区名</td>
             <td>
-              <el-select v-model="inputXQID" filterable placeholder="select xqNames">
+              <el-select v-model="inputXQID" filterable placeholder="选择小区">
                 <el-option
                   v-for="item in xqs"
                   :key="item.ID"
@@ -51,15 +51,15 @@
       <div :class='s.table'>
         <table>
           <tr >
-            <th>Country Name</th>
+            <th>小区名</th>
             <!-- 小区名 -->
-            <th>PM Name</th>
+            <th>物业公司</th>
             <!-- 物业公司 -->
-            <th>LegalPerson</th>
+            <th>独立法人</th>
             <!-- 独立法人 -->
-            <th>WuYeZiZhi</th>
+            <th>物业资质</th>
             <!-- 物业资质 -->
-            <th>WuYeXinZhi</th>
+            <th>物业性质</th>
             <!-- 物业性质 -->
             <th>操作</th>
           </tr>
@@ -79,13 +79,13 @@
       </div>
     </div>
     <el-dialog
-      title='Add PM'
+      title='新增物业'
       :visible.sync='showAddDialog'
       size='small'>
-      <add-p-m v-if='showAddDialog' @cancel='showAddDialog = false' @addSucc='onAddSucc'></add-p-m>
+      <add-p-m @cancel='showAddDialog = false' @addSucc='onAddSucc'></add-p-m>
     </el-dialog>
     <el-dialog
-      title='Edit PM'
+      title='编辑物业信息'
       :visible.sync='showEditDialog'
       size='small'>
       <edit-p-m v-if='showEditDialog' :PM='editingPM' @cancel='showEditDialog = false' @editSucc='onEditSucc'></edit-p-m>
@@ -103,7 +103,7 @@
       </span>
     </el-dialog>
     <el-dialog
-      title='Edit PM'
+      title='物业详细信息'
       :visible.sync='showDetailDialog'
       size='small'>
       <details-p-m :pm='showingPM'></details-p-m>
@@ -202,7 +202,8 @@ export default {
       })
     },
     onEdit (item) {
-      this.editingPM = item
+      // this.editingPM = item
+      Object.assign(this.editingPM, item)
       this.showEditDialog = true
     },
     onEditSucc () {
@@ -347,6 +348,7 @@ export default {
         }
         .key{
           background-color: #ddd;
+          font-size: 20px;
         }
       }
     }
@@ -369,6 +371,11 @@ export default {
           padding: 5px;
           border: solid 1px #ddd;
           background-color: #f0f0f0;
+        }
+        tr{
+          &:hover {
+            background-color: #f0f0f0;
+          }
         }
         td{
           padding: 5px;

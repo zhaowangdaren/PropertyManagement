@@ -3,7 +3,7 @@
     <div :class='s.content'>
       <div :class='s.title'>
         <img src="~@/res/images/earth.png">
-        Event handles<!-- 居民物业纠纷处理 -->
+        居民物业纠纷处理<!-- 居民物业纠纷处理 -->
       </div>
       <div :class='s.body'>
         <table>
@@ -17,11 +17,11 @@
           所在小区
            -->
           <tr>
-            <td :class='s.key'>Index</td>
+            <td :class='s.key'>事件编号</td>
             <td>
               <el-input v-model="inputIndex" placeholder="请输入事件编号"></el-input>
             </td>
-            <td :class='s.key'>EventLevel</td>
+            <td :class='s.key'>事件等级</td>
             <td>
               <el-select v-model="inputEventLevel" filterable placeholder="全部">
                 <el-option
@@ -32,7 +32,7 @@
                 </el-option>
               </el-select>
             </td>
-            <td :class='s.key'>EventType</td>
+            <td :class='s.key'>事件类型</td>
             <td>
               <el-select v-model="inputType" filterable placeholder="全部">
                 <el-option
@@ -45,7 +45,7 @@
             </td>
           </tr>
           <tr>
-            <td :class='s.key'>StartTime</td>
+            <td :class='s.key'>选择开始时间</td>
             <td>
               <el-date-picker
                 v-model="inputStartTime"
@@ -53,7 +53,7 @@
                 placeholder="选择日期时间">
               </el-date-picker>
             </td>
-            <td :class='s.key'>To</td>
+            <td :class='s.key'>选择结束时间</td>
             <td>
               <el-date-picker
                 v-model="inputEndTime"
@@ -61,7 +61,7 @@
                 placeholder="选择日期时间">
               </el-date-picker>
             </td>
-            <td :class='s.key'>EventStatus</td>
+            <td :class='s.key'>事件状态</td>
             <td>
               <el-select v-model="inputEventStatus" filterable placeholder="全部">
                 <el-option
@@ -74,7 +74,7 @@
             </td>
           </tr>
           <tr>
-            <td :class='s.key'>Community</td>
+            <td :class='s.key'>社区</td>
             <td>
               <el-select v-model="inputCommunityID" filterable placeholder="全部">
                 <el-option
@@ -85,7 +85,7 @@
                 </el-option>
               </el-select>
             </td>
-            <td :class='s.key'>XQs</td>
+            <td :class='s.key'>小区</td>
             <td>
               <el-select v-model="inputXQID" filterable placeholder="全部">
                 <el-option
@@ -105,24 +105,24 @@
         <table>
         <!-- 警告类型 事件编号  开始时间  所在小区  事件状态  事件等级  事件类别  操作 -->
           <tr>
-            <th>Warning</th>
-            <th>Index</th>
-            <th>Time</th>
-            <th>Community</th>
-            <th>XQ</th>
-            <th>Status</th>
-            <th>EventLevel</th>
-            <th>Type</th>
+            <th>警告类型</th>
+            <th>事件编号</th>
+            <th>开始时间</th>
+            <th>所在社区</th>
+            <th>所在小区</th>
+            <th>事件状态</th>
+            <th>事件等级</th>
+            <th>事件类型</th>
             <th>操作</th>
           </tr>
-          <tr v-for='handle in events'>
+          <tr v-for='(handle, index) in events'>
             <td>
               <i class="iconfont icon-gaojing"></i>
             </td>
             <td v-text='handle.Index'></td>
-            <td v-text='handle.Time'></td>
-            <td v-text='handle.CommunityID'></td>
-            <td v-text='handle.XQID'></td>
+            <td>{{ handle.Time | filterTime}}</td>
+            <td>{{communities[index] ? communities[index].Name : ''}}</td>
+            <td>{{xqs[index] ? xqs[index].Name : ''}}</td>
             <td>{{handle.Status | filterEventStatus }}</td>
             <td>{{handle.EventLevel | filterEventLevel }}</td>
             <td v-text='handle.Type'></td>
@@ -142,12 +142,13 @@
 <script>
   import filterEventStatus from '@/filters/filterEventStatus'
   import filterEventLevel from '@/filters/filterEventLevel'
+  import filterTime from '@/filters/filterTime'
   import fetchpm from '@/fetchpm'
   export default {
     props: {
       editable: Boolean
     },
-    filters: {filterEventStatus, filterEventLevel},
+    filters: {filterEventStatus, filterEventLevel, filterTime},
     data () {
       return {
         userStreetID: '',
@@ -175,7 +176,6 @@
       this.fetchEvents('')
       var user = JSON.parse(sessionStorage.getItem('user')) || {}
       this.userStreetID = user.StreetID
-      this.fetchCommunitiesByStreetID(this.userStreetID)
     },
     watch: {
       inputCommunityID: function (value) {
@@ -212,26 +212,26 @@
         if (this.inputXQID !== '') result.XQID = this.inputXQID
         return result
       },
-      fetchCommunitiesByStreetID (streetID) {
-        fetchpm(this, true, '/pm/community/kvs', {
+      fetchCommunities (ids) {
+        fetchpm(this, true, '/pm/community/ids', {
           method: 'POST',
-          body: {streetID: streetID}
+          body: {values: ids}
         }).then(resp => {
           return resp.json()
         }).then(body => {
           console.info('fetchCommunitiesByStreetID', body)
-          this.communities = body.data
+          this.communities = body.data || []
         })
       },
-      fetchXQByCommunityID (communityID) {
-        if (!communityID) return
-        fetchpm(this, true, '/pm/xq/kvs', {
+      fetchXQs (ids) {
+        if (!ids) return
+        fetchpm(this, true, '/pm/xq/ids', {
           method: 'POST',
-          body: {communityID: communityID}
+          body: {values: ids}
         }).then(resp => {
           return resp.json()
         }).then( body => {
-          console.info('fetchXQByCommunityName', body)
+          console.info('fetchXQs', body)
           if(body.error !== 0) console.error("Error: search fetchXQByCommunityName. Reason:" + body.data)
           else if (body.data !== null ) {
             this.xqs = body.data
@@ -249,7 +249,15 @@
           return resp.json()
         }).then(body => {
           console.info('fetchEvents', body)
-          this.events = body.data
+          this.events = body.data || {}
+          let communityIDs = this.events.map((item) => {
+            return item.CommunityID
+          })
+          this.fetchCommunities(communityIDs)
+          let xqIDs = this.events.map((item) => {
+            return item.XQID
+          })
+          this.fetchXQs(xqIDs)
         })
       },
       toDetails (event) {

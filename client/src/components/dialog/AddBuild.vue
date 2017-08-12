@@ -5,19 +5,19 @@
       <!-- 新增建筑信息 -->
       <table :class='s.searchWrap'>
         <tr>
-          <td :class='s.title'>BuildNo</td>
+          <td :class='s.title'>编号</td>
           <td>
             <div :class='s.inputWrap'>
               <el-input v-model='house.BuildNo'></el-input>
             </div>
           </td>
-          <td :class='s.title'>Owner</td>
+          <td :class='s.title'>房产登记人</td>
           <td>
             <div :class='s.inputWrap'>
               <el-input v-model='house.Owner'></el-input>
             </div>
           </td>
-          <td :class='s.title'>Type</td>
+          <td :class='s.title'>房屋类型</td>
           <td>
             <div :class='s.inputWrap'>
               <el-input v-model='house.HouseType'></el-input>
@@ -26,7 +26,7 @@
         </tr>
         <tr>
         <!-- 街道 社区 小区 -->
-          <td :class='s.title'>Street</td>
+          <td :class='s.title'>街道</td>
           <td>
             <el-select :class='s.elSelect' v-model="inputStreetID" placeholder="请选择">
               <el-option
@@ -37,7 +37,7 @@
               </el-option>
             </el-select>
           </td>
-          <td :class='s.title'>Community</td>
+          <td :class='s.title'>社区</td>
           <td>
             <el-select :class='s.elSelect' v-model="inputCommunityID" placeholder="请选择">
               <el-option
@@ -48,7 +48,7 @@
               </el-option>
             </el-select>
           </td>
-          <td :class='s.title'>XQ</td>
+          <td :class='s.title'>小区</td>
           <td>
             <el-select :class='s.elSelect' v-model="inputXQID" placeholder="请选择">
               <el-option
@@ -62,19 +62,19 @@
         </tr>
         <tr>
         <!-- 楼栋号 门牌号 建筑年代 -->
-          <td :class='s.title'>HouseBuildNo</td>
+          <td :class='s.title'>房屋楼栋号</td>
           <td>
             <div :class='s.inputWrap'>
               <el-input v-model='house.HouseBuildNo'></el-input>
             </div>
           </td>
-          <td :class='s.title'>HouseNo</td>
+          <td :class='s.title'>房屋门牌号</td>
           <td>
             <div :class='s.inputWrap'>
               <el-input v-model='house.HouseNo'></el-input>
             </div>
           </td>
-          <td :class='s.title'>Year</td>
+          <td :class='s.title'>建筑年代</td>
           <td>
             <div :class='s.inputWrap'>
               <el-input v-model='house.Year'></el-input>
@@ -84,42 +84,42 @@
       </table>
       <div :class='s.item'>
       <!-- 房屋使用变更 -->
-        UseChange
+        房屋使用变更
         <el-input :class='s.elInput' v-model='house.UseChange' type='textarea'></el-input>
       </div>
       <div :class='s.item'>
       <!-- 主题结构裂缝情况 -->
-        MainCrack
+        主题结构裂缝情况
         <el-input :class='s.elInput' v-model='house.MainCrack' type='textarea'></el-input>
       </div>
       <div :class='s.item'>
       <!-- 地基沉降 -->
-        FoundationDown
+        地基沉降
         <el-input :class='s.elInput' v-model='house.FoundationDown' type='textarea'></el-input>
       </div>
       <div :class='s.item'>
       <!-- 主题结构倾斜状况 -->
-        MainSlant
+        主题结构倾斜状况
         <el-input :class='s.elInput' v-model='house.MainSlant' type='textarea'></el-input>
       </div>
       <div :class='s.item'>
       <!-- 悬梁结构破坏 -->
-        CantileverCrack
+        悬梁结构破坏
         <el-input :class='s.elInput' v-model='house.CantileverCrack' type='textarea'></el-input>
       </div>
       <div :class='s.item'>
       <!-- 女儿墙脱落情况 -->
-        ParapetFallOff
+        女儿墙脱落情况
         <el-input :class='s.elInput' v-model='house.ParapetOff' type='textarea'></el-input>
       </div>
       <div :class='s.item'>
       <!-- 外墙抹灰层剥落情况 -->
-        OuterLloatedCoatOff
+        外墙抹灰层剥落情况
         <el-input :class='s.elInput' v-model='house.OuterLloatedCoatOff' type='textarea'></el-input>
       </div>
       <div :class='s.item'>
       <!-- 房屋变形 -->
-        HouseDeform
+        房屋变形
         <el-input :class='s.elInput' v-model='house.HouseDeform' type='textarea'></el-input>
       </div>
       <!-- 地质灾害
@@ -130,31 +130,31 @@
       房屋鉴定等级
       房屋图片 -->
       <div :class='s.item'>
-        Disaster
+        地质灾害
         <el-input :class='s.elInput' v-model='house.Disaster' type='textarea'></el-input>
       </div>
       <div :class='s.item'>
-        DisasterManage
+        地址灾害治理情况
         <el-input :class='s.elInput' v-model='house.DisasterManage' type='textarea'></el-input>
       </div>
       <div :class='s.item'>
-        DrainageSsystem
+        排水系统
         <el-input :class='s.elInput' v-model='house.DrainageSsystem' type='textarea'></el-input>
       </div>
       <div :class='s.item'>
-        InnerChange
+        房屋内部装修主体结构变更破坏情况
         <el-input :class='s.elInput' v-model='house.InnerChange' type='textarea'></el-input>
       </div>
       <div :class='s.item'>
-        IllegalBuild
+        违规搭建加层
         <el-input :class='s.elInput' v-model='house.IllegalBuild' type='textarea'></el-input>
       </div>
       <div :class='s.item'>
-        RankAppraisal
+        房屋鉴定等级
         <el-input :class='s.elInput' v-model='house.RankAppraisal' type='textarea'></el-input>
       </div>
       <div :class='s.item'>
-        <div :class='s.title'>Images</div>
+        <div :class='s.title'>上传图片</div>
         <div :class='s.uploadWrap'>
           <el-upload
             action="https://jsonplaceholder.typicode.com/posts/"

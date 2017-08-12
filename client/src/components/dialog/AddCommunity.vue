@@ -4,9 +4,9 @@
     <div :class='s.warn' v-if='warn !== ""' v-text='warn'></div>
     <div :class='s.item'>
       <div :class='s.red'>*</div>
-      Street
+      街道
       <!-- 街道名称 -->
-      <el-select :class='s.elInput' v-model="community.StreetID" placeholder="请选择">
+      <el-select :class='s.elInput' v-model="community.StreetID" placeholder="请选择街道">
         <el-option
           v-for="item in streets"
           :key="item.ID"
@@ -17,32 +17,32 @@
     </div>
     <div :class='s.item'>
       <div :class='s.red'>*</div>
-      Community
+      社区
       <!-- 社区名称 -->
-      <el-input :class='s.elInput' v-model="community.Name" placeholder="请输入" @focus='onFocus'></el-input>
+      <el-input :class='s.elInput' v-model="community.Name" placeholder="请输入社区名" @focus='onFocus'></el-input>
     </div>
     <div :class='s.item'>
       <div :class='s.red'>*</div>
-      charger
+      负责人
       <!-- 负责人 -->
-      <el-input :class='s.elInput' v-model="community.PersonInCharge" placeholder="请输入" @focus='onFocus'></el-input>
+      <el-input :class='s.elInput' v-model="community.PersonInCharge" placeholder="请输入负责人" @focus='onFocus'></el-input>
     </div>
     <div :class='s.item'>
       <div :class='s.red'>*</div>
-      tel
+      电话号码
       <!-- 电话号码 -->
       <el-input :class='s.elInput' v-model="community.Tel" placeholder="请输入" @focus='onFocus'></el-input>
     </div>
     <div :class='s.item'>
       <div :class='s.red'>*</div>
-      Intro
+      描述
       <!-- 描述 -->
       <el-input 
         :class='s.elInput'
         type="textarea"
         autosize
         v-model="community.Intro" 
-        placeholder="请输入intro" 
+        placeholder="请输入描述" 
         @focus='onFocus'>
       </el-input>
     </div>

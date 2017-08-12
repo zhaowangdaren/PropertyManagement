@@ -29,7 +29,7 @@ export default {
         {
           path: '/gov',
           icon: 'icon-home',
-          text:'Home'
+          text:'主页'
         },
         {
           icon: 'icon-tousu',
@@ -42,7 +42,7 @@ export default {
           path:'/gov/pms'
         },
         {
-          icon: 'icon-kaohe',
+          icon: 'icon-kaohechengji',
           text:'物业考核查询',
           path:'/gov/pmkpis'
         },
@@ -57,7 +57,7 @@ export default {
           path: '/gov/court'
         },
         {
-          icon: 'icon-fabugonggao',
+          icon: 'icon-gonggao',
           text:'推送政府公告',
           path: '/gov/announcement'
         }

@@ -3,12 +3,12 @@
     <div :class='s.content'>
       <div :class='s.title'>
         <img src="~@/res/images/earth.png">
-        PM KPI<!-- 物业考核查询-->
+        物业考核查询<!-- 物业考核查询-->
       </div>
       <div :class='s.body'>
         <table>
           <tr>
-            <td :class='s.key'>Year</td>
+            <td :class='s.key'>年份</td>
             <td>
               <el-date-picker
                 v-model="selectedYear"
@@ -17,9 +17,9 @@
               </el-date-picker>
             </td>
             <!-- 季度 -->
-            <td :class='s.key'>Quarter</td>
+            <td :class='s.key'>季度</td>
             <td>
-              <el-select v-model="selectedQuarter" filterable placeholder="select Quarter">
+              <el-select v-model="selectedQuarter" filterable placeholder="选择季度">
                 <el-option
                   v-for="item in quarters"
                   :key="item.value"
@@ -28,15 +28,15 @@
                 </el-option>
               </el-select>
             </td>
-            <td :class='s.key'>Company Name</td>
+            <td :class='s.key'>物业公司名</td>
             <td>
-              <el-input v-model="searchCompanyName" placeholder="请输入Company Name"></el-input>
+              <el-input v-model="searchCompanyName" placeholder="请输入物业公司名"></el-input>
             </td>
           </tr>
           <tr>
-            <td :class='s.key'>Street</td>
+            <td :class='s.key'>街道</td>
             <td>
-              <el-select v-model="selectedStreetID" filterable placeholder="select Street">
+              <el-select v-model="selectedStreetID" filterable placeholder="请选择街道">
                 <el-option
                   v-for="item in streets"
                   :key="item.ID"
@@ -45,9 +45,9 @@
                 </el-option>
               </el-select>
             </td>
-            <td :class='s.key'>Community</td>
+            <td :class='s.key'>社区</td>
             <td>
-              <el-select v-model="selectedCommunityID" filterable placeholder="select Community">
+              <el-select v-model="selectedCommunityID" filterable placeholder="请选择社区">
                 <el-option
                   v-for="item in communities"
                   :key="item.ID"
@@ -56,9 +56,9 @@
                 </el-option>
               </el-select>
             </td>
-            <td :class='s.key'>XQ</td>
+            <td :class='s.key'>小区</td>
             <td>
-              <el-select v-model="selectedXQID" filterable placeholder="select XQ">
+              <el-select v-model="selectedXQID" filterable placeholder="请选择小区">
                 <el-option
                   v-for="item in xqs"
                   :key="item.ID"
@@ -70,20 +70,20 @@
           </tr>
         </table>
         <div :class='s.searchWrap'>
-          <el-button type="primary" @click='onCurQuarter'>Cur Quarter</el-button>
+          <el-button type="primary" @click='onCurQuarter'>当前季度</el-button>
           <el-button type="primary" icon="search" @click='onInputSearch'>查询</el-button>
         </div>
         <!-- search result -->
         <table>
         <!-- 警告类型 事件编号  开始时间  所在小区  事件状态  事件等级  事件类别  操作 -->
           <tr>
-            <th>Year</th>
-            <th>Quarter</th>
-            <th>Company Name</th>
-            <th>Red Warning Num</th>
-            <th>Yellow Warning Num</th>
-            <th>Important Warning Num</th>
-            <th>Score</th>
+            <th>年份</th>
+            <th>季度</th>
+            <th>物业公司名</th>
+            <th>红色警告次数</th>
+            <th>黄色警告次数</th>
+            <th>重大事件警告次数</th>
+            <th>得分</th>
           </tr>
           <tr v-for='item in KPIs'>
             <td v-text='item.Year'></td>
@@ -258,7 +258,7 @@ export default {
 .wrap{
   .content{
     border: solid 1px #4c87b9;
-    margin-top: 50px;
+    margin-top: 20px;
     background-color: #fff;
     .title{
       color: #fff;

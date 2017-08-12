@@ -6,9 +6,29 @@
 
 <script>
 export default {
+  data () {
+    return {
+      host: '//localhost:3000'
+    }
+  },
+  mounted () {
+
+  },
   methods: {
     onStart () {
       this.$router.push({path: '/wx/complaint/selectStreet'})
+    },
+    fetchOpenID () {
+      fetch(this.host + '/open/wx/openid/' + this.$route.query.code, {
+        method: 'POST'
+      }).then(resp => {
+        return resp.json()
+      }).then(body => {
+        console.info('fetchOpenID', body)
+        if (body.error === 0) {
+          sessionStorage.setItem('WXUser', JSON.stringify(body.data))
+        }
+      })
     }
   }
 }

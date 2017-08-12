@@ -11,7 +11,7 @@
     <div :class='s.content'>
       <menu-street :class='s.menu' :menus='menus' :NEXT='nextPath'/>
       <div :class='s.body'>
-        <div :class='s.street'>Street Name: {{streetName}}</div>
+        <div :class='s.street'>街道：{{streetName}}</div>
         <router-view></router-view>
       </div>
     </div>
@@ -42,27 +42,27 @@ export default {
         {
           path:'/street/handle',
           icon: 'icon-chulizhong',
-          text:'complaintsHandler' //居民物业纠纷处理
+          text:'居民物业纠纷处理' //居民物业纠纷处理
         },
         {
           path:'/street/pms',
           icon: 'icon-wuyeguanli',
-          text:'PM infos'//物业信息管理
+          text:'物业信息管理'//物业信息管理
         },
         {
           path:'/street/pmkpis',
-          icon: 'icon-kaohe',
-          text:'PM KPI'//物业考核查询
+          icon: 'icon-kaohechengji',
+          text:'物业考核查询'//物业考核查询
         },
         {
           path:'/street/court',
           icon: 'icon-court',
-          text:'Court'//申请法院调解请求
+          text:'申请法院调解请求'//申请法院调解请求
         },
         {
           path:'/street/operationRecs',
           icon: 'icon-records',
-          text:'Operation recs'//操作记录管理
+          text:'操作记录'//操作记录管理
         }
       ]
     }

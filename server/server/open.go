@@ -3,8 +3,10 @@ package server
 
 import (
 	"crypto/md5"
+	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -17,7 +19,36 @@ import (
 	mgo "gopkg.in/mgo.v2"
 )
 
-const FileBasicPath = "/Users/gtja/Documents/myDoc/golang/PropertyManagement/server/images/"
+//FileBasicPath file basic path
+const FileBasicPath = "/Users/gtja/Documents/myDoc/golang/PropertyManagement"
+
+func sendHttpRequest(url string) string {
+	response, err := http.Get(url)
+	if err != nil {
+		log.Println(err.Error())
+		return ""
+	}
+	defer response.Body.Close()
+	var bodystr string
+	if response.StatusCode == 200 {
+		body, _ := ioutil.ReadAll(response.Body)
+		bodystr = string(body)
+	} else {
+		return ""
+	}
+	return bodystr
+}
+
+func getJson(url string) map[string]interface{} {
+	bodystr := sendHttpRequest(url)
+	var object interface{}
+	err := json.Unmarshal([]byte(bodystr), &object)
+	if err != nil {
+		return nil
+	} else {
+		return object.(map[string]interface{})
+	}
+}
 
 func Md5File(path string) (string, error) {
 	file, err := os.Open(path)
@@ -99,7 +130,7 @@ func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
 		}
 	})
 
-	router.Static("/image", FileBasicPath)
+	router.Static("/image", FileBasicPath+"/server/images/")
 
 	router.POST("/event/add", func(c *gin.Context) {
 		var info table.Event
@@ -181,5 +212,15 @@ func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
 		} else {
 			c.JSON(http.StatusOK, table.InsertWXUser(dbc, info))
 		}
+	})
+
+	router.POST("/wx/openid/:code", func(c *gin.Context) {
+		code := c.Param("code")
+		resp := getJson("https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=" + code + "&grant_type=authorization_code ")
+		if resp == nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": "获取用户信息失败"})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"error": 0, "data": gin.H{"openid": resp["openid"]}})
 	})
 }

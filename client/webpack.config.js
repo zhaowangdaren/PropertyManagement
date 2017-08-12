@@ -144,6 +144,7 @@ const webpackConfig = {
     host: '0.0.0.0',
     disableHostCheck: true,
     hot: true
+    // https: true
   }
 }
 

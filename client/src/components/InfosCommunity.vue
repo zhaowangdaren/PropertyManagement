@@ -1,7 +1,7 @@
 <template>
   <div>
     <div :class='s.searchWrap'>
-      <div :class='s.title'>Street Name</div>
+      <div :class='s.title'>街道名</div>
       <!-- 街道名 -->
       <div :class='s.inputWrap'>
         <el-select :class='s.elInput' v-model="searchStreetID" placeholder="请选择">
@@ -51,13 +51,13 @@
     <table>
       <tr>
         <th>选择</th>
-        <th>name</th>
+        <th>街道名</th>
         <!-- 街道名 -->
-        <th>name2</th>
+        <th>社区名</th>
         <!-- 社区名 -->
-        <th>charger</th>
+        <th>负责人</th>
         <!-- 负责人 -->
-        <th>tel</th>
+        <th>电话号码</th>
         <!-- 电话号码 -->
         <th :class='s.descr'>描述</th>
         <th>操作</th>
@@ -89,7 +89,7 @@
       </tr>
     </table>
     <el-dialog
-      title='Add Community'
+      title='新增社区'
       :visible.sync='showAddDialog'
       size='small'>
       <add-community
@@ -98,7 +98,7 @@
         @addSucc='onAddSucc'></add-community>
     </el-dialog>
     <el-dialog
-      title='Edit Community'
+      title='修改社区'
       :visible.sync='showEditDialog'
       size='small'>
       <edit-community v-if='showEditDialog'
@@ -260,7 +260,7 @@
 
 <style lang="less" module='s'>
   .searchWrap{
-    border: solid 1px #ddd;
+    border-bottom: solid 1px #ddd;
     display: flex;
     align-items: center;
     position: relative;

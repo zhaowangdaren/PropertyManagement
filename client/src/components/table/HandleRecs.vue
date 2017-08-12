@@ -2,16 +2,16 @@
   <div :class='s.wrap'>
     <div :class='s.title'>
       <img src="~@/res/images/earth.png">
-      Event handle Recs<!-- 居民物业纠纷处理 -->
+      居民物业纠纷处理记录<!-- 居民物业纠纷处理 -->
     </div>
     <div :class='s.body'>
       <table>
         <!-- 提交人类别  提交人用户名  提交时间  提交文本说明  操作 -->
         <tr>
-          <th>AuthorCategory</th>
-          <th>AuthorName</th>
-          <th>Time</th>
-          <th>HandleInfo</th>
+          <th>提交人类别</th>
+          <th>提交人用户名</th>
+          <th>提交时间</th>
+          <th>提交内容</th>
           <th>操作</th>
         </tr>
         <tr v-for='handle in eventHandles'>
@@ -27,7 +27,7 @@
       <el-dialog 
         v-model="showHandleDetails" 
         size="tiny" 
-        title='Event Handle Details'>
+        title='物业纠纷处理详情'>
         <details-event-handle 
           v-if='showHandleDetails'
           :eventHandle='showingHandle'></details-event-handle>

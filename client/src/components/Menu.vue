@@ -1,6 +1,6 @@
 <template>
   <div :class='s.wrap'>
-    <div v-for='menu in menus' @click='onClick(menu)' :class='{[s.active]: NEXT == menu.path}'>
+    <div v-for='menu in menus' @click='onClick(menu)' :class='{[s.active]: next == menu.path}'>
       <i :class='"iconfont" + " " + menu.icon'></i>
       {{menu.text}}
     </div>
@@ -11,20 +11,28 @@
   export default {
     props: {
       menus: Array,
-      NEXT: String
+      NEXT: {
+        type: String,
+        default: ''
+      }
     },
     data () {
       return {
+        next: ''
       }
+    },
+    watch: {
     },
     mounted () {
       console.info('menuPath', this.$route.path)
-      if (this.NEXT == '') this.NEXT = this.$route.path
+      this.next = this.NEXT
+      if (this.next === '') this.next = this.$route.path
       console.warn('NEXT', this.NEXT)
       console.info('menus', this.menus)
     },
     methods: {
       onClick (menu) {
+        this.next = menu.path
         this.$router.push({path: menu.path})
       }
     }
@@ -35,7 +43,7 @@
   .wrap{
     border-right: solid 1px #aaa;
     height: 100%;
-    background-color: #f0f0f0;
+    background-color: #fafafa;
     div{
       border-bottom: solid 1px #ddd;
       padding: 20px 10px;

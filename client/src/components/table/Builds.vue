@@ -2,11 +2,11 @@
   <div :class='s.wrap'>
     <div :class='s.tab'>
       <img src="~@/res/images/earth.png">
-      Build<!-- 物业信息管理 -->
+      建筑信息管理<!-- 物业信息管理 -->
     </div>
     <table :class='s.searchWrap'>
       <tr>
-        <td :class='s.title'>Street Name</td>
+        <td :class='s.title'>街道</td>
         <td>
           <el-select v-model="inputStreetID" filterable placeholder="全部">
             <el-option
@@ -17,7 +17,7 @@
             </el-option>
           </el-select>
         </td>
-        <td :class='s.title'>Community</td>
+        <td :class='s.title'>社区</td>
         <td>
           <el-select v-model="inputCommunityID" filterable placeholder="全部">
             <el-option
@@ -28,7 +28,7 @@
             </el-option>
           </el-select>
         </td>
-        <td :class='s.title'>Country</td>
+        <td :class='s.title'>小区</td>
         <td>
           <el-select v-model="inputXQID" filterable placeholder="全部">
             <el-option
@@ -41,16 +41,16 @@
         </td>
       </tr>
       <tr>
-        <td :class='s.title'>HouseBuildNo</td>
+        <td :class='s.title'>房屋楼栋号</td>
         <td>
         <!-- 房屋楼栋号 -->
           <el-input v-model="inputHouseBuildNo" placeholder="请输入号"></el-input>
         </td>
-        <td :class='s.title'>HouseNo</td>
+        <td :class='s.title'>房屋门牌号</td>
         <td>
           <el-input v-model="inputHouseNo" placeholder="请输入HouseNo"></el-input>
         </td>
-        <td :class='s.title'>Owner</td>
+        <td :class='s.title'>房产登记人</td>
         <td>
           <el-input v-model="inputOwner" placeholder="请输入owner"></el-input>
         </td>
@@ -63,15 +63,15 @@
     <table>
       <tr >
         <!-- 房产登记人 -->
-        <th>Owner</th>
+        <th>房产登记人</th>
         <!-- 所在小区 -->
-        <th>XQ</th>
+        <th>所在小区</th>
         <!-- 楼栋号 -->
-        <th>HouseBuildNo</th>
+        <th>房屋楼栋号</th>
         <!-- 门牌号 -->
-        <th>HouseNo</th>
+        <th>房屋门牌号</th>
         <!-- 房屋类型 -->
-        <th>HouseType</th>
+        <th>房屋类型</th>
         <th>操作</th>
       </tr>
       <tr v-for='item in houses'>
@@ -88,7 +88,7 @@
       </tr>
     </table>
     <el-dialog
-      title='Add Build'
+      title='新增房屋信息'
       size='large'
       :visible.sync="showAddDialog">
       <add-build
@@ -97,7 +97,7 @@
       </add-build>
     </el-dialog>
     <el-dialog
-      title='Add Build'
+      title='编辑房屋信息'
       size='large'
       :visible.sync="showEditDialog">
       <edit-build
@@ -329,6 +329,7 @@
     color: #555;
     margin: 10px auto;
     background-color: #fff;
+    text-align: center;
     th{
       text-align: center;
       padding: 5px;

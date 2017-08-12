@@ -4,42 +4,42 @@
   <!-- 新增街道信息 -->
     <div :class='s.item'>
       <div :class='s.red'>*</div>
-      name
+      街道名
       <!-- 街道名 -->
-      <el-input :class='s.elInput' v-model="street.Name" placeholder="请输入street name" @focus='onFocus'></el-input>
+      <el-input :class='s.elInput' v-model="street.Name" placeholder="请输入街道名" @focus='onFocus'></el-input>
     </div>
     <div :class='s.item'>
       <div :class='s.red'>*</div>
-      charger
+      负责人
       <!-- 负责人 -->
-      <el-input :class='s.elInput' v-model="street.PersonInCharge" placeholder="请输入" @focus='onFocus'></el-input>
+      <el-input :class='s.elInput' v-model="street.PersonInCharge" placeholder="请输入负责人" @focus='onFocus'></el-input>
     </div>
     <div :class='s.item'>
       <div :class='s.red'>*</div>
-      tel
+      电话号码
       <!-- 电话号码 -->
       <el-input
         :class='s.elInput'
         v-model="street.Tel" 
-        placeholder="请输入" 
+        placeholder="请输入电话号码" 
         @focus='onFocus'></el-input>
     </div>
     <div :class='s.item'>
       <div :class='s.red'>*</div>
-      authCode
+      授权码
       <!-- 授权码 -->
-      <el-input :class='s.elInput' v-model="street.AuthCode" placeholder="请输入authCode" @focus='onFocus'></el-input>
+      <el-input :class='s.elInput' v-model="street.AuthCode" placeholder="请输入授权码" @focus='onFocus'></el-input>
     </div>
     <div :class='s.item'>
       <div :class='s.red'>*</div>
-      intro
+      描述
       <!-- 描述 -->
       <el-input 
         :class='s.elInput'
         type="textarea"
         autosize
         v-model="street.Intro" 
-        placeholder="请输入intro" 
+        placeholder="请输入描述" 
         @focus='onFocus'>
       </el-input>
     </div>

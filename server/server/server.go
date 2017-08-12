@@ -8,7 +8,10 @@ import (
 	"time"
 
 	"github.com/gin-contrib/cors"
+	// "github.com/gin-gonic/autotls"
+
 	"github.com/gin-gonic/gin"
+
 	mgo "gopkg.in/mgo.v2"
 
 	"../db"
@@ -36,7 +39,7 @@ func Start() {
 
 	router := gin.Default()
 	router.Use(cors.New(cors.Config{
-		AllowOrigins: []string{"http://localhost:9000", "http://10.176.115.42:9000", "http://10.176.118.61:9000"},
+		AllowOrigins: []string{"http://localhost:9000", "https://localhost:9000", "http://10.176.115.42:9000", "http://10.176.118.61:9000", "https://127.0.0.1:9000"},
 		// AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"GET", "POST", "DELETE", "PUT"},
 		AllowHeaders:     []string{"Authorization"},
@@ -100,4 +103,6 @@ func Start() {
 		startOpen(open, dbc)
 	}
 	router.Run(":3000")
+	// autotls.Run(router, "localhost")
+	// router.RunTLS(":3000", FileBasicPath+"/cert/server.crt", FileBasicPath+"/cert/server.key")
 }

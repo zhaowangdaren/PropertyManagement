@@ -4,9 +4,9 @@
     <div :class='s.warn' v-if='warn !== ""' v-text='warn'></div>
     <div :class='s.item'>
       <div :class='s.red'>*</div>
-      Street
+      街道
       <!-- 街道名称 -->
-      <el-select :class='s.elInput' v-model="searchStreetID" placeholder="请选择">
+      <el-select :class='s.elInput' v-model="searchStreetID" placeholder="请选择街道">
         <el-option
           v-for="item in streets"
           :key="item.ID"
@@ -17,9 +17,9 @@
     </div>
     <div :class='s.item'>
       <div :class='s.red'>*</div>
-      Community
+      社区
       <!-- 社区名称 -->
-      <el-select :class='s.elInput' v-model="country.CommunityID" placeholder="请选择">
+      <el-select :class='s.elInput' v-model="country.CommunityID" placeholder="请选择社区">
         <el-option
           v-for="item in communities"
           :key="item.ID"
@@ -30,38 +30,37 @@
     </div>
     <div :class='s.item'>
       <div :class='s.red'>*</div>
-      Country
+      小区
       <!-- 小区名称 -->
-      <el-input :class='s.elInput' v-model="country.Name" placeholder="请输入" @focus='onFocus'></el-input>
+      <el-input :class='s.elInput' v-model="country.Name" placeholder="请输入小区名" @focus='onFocus'></el-input>
     </div>
     <div :class='s.item'>
       <div :class='s.red'>*</div>
-      Address
+      地址
       <!-- 地理位置 -->
-      <el-input :class='s.elInput' v-model="country.Address" placeholder="请输入" @focus='onFocus'></el-input>
+      <el-input :class='s.elInput' v-model="country.Address" placeholder="请输入地址" @focus='onFocus'></el-input>
     </div>
     <div :class='s.item'>
       <div :class='s.red'>*</div>
-      charger
-      <!-- 联系人 -->
-      <el-input :class='s.elInput' v-model="country.ContactName" placeholder="请输入" @focus='onFocus'></el-input>
+      负责人
+      <el-input :class='s.elInput' v-model="country.ContactName" placeholder="请输入负责人" @focus='onFocus'></el-input>
     </div>
     <div :class='s.item'>
       <div :class='s.red'>*</div>
-      tel
+      电话号码
       <!-- 电话号码 -->
-      <el-input :class='s.elInput' v-model="country.Tel" placeholder="请输入" @focus='onFocus'></el-input>
+      <el-input :class='s.elInput' v-model="country.Tel" placeholder="请输入电话号码" @focus='onFocus'></el-input>
     </div>
     <div :class='s.item'>
       <div :class='s.red'>*</div>
-      intro
+      描述
       <!-- 描述 -->
       <el-input 
         :class='s.elInput'
         type="textarea"
         autosize
         v-model="country.Intro" 
-        placeholder="请输入intro" 
+        placeholder="请输入描述" 
         @focus='onFocus'>
       </el-input>
     </div>

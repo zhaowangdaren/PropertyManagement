@@ -3,13 +3,14 @@
     <div :class='s.content'>
       <div :class='s.title'>
         <img src="~@/res/images/earth.png">
-        Waiting<!-- 待办事件 -->
+        事件详情<!-- 待办事件 -->
       </div>
       <div :class='s.body'>
         <div :class='s.left'>
           用户上传
           <div :class='s.imgs'>
             <img v-for='img in eventImgs' :src='"//localhost:3000/open/image/" + img' @click='onImg(img)' :class='s.eventImg'>
+            <div v-if='eventImgs.length === 0'>暂无图片</div>
           </div>
           <el-dialog v-model="imgVisible" size="tiny">
             <img width="100%" :src='"//localhost:3000/open/image/" + showingImg' alt="">
@@ -27,45 +28,45 @@
   事件状态： 已审核待处理
   事件等级： 特急 -->
             <tr>
-              <td :class='s.key'>WarnType</td>
+              <td :class='s.key'>警告类型</td>
               <td :class='s.value'><i class="iconfont icon-gaojing"></i></td>
             </tr>
             <tr>
-              <td :class='s.key'>Index</td>
+              <td :class='s.key'>事件编号</td>
               <td :class='s.value' v-text='event.Index'></td>
             </tr>
             <tr>
-              <td :class='s.key'>Street</td>
+              <td :class='s.key'>街道</td>
               <td :class='s.value' v-text='streetName'></td>
             </tr>
             <tr>
-              <td :class='s.key'>Community</td>
+              <td :class='s.key'>社区</td>
               <td :class='s.value' v-text='communityName'></td>
             </tr>
             <tr>
-              <td :class='s.key'>XQ</td>
+              <td :class='s.key'>小区</td>
               <td :class='s.value' v-text='xqName'></td>
             </tr>
             <tr>
-              <td :class='s.key'>Time</td>
+              <td :class='s.key'>投诉时间</td>
               <td :class='s.value' v-text='event.Time'></td>
             </tr>
             <tr>
-              <td :class='s.key'>Type</td>
+              <td :class='s.key'>事件类型</td>
               <td :class='s.value' v-text='event.Type'></td>
             </tr>
             <tr>
-              <td :class='s.key'>Event Status</td>
+              <td :class='s.key'>事件状态</td>
               <td :class='s.value'>{{event.Status | filterEventStatus }}</td>
             </tr>
             <tr>
-              <td :class='s.key'>Event Level</td>
+              <td :class='s.key'>事件等级</td>
               <td :class='s.value'>{{event.EventLevel | filterEventLevel }}</td>
             </tr>
             <tr>
               <td :class='s.key'>操作</td>
               <td :class='s.value'>
-                <el-button type='success'>推送至PM</el-button>
+                <el-button type='success'>推送至物业公司</el-button>
                 <el-button type='primary' @click='showAduitEventLevel = true'>审核等级</el-button>
                 <el-dialog
                   title='审核等级'
@@ -98,16 +99,16 @@
     <div :class='s.handleContent'>
       <div :class='s.title'>
         <img src="~@/res/images/earth.png">
-        EventHandle<!-- 待办事件 -->
+        事件处理<!-- 待办事件 -->
       </div>
       <div :class='s.body'>
         <table>
           <!-- 提交人类别  提交人用户名  提交时间  提交文本说明  操作 -->
           <tr>
-            <th>AuthorCategory</th>
-            <th>AuthorName</th>
-            <th>Time</th>
-            <th>HandleInfo</th>
+            <th>提交人类别</th>
+            <th>提交人名</th>
+            <th>提交时间</th>
+            <th>处理内容</th>
             <th>操作</th>
           </tr>
           <tr v-for='handle in eventHandles'>
@@ -117,7 +118,7 @@
             <td v-text='handle.HandleInfo'></td>
             <td>
               <el-button type="primary" icon="search" @click='showHandleDetails = true'>详情</el-button>
-              <el-dialog v-model="showHandleDetails" size="tiny" title='Event Handle Details'>
+              <el-dialog v-model="showHandleDetails" size="tiny" title='事件处理详情'>
                 <details-event-handle :eventHandle='handle'></details-event-handle>
               </el-dialog>
             </td>
@@ -316,6 +317,10 @@
             height: 148px;
             margin: 10px 8px 8px 0;
             display: inline-block;
+          }
+          div{
+            color: #999;
+            margin: 10px;
           }
         }
       }
