@@ -60,7 +60,7 @@ export default {
   },
   methods: {
     onLogin () {
-      fetch('http://localhost:3000/login', {
+      fetch('http://47.94.7.154:3000/login', {
         method: 'POST',
         body: JSON.stringify(this.login)
       }).then(resp => {

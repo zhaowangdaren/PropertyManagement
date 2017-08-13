@@ -1,4 +1,4 @@
-const HOST = '//localhost:3000'
+const HOST = '//47.94.7.154:3000'
 const TenMinute = 30 * 60 * 1000
 function refreshToken () {
   return new Promise((resolve, reject) => {
