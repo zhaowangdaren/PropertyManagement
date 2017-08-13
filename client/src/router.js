@@ -43,6 +43,11 @@ const WXPMSelectXQ = resolve => require(['@/pages/wx/pm/selectXQ'], resolve)
 const WXPMDetails = resolve => require(['@/pages/wx/pm/details'], resolve)
 const WXPMBind = resolve => require(['@/pages/wx/pm/bind'], resolve)
 
+const PMRules = resolve => require(['@/pages/wx/pm/rules'], resolve)
+const PMMPRules = resolve => require(['@/pages/wx/pm/managementPractices'], resolve)
+const PMKPIRules = resolve => require(['@/pages/wx/pm/kpiRules'], resolve)
+const PMQA = resolve => require(['@/pages/wx/pm/qa'], resolve)
+
 export default new Router({
   // mode: 'history',
   routes: [
@@ -207,6 +212,22 @@ export default new Router({
     {
       path: '/wx/pm/bind',
       component: WXPMBind
+    },
+    {
+      path: '/wx/pm/rules',
+      component: PMRules
+    },
+    {
+      path: '/wx/pm/rules/mp',
+      component: PMMPRules
+    },
+    {
+      path: '/wx/pm/rules/kpi',
+      component: PMKPIRules
+    },
+    {
+      path: '/wx/pm/rules/qa',
+      component: PMQA
     }
   ]
 })
