@@ -194,7 +194,8 @@ func (mw *GinJWTMiddleware) LoginHandler(c *gin.Context) {
 		mw.unauthorized(c, http.StatusBadRequest, "Missing Username or Password")
 		return
 	}
-
+	fmt.Println("loginVals", loginVals)
+	
 	if mw.Authenticator == nil {
 		mw.unauthorized(c, http.StatusInternalServerError, "Missing define authenticator func")
 		return
