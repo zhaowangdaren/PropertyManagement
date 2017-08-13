@@ -24,6 +24,7 @@ type User struct {
 
 //FindUser 查找用户信息
 func FindUser(db *mgo.Database, userName string, userType int) User {
+	fmt.Println("userType", userType)
 	c := db.C(UserTableName)
 	var result User
 	fmt.Println("FindUser", userName+" "+string(userType))
