@@ -142,7 +142,9 @@ export default {
       curView: 0,
       street: {},
       community: {},
-      xq: {},
+      xq: {
+        Address: ''
+      },
       inputStreetID: '',
       inputCommunityID:'',
       inputXQID: '',
@@ -156,11 +158,15 @@ export default {
     this.fetchXQ(this.pm.XQID)
   },
   watch: {
-    inputStreetID: function (val) {
-      this.fetchAllCommunitiesByStreetID(val)
+    pm: function (val) {
+      this.fetchStreet(this.pm.StreetID)
+      this.fetchCommunity(this.pm.CommunityID)
+      this.fetchXQ(this.pm.XQID)
     },
-    inputCommunityID: function (val) {
-      this.fetchAllXQByCommunityID(val)
+    xq: function (val) {
+      this.placeSearch.search(this.xq.Address, (status, result) => {
+          console.info('placeSearch status'+ status, result)
+        })
     }
   },
   computed: {

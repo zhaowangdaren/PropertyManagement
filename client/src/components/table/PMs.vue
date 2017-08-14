@@ -159,7 +159,6 @@ export default {
     }
   },
   mounted () {
-
     this.fetchPMs()
     this.fetchAllXQs()
     this.inputStreetID = this.STREET_ID
