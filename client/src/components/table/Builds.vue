@@ -86,6 +86,9 @@
           <el-button type='primary'>查看</el-button>
         </td>
       </tr>
+      <tr v-if='houses.length === 0'>
+        <td colspan="6">无记录</td>
+      </tr>
     </table>
     <el-dialog
       title='新增房屋信息'

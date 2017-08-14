@@ -55,6 +55,7 @@
 
 <script>
 import BasicDialog from '@/components/dialog/index'
+import { Message } from 'element-ui'
 import SearchSelect from '@/components/SearchSelect'
 import fetchpm from '@/fetchpm' 
 export default {
@@ -103,7 +104,9 @@ export default {
       }).then(body => {
         if(body.error ==1) this.warn = body.data
         else {
-          this.warn = '修改成功' //
+          // this.warn = '修改成功' //
+          Message({message:'恭喜，修改成功', type:'success'})
+          this.onCancel()
           this.$emit('editSucc')
         }
       })

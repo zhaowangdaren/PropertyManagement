@@ -46,6 +46,7 @@
 </template>
 
 <script>
+import { Message } from 'element-ui'
 import fetchpm from '@/fetchpm'
 export default {
   props: {
@@ -112,7 +113,9 @@ export default {
           this.warn = body.data
         } else {
           this.$emit('addSucc')
-          this.warn = '添加成功'
+          // this.warn = '添加成功'
+          Message({message:'恭喜，成功添加' + this.user.UserName, type:'success'})
+          this.onCancel()
           this.resetData()
         }
       })

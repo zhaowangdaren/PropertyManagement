@@ -50,13 +50,14 @@
       font-size: 20px;
       display: flex;
       align-items: center;
+      cursor: pointer;
       i{
         width: 30px;
         margin-right: 10px;
       }
     }
     .active{
-      background: #20a0ff;
+      background: #4c87b9;
       color: #fff;
     }
   }

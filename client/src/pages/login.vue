@@ -59,10 +59,22 @@ export default {
     }
   },
   methods: {
+    checkInput () {
+      if (this.login.username === '') {
+        this.warn = '请输入用户名'
+        return false
+      }
+      if (this.login.password === '') {
+        this.warn = '请输入密码'
+        return false
+      }
+      return true
+    },
     onLogin () {
-      fetch('http://47.94.7.154:3000/login', {
+      if (!this.checkInput()) return
+      fetchpm(this, false, '/login', {
         method: 'POST',
-        body: JSON.stringify(this.login)
+        body: this.login
       }).then(resp => {
         return resp.json()
       }).then( body => {
@@ -140,19 +152,37 @@ export default {
       .bottom{
         text-align: center;
         margin-top: 10px;
+        display: flex;
+        justify-content: center;
         .login{
-          background-color: #4db3ff;
-          border: solid 1px transparent;
-          padding: 5px 15px;
-          font-size: 18px;
+          display: inline-block;
+          line-height: 1;
+          white-space: nowrap;
+          cursor: pointer;
+          border: 1px solid #bfcbd9;
           color: #fff;
+          -webkit-appearance: none;
+          text-align: center;
+          box-sizing: border-box;
+          outline: none;
+          margin: 0;
+          -moz-user-select: none;
+          -webkit-user-select: none;
+          -ms-user-select: none;
+          padding: 10px 15px;
+          font-size: 18px;
+          border-radius: 4px;
+          background-color: #20a0ff;
+          border-color: #20a0ff;
         }
         .cancel{
           background-color: #fff;
           border: solid 1px #4db3ff;
           padding: 5px 15px;
           font-size: 18px;
+          border-radius: 4px;
           color: #4db3ff;
+          margin-left: 10px;
         }
       }
     }

@@ -75,6 +75,9 @@
               <el-button v-if='!EDITABLE' type='primary' @click='onDetails(item)'>查看</el-button>
             </td>
           </tr>
+          <tr v-if='pms.length === 0'>
+            <td colspan="6">无记录</td>
+          </tr>
         </table>
       </div>
     </div>

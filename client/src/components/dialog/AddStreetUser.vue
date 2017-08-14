@@ -61,6 +61,7 @@
 
 <script>
   import BasicDialog from '@/components/dialog/index'
+  import { Message } from 'element-ui'
   import SearchSelect from '@/components/SearchSelect'
   export default {
     components: { BasicDialog, SearchSelect},
@@ -120,6 +121,8 @@
           if(body.error ==1) this.warn = body.data
           else {
             this.warn = '街道用户新增成功'
+            Message({message:'恭喜，提交成功', type:'success'})
+            this.onCancel()
             this.user.UserName = '',
             this.user.RealName = ''
             this.user.Tel = ''

@@ -12,6 +12,7 @@
 
 <script>
 import ActionBar from '@/components/mobile/ActionBar'
+import fetchpm from '@/fetchpm'
 export default {
   components: { ActionBar },
   data () {
@@ -38,9 +39,9 @@ export default {
       this.$router.push({path: '/wx/pm/details', query: {XQID: xq.ID, XQName: xq.Name}})
     },
     fetchXQs (communityID) {
-      fetch(this.host + '/open/xq/kvs',{
+      fetchpm(this, false, '/open/xq/kvs',{
         method: 'POST',
-        body: JSON.stringify({communityID: communityID})
+        body: {communityID: communityID}
       }).then(resp => {
         return resp.json()
       }).then( data => {

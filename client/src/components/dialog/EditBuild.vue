@@ -157,7 +157,7 @@
         <div :class='s.title'>图片</div>
         <div :class='s.uploadWrap'>
           <el-upload
-            action="https://jsonplaceholder.typicode.com/posts/"
+            action="//47.94.7.154:3000/open/upload"
             list-type="picture-card"
             :on-preview="handlePictureCardPreview"
             :on-remove="handleRemove">
@@ -178,6 +178,7 @@
 
 <script>
 import SearchSelect from '@/components/SearchSelect'
+import { Message } from 'element-ui'
 import fetchpm from '@/fetchpm'
 export default {
   components: {},
@@ -281,7 +282,9 @@ export default {
         console.info('updateHouse', body)
         if(body.error === 1) this.warn = body.data
         else {
-          this.warn = '修改成功'
+          // this.warn = '修改成功'
+          Message({message:'恭喜，修改成功', type:'success'})
+          this.onCancel()
           this.$emit('editSucc')
         }
       })

@@ -40,12 +40,12 @@
 import ActionBar from '@/components/mobile/ActionBar'
 import filterEventStatus from '@/filters/filterEventStatus'
 import filterTime from '@/filters/filterTime'
+import fetchpm from '@/fetchpm'
 export default {
   components: { ActionBar },
   filters: { filterEventStatus, filterTime },
   data () {
     return {
-      host:'http://10.176.118.61:3000',
       headerOptions: {
         title: '查看进度'
       },
@@ -66,9 +66,9 @@ export default {
       this.$router.push({name:'detailsProgress', query: {index: event.Index, status: event.Status}})
     },
     fetchEvents (query){
-      fetch(this.host + '/open/event/kvs', {
+      fetchpm(this, false,'/open/event/kvs', {
         method: 'POST',
-        body: JSON.stringify(query)
+        body: query
       }).then(resp => {
         return resp.json()
       }).then(body => {
@@ -83,9 +83,9 @@ export default {
       })
     },
     fetchXQs(ids){
-      fetch(this.host + '/open/xq/ids', {
+      fetchpm(this, false, '/open/xq/ids', {
         method: 'POST',
-        body:JSON.stringify({values: ids})
+        body:{values: ids}
       }).then(resp => {
         return resp.json()
       }).then(body => {

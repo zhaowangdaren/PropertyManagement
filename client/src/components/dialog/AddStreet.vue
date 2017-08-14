@@ -52,6 +52,7 @@
 
 <script>
 import fetchpm from '@/fetchpm'
+import { Message } from 'element-ui'
   export default {
     components: {},
     data () {
@@ -97,7 +98,9 @@ import fetchpm from '@/fetchpm'
           if(body.error ==1) this.warn = body.data
           else {
             this.$emit('addSucc')
-            this.warn = '街道新增成功'
+            // this.warn = '街道新增成功'
+            Message({message:'恭喜，街道新增成功', type:'success'})
+            this.onCancel()
             this.street.name = '',
             this.street.personInCharge = ''
             this.street.tel = ''

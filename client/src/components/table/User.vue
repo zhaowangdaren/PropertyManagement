@@ -191,8 +191,8 @@
     width: 99%;
     font-size: 15px;
     color: #555;
-    margin: auto;
-    margin-top: 10px;
+    margin: 10px auto;
+    text-align: center;
     th{
       text-align: center;
       padding: 5px;

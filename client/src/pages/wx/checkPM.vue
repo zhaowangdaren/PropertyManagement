@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import fetchpm from '@/fetchpm'
 import ActionBar from '@/components/mobile/ActionBar'
 export default {
   components: { ActionBar },
@@ -20,8 +21,7 @@ export default {
         title: 'Select Street',
         rightBtns: [{text:'Cancel', event: null}]
       },
-      streets: [],
-      host:'http://10.176.118.61:3000'
+      streets: []
     }
   },
   mounted () {
@@ -33,9 +33,8 @@ export default {
       this.$router.go(-1)
     },
     fetchStreets () {
-      fetch(this.host + '/open/street',{
-        method: 'POST',
-        body: '{}'
+      fetchpm(this, false, '/open/street',{
+        method: 'POST'
       }).then(resp => {
         console.info(resp)
         return resp.json()

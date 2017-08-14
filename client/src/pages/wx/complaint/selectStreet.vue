@@ -12,6 +12,7 @@
 
 <script>
 import ActionBar from '@/components/mobile/ActionBar'
+import fetchpm from '@/fetchpm'
 export default {
   components: { ActionBar },
   data () {
@@ -20,8 +21,7 @@ export default {
         title: 'Select Street',
         rightBtns: [{text:'Cancel', event: null}]
       },
-      streets: [],
-      host:'https://127.0.0.1:3000'
+      streets: []
     }
   },
   mounted () {
@@ -33,9 +33,8 @@ export default {
       this.$router.go(-1)
     },
     fetchStreets () {
-      fetch(this.host + '/open/street',{
-        method: 'POST',
-        body: '{}'
+      fetchpm(this, false, '/open/street',{
+        method: 'POST'
       }).then(resp => {
         console.info(resp)
         return resp.json()

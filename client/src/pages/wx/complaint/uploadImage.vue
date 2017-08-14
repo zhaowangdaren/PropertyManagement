@@ -5,7 +5,7 @@
       <div :class='s.red'>注意：图片大小不要超过5M，最多上传9张</div>
       <el-upload
         :class='s.upload'
-        action="http://10.176.118.61:3000/open/upload"
+        action="//47.94.7.154:3000/open/upload"
         list-type="picture-card"
         :on-success="handleUploadSucc"
         :on-preview="handlePictureCardPreview"
@@ -23,6 +23,7 @@
 <script>
 import ActionBar from '@/components/mobile/ActionBar'
 import { Message } from 'element-ui'
+import fetchpm from '@/fetchpm'
 export default {
   components: { ActionBar },
   data () {
@@ -36,7 +37,6 @@ export default {
       event:{
         Imgs: ''//以逗号为分隔符
       },
-      host:'http://10.176.118.61:3000',
       imgs:[],
       warn:''
     }
@@ -46,7 +46,7 @@ export default {
   },
   methods: {
     fetchEvent () {
-      fetch(this.host + '/open/event/id/' + this.$route.query.id, {
+      fetchpm(this, false, '/open/event/id/' + this.$route.query.id, {
         method: 'POST'
       }).then(response => {
         return response.json()
@@ -57,9 +57,9 @@ export default {
     },
     onNext () {
       if(!this.checkImgs()) return
-      fetch(this.host + '/open/event/update', {
+      fetchpm(this, false, '/open/event/update', {
         method: 'PUT',
-        body: JSON.stringify(this.event)
+        body: this.event
       }).then(response => {
         return response.json()
       }).then(body => {

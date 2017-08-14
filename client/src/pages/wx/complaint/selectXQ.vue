@@ -12,6 +12,7 @@
 
 <script>
 import ActionBar from '@/components/mobile/ActionBar'
+import fetchpm from '@/fetchpm'
 export default {
   components: { ActionBar },
   data () {
@@ -21,8 +22,7 @@ export default {
         title: 'Select XQ',
         rightBtns: []
       },
-      xqs: [],
-      host:'http://10.176.118.61:3000'
+      xqs: []
     }
   },
   mounted () {
@@ -38,9 +38,9 @@ export default {
       this.$router.push({path: '/wx/complaint/addEvent', query: {XQID: xq.ID, XQName: xq.Name}})
     },
     fetchXQs (communityID) {
-      fetch(this.host + '/open/xq/kvs',{
+      fetchpm(this, false, '/open/xq/kvs',{
         method: 'POST',
-        body: JSON.stringify({communityID: communityID})
+        body: {communityID: communityID}
       }).then(resp => {
         return resp.json()
       }).then( data => {

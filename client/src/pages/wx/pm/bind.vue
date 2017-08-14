@@ -22,6 +22,7 @@
 
 <script>
 import ActionBar from '@/components/mobile/ActionBar'
+import fetchpm from '@/fetchpm'
 export default {
   components: { ActionBar },
   data () {
@@ -31,7 +32,6 @@ export default {
         title: '用户名绑定',
         rightBtns: []
       },
-      host:'http://10.176.118.61:3000',
       wxUser: {
         WXName: '',
         OpenID: '123',
@@ -43,9 +43,9 @@ export default {
   },
   methods: {
     onBind () {
-      fetch(this.host + '/open/pm/bind', {
+      fetchpm(this, false, '/open/pm/bind', {
         method: 'POST',
-        body: JSON.stringify(this.wxUser)
+        body: this.wxUser
       }).then(resp => {
         return resp.json()
       }).then(body => {

@@ -157,7 +157,7 @@
         <div :class='s.title'>上传图片</div>
         <div :class='s.uploadWrap'>
           <el-upload
-            action="https://jsonplaceholder.typicode.com/posts/"
+            action="//47.94.7.154:3000/open/upload"
             list-type="picture-card"
             :on-preview="handlePictureCardPreview"
             :on-remove="handleRemove">
@@ -179,6 +179,7 @@
 <script>
 import BasicDialog from '@/components/dialog/index'
 import SearchSelect from '@/components/SearchSelect'
+import { Message } from 'element-ui'
 import fetchpm from '@/fetchpm'
 export default {
   components: { BasicDialog, SearchSelect },
@@ -279,9 +280,10 @@ export default {
         console.info('addCountry', body)
         if(body.error === 1) this.warn = body.data
         else {
-          this.warn = 'Add Succ'
+          // this.warn = 'Add Succ'
+          Message({message:'恭喜，成功新增建筑信息', type:'success'})
           this.$emit('addSucc')
-          this.resetData()
+          this.onCancel()
         }
       })
     },

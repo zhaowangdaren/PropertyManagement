@@ -9,11 +9,11 @@
         <div :class='s.left'>
           用户上传
           <div :class='s.imgs'>
-            <img v-for='img in eventImgs' :src='"//localhost:3000/open/image/" + img' @click='onImg(img)' :class='s.eventImg'>
+            <img v-for='img in eventImgs' :src='"//47.94.7.154:3000/open/image/" + img' @click='onImg(img)' :class='s.eventImg'>
             <div v-if='eventImgs.length === 0'>暂无图片</div>
           </div>
           <el-dialog v-model="imgVisible" size="tiny">
-            <img width="100%" :src='"//localhost:3000/open/image/" + showingImg' alt="">
+            <img width="100%" :src='"//47.94.7.154:3000/open/image/" + showingImg' alt="">
           </el-dialog>
         </div>
         <div :class='s.right'>

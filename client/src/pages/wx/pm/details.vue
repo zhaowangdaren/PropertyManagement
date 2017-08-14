@@ -95,6 +95,7 @@
 <script>
 import ActionBar from '@/components/mobile/ActionBar'
 import filterImgs2Array from '@/filters/filterImgs2Array'
+import fetchpm from '@/fetchpm'
 export default {
   components: { ActionBar },
   filters: { filterImgs2Array },
@@ -105,7 +106,6 @@ export default {
         title: 'PM信息',
         rightBtns: []
       },
-      host:'http://10.176.118.61:3000',
       pm: {},
       imgs:[]
     }
@@ -119,9 +119,9 @@ export default {
       this.$router.go(-1)
     },
     fetchPM (xqID) {
-      fetch(this.host + '/open/pm/kvs', {
+      fetchpm(this, false, '/open/pm/kvs', {
         method: 'POST',
-        body: JSON.stringify({XQID: xqID})
+        body: {XQID: xqID}
       }).then(resp => {
         return resp.json()
       }).then(body => {

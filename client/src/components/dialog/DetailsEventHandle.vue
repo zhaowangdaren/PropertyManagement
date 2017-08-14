@@ -15,7 +15,7 @@ export default {
   data () {
     return {
       imgs: [],
-      host: '//localhost:3000'
+      host: '//47.94.7.154:3000'
     }
   },
   mounted () {

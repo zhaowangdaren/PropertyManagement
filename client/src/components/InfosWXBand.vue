@@ -36,6 +36,9 @@
           <el-button type="danger" icon="delete">强制解绑</el-button>
         </td>
       </tr>
+      <tr v-if='users.length=== 0'>
+        <td colspan="6">无记录</td>
+      </tr>
     </table>
     <component :is='showDialog' @close='showDialog = ""' />
   </div>
@@ -73,7 +76,7 @@
         }).then( data => {
           console.info('fetechusers', data)
           if (data.error === 0 ) {
-            this.users = data.data
+            this.users = data.data || []
           }
         })
       },
@@ -84,7 +87,7 @@
           return resp.json()
         }).then(body => {
           console.info('fetechAllWXUsersName', body)
-          if (body.error !== 1) this.wxNames = body.data
+          if (body.error !== 1) this.wxNames = body.data || []
         })
       },
       onSearch () {
@@ -124,6 +127,7 @@
     font-size: 15px;
     color: #555;
     margin: 10px auto;
+    text-align: center;
     th{
       text-align: center;
       padding: 5px;

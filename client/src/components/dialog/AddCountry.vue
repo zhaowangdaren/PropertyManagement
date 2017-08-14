@@ -74,6 +74,7 @@
 <script>
 import BasicDialog from '@/components/dialog/index'
 import SearchSelect from '@/components/SearchSelect'
+import { Message } from 'element-ui'
 import fetchpm from '@/fetchpm'
 export default {
   components: { BasicDialog, SearchSelect },
@@ -138,7 +139,9 @@ export default {
         if(body.error === 1) this.warn = body.data
         else {
           this.$emit('addSucc')
-          this.warn = 'Add Succ'
+          // this.warn = 'Add Succ'
+          Message({message:'恭喜，小区新增成功', type:'success'})
+          this.onCancel()
           this.searchStreetID = ''
           this.country.Name = ''
           this.country.Address = ''

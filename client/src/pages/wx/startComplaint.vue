@@ -5,21 +5,18 @@
 </template>
 
 <script>
+import fetchpm from '@/fetchpm'
 export default {
   data () {
     return {
-      host: '//localhost:3000'
     }
-  },
-  mounted () {
-
   },
   methods: {
     onStart () {
       this.$router.push({path: '/wx/complaint/selectStreet'})
     },
     fetchOpenID () {
-      fetch(this.host + '/open/wx/openid/' + this.$route.query.code, {
+      fetchpm(this, false, '/open/wx/openid/' + this.$route.query.code, {
         method: 'POST'
       }).then(resp => {
         return resp.json()

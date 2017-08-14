@@ -147,6 +147,7 @@
 
 <script>
 import fetchpm from '@/fetchpm'
+import { Message } from 'element-ui'
 export default {
   data () {
     return {
@@ -213,8 +214,10 @@ export default {
         if (body.error == 1) {
           this.warn = body.data
         } else {
-          this.warn = '提交成功'
+          // this.warn = '提交成功'
+          Message({message:'恭喜，提交成功', type:'success'})
           this.$emit('addSucc')
+          this.$emit('cancel')
         }
       })
     },

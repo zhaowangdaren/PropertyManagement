@@ -56,6 +56,7 @@
 </template>
 
 <script>
+import { Message } from 'element-ui'
 import fetchpm from '@/fetchpm'
 export default {
   data () {
@@ -89,7 +90,9 @@ export default {
         if (body.error == 1) {
           this.warn = body.data
         } else {
-          this.warn = '密码修改成功'
+          // this.warn = '密码修改成功'
+          Message({message:'恭喜，密码修改成功', type:'success'})
+          this.onCancel()
           this.user.Password = '',
           this.user.NewPassword = ''
           this.reNewPassword = ''

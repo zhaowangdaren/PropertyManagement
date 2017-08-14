@@ -55,6 +55,7 @@
 
 <script>
 import BasicDialog from '@/components/dialog/index'
+import { Message } from 'element-ui'
 import SearchSelect from '@/components/SearchSelect'
 import fetchpm from '@/fetchpm' 
 export default {
@@ -108,7 +109,9 @@ export default {
         if(body.error ==1) this.warn = body.data
         else {
           this.$emit('addSucc')
-          this.warn = 'Add succ' //街道新增成功
+          // this.warn = 'Add succ' //街道新增成功
+          Message({message:'恭喜，成功新增社区', type:'success'})
+          this.onCancel()
           this.community.Name = '',
           this.community.PersonInCharge = ''
           this.community.Tel = ''

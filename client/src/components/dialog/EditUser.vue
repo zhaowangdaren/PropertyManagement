@@ -47,6 +47,7 @@
 
 <script>
 import fetchpm from '@/fetchpm'
+import { Message } from 'element-ui'
 export default {
   props: {
     USER: Object
@@ -83,8 +84,10 @@ export default {
         console.info('onSave', body)
         if (body.error == 1) this.warn = body.data
         else {
-          this.warn = '修改成功'
+          // this.warn = '修改成功'
           this.$emit('editSucc')
+          Message({message:'恭喜，修改成功', type:'success'})
+          this.onCancel()
         }
       })
     },

@@ -48,13 +48,13 @@ import BDialog from '@/components/dialog/BasicDialog'
 import Imgs from '@/components/dialog/Imgs'
 import filterEventStatus from '@/filters/filterEventStatus'
 import filterTime from '@/filters/filterTime'
+import fetchpm from '@/fetchpm'
 import filterUserIdentity from '@/filters/filterUserIdentity'
 export default {
   components: { ActionBar, Imgs },
   filters: { filterEventStatus, filterTime, filterUserIdentity },
   data () {
     return {
-      host:'http://10.176.118.61:3000',
       headerOptions: {
         title: '查看进度详情'
       },
@@ -82,9 +82,8 @@ export default {
       console.info('onShowImgs',this.showingImgs)
     },
     onRevoke (index) {
-      fetch(this.host + '/open/event/del/' + this.eventIndex, {
-        method: 'POST',
-        body: '{}'
+      fetchpm(this, false,'/open/event/del/' + this.eventIndex, {
+        method: 'POST'
       }).then(resp => {
         return resp.json()
       }).then(body => {
@@ -94,9 +93,8 @@ export default {
       })
     },
     fetchEvent () {
-      fetch(this.host + '/open/event/id/' + this.eventIndex, {
-        method: 'POST',
-        body:'{}'
+      fetchpm(this, false, '/open/event/id/' + this.eventIndex, {
+        method: 'POST'
       }).then(resp => {
         return resp.json()
       }).then(body => {
@@ -107,9 +105,9 @@ export default {
       })
     },
     fetchEventHandle () {
-      fetch(this.host + '/open/eventHandle/kvs', {
+      fetchpm(this, false, '/open/eventHandle/kvs', {
         method: 'POST',
-        body: JSON.stringify({index: this.eventIndex})
+        body: {index: this.eventIndex}
       }).then(resp => {
         return resp.json()
       }).then(body => {

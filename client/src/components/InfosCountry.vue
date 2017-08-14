@@ -123,7 +123,7 @@
       :visible.sync="showDelConfirm"
       size="tiny">
       <div>请确认删除</div>
-      <div v-for='item in dels' v-text='item.Name'></div>
+      <div v-for='item in dels' v-text='item.Name' :class='s.delItem'></div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="onDelCancel">取 消</el-button>
         <el-button type="primary" @click="onDelConfirm">确 定</el-button>
@@ -361,6 +361,15 @@
         background-color: #ddd;
       }
     }
+  }
+  .delItem{
+    padding: 10px;
+    border-radius: 5px;
+    border: solid 1px rgba(0,0,0,0.2);
+    box-shadow: 1px 1px 1px 0 rgba(0,0,0,0.2);
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
   }
 }
 </style>

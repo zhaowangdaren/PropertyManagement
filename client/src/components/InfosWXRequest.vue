@@ -22,7 +22,7 @@
         </td>
       </tr>
       <tr v-if='users.length === 0' :class='s.noData'>
-        <td colspan="5" align="center">没有记录</td>
+        <td colspan="5" align="center">无记录</td>
       </tr>
     </table>
     <component :is='showDialog' @close='showDialog = ""' />
@@ -56,7 +56,7 @@
         }).then( data => {
           console.info('fetechusers', data)
           if (data.error === 0 ) {
-            this.users = data.data
+            this.users = data.data || []
           }
         })
       },

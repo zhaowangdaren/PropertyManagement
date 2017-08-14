@@ -17,6 +17,7 @@
 </template>
 
 <script type="text/javascript">
+import { Message } from 'element-ui'
 import fetchpm from '@/fetchpm'
 export default {
   props: {
@@ -59,7 +60,9 @@ export default {
       }).then(body => {
         console.info('onSave', body)
         if (body.error === 0) {
-          this.warn = '审核成功'
+          // this.warn = '审核成功'
+          Message({message:'恭喜，审核成功', type:'success'})
+          this.onCancel()
           this.$emit('succ', this.inputEventLevel)
         }
         else this.warn = body.data

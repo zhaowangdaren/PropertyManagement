@@ -2,7 +2,7 @@
   <div>
     <div :class='s.warn' v-text='warn'></div>
     <el-upload
-      action="http://localhost:3000/open/upload"
+      action="//47.94.7.154:3000/open/upload"
       list-type="picture-card"
       :on-success="handleUploadSucc"
       :on-remove="handleRemove">
@@ -32,7 +32,6 @@ export default {
   },
   data () {
     return {
-      host:'//localhost:3000',
       warn: '',
       imgs: [],
       eventHandle: {
@@ -60,6 +59,7 @@ export default {
         return resp.json()
       }).then(body => {
         if (body.error === 0) {
+          Message({message:'恭喜，成功提交事件处理', type:'success'})
           this.$emit('succ', body.data)
           this.$emit('cancel')
         } else {

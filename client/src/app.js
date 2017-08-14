@@ -3,11 +3,14 @@ import router from './router'
 // import axios from 'axios'
 // import VueAxios from 'vue-axios'
 
+import Promise from 'promise-polyfill'
+if (!window.Promise) window.Promise = Promise
+
 import App from './App'
 import 'whatwg-fetch'
 import { Upload, Dialog, Button, Input, Select,Option, DatePicker } from 'element-ui'
 import '@/res/common.css'
-
+import fetchpm from '@/fetchpm'
 // Vue.use(VueAxios, axios)
 
 Vue.use(Upload)

@@ -3,7 +3,7 @@
     <div v-for='(bg, index) in bgs' :class='s.bgImage'>
       <transition name='fade'>
         <div :style='{backgroundImage: "url(" + bg + ")"}' 
-            v-show='bgIndex == index' :class='s.item'>
+            v-if='bgIndex == index' :class='s.item'>
         </div>
       </transition>
     </div>
@@ -61,13 +61,13 @@
         }, 4000)
       },
       toAdmin () {
-        this.$router.push({path:'/login', query: {title: 'Admin', target: '/admin'}})
+        this.$router.push({path:'/login', query: {title: '管理员', target: '/admin'}})
       },
       toStreet () {
-        this.$router.push({path:'/login', query: {title:'Street User', target:'/street'}})
+        this.$router.push({path:'/login', query: {title:'街道工作人员', target:'/street'}})
       },
       toGov () {
-        this.$router.push({path:'/login', query: {title:'Gov User', target: '/gov'}})
+        this.$router.push({path:'/login', query: {title:'区住房管理中心工作人员', target: '/gov'}})
       }
     }
   }

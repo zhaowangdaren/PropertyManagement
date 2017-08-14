@@ -39,6 +39,7 @@
 
 <script>
 import ActionBar from '@/components/mobile/ActionBar'
+import fetchpm from '@/fetchpm'
 export default{
   components: { ActionBar },
   data () {
@@ -70,7 +71,6 @@ export default{
         {name:'Type6', value:5}
       ],
       selectedEventType:"",
-      host:'http://10.176.118.61:3000',
       warn:''
     }
   },
@@ -99,9 +99,9 @@ export default{
       this.addEvent()
     },
     addEvent () {
-      fetch(this.host + '/open/event/add', {
+      fetchpm(this, false, '/open/event/add', {
         method: 'POST',
-        body: JSON.stringify(this.event)
+        body: this.event
       }).then(resp => {
         return resp.json()
       }).then(body => {

@@ -73,6 +73,7 @@
     .userWrap{
       position: relative;
       padding: 5px 20px;
+      cursor: pointer;
       &:hover .operations{
         display: block;
       }

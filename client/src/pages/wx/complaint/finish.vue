@@ -20,9 +20,6 @@ export default {
         title: '完成'
       }
     }
-  },
-  mounted () {},
-  methods: {
   }
 }
 </script>

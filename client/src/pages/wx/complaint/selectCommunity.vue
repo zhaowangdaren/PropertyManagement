@@ -12,6 +12,7 @@
 
 <script>
 import ActionBar from '@/components/mobile/ActionBar'
+import fetchpm from '@/fetchpm'
 export default {
   components: { ActionBar },
   data () {
@@ -20,8 +21,7 @@ export default {
         leftBtns: [{text:'上一步', event: null}],
         title: 'Select Community'
       },
-      communities: [],
-      host:'http://10.176.118.61:3000'
+      communities: []
     }
   },
   mounted () {
@@ -37,9 +37,9 @@ export default {
       this.$router.push({path: '/wx/complaint/selectXQ', query: {communityID: community.ID}})
     },
     fetchCommunities (streetID) {
-      fetch(this.host + '/open/community/kvs',{
+      fetchpm(this, false, '/open/community/kvs',{
         method: 'POST',
-        body: JSON.stringify({streetID: streetID})
+        body: {streetID: streetID}
       }).then(resp => {
         console.info(resp)
         return resp.json()
