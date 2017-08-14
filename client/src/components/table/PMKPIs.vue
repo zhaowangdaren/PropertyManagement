@@ -162,7 +162,7 @@ export default {
       }).then( data => {
         if (data.error === 0) {
           console.info (data)
-          this.streets = data.data
+          this.streets = data.data || []
         }
       })
     },
@@ -181,7 +181,7 @@ export default {
         if(body.error !== 0) {
           console.error("Error: search CommunitiesByStreetName. Reason:" + body.data)
         } else if (body.data !== null ) {
-          this.communities = body.data
+          this.communities = body.data || []
         }
         this.isLoadingInput = false
       })
@@ -198,7 +198,7 @@ export default {
         console.info('fetchXQByCommunityName', body)
         if(body.error !== 0) console.error("Error: search fetchXQByCommunityName. Reason:" + body.data)
         else if (body.data !== null ) {
-          this.xqs = body.data
+          this.xqs = body.data || []
         }
         this.isLoadingInput = false
       })
@@ -241,7 +241,7 @@ export default {
         return resp.json()
       }).then(body => {
         console.info('fetchKPIs', body)
-        this.KPIs = body.data
+        this.KPIs = body.data || []
       })
     },
     toDetails (event) {

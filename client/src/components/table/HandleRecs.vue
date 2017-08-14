@@ -23,6 +23,9 @@
             <el-button type="primary" icon="search" @click='onHandleDetails(handle)'>详情</el-button>
           </td>
         </tr>
+        <tr v-if='eventHandles.length === 0'>
+          <td colspan="5">无记录</td>
+        </tr>
       </table>
       <el-dialog 
         v-model="showHandleDetails" 

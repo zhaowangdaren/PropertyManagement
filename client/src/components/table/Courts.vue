@@ -33,6 +33,9 @@
               <el-button type="primary" icon="search" @click='toDetails(handle)'>查看</el-button>
             </td>
           </tr>
+          <tr v-if='searchResult.length === 0'>
+            <td colspan="9">无记录</td>
+          </tr>
         </table>
       </div>
     </div>
