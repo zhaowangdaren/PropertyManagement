@@ -43,7 +43,7 @@
   .wrap{
     border-right: solid 1px #aaa;
     height: 100%;
-    background-color: #fafafa;
+    // background-color: #fafafa;
     div{
       border-bottom: solid 1px #ddd;
       padding: 20px 10px;

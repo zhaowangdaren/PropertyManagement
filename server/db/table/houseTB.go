@@ -108,7 +108,7 @@ func FindHouseKVs(db *mgo.Database, kvs map[string]interface{}) interface{} {
 		return gin.H{"error": 1, "data": err.Error()}
 	}
 	if result == nil {
-		return gin.H{"error": 1, "data": "没有查询到结果"}
+		return gin.H{"error": 1, "data": []}
 	}
 	return gin.H{"error": 0, "data": result}
 }

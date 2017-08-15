@@ -105,12 +105,7 @@
         <el-button type="primary" @click="onDelConfirm">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog
-      title='物业详细信息'
-      :visible.sync='showDetailDialog'
-      size='small'>
-      <details-p-m :pm='showingPM'></details-p-m>
-    </el-dialog>
+      <details-p-m :pm='showingPM' v-if='showDetailDialog' @close='showDetailDialog = false'></details-p-m>
   </div>
 </template>
 

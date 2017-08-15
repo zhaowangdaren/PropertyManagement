@@ -90,25 +90,17 @@
         <td colspan="6">无记录</td>
       </tr>
     </table>
-    <el-dialog
-      title='新增房屋信息'
-      size='large'
-      :visible.sync="showAddDialog">
-      <add-build
-        @close='showAddDialog = false'
-        @addSucc='onAddSucc'>
-      </add-build>
-    </el-dialog>
-    <el-dialog
-      title='编辑房屋信息'
-      size='large'
-      :visible.sync="showEditDialog">
-      <edit-build
-        :HOUSE='editingHouse'
-        @close='showEditDialog = false'
-        @editSucc='onEditSucc'>
-      </edit-build>
-    </el-dialog>
+    <add-build
+      v-if='showAddDialog'
+      @close='showAddDialog = false'
+      @addSucc='onAddSucc'>
+    </add-build>
+    <edit-build
+      v-if='showEditDialog'
+      :HOUSE='editingHouse'
+      @close='showEditDialog = false'
+      @editSucc='onEditSucc'>
+    </edit-build>
     <el-dialog
       title="提示"
       :visible.sync="showDelConfirm"
@@ -226,7 +218,7 @@
           return resp.json()
         }).then(body => {
           console.info('fetchHouses', body)
-          if (body.error !== 1) this.houses = body.data
+          if (body.error !== 1) this.houses = body.data || []
         })
       },
       fetchHouseKVs (kvs) {
@@ -237,7 +229,7 @@
           return resp.json()
         }).then(body => {
           console.info('fetchHouseKVs', body)
-          if (body.error !== 1) this.houses = body.data
+          if (body.error !== 1) this.houses = body.data || []
         })
       },
       fetechAllStreets () {
@@ -247,7 +239,7 @@
           return resp.json()
         }).then(body => {
           console.info('fetechAllStreetName',body)
-          if (body.error !== 1) this.streets = body.data
+          if (body.error !== 1) this.streets = body.data || []
         })
       },
       fetchAllCommunitiesByStreetID (streetID) {
@@ -259,7 +251,7 @@
           return resp.json()
         }).then(body => {
           console.info('fetchAllCommunities', body)
-          this.communities = body.data
+          this.communities = body.data || []
         })
       },
       fetchAllXQByCommunityID (communityID) {
@@ -271,7 +263,7 @@
           return resp.json()
         }).then(body => {
           console.info('fetchAllXQByCommunityID', body)
-          this.xqs = body.data
+          this.xqs = body.data || []
         })
       }
     }
@@ -280,6 +272,8 @@
 
 <style lang="less" module='s'>
 .wrap{
+  border: solid 1px #4c87b9;
+  background-color: #fff;
   .tab{
     color: #fff;
     font-size: 20px;
@@ -298,7 +292,8 @@
     .title{
       background: #eee;
       padding: 10px;
-      font-size: 20px;
+      font-size: 16px;
+      max-width: 50px;
     }
     .inputWrap {
         position: relative;

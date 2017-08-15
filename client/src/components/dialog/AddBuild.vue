@@ -1,179 +1,200 @@
 <template>
-  <div :class='s.wrap'>
-    <div :class='s.warn' v-if='warn !== ""' v-text='warn'></div>
-    <div :class='s.content'>
-      <!-- 新增建筑信息 -->
-      <table :class='s.searchWrap'>
-        <tr>
-          <td :class='s.title'>编号</td>
-          <td>
-            <div :class='s.inputWrap'>
-              <el-input v-model='house.BuildNo'></el-input>
-            </div>
-          </td>
-          <td :class='s.title'>房产登记人</td>
-          <td>
-            <div :class='s.inputWrap'>
-              <el-input v-model='house.Owner'></el-input>
-            </div>
-          </td>
-          <td :class='s.title'>房屋类型</td>
-          <td>
-            <div :class='s.inputWrap'>
-              <el-input v-model='house.HouseType'></el-input>
-            </div>
-          </td>
-        </tr>
-        <tr>
-        <!-- 街道 社区 小区 -->
-          <td :class='s.title'>街道</td>
-          <td>
-            <el-select :class='s.elSelect' v-model="inputStreetID" placeholder="请选择">
-              <el-option
-                v-for="item in streets"
-                :key="item.ID"
-                :label="item.Name"
-                :value="item.ID">
-              </el-option>
-            </el-select>
-          </td>
-          <td :class='s.title'>社区</td>
-          <td>
-            <el-select :class='s.elSelect' v-model="inputCommunityID" placeholder="请选择">
-              <el-option
-                v-for="item in communities"
-                :key="item.ID"
-                :label="item.Name"
-                :value="item.ID">
-              </el-option>
-            </el-select>
-          </td>
-          <td :class='s.title'>小区</td>
-          <td>
-            <el-select :class='s.elSelect' v-model="inputXQID" placeholder="请选择">
-              <el-option
-                v-for="item in xqs"
-                :key="item.ID"
-                :label="item.Name"
-                :value="item.ID">
-              </el-option>
-            </el-select>
-          </td>
-        </tr>
-        <tr>
-        <!-- 楼栋号 门牌号 建筑年代 -->
-          <td :class='s.title'>房屋楼栋号</td>
-          <td>
-            <div :class='s.inputWrap'>
-              <el-input v-model='house.HouseBuildNo'></el-input>
-            </div>
-          </td>
-          <td :class='s.title'>房屋门牌号</td>
-          <td>
-            <div :class='s.inputWrap'>
-              <el-input v-model='house.HouseNo'></el-input>
-            </div>
-          </td>
-          <td :class='s.title'>建筑年代</td>
-          <td>
-            <div :class='s.inputWrap'>
-              <el-input v-model='house.Year'></el-input>
-            </div>
-          </td>
-        </tr>
-      </table>
-      <div :class='s.item'>
-      <!-- 房屋使用变更 -->
-        房屋使用变更
-        <el-input :class='s.elInput' v-model='house.UseChange' type='textarea'></el-input>
+  <el-dialog
+    title='新增房屋信息'
+      :visible.sync='showDialog'
+      @close='onColse'
+      size='large'>
+    <div :class='s.wrap'>
+      <div :class='s.warn' v-if='warn !== ""' v-text='warn'></div>
+      <div :class='s.content'>
+        <!-- 新增建筑信息 -->
+        <table :class='s.searchWrap'>
+          <tr>
+            <td :class='s.title'>编号</td>
+            <td>
+              <div :class='s.inputWrap'>
+                <el-input v-model='house.BuildNo'></el-input>
+              </div>
+            </td>
+            <td :class='s.title'>房产登记人</td>
+            <td>
+              <div :class='s.inputWrap'>
+                <el-input v-model='house.Owner'></el-input>
+              </div>
+            </td>
+            <td :class='s.title'>房屋类型</td>
+            <td>
+              <div :class='s.inputWrap'>
+                <el-input v-model='house.HouseType'></el-input>
+              </div>
+            </td>
+          </tr>
+          <tr>
+          <!-- 街道 社区 小区 -->
+            <td :class='s.title'>街道</td>
+            <td>
+              <el-select :class='s.elSelect' v-model="inputStreetID" placeholder="请选择">
+                <el-option
+                  v-for="item in streets"
+                  :key="item.ID"
+                  :label="item.Name"
+                  :value="item.ID">
+                </el-option>
+              </el-select>
+            </td>
+            <td :class='s.title'>社区</td>
+            <td>
+              <el-select :class='s.elSelect' v-model="inputCommunityID" placeholder="请选择">
+                <el-option
+                  v-for="item in communities"
+                  :key="item.ID"
+                  :label="item.Name"
+                  :value="item.ID">
+                </el-option>
+              </el-select>
+            </td>
+            <td :class='s.title'>小区</td>
+            <td>
+              <el-select :class='s.elSelect' v-model="inputXQID" placeholder="请选择">
+                <el-option
+                  v-for="item in xqs"
+                  :key="item.ID"
+                  :label="item.Name"
+                  :value="item.ID">
+                </el-option>
+              </el-select>
+            </td>
+          </tr>
+          <tr>
+          <!-- 楼栋号 门牌号 建筑年代 -->
+            <td :class='s.title'>房屋楼栋号</td>
+            <td>
+              <div :class='s.inputWrap'>
+                <el-input v-model='house.HouseBuildNo'></el-input>
+              </div>
+            </td>
+            <td :class='s.title'>房屋门牌号</td>
+            <td>
+              <div :class='s.inputWrap'>
+                <el-input v-model='house.HouseNo'></el-input>
+              </div>
+            </td>
+            <td :class='s.title'>建筑年代</td>
+            <td>
+              <div :class='s.inputWrap'>
+                <el-input v-model='house.Year'></el-input>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td :class='s.title'>房屋使用变更</td>
+            <td colspan="5">
+              <el-input :class='s.elInput' v-model='house.UseChange' type='textarea'></el-input>
+            </td>
+          </tr>
+          <tr>
+            <td :class='s.title'>主题结构裂缝情况</td>
+            <td colspan="5">
+              <el-input :class='s.elInput' v-model='house.MainCrack' type='textarea'></el-input>
+            </td>
+          </tr>
+          <tr>
+            <td :class='s.title'>地基沉降</td>
+            <td colspan="5">
+              <el-input :class='s.elInput' v-model='house.FoundationDown' type='textarea'></el-input>
+            </td>
+          </tr>
+          <tr>
+            <td :class='s.title'>主题结构倾斜状况</td>
+            <td colspan="5">
+              <el-input :class='s.elInput' v-model='house.MainSlant' type='textarea'></el-input>
+            </td>
+          </tr>
+          <tr>
+            <td :class='s.title'>悬梁结构破坏</td>
+            <td colspan="5">
+              <el-input :class='s.elInput' v-model='house.CantileverCrack' type='textarea'></el-input>
+            </td>
+          </tr>
+          <tr>
+            <td :class='s.title'>女儿墙脱落情况</td>
+            <td colspan="5">
+              <el-input :class='s.elInput' v-model='house.ParapetOff' type='textarea'></el-input>
+            </td>
+          </tr>
+          <tr>
+            <td :class='s.title'>外墙抹灰层剥落情况</td>
+            <td colspan="5">
+              <el-input :class='s.elInput' v-model='house.OuterLloatedCoatOff' type='textarea'></el-input>
+            </td>
+          </tr>
+          <tr>
+            <td :class='s.title'>房屋变形</td>
+            <td colspan="5">
+              <el-input :class='s.elInput' v-model='house.HouseDeform' type='textarea'></el-input>
+            </td>
+          </tr>
+          <tr>
+            <td :class='s.title'>地质灾害</td>
+            <td colspan="5">
+              <el-input :class='s.elInput' v-model='house.Disaster' type='textarea'></el-input>
+            </td>
+          </tr>
+          <tr>
+            <td :class='s.title'>地址灾害治理情况</td>
+            <td colspan="5">
+              <el-input :class='s.elInput' v-model='house.DisasterManage' type='textarea'></el-input>
+            </td>
+          </tr>
+          <tr>
+            <td :class='s.title'>排水系统</td>
+            <td colspan="5">
+              <el-input :class='s.elInput' v-model='house.DrainageSsystem' type='textarea'></el-input>
+            </td>
+          </tr>
+          <tr>
+            <td :class='s.title'>房屋内部装修主体结构变更破坏情况</td>
+            <td colspan="5">
+              <el-input :class='s.elInput' v-model='house.InnerChange' type='textarea'></el-input>
+            </td>
+          </tr>
+          <tr>
+            <td :class='s.title'>违规搭建加层</td>
+            <td colspan="5">
+              <el-input :class='s.elInput' v-model='house.IllegalBuild' type='textarea'></el-input>
+            </td>
+          </tr>
+          <tr>
+            <td :class='s.title'>房屋鉴定等级</td>
+            <td colspan="5">
+              <el-input :class='s.elInput' v-model='house.RankAppraisal' type='textarea'></el-input>
+            </td>
+          </tr>
+          <tr>
+            <td :class='s.title'>上传图片</td>
+            <td colspan="5">
+              <div :class='s.uploadWrap'>
+                <el-upload
+                  action="https://www.maszfglzx.com:3000/open/upload"
+                  list-type="picture-card"
+                  :on-preview="handlePictureCardPreview"
+                  :on-remove="handleRemove">
+                  <i class="el-icon-plus"></i>
+                </el-upload>
+              </div>
+            </td>
+          </tr>
+        </table>
       </div>
-      <div :class='s.item'>
-      <!-- 主题结构裂缝情况 -->
-        主题结构裂缝情况
-        <el-input :class='s.elInput' v-model='house.MainCrack' type='textarea'></el-input>
+      <div slot="footer" :class="s.bts">
+        <el-button @click="onCancel">取 消</el-button>
+        <el-button type="primary" @click="onAdd">提 交</el-button>
       </div>
-      <div :class='s.item'>
-      <!-- 地基沉降 -->
-        地基沉降
-        <el-input :class='s.elInput' v-model='house.FoundationDown' type='textarea'></el-input>
-      </div>
-      <div :class='s.item'>
-      <!-- 主题结构倾斜状况 -->
-        主题结构倾斜状况
-        <el-input :class='s.elInput' v-model='house.MainSlant' type='textarea'></el-input>
-      </div>
-      <div :class='s.item'>
-      <!-- 悬梁结构破坏 -->
-        悬梁结构破坏
-        <el-input :class='s.elInput' v-model='house.CantileverCrack' type='textarea'></el-input>
-      </div>
-      <div :class='s.item'>
-      <!-- 女儿墙脱落情况 -->
-        女儿墙脱落情况
-        <el-input :class='s.elInput' v-model='house.ParapetOff' type='textarea'></el-input>
-      </div>
-      <div :class='s.item'>
-      <!-- 外墙抹灰层剥落情况 -->
-        外墙抹灰层剥落情况
-        <el-input :class='s.elInput' v-model='house.OuterLloatedCoatOff' type='textarea'></el-input>
-      </div>
-      <div :class='s.item'>
-      <!-- 房屋变形 -->
-        房屋变形
-        <el-input :class='s.elInput' v-model='house.HouseDeform' type='textarea'></el-input>
-      </div>
-      <!-- 地质灾害
-      排水系统
-      内部装修变更
-      违规搭建加层等改变房屋寨河
-      建筑物附近地质灾害治理情况
-      房屋鉴定等级
-      房屋图片 -->
-      <div :class='s.item'>
-        地质灾害
-        <el-input :class='s.elInput' v-model='house.Disaster' type='textarea'></el-input>
-      </div>
-      <div :class='s.item'>
-        地址灾害治理情况
-        <el-input :class='s.elInput' v-model='house.DisasterManage' type='textarea'></el-input>
-      </div>
-      <div :class='s.item'>
-        排水系统
-        <el-input :class='s.elInput' v-model='house.DrainageSsystem' type='textarea'></el-input>
-      </div>
-      <div :class='s.item'>
-        房屋内部装修主体结构变更破坏情况
-        <el-input :class='s.elInput' v-model='house.InnerChange' type='textarea'></el-input>
-      </div>
-      <div :class='s.item'>
-        违规搭建加层
-        <el-input :class='s.elInput' v-model='house.IllegalBuild' type='textarea'></el-input>
-      </div>
-      <div :class='s.item'>
-        房屋鉴定等级
-        <el-input :class='s.elInput' v-model='house.RankAppraisal' type='textarea'></el-input>
-      </div>
-      <div :class='s.item'>
-        <div :class='s.title'>上传图片</div>
-        <div :class='s.uploadWrap'>
-          <el-upload
-            action="//47.94.7.154:3000/open/upload"
-            list-type="picture-card"
-            :on-preview="handlePictureCardPreview"
-            :on-remove="handleRemove">
-            <i class="el-icon-plus"></i>
-          </el-upload>
-        </div>
-      </div>
-    </div>
-    <div slot="footer" :class="s.bts">
-      <el-button @click="onCancel">取 消</el-button>
-      <el-button type="primary" @click="onAdd">提 交</el-button>
     </div>
     <el-dialog v-model="dialogVisible" size='tiny'>
       <img width="100%" :src="dialogImageUrl" alt="">
     </el-dialog>
-  </div>
+  </el-dialog>
 </template>
 
 <script>
@@ -185,6 +206,7 @@ export default {
   components: { BasicDialog, SearchSelect },
   data () {
     return {
+      showDialog: true,
       warn:'',
       warn: '',
       inputStreetID: '',
@@ -217,6 +239,9 @@ export default {
     this.fetchAllStreets()
   },
   methods: {
+    onColse () {
+      this.$emit('close')
+    },
     resetData () {
       this.house = {
         BuildNo:'',
@@ -343,7 +368,8 @@ export default {
       .title{
         background: #f0f0f0;
         padding: 10px;
-        font-size: 20px;
+        font-size: 16px;
+        max-width: 50px;
       }
       .elSelect{
         width: 100%;

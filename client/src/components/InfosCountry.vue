@@ -86,7 +86,7 @@
         <td v-text='communityNames[index]'></td>
         <td v-text='item.Name'></td>
         <td v-text='item.Address'></td>
-        <td v-text='item.PersonInCharge'></td>
+        <td v-text='item.ContactName'></td>
         <td v-text='item.Tel'></td>
         <td v-text='item.Intro'></td>
         <td>
@@ -351,6 +351,8 @@
       text-align: center;
       padding: 5px;
       border: solid 1px #ddd;
+      background-color: #f0f0f0;
+      min-width: 50px;
     }
     td{
       padding: 5px;

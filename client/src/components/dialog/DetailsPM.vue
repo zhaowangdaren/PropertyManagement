@@ -1,129 +1,137 @@
 <template>
-  <div :class='s.wrap'>
-    <div :class='s.warn' v-if='warn !== ""' v-text='warn'></div>
-    <div :class='s.tabs'>
-      <div :class='s.tab + " " + (tab.view === curView ? s.active : "")' 
-            v-for='tab in tabs' 
-            @click='onTab(tab)'>
-          {{tab.name}}
+  <el-dialog
+    title='物业详细信息'
+      :visible.sync='showDialog'
+      @close='onColse'
+      size='large'>
+    <div :class='s.wrap'>
+      <div :class='s.warn' v-if='warn !== ""' v-text='warn'></div>
+      <div :class='s.tabs'>
+        <div :class='s.tab + " " + (tab.view === curView ? s.active : "")' 
+              v-for='tab in tabs' 
+              @click='onTab(tab)'>
+            {{tab.name}}
+        </div>
+      </div>
+      <div :class='s.content' v-if='curView == 0'>
+        <div :class='s.item' >
+          街道名
+          <!-- 用户名 -->
+          <el-input :class='s.elInput' disabled v-model="street.Name" @focus='onFocus'></el-input>
+        </div>
+        <div :class='s.item' >
+          社区名
+          <!-- 用户名 -->
+          <el-input :class='s.elInput' disabled v-model="community.Name" @focus='onFocus'></el-input>
+        </div>
+        <div :class='s.item' >
+          小区名
+          <el-input :class='s.elInput' disabled v-model="xq.Name" @focus='onFocus'></el-input>
+        </div>
+        <div :class='s.item'>
+          物业公司名称
+          <!-- 用户名 -->
+          <el-input :class='s.elInput' disabled v-model="pm.Name" @focus='onFocus'></el-input>
+        </div>
+        <div :class='s.item'>
+          独立法人
+          <!-- 独立法人 -->
+          <el-input :class='s.elInput' disabled v-model="pm.LegalPerson" @focus='onFocus'></el-input>
+        </div>
+        <div :class='s.item'>
+          物业资质
+          <!-- 独立法人 -->
+          <el-input :class='s.elInput' disabled v-model="pm.WuYeZiZhi" @focus='onFocus'></el-input>
+        </div>
+        <div :class='s.item'>
+          物业性质
+          <!-- 独立法人 -->
+          <el-input :class='s.elInput' disabled v-model="pm.WuYeXinZhi" @focus='onFocus'></el-input>
+        </div>
+        <div :class='s.item'>
+          联系电话
+          <!-- 独立法人 -->
+          <el-input :class='s.elInput' disabled v-model="pm.Tel" @focus='onFocus'></el-input>
+        </div>
+      </div>
+      <!-- Tab 2 -->
+      <!-- Tab 2 -->
+      <div :class='s.content' v-if='curView == 1'>
+        <div :class='s.item'>
+          小区环境
+          <!-- 独立法人 -->
+          <el-input type='textarea' disabled :class='s.elInput' v-model="pm.XQEnv" @focus='onFocus'></el-input>
+        </div>
+        <div :class='s.item'>
+          小区保洁
+          <!-- 独立法人 -->
+          <el-input type='textarea' disabled :class='s.elInput' v-model="pm.XQCleaning" @focus='onFocus'></el-input>
+        </div>
+        <div :class='s.item'>
+          小区绿化
+          <!-- 绿化 -->
+          <el-input type='textarea' disabled :class='s.elInput' v-model="pm.GreenVegetatio" @focus='onFocus'></el-input>
+        </div>
+        <div :class='s.item'>
+          管养保护
+          <!-- 独立法人 -->
+          <el-input type='textarea' disabled :class='s.elInput' v-model="pm.GuanYangBaoHu" @focus='onFocus'></el-input>
+        </div>
+        <div :class='s.item'>
+          消防检查
+          <!-- 独立法人 -->
+          <el-input type='textarea' disabled :class='s.elInput' v-model="pm.XiaoFanJianCha" @focus='onFocus'></el-input>
+        </div>
+        <div :class='s.item'>
+          电梯保养
+          <!-- 独立法人 -->
+          <el-input type='textarea' disabled :class='s.elInput' v-model="pm.DianTiBaoYang" @focus='onFocus'></el-input>
+        </div>
+        <div :class='s.item'>
+          车辆有序停放
+          <!-- 独立法人 -->
+          <el-input type='textarea' disabled :class='s.elInput' v-model="pm.CarParkInOrder" @focus='onFocus'></el-input>
+        </div>
+        <div :class='s.item'>
+          业主委员会
+          <!-- 独立法人 -->
+          <el-input type='textarea' disabled :class='s.elInput' v-model="pm.YeZhuCommunity" @focus='onFocus'></el-input>
+        </div>
+        <div :class='s.item'>
+          业主委员会联系方式
+          <!-- 独立法人 -->
+          <el-input type='textarea' disabled :class='s.elInput' v-model="pm.YeZhuCommunityTel" @focus='onFocus'></el-input>
+        </div>
+        <div :class='s.item'>
+          上一年物业等级
+          <!-- 独立法人 -->
+          <el-input type='textarea' disabled :class='s.elInput' v-model="pm.PastYearLevel" @focus='onFocus'></el-input>
+        </div>
+        <div :class='s.item'>
+          建议整改措施
+          <!-- 独立法人 -->
+          <el-input type='textarea' disabled :class='s.elInput' v-model="pm.JianYiZhengGaiCuoShi" @focus='onFocus'></el-input>
+        </div>
+      </div>
+      <div :class='s.content' v-show='curView == 2'>
+        <div v-show='curView == 2'>
+          <div ref='map' :class='s.map'>Map</div>
+        </div>
       </div>
     </div>
-    <div :class='s.content' v-if='curView == 0'>
-      <div :class='s.item' >
-        街道名
-        <!-- 用户名 -->
-        <el-input :class='s.elInput' disabled v-model="street.Name" @focus='onFocus'></el-input>
-      </div>
-      <div :class='s.item' >
-        社区名
-        <!-- 用户名 -->
-        <el-input :class='s.elInput' disabled v-model="community.Name" @focus='onFocus'></el-input>
-      </div>
-      <div :class='s.item' >
-        小区名
-        <el-input :class='s.elInput' disabled v-model="xq.Name" @focus='onFocus'></el-input>
-      </div>
-      <div :class='s.item'>
-        物业公司名称
-        <!-- 用户名 -->
-        <el-input :class='s.elInput' disabled v-model="pm.Name" @focus='onFocus'></el-input>
-      </div>
-      <div :class='s.item'>
-        独立法人
-        <!-- 独立法人 -->
-        <el-input :class='s.elInput' disabled v-model="pm.LegalPerson" @focus='onFocus'></el-input>
-      </div>
-      <div :class='s.item'>
-        物业资质
-        <!-- 独立法人 -->
-        <el-input :class='s.elInput' disabled v-model="pm.WuYeZiZhi" @focus='onFocus'></el-input>
-      </div>
-      <div :class='s.item'>
-        物业性质
-        <!-- 独立法人 -->
-        <el-input :class='s.elInput' disabled v-model="pm.WuYeXinZhi" @focus='onFocus'></el-input>
-      </div>
-      <div :class='s.item'>
-        联系电话
-        <!-- 独立法人 -->
-        <el-input :class='s.elInput' disabled v-model="pm.Tel" @focus='onFocus'></el-input>
-      </div>
-    </div>
-    <!-- Tab 2 -->
-    <!-- Tab 2 -->
-    <div :class='s.content' v-if='curView == 1'>
-      <div :class='s.item'>
-        小区环境
-        <!-- 独立法人 -->
-        <el-input type='textarea' disabled :class='s.elInput' v-model="pm.XQEnv" @focus='onFocus'></el-input>
-      </div>
-      <div :class='s.item'>
-        小区保洁
-        <!-- 独立法人 -->
-        <el-input type='textarea' disabled :class='s.elInput' v-model="pm.XQCleaning" @focus='onFocus'></el-input>
-      </div>
-      <div :class='s.item'>
-        小区绿化
-        <!-- 绿化 -->
-        <el-input type='textarea' disabled :class='s.elInput' v-model="pm.GreenVegetatio" @focus='onFocus'></el-input>
-      </div>
-      <div :class='s.item'>
-        管养保护
-        <!-- 独立法人 -->
-        <el-input type='textarea' disabled :class='s.elInput' v-model="pm.GuanYangBaoHu" @focus='onFocus'></el-input>
-      </div>
-      <div :class='s.item'>
-        消防检查
-        <!-- 独立法人 -->
-        <el-input type='textarea' disabled :class='s.elInput' v-model="pm.XiaoFanJianCha" @focus='onFocus'></el-input>
-      </div>
-      <div :class='s.item'>
-        电梯保养
-        <!-- 独立法人 -->
-        <el-input type='textarea' disabled :class='s.elInput' v-model="pm.DianTiBaoYang" @focus='onFocus'></el-input>
-      </div>
-      <div :class='s.item'>
-        车辆有序停放
-        <!-- 独立法人 -->
-        <el-input type='textarea' disabled :class='s.elInput' v-model="pm.CarParkInOrder" @focus='onFocus'></el-input>
-      </div>
-      <div :class='s.item'>
-        业主委员会
-        <!-- 独立法人 -->
-        <el-input type='textarea' disabled :class='s.elInput' v-model="pm.YeZhuCommunity" @focus='onFocus'></el-input>
-      </div>
-      <div :class='s.item'>
-        业主委员会联系方式
-        <!-- 独立法人 -->
-        <el-input type='textarea' disabled :class='s.elInput' v-model="pm.YeZhuCommunityTel" @focus='onFocus'></el-input>
-      </div>
-      <div :class='s.item'>
-        上一年物业等级
-        <!-- 独立法人 -->
-        <el-input type='textarea' disabled :class='s.elInput' v-model="pm.PastYearLevel" @focus='onFocus'></el-input>
-      </div>
-      <div :class='s.item'>
-        建议整改措施
-        <!-- 独立法人 -->
-        <el-input type='textarea' disabled :class='s.elInput' v-model="pm.JianYiZhengGaiCuoShi" @focus='onFocus'></el-input>
-      </div>
-    </div>
-    <div :class='s.content' v-show='curView == 2'>
-      <div v-show='curView == 2'>
-        <div ref='map' :class='s.map'>Map</div>
-      </div>
-    </div>
-  </div>
+  </el-dialog>
 </template>
 
 <script>
 import fetchpm from '@/fetchpm'
 export default {
   props: {
-    pm: Object
+    pm: Object,
+    show: Boolean
   },
   data () {
     return {
+      showDialog: true,
       warn: '',
       tabs: [
         {
@@ -149,7 +157,7 @@ export default {
       inputCommunityID:'',
       inputXQID: '',
       map: null,
-      placeSearch: null
+      placeSearch: {}
     }
   },
   mounted () {
@@ -172,6 +180,9 @@ export default {
   computed: {
   },
   methods: {
+    onColse () {
+      this.$emit('close')
+    },
     onTab (tab) {
       this.curView = tab.view
       this.$nextTick(() => {

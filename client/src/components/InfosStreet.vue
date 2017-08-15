@@ -176,6 +176,7 @@
       text-align: center;
       padding: 5px;
       border: solid 1px #ddd;
+      min-width: 50px;
     }
     td{
       padding: 5px;

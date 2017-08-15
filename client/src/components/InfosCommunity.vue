@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class='s.wrap'>
     <div :class='s.searchWrap'>
       <div :class='s.title'>街道名</div>
       <!-- 街道名 -->
@@ -259,6 +259,8 @@
 </script>
 
 <style lang="less" module='s'>
+.wrap{
+
   .searchWrap{
     border-bottom: solid 1px #ddd;
     display: flex;
@@ -299,6 +301,7 @@
       padding: 5px;
       border: solid 1px #ddd;
       background-color: #f0f0f0;
+      min-width: 50px;
     }
     td{
       padding: 5px;
@@ -310,4 +313,5 @@
       }
     }
   }
+}
 </style>
