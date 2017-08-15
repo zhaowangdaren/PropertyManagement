@@ -102,7 +102,7 @@ func Start() {
 	{
 		startOpen(open, dbc)
 	}
-	router.Run(":3000")
+	// router.Run(":3000")
 	// autotls.Run(router, "localhost")
-	// router.RunTLS(":3000", FileBasicPath+"/cert/server.crt", FileBasicPath+"/cert/server.key")
+	router.RunTLS(":3000", "/etc/letsencrypt/live/maszfglzx.com/fullchain.pem", "/etc/letsencrypt/live/maszfglzx.com/privkey.pem")
 }
