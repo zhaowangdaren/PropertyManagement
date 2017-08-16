@@ -6,7 +6,7 @@ const Login = resolve => require(['@/pages/login'], resolve)
 
 const Admin = resolve => require(['@/pages/admin'], resolve)
 
-const AdminBasicInfo = require('@/pages/admin/basicInfo')
+const AdminBasicInfo = resolve => require(['@/pages/admin/basicInfo'], resolve)
 const AdminUsers = resolve => require(['@/pages/admin/users'], resolve)
 const AdminInit = resolve => require(['@/pages/admin/init'], resolve)
 const AdminWX = resolve => require(['@/pages/admin/wx'], resolve)

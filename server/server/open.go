@@ -223,4 +223,8 @@ func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
 		}
 		c.JSON(http.StatusOK, gin.H{"error": 0, "data": gin.H{"openid": resp["openid"]}})
 	})
+
+	router.GET("/wx/event/types", func(c *gin.Context) {
+		c.JSON(http.StatusOK, table.FindEventTypes(dbc))
+	})
 }

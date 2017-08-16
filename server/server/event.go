@@ -41,4 +41,24 @@ func startEvent(router *gin.RouterGroup, dbc *mgo.Database) {
 			c.JSON(http.StatusOK, table.UpdateEvent(dbc, info))
 		}
 	})
+
+	router.POST("/event/type/add", func(c *gin.Context) {
+		var info table.EventType
+		err := c.BindJSON(&info)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+		} else {
+			c.JSON(http.StatusOK, table.InsertEventType(dbc, info.Type))
+		}
+	})
+
+	router.POST("/event/type/del", func(c *gin.Context) {
+		var info table.EventType
+		err := c.BindJSON(&info)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+		} else {
+			c.JSON(http.StatusOK, table.DelEventType(dbc, info.Type))
+		}
+	})
 }

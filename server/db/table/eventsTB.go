@@ -24,7 +24,7 @@ type Event struct {
 	XQID        string //投诉小区名
 	Status      int    //事件状态  -1-用户撤销 0-居民提交 1-已审核待处理 2-已解决 3-已关闭
 	EventLevel  int    //事件等级  1-特急、2-加急、3-急
-	Type        int8   //事件基本类别
+	Type        string //事件基本类别
 	Content     string //投诉内容
 	Time        int64  //提交时间
 	ToCourt     int8   //0-不推送至法院 1-推送至法院
@@ -43,8 +43,8 @@ func InsertEvent(db *mgo.Database, event Event) interface{} {
 	c := db.C(EventTableName)
 	count, err := c.Find(bson.M{"index": event.Index}).Count()
 	if err != nil {
-		log.Fatal(err)
-		return err.Error()
+		log.Println(err)
+		return gin.H{"error": 1, "data": err.Error()}
 	}
 	if count > 0 {
 		return gin.H{"error": 1, "data": "事件已经存在，编号为" + event.Index}
@@ -54,7 +54,7 @@ func InsertEvent(db *mgo.Database, event Event) interface{} {
 	fmt.Println("event index=", event.Index)
 	err = c.Insert(&event)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return gin.H{"error": 1, "data": err.Error()}
 	}
 	return gin.H{"error": 0, "data": event.Index}

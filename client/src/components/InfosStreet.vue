@@ -185,7 +185,7 @@
     }
     .street{
       &:hover {
-        background-color: #ddd;
+        background-color: #f0f0f0;
       }
     }
   }

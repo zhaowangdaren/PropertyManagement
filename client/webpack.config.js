@@ -143,8 +143,8 @@ const webpackConfig = {
       comments: false
     })
   ],
-  devtool: 'source-map',
-  // devtool: false,
+  // devtool: 'source-map',
+  devtool: false,
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
     compress: false,

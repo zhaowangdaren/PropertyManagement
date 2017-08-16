@@ -11,7 +11,7 @@
         <div :class='s.title'>Event Type:</div>
         <select v-model='selectedEventType' :class='s.value' @focus='onFocus'>
           <option disabled value="">请选择</option>
-          <option v-for='type in eventTypes' :value='type'>{{type.name}}</option>
+          <option v-for='type in eventTypes' :value='type'></option>
           </option>
         </select>
       </div>
@@ -62,14 +62,7 @@ export default{
         Type: '',//事件类型
         Tel:''
       },
-      eventTypes: [
-        {name:'Type1', value:0},
-        {name:'Type2', value:1},
-        {name:'Type3', value:2},
-        {name:'Type4', value:3},
-        {name:'Type5', value:4},
-        {name:'Type6', value:5}
-      ],
+      eventTypes: [],
       selectedEventType:"",
       warn:''
     }
@@ -84,17 +77,11 @@ export default{
     onReturn () {
       this.$router.go(-1)
     },
-    onEventTypePick (value) {
-      console.info('onEventTypePick', value[0])
-      this.selectedEventType.value[0] = value[0]
-      this.selectedEventType.index = parseInt(value[0])
-      console.info(this.selectedEventType)
-    },
     onNext () {
       this.event.StreetID = sessionStorage.getItem('cpStreetID')
       this.event.CommunityID = sessionStorage.getItem('cpCommunityID')
       this.event.XQID = this.xq.ID
-      this.event.Type = this.selectedEventType.value
+      this.event.Type = this.selectedEventType
       if(!this.checkEvent()) return
       this.addEvent()
     },

@@ -20,7 +20,7 @@ export default {
         {
           icon: 'icon-home',
           text:'基础信息维护',//基础信息维护
-          path:'/admin/index'
+          path:'/admin'
         },
         {
           icon: 'icon-shuaxin',
