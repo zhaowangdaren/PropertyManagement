@@ -1,11 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-Vue.use(Router)
 
 const Login = resolve => require(['@/pages/login'], resolve)
+
 const Admin = resolve => require(['@/pages/admin'], resolve)
-const AdminBasicInfo = resolve => require(['@/pages/admin/basicInfo'], resolve)
+
+const AdminBasicInfo = require('@/pages/admin/basicInfo')
 const AdminUsers = resolve => require(['@/pages/admin/users'], resolve)
 const AdminInit = resolve => require(['@/pages/admin/init'], resolve)
 const AdminWX = resolve => require(['@/pages/admin/wx'], resolve)
@@ -48,13 +49,11 @@ const PMMPRules = resolve => require(['@/pages/wx/pm/managementPractices'], reso
 const PMKPIRules = resolve => require(['@/pages/wx/pm/kpiRules'], resolve)
 const PMQA = resolve => require(['@/pages/wx/pm/qa'], resolve)
 
+Vue.use(Router)
+
 export default new Router({
   // mode: 'history',
   routes: [
-    {
-      path: '/testapi',
-      component: require('@/pages/testAPI')
-    },
     {
       path: '/',
       component: require('@/pages/index')
@@ -73,6 +72,7 @@ export default new Router({
         },
         {
           path: 'users',
+          name:'adminUsers',
           component: AdminUsers
         },{
           path: 'init',

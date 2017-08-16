@@ -2,7 +2,7 @@
   <div :class='s.wrap' :style='{backgroundImage: "url(" + bgImg +  ")"}'>
     <div :class='s.formWrap'>
       <div :class='s.title' v-text='sourceParams.title'></div>
-      <form :class='s.body'>
+      <form :class='s.body' @submit.prevent='onLogin'>
         <p :class="s.warn" v-text='warn'></p>
         <div :class='s.row'>
           <div :class='s.icon'>
@@ -17,7 +17,7 @@
           <input type="password" name="" :class='s.input' v-model='login.password'>
         </div>
         <div :class='s.bottom'>
-          <input type="submit" name="" value='登 录' @click='onLogin' :class='s.login'>
+          <input type="submit" name="" value='登 录' @click='onLogin' :class='s.login'></span>
           <span :class='s.cancel' @click='onCancel'>取 消</span>
         </div>
       </form>
@@ -26,7 +26,6 @@
 </template>
 
 <script type="text/javascript">
-import fetchpm from '@/fetchpm'
 export default {
   data () {
     return {
@@ -46,6 +45,7 @@ export default {
   mounted () {
     this.sourceParams.title = this.$route.query.title
     this.sourceParams.target = this.$route.query.target
+    console.info(this.sourceParams)
     switch (this.sourceParams.target) {
       case '/admin':
         this.login.type = 1
@@ -71,10 +71,11 @@ export default {
       return true
     },
     onLogin () {
+      console.info('onLogin')
       if (!this.checkInput()) return
-      fetchpm(this, false, '/login', {
+      fetch('https://www.maszfglzx.com:3000/login', {
         method: 'POST',
-        body: this.login
+        body: JSON.stringify(this.login)
       }).then(resp => {
         return resp.json()
       }).then( body => {
@@ -83,7 +84,6 @@ export default {
           body.data.type = this.login.type
           sessionStorage.setItem('user', JSON.stringify(body.data))
           this.$router.push({path: this.sourceParams.target})
-          console.info('expire',new Date(body.data.expire))
         } else {
           this.warn = body.data.message
         }

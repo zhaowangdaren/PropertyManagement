@@ -191,9 +191,9 @@
         <el-button type="primary" @click="onAdd">提 交</el-button>
       </div>
     </div>
-    <el-dialog v-model="dialogVisible" size='tiny'>
+    <basic-dialog v-model="dialogVisible" size='tiny'>
       <img width="100%" :src="dialogImageUrl" alt="">
-    </el-dialog>
+    </basic-dialog>
   </el-dialog>
 </template>
 
