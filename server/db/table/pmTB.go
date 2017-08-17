@@ -62,21 +62,29 @@ func InsertPM(db *mgo.Database, info PM) interface{} {
 	return gin.H{"error": 0, "data": Succ}
 }
 
-//FindWuYes 查询小区信息集
+//FindWuYes 查询pm信息集
 func FindWuYes(db *mgo.Database, name string, pageNo int, pageSize int) interface{} {
 	c := db.C(PMTableName)
 	var result []PM
-	var err error
+	var query *mgo.Query
 	if name == "" {
-		err = c.Find(nil).All(&result)
+		query = c.Find(nil)
 	} else {
-		err = c.Find(bson.M{"name": name}).All(&result)
+		query = c.Find(bson.M{"name": name})
 	}
+	sum, err := query.Count()
 	if err != nil {
-		log.Println(err)
 		return gin.H{"error": 1, "data": err.Error()}
 	}
-	return gin.H{"error": 0, "data": result}
+	if pageSize != 0 {
+		err = query.Skip(pageNo * pageSize).Limit(pageSize).All(&result)
+	} else { //查询所有
+		err = query.All(&result)
+	}
+	if err != nil {
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": gin.H{"pms": result, "sum": sum}}
 }
 
 //FindWuYeKVs 通过一系列的K-V来查找记录

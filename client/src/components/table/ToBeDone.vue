@@ -91,25 +91,6 @@
         margin-right: 10px;
       }
     }
-    table{
-      width: 99%;
-      font-size: 15px;
-      color: #555;
-      margin: 10px auto;
-      th, td {
-        padding: 5px;
-        border: solid 1px #ddd;
-        text-align: center;
-      }
-      th{
-        background-color: #f0f0f0;
-      } 
-      tr{
-        &:hover {
-          background-color: #ddd;
-        }
-      }
-    }
   }
 }
 </style>

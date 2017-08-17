@@ -73,20 +73,21 @@ func FindStreetsByIDs(db *mgo.Database, ids []string) interface{} {
 }
 
 //FindStreets 如果street.Name为""，则查询所有的街道信息,
-func FindStreets(db *mgo.Database, street Street, pageNo int, pageSize int) interface{} {
+func FindStreets(db *mgo.Database, pageNo int, pageSize int) interface{} {
 	c := db.C(StreetTableName)
 	var result []Street
 	var err error
-	if street.Name == "" {
-		err = c.Find(nil).All(&result)
-	} else {
-		err = c.Find(bson.M{"name": street.Name}).All(&result)
+	query := c.Find(nil)
+	sum, _ := query.Count()
+	if pageSize != 0 {
+		err = query.Skip(pageNo * pageSize).Limit(pageSize).All(&result)
+	} else { //查询所有
+		err = query.All(&result)
 	}
 	if err != nil {
-		log.Println(err)
 		return gin.H{"error": 1, "data": err.Error()}
 	}
-	return gin.H{"error": 0, "data": result}
+	return gin.H{"error": 0, "data": gin.H{"streets": result, "sum": sum}}
 }
 
 //FindStreetDistinct 筛选出key值不重复的value

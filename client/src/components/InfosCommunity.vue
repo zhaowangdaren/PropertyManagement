@@ -6,19 +6,13 @@
       <div :class='s.inputWrap'>
         <el-select :class='s.elInput' v-model="searchStreetID" placeholder="请选择">
           <el-option
-            v-for="item in showStreets"
+            v-for="item in streets"
             :key="item.ID"
             :label="item.Name"
             :value="item.ID">
           </el-option>
         </el-select>
       </div>
-      <!-- <image-button :class='s.searchBt' @click='onSearch'
-        text='查询'
-        :img='require("@/res/images/ic_serach.png")'
-        bgColor='#4c87b9'
-        color='#fff'
-      /> -->
       <el-button
         :class='s.searchBt'
         @click='onSearch'
@@ -26,23 +20,10 @@
         icon='search'>查询</el-button>
     </div>
     <div :class='s.addDel'>
-      <!-- <image-button :class='s.bt' @click='onAdd'
-        text='新增'
-        :img='require("@/res/images/add.png")'
-        bgColor='#3598dc'
-        fontSize='20px'
-        /> -->
       <el-button
         @click='onAdd'
         type='primary'
         icon='plus'>新增</el-button>
-      <!-- <image-button :class='s.bt'
-        text='删除'
-        :img='require("@/res/images/delete.png")'
-        bgColor='#cb5a5e'
-        fontSize='20px'
-        @click='onDel'
-        /> -->
       <el-button
         @click='onDel'
         type='danger'
@@ -59,7 +40,7 @@
         <!-- 负责人 -->
         <th>电话号码</th>
         <!-- 电话号码 -->
-        <th :class='s.descr'>描述</th>
+        <th>描述</th>
         <th>操作</th>
       </tr>
       <tr v-for='item in communities' :class='s.street'>
@@ -70,14 +51,8 @@
         <td v-text='item.Name'></td>
         <td v-text='item.PersonInCharge'></td>
         <td v-text='item.Tel'></td>
-        <td v-text='item.Intro'></td>
+        <td v-text='item.Intro' class='descr'></td>
         <td>
-          <!-- <image-button
-            text='编辑'
-            :img='require("@/res/images/edit.png")'
-            bgColor='#26a69a'
-            @click='onEdit(item)'
-          /> -->
           <el-button
             @click='onEdit(item)'
             type='primary'
@@ -88,6 +63,12 @@
         <td colspan="7">无记录</td>
       </tr>
     </table>
+    <el-pagination v-if='showPage'
+      layout="total, prev, pager, next"
+      @current-change='onChangePage'
+      :page-size='pageSize'
+      :total="sum">
+    </el-pagination>
     <el-dialog
       title='新增社区'
       :visible.sync='showAddDialog'
@@ -131,7 +112,6 @@
     components: {ImageButton, AddCommunity, EditCommunity},
     data () {
       return {
-        host: 'http://localhost:3000',
         communities:[],
         streets: [],
         dels: [],
@@ -139,11 +119,15 @@
         showAddDialog: false,
         showEditDialog: false,
         showDelConfirm: false,
-        editingCommunity: null
+        editingCommunity: null,
+        pageNo: 0,
+        pageSize: 10,
+        sum: 0,
+        showPage: true
       }
     },
     mounted () {
-      this.fetchCommunities('')
+      this.fetchCommunities()
       this.fetchAllStreets()
     },
     computed: {
@@ -156,6 +140,10 @@
       }
     },
     methods: {
+      onChangePage (currentPage) {
+        this.pageNo = currentPage - 1
+        this.fetchCommunities()
+      },
       onAdd () {
         this.showAddDialog = true
       },
@@ -205,16 +193,18 @@
         this.fetchCommunitiesByStreetID(this.searchStreetID)
       },
       fetchCommunities () {
-        this.inputName = ''
         fetchpm(this, true, '/pm/community', {
-          method: 'POST'
+          method: 'POST',
+          body: {pageNo: this.pageNo, pageSize: this.pageSize}
         }).then(resp => {
           return resp.json()
-        }).then(data => {
-          console.info(data)
-          if (data.error == 1) return
-          this.communities = data.data
+        }).then(body => {
+          console.info(body)
+          if (body.error == 1) return
+          this.communities = body.data.communities || []
+          this.sum = body.data.sum || 0
           this.setCommunitiesName()
+          this.showPage = true
         })
       },
       setCommunitiesName () {
@@ -235,7 +225,7 @@
         }).then(resp => {
           return resp.json()
         }).then(body => {
-          this.streets = body.data
+          this.streets = body.data.streets || []
           this.setCommunitiesName()
         })
       },
@@ -248,10 +238,11 @@
           }
         }).then(resp => {
           return resp.json()
-        }).then( data => {
-          if(data.error !== 0) console.error("Error: search CommunitiesByStreetName. Reason:" + data.data)
-          this.communities = data.data
+        }).then( body => {
+          if(body.error !== 0) console.error("Error: search CommunitiesByStreetName. Reason:" + data.data)
+          this.communities = body.data || []
           this.setCommunitiesName()
+          this.showPage = false
         })
       }
     }
@@ -260,7 +251,6 @@
 
 <style lang="less" module='s'>
 .wrap{
-
   .searchWrap{
     border-bottom: solid 1px #ddd;
     display: flex;
@@ -289,29 +279,6 @@
     display: flex;
     align-items: center;
     margin: 10px;
-  }
-  table{
-    width: 99%;
-    font-size: 15px;
-    color: #555;
-    margin: 10px auto;
-    text-align: center;
-    th{
-      text-align: center;
-      padding: 5px;
-      border: solid 1px #ddd;
-      background-color: #f0f0f0;
-      min-width: 50px;
-    }
-    td{
-      padding: 5px;
-      border: solid 1px #ddd;
-    }
-    .street{
-      &:hover {
-        background-color: #ddd;
-      }
-    }
   }
 }
 </style>

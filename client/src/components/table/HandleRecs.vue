@@ -18,7 +18,7 @@
           <td v-text='handle.AuthorCategory'></td>
           <td v-text='handle.AuthorName'></td>
           <td>{{ handle.Time | filterTime }}</td>
-          <td v-text='handle.HandleInfo'></td>
+          <td v-text='handle.HandleInfo' class="descr"></td>
           <td>
             <el-button type="primary" icon="search" @click='onHandleDetails(handle)'>详情</el-button>
           </td>
@@ -100,26 +100,6 @@ export default {
   }
   .body{
     margin: 10px;
-    table{
-      width: 100%;
-      font-size: 15px;
-      color: #555;
-      background-color: #fff;
-
-      th, td {
-        padding: 5px;
-        border: solid 1px #ddd;
-        text-align: center;
-      }
-      th{
-        background-color: #f0f0f0;
-      }
-      tr{
-        &:hover {
-          background-color: #f0f0f0;
-        }
-      }
-    }
   }
 }
 </style>

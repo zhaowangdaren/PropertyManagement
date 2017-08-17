@@ -39,17 +39,25 @@ func FindUser(db *mgo.Database, userName string, userType int) User {
 func FindUsers(db *mgo.Database, userName string, userType int, pageNo int, pageSize int) interface{} {
 	c := db.C(UserTableName)
 	var result []User
-	var err error
+	var query *mgo.Query
 	if userName == "" {
-		err = c.Find(bson.M{"type": userType}).All(&result)
+		query = c.Find(bson.M{"type": userType})
 	} else {
-		err = c.Find(bson.M{"username": userName, "type": userType}).All(&result)
+		query = c.Find(bson.M{"username": userName, "type": userType})
 	}
-
+	sum, err := query.Count()
 	if err != nil {
 		return gin.H{"error": 1, "data": err.Error()}
 	}
-	return gin.H{"error": 0, "data": result}
+	if pageSize != 0 {
+		err = query.Skip(pageNo * pageSize).Limit(pageSize).All(&result)
+	} else { //查询所有
+		err = query.All(&result)
+	}
+	if err != nil {
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": gin.H{"users": result, "sum": sum}}
 }
 
 //InsertUser 插入用户

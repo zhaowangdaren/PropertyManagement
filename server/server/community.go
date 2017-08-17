@@ -16,7 +16,7 @@ func startCommunity(router *gin.RouterGroup, dbc *mgo.Database) {
 		var queryInfo QueryBasic
 		err := c.BindJSON(&queryInfo)
 		if err == nil {
-			c.JSON(http.StatusOK, db.QueryComunityInfo(dbc, queryInfo.Name, queryInfo.PageNo, queryInfo.PageSize))
+			c.JSON(http.StatusOK, table.FindCommunities(dbc, queryInfo.PageNo, queryInfo.PageSize))
 		} else {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
 			log.Println(err)

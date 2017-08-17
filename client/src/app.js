@@ -8,7 +8,7 @@ if (!window.Promise) window.Promise = Promise
 
 import App from './App'
 import 'whatwg-fetch'
-import { Upload, Dialog, Button, Input, Select,Option, DatePicker } from 'element-ui'
+import { Upload, Dialog, Button, Input, Select,Option, DatePicker, Pagination } from 'element-ui'
 import '@/res/common.css'
 import fetchpm from '@/fetchpm'
 // Vue.use(VueAxios, axios)
@@ -20,6 +20,7 @@ Vue.use(Input)
 Vue.use(Select)
 Vue.use(Option)
 Vue.use(DatePicker)
+Vue.use(Pagination)
 
 new Vue ({
   el: '#app',

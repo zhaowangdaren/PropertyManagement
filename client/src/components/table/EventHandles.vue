@@ -289,27 +289,8 @@
     }
     .body{
       margin: 10px;
-      table{
-        width: 100%;
-        font-size: 15px;
-        color: #555;
-        margin-top: 10px;
-        th, td {
-          padding: 5px;
-          border: solid 1px #ddd;
-          text-align: center;
-        }
-        th{
-          background-color: #eee;
-        } 
-        tr{
-          &:hover {
-            background-color: #ddd;
-          }
-        }
-        .key{
-          background-color: #ddd;
-        }
+      .key{
+        background-color: #ddd;
       }
     }    
   }

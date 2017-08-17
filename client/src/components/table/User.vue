@@ -53,6 +53,12 @@
         </td>
       </tr>
     </table>
+    <el-pagination v-if='showPage'
+      layout="total, prev, pager, next"
+      @current-change='onChangePage'
+      :page-size='pageSize'
+      :total="sum">
+    </el-pagination>
     <el-dialog
       title='新增用户'
       :visible.sync='showAddDialog'
@@ -101,7 +107,11 @@
         delUser: {},
         editingUser: {},
         warn:'',
-        streets:[]
+        streets:[],
+        pageNo: 0,
+        pageSize: 10,
+        sum: 0,
+        showPage: true
       }
     },
     computed: {
@@ -120,6 +130,10 @@
       if (this.USER_TYPE == 3) this.fetchAllStreets()
     },
     methods: {
+      onChangePage (curPage) {
+        this.pageNo = curPage - 1
+        this.fetchUsers()
+      },
       onDel (user) {
         this.delUser = user
         this.showDelConfirm = true
@@ -150,12 +164,15 @@
       fetchUsers () {
         fetchpm(this, true, '/pm/users', {
           method: "POST",
-          body: {type : this.USER_TYPE}
+          body: {type : this.USER_TYPE, pageNo: this.pageNo, pageSize: this.pageSize}
         }).then(resp => {
           return resp.json()
         }).then(body => {
           console.info('fetchUsers', body)
-          if(body.error !== 1) this.users = body.data
+          if(body.error !== 0) return
+          this.users = body.data.users || []
+          this.sum = body.data.sum
+          this.showPage = true
         })
       },
       fetchAllStreets () {
@@ -164,11 +181,11 @@
         }).then(resp => {
           console.info(resp)
           return resp.json()
-        }).then( data => {
+        }).then( body => {
           // console.info('fetechStreets', data)
-          if (data.error === 0) {
-            console.info ('fetchAllStreets',data)
-            this.streets = data.data
+          if (body.error === 0) {
+            console.info ('fetchAllStreets',body)
+            this.streets = body.data.streets || []
           }
         })
       }

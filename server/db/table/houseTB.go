@@ -82,16 +82,25 @@ func FindHouses(db *mgo.Database, buildNO string, pageNo int, pageSize int) inte
 	c := db.C(HouseTabelName)
 	var result []House
 	var err error
+	var query *mgo.Query
 	if buildNO == "" {
-		err = c.Find(nil).All(&result)
+		query = c.Find(nil)
 	} else {
-		err = c.Find(bson.M{"buildno": buildNO}).All(&result)
+		query = c.Find(bson.M{"buildno": buildNO})
 	}
+	sum, err := query.Count()
 	if err != nil {
-		log.Println(err)
 		return gin.H{"error": 1, "data": err.Error()}
 	}
-	return gin.H{"error": 0, "data": result}
+	if pageSize != 0 {
+		err = query.Skip(pageNo * pageSize).Limit(pageSize).All(&result)
+	} else { //查询所有
+		err = query.All(&result)
+	}
+	if err != nil {
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": gin.H{"builds": result, "sum": sum}}
 }
 
 //FindHouseKVs 通过一系列的K-V来查找记录

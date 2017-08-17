@@ -61,21 +61,21 @@ func UpdateXQ(db *mgo.Database, info XiaoQu) interface{} {
 }
 
 //FindXiaoQus 查询小区信息集
-func FindXiaoQus(db *mgo.Database, xiaoQu XiaoQu, pageNo int, pageSize int) interface{} {
+func FindXiaoQus(db *mgo.Database, pageNo int, pageSize int) interface{} {
 	c := db.C(XiaoQuTableName)
 	var result []XiaoQu
 	var err error
-	if xiaoQu == (XiaoQu{}) {
-		err = c.Find(nil).All(&result)
-	} else {
-		err = c.Find(bson.M{"name": xiaoQu.Name}).All(&result)
+	query := c.Find(nil)
+	sum, _ := query.Count()
+	if pageSize != 0 {
+		err = query.Skip(pageNo * pageSize).Limit(pageSize).All(&result)
+	} else { //查询所有
+		err = query.All(&result)
 	}
 	if err != nil {
-		log.Println(err)
 		return gin.H{"error": 1, "data": err.Error()}
 	}
-	return gin.H{"error": 0, "data": result}
-
+	return gin.H{"error": 0, "data": gin.H{"xqs": result, "sum": sum}}
 }
 
 //FindXQDistincts 查找key对应的不同values

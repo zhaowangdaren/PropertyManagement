@@ -75,7 +75,7 @@
         <th>负责人</th>
         <!-- 电话号码 -->
         <th>电话号码</th>
-        <th :class='s.descr'>描述</th>
+        <th>描述</th>
         <th>操作</th>
       </tr>
       <tr v-for='(item, index) in xqs' :class='s.street'>
@@ -85,10 +85,10 @@
         <td v-text='streetNames[index]'></td>
         <td v-text='communityNames[index]'></td>
         <td v-text='item.Name'></td>
-        <td v-text='item.Address'></td>
+        <td v-text='item.Address' class='descr'></td>
         <td v-text='item.ContactName'></td>
         <td v-text='item.Tel'></td>
-        <td v-text='item.Intro'></td>
+        <td v-text='item.Intro' class='descr'></td>
         <td>
           <!-- <image-button
             text='编辑'
@@ -106,6 +106,12 @@
         <td colspan="9">无记录</td>
       </tr>
     </table>
+    <el-pagination v-if='showPage'
+      layout="total, prev, pager, next"
+      @current-change='onChangePage'
+      :page-size='pageSize'
+      :total="sum">
+    </el-pagination>
     <el-dialog
       title='新增小区'
       :visible.sync='showAddDialog'
@@ -155,7 +161,11 @@
         showEditDialog: false,
         editingXQ: null,
         showDelConfirm: false,
-        dels: []
+        dels: [],
+        pageNo: 0,
+        pageSize: 10,
+        sum: 0,
+        showPage: true
       }
     },
     watch: {
@@ -246,9 +256,10 @@
           body: params
         }).then( resp => {
           return resp.json()
-        }).then( data => {
-          console.info('fetchXQKVs', data)
-          if (data.error !== 1) this.xqs = data.data
+        }).then( body => {
+          console.info('fetchXQKVs', body)
+          if (body.error !== 1) this.xqs = body.data || []
+          this.showPage = false
         })
       },
       setStreets () {
@@ -262,14 +273,21 @@
           }
         }
       },
+      onChangePage (curPage) {
+        this.pageNo = curPage - 1
+        this.fetchXQs()
+      },
       fetchXQs () {
         fetchpm(this,true,'/pm/xq', {
-          method: 'POST'
+          method: 'POST',
+          body: {pageNo: this.pageNo, pageSize: this.pageSize}
         }).then(resp => {
           return resp.json()
-        }).then(data => {
-          console.info(data)
-          this.xqs = data.data
+        }).then(body => {
+          console.info(body)
+          this.xqs = body.data.xqs || []
+          this.sum = body.data.sum
+          this.showPage = true
         })
       },
       fetchAllStreets () {
@@ -277,9 +295,9 @@
           method: 'POST'
         }).then(resp => {
           return resp.json()
-        }).then(data => {
-          console.info('fetechAllStreetName',data)
-          this.streets = data.data
+        }).then(body => {
+          console.info('fetechAllStreetName',body)
+          this.streets = body.data.streets || []
         })
       },
       fetchAllCommunities () {
@@ -287,9 +305,9 @@
           method: 'POST'
         }).then(resp => {
           return resp.json()
-        }).then(data => {
-          console.info('fetchAllCommunities', data)
-          this.communities = data.data
+        }).then(body => {
+          console.info('fetchAllCommunities', body)
+          this.communities = body.data.communities || []
         })
       },
       fetchCommunitiesByStreetID (streetID) {
@@ -300,7 +318,8 @@
           return resp.json()
         }).then(body => {
           console.info('fetchCommunitiesByStreetID', body)
-          this.searchCommunities = body.data
+          this.searchCommunities = body.data || []
+          this.showPage = false
         })
       }
     }
@@ -340,28 +359,6 @@
     margin: 10px;
     .bt{
       margin: 5px;
-    }
-  }
-  table{
-    width: 99%;
-    font-size: 15px;
-    color: #555;
-    margin: 10px auto;
-    th{
-      text-align: center;
-      padding: 5px;
-      border: solid 1px #ddd;
-      background-color: #f0f0f0;
-      min-width: 50px;
-    }
-    td{
-      padding: 5px;
-      border: solid 1px #ddd;
-    }
-    .street{
-      &:hover {
-        background-color: #ddd;
-      }
     }
   }
   .delItem{

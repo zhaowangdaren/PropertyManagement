@@ -72,13 +72,19 @@
             <td align="center">
               <el-button v-if='EDITABLE' type="primary" icon="edit" @click='onEdit(item)'>编辑</el-button>
               <el-button v-if='EDITABLE' type="danger" icon="delete" @click='onDel(item)'>删除</el-button>
-              <el-button v-if='!EDITABLE' type='primary' @click='onDetails(item)'>查看</el-button>
+              <el-button type='primary' @click='onDetails(item)'>查看</el-button>
             </td>
           </tr>
           <tr v-if='pms.length === 0'>
             <td colspan="6">无记录</td>
           </tr>
         </table>
+        <el-pagination v-if='showPage'
+          layout="total, prev, pager, next"
+          @current-change='onChangePage'
+          :page-size='pageSize'
+          :total="sum">
+        </el-pagination>
       </div>
     </div>
     <el-dialog
@@ -105,7 +111,7 @@
         <el-button type="primary" @click="onDelConfirm">确 定</el-button>
       </span>
     </el-dialog>
-      <details-p-m :pm='showingPM' v-if='showDetailDialog' @close='showDetailDialog = false'></details-p-m>
+    <details-p-m :pm='showingPM' v-if='showDetailDialog' @close='showDetailDialog = false'></details-p-m>
   </div>
 </template>
 
@@ -127,8 +133,10 @@ export default {
     return {
       userStreetID: '',
       streets: [],
+      allStreets: [],
       communities: [],
       xqs: [],
+      allXQs: [],
       inputStreetID:'',
       inputCommunityID: '',
       inputXQID:'',
@@ -141,14 +149,18 @@ export default {
       delPM: {},
       warn:'',
       editingPM: {},
-      showingPM: {}
+      showingPM: {},
+      pageNo: 0,
+      pageSize: 10,
+      sum: 0,
+      showPage: true
     }
   },
   computed: {
     xqNames: function () {
       return this.pms.map(pm => {
-        for (var i = 0; i < this.xqs.length; i++) {
-          if (this.xqs[i].ID == pm.XQID) return this.xqs[i].Name
+        for (var i = 0; i < this.allXQs.length; i++) {
+          if (this.allXQs[i].ID == pm.XQID) return this.allXQs[i].Name
         }
       })
     }
@@ -173,6 +185,10 @@ export default {
     }
   },
   methods: {
+    onChangePage (curPage) {
+      this.pageNo = curPage - 1
+      this.fetchPMs()
+    },
     onDetails (pm) {
       this.showingPM = pm
       this.showDetailDialog = true
@@ -229,12 +245,16 @@ export default {
     },
     fetchPMs () {
       fetchpm(this, true, '/pm/pm', {
-        method: 'POST'
+        method: 'POST',
+        body: {pageNo: this.pageNo, pageSize: this.pageSize}
       }).then(resp =>{
         return resp.json()
       }).then(body => {
         console.info('fetchPMs', body)
-        if (body.error !== 1) this.pms = body.data
+        if (body.error !== 0) return
+        this.pms = body.data.pms || []
+        this.sum = body.data.sum || 0
+        this.showPage = true
       })
     },
     fetchPMKVs (kvs) {
@@ -245,7 +265,9 @@ export default {
         return resp.json()
       }).then(body => {
         console.info('fetchPMKVs', body)
-        if (body.error !== 1) this.pms = body.data
+        if (body.error !== 0) return
+        this.pms = body.data
+        this.showPage = false
       })
     },
     fetechAllStreets() {
@@ -254,10 +276,10 @@ export default {
       }).then(resp => {
         console.info(resp)
         return resp.json()
-      }).then( data => {
-        if (data.error === 0) {
-          console.info (data)
-          this.streets = data.data
+      }).then( body => {
+        if (body.error === 0) {
+          console.info (body)
+          this.streets = body.data.streets || []
         }
       })
     },
@@ -268,7 +290,7 @@ export default {
         return resp.json()
       }).then(body => {
         console.info('fetchAllXQs', body)
-        this.xqs = body.data
+        this.allXQs = body.data.xqs || []
       })
     },
     fetchCommunitiesByStreetID (streetID) {
@@ -335,18 +357,9 @@ export default {
       align-items: center;
       position: relative;
       margin: 10px;
-      table{
-        width: 100%;
-        background-color: #fff;
-        td{
-          text-align: center;
-          padding: 2px;
-          border: solid 1px #ddd;
-        }
-        .key{
-          background-color: #ddd;
-          font-size: 20px;
-        }
+      .key{
+        background-color: #ddd;
+        font-size: 20px;
       }
     }
     .addDel {
@@ -356,29 +369,6 @@ export default {
     }
     .table{
       margin: 10px;
-      table{
-        width: 100%;
-        font-size: 15px;
-        color: #555;
-        margin: 10px auto;
-        background-color: #fff;
-        text-align: center;
-        th{
-          text-align: center;
-          padding: 5px;
-          border: solid 1px #ddd;
-          background-color: #f0f0f0;
-        }
-        tr{
-          &:hover {
-            background-color: #f0f0f0;
-          }
-        }
-        td{
-          padding: 5px;
-          border: solid 1px #ddd;
-        }
-      }
     }
   }
 }

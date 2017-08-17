@@ -279,29 +279,8 @@ export default {
         justify-content: flex-end;
         margin: 10px;
       }
-      table{
-        width: 100%;
-        margin-top: 10px;
-        font-size: 15px;
-        color: #555;
-        background-color: #fff;
-        th, td {
-          padding: 5px;
-          border: solid 1px #ddd;
-          text-align: center;
-          font-size: 15px;
-        }
-        th{
-          background-color: #f0f0f0;
-        } 
-        tr{
-          &:hover {
-            background-color: #f0f0f0;
-          }
-        }
-        .key{
-          background-color: #f0f0f0;
-        }
+      .key{
+        background-color: #f0f0f0;
       }
     }    
   }

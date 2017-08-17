@@ -80,7 +80,7 @@
         <td v-text='item.HouseBuildNo'></td>
         <td v-text='item.HouseNo'></td>
         <td v-text='item.HouseType'></td>
-        <td align="center">
+        <td align="center" :class='s.btns'>
           <el-button v-if='EDITABLE' type="primary" icon="edit" @click='onEdit(item)'>编辑</el-button>
           <el-button v-if='EDITABLE' type="danger" icon="delete" @click='onDel(item)'>删除</el-button>
           <el-button type='primary'>查看</el-button>
@@ -90,6 +90,12 @@
         <td colspan="6">无记录</td>
       </tr>
     </table>
+    <el-pagination v-if='showPage'
+      layout="total, prev, pager, next"
+      @current-change='onChangePage'
+      :page-size='pageSize'
+      :total="sum">
+    </el-pagination>
     <add-build
       v-if='showAddDialog'
       @close='showAddDialog = false'
@@ -144,7 +150,11 @@
         isLoadingInput: false,
         houses:[],
         editingHouse: {},
-        delHouse: {}
+        delHouse: {},
+        pageNo: 0,
+        pageSize: 10,
+        sum: 0,
+        showPage: true
       }
     },
     computed: {
@@ -166,6 +176,10 @@
       }
     },
     methods: {
+      onChangePage (curPage) {
+        this.pageNo = curPage - 1
+        this.fetchHouses()
+      },
       onAddSucc () {
         this.fetchHouses()
       },
@@ -213,12 +227,16 @@
       },
       fetchHouses () {
         fetchpm(this, true, '/pm/house', {
-          method: 'POST'
+          method: 'POST',
+          body: {pageNo: this.pageNo, pageSize: this.pageSize}
         }).then(resp =>{
           return resp.json()
         }).then(body => {
           console.info('fetchHouses', body)
-          if (body.error !== 1) this.houses = body.data || []
+          if (body.error !== 0) return
+          this.houses = body.data.builds || []
+          this.sum = body.data.sum || 0
+          this.showPage = true
         })
       },
       fetchHouseKVs (kvs) {
@@ -230,6 +248,7 @@
         }).then(body => {
           console.info('fetchHouseKVs', body)
           if (body.error !== 1) this.houses = body.data || []
+          this.showPage = false
         })
       },
       fetechAllStreets () {
@@ -239,7 +258,7 @@
           return resp.json()
         }).then(body => {
           console.info('fetechAllStreetName',body)
-          if (body.error !== 1) this.streets = body.data || []
+          if (body.error !== 1) this.streets = body.data.streets || []
         })
       },
       fetchAllCommunitiesByStreetID (streetID) {
@@ -321,31 +340,8 @@
       margin: 5px;
     }
   }
-  table{
-    width: 99%;
-    font-size: 15px;
-    color: #555;
-    margin: 10px auto;
-    background-color: #fff;
-    text-align: center;
-    th{
-      text-align: center;
-      padding: 5px;
-      border: solid 1px #ddd;
-      background: #f0f0f0;
-    }
-    td{
-      padding: 5px;
-      border: solid 1px #ddd;
-    }
-    tr{
-      &:hover {
-        background-color: #ddd;
-      }
-      .bt{
-        display: inline-block;
-      }
-    }
+  .btns{
+    display: flex;
   }
   .warn{
     color: red;

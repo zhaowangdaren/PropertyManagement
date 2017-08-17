@@ -44,6 +44,7 @@
     border-right: solid 1px #aaa;
     height: 100%;
     // background-color: #fafafa;
+    min-width: 100px;
     div{
       border-bottom: solid 1px #ddd;
       padding: 20px 10px;

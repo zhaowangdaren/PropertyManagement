@@ -34,7 +34,7 @@
         <!-- 电话号码 -->
         <th>授权码</th>
         <!-- 授权码 -->
-        <th :class='s.descr'>描述</th>
+        <th>描述</th>
         <!-- 描述 -->
         <th>操作</th>
       </tr>
@@ -46,12 +46,18 @@
         <td v-text='street.PersonInCharge'></td>
         <td v-text='street.Tel'></td>
         <td v-text='street.AuthCode'></td>
-        <td v-text='street.Intro'></td>
+        <td v-text='street.Intro' class='descr'></td>
         <td>
           <el-button type="primary" icon="edit" @click="onEdit(street)">编辑</el-button>
         </td>
       </tr>
     </table>
+    <el-pagination
+      layout="total, prev, pager, next"
+      @current-change='onChangePage'
+      :page-size='pageSize'
+      :total="sum">
+    </el-pagination>
     <el-dialog
       title='新增街道'
       :visible.sync='showAddDialog'
@@ -93,23 +99,32 @@
         showEditDialog: false,
         showDelConfirm: false,
         dels: [],
-        editingStreet: null
+        editingStreet: null,
+        pageNo: 0,
+        pageSize: 10,
+        sum: 0 //总记录数
       }
     },
     mounted () {
       this.fetchStreets()
     },
     methods: {
+      onChangePage (currentPage) {
+        this.pageNo = currentPage - 1
+        this.fetchStreets()
+      },
       fetchStreets () {
         fetchpm(this, true, '/pm/street',{
-          method: 'POST'
+          method: 'POST',
+          body: {pageNo: this.pageNo, pageSize: this.pageSize}
         }).then(resp => {
           console.info(resp)
           return resp.json()
-        }).then( data => {
-          if (data.error === 0) {
-            console.info (data)
-            this.streets = data.data
+        }).then( body => {
+          if (body.error === 0) {
+            console.info (body)
+            this.streets = body.data.streets || []
+            this.sum = body.data.sum || 0
           }
         })
       },
@@ -160,34 +175,10 @@
 
 <style lang="less" module='s'>
 .wrap{
-  // margin: 10px;
   .addDel{
     display: flex;
     align-items: center;
     margin: 10px;
-  }
-  table{
-    width: 99%;
-    font-size: 15px;
-    color: #555;
-    margin: 10px auto;
-    text-align: center;
-    th{
-      text-align: center;
-      padding: 5px;
-      border: solid 1px #ddd;
-      min-width: 50px;
-      background-color: #f0f0f0;
-    }
-    td{
-      padding: 5px;
-      border: solid 1px #ddd;
-    }
-    .street{
-      &:hover {
-        background-color: #f0f0f0;
-      }
-    }
   }
 }
 </style>

@@ -59,20 +59,21 @@ func UpdateCommunity(db *mgo.Database, comm Community) interface{} {
 }
 
 //FindCommunities 查询社区信息
-func FindCommunities(db *mgo.Database, community Community, pageNo int, pageSize int) interface{} {
+func FindCommunities(db *mgo.Database, pageNo int, pageSize int) interface{} {
 	c := db.C(CommunityTableName)
 	var result []Community
 	var err error
-	if community == (Community{}) {
-		err = c.Find(nil).All(&result)
-	} else {
-		err = c.Find(bson.M{"name": community.Name}).All(&result)
+	query := c.Find(nil)
+	sum, _ := query.Count()
+	if pageSize != 0 {
+		err = query.Skip(pageNo * pageSize).Limit(pageSize).All(&result)
+	} else { //查询所有
+		err = query.All(&result)
 	}
 	if err != nil {
-		log.Fatal(err)
 		return gin.H{"error": 1, "data": err.Error()}
 	}
-	return gin.H{"error": 0, "data": result}
+	return gin.H{"error": 0, "data": gin.H{"communities": result, "sum": sum}}
 }
 
 //FindCommunitiesKV 依据传入的kv查询
