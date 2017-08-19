@@ -51,6 +51,9 @@
           <el-button type="primary" icon="edit" @click="onEdit(street)">编辑</el-button>
         </td>
       </tr>
+      <tr v-if='streets.length === 0'>
+        <td colspan="7">无记录</td>
+      </tr>
     </table>
     <el-pagination
       layout="total, prev, pager, next"

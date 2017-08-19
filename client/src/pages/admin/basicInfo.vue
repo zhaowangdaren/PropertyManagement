@@ -66,8 +66,9 @@
 import InfosStreet from '@/components/InfosStreet'
 import InfosCommunity from '@/components/InfosCommunity'
 import InfosCountry from '@/components/InfosCountry'
+import EventTypes from '@/components/table/EventTypes'
   export default {
-    components: { InfosStreet, InfosCommunity, InfosCountry},
+    components: { InfosStreet, InfosCommunity, InfosCountry, EventTypes},
     data () {
       return {
         tabs: [
@@ -82,6 +83,10 @@ import InfosCountry from '@/components/InfosCountry'
           {
             name: '小区信息维护',//社区信息维护
             view: InfosCountry
+          },
+          {
+            name: '设置事件类型',
+            view: EventTypes
           }
         ],
         curView: InfosStreet

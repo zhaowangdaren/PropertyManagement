@@ -5,7 +5,7 @@
       投诉数据
     </div>
     <div :class="s.content">
-      <div :class="s.left">
+      <!-- <div :class="s.left">
         <gauge :DATA='allEvents'></gauge>
         <div :class="s.chartTitle">
           投诉总事件数{{allEvents.value}}
@@ -17,16 +17,18 @@
           提交总记录数{{allHandles.value}}
         </div>
       </div>
-    </div>
     <p :class="s.red">警告：清除无用数据后，无法恢复，请确认维护人员已经备份，清除操作一般半年为一周期</p>
-    <el-button type='danger'>执行清除</el-button>
+    <el-button type='danger'>执行清除</el-button> -->
+      <pie></pie>
+    </div>
   </div>
 </template>
 
 <script>
-import Gauge from '@/components/gauge'
+// import Gauge from '@/components/gauge'
+import Pie from '@/components/chart/Pie'
 export default {
-  components: { Gauge },
+  components: { Pie },
   data () {
     return {
       allEvents: {
@@ -46,7 +48,6 @@ export default {
   margin: 10px;
   border: solid 1px #4c87b9;
   width: 100%;
-  background: #fff;
   text-align: center;
   .title{
     color: #fff;
@@ -66,7 +67,7 @@ export default {
     text-align: center;
     color: #999;
     display: flex;
-    justify-content: center;
+    // justify-content: center;
     .left, .right {
       position: relative;
       .chartTitle{

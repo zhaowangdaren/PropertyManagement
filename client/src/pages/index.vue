@@ -31,11 +31,14 @@
           </div>
         </div>
         <div :class='s.right' @click='toGov'>
-          花山区住房管理中心工作人员
-          <div :class='s.hide'>
-            <span :class='s.yellow'>花山区住房管理<br/>中心工作人员</span>
-            <br/>纠纷、法院调解、推送政府公告
+          <div :class='s.gov'>
+            花山区住房管理中心工作人员
+            <div :class='s.hide'>
+              <span :class='s.yellow'>花山区住房管理<br/>中心工作人员</span>
+              <br/>纠纷、法院调解、推送政府公告
+            </div>
           </div>
+          
         </div>
       </div>
     </div>
@@ -112,12 +115,15 @@
         justify-content: center;
         align-items: center;
         width: 60%;
+        height: 310px;
         font-size: 20px;
         margin: auto;
         color: #fff;
         .left{
           display: flex;
           flex: 1;
+          height: 310px;
+          margin: 5px;
           flex-direction: column;
           .adminWrap > .hide, .streetWrap > .hide {
             display: none;
@@ -129,47 +135,53 @@
             }
           }
           .adminWrap{
-            margin: 5px;
+            // margin-top: 5px;
             flex: 1;
+            // height: 50%;
             background-color: rgb(0,191,254);
-            height: 150px;
+            // height: 145px;
             padding: 5px;
             &:hover .hide{
               display: block;
             }
           }
           .streetWrap{
-            margin: 5px;
+            margin-top: 5px;
             flex: 1;
             padding: 5px;
             background-color: rgb(158,152,74);
-            height: 150px;
+            // height: 145px;
             &:hover .hide{
               display: block;
             }
           }
         }
         .right{
+          display: flex;
           flex: 1;
           height: 310px;
           margin: 5px;
-          padding: 10px;
-          background-color: rgb(27,185,127);
-          position: relative;
-          .hide{
-            display: none;
-            font-size: 15px;
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            .yellow{
-              color: yellow;
-              font-size: 25px;
-              font-style:italic;
+          flex-direction: column;
+          .gov{
+            padding: 5px;
+            flex: 1;
+            background-color: rgb(27,185,127);
+            position: relative;
+            .hide{
+              display: none;
+              font-size: 15px;
+              position: absolute;
+              bottom: 10px;
+              right: 10px;
+              .yellow{
+                color: yellow;
+                font-size: 25px;
+                font-style:italic;
+              }
             }
-          }
-          &:hover .hide{
-            display: block;
+            &:hover .hide{
+              display: block;
+            }
           }
         }
       }
