@@ -76,7 +76,7 @@
       </tr>
       <tr v-for='item in houses'>
         <td v-text='item.Owner'></td>
-        <td v-text='item.XQ'></td>
+        <td v-text='item.XQName'></td>
         <td v-text='item.HouseBuildNo'></td>
         <td v-text='item.HouseNo'></td>
         <td v-text='item.HouseType'></td>
@@ -173,7 +173,7 @@
         this.inputXQID = ''
         if (this.isLoadingInput ) return
         this.fetchAllXQByCommunityID(val)
-      }
+      },
     },
     methods: {
       onChangePage (curPage) {
@@ -237,7 +237,24 @@
           this.houses = body.data.builds || []
           this.sum = body.data.sum || 0
           this.showPage = true
+          this.fetchXQNames()
         })
+      },
+      fetchXQNames () {
+        for (let i = 0; i < this.houses.length; i++) {
+          fetchpm(this, true, '/pm/xq/ids', {
+            method: 'POST',
+            body: {'values': [this.houses[i].XQID]}
+          }).then(resp => {
+            return resp.json()
+          }).then(body => {
+            console.info('fetchXQNames', body)
+            if (body.error !== 1) {
+              this.$set(this.houses[i], 'XQName', body.data[0].Name)
+              // this.houses[i].XQName = body.data[0].Name || ''
+            }
+          })
+        }
       },
       fetchHouseKVs (kvs) {
         fetchpm(this, true, '/pm/house/kvs', {

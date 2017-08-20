@@ -25,7 +25,7 @@
     </div>
     <table>
       <tr >
-        <th>选择</th>
+        <th class="flex1">选择</th>
         <th class='flex2'>街道名</th>
         <!-- 街道名 -->
         <th class='flex1'>负责人</th>
@@ -42,12 +42,12 @@
         <td>
           <input type="checkbox" v-model='street.checked'>
         </td>
-        <td v-text='street.Name'></td>
-        <td v-text='street.PersonInCharge'></td>
-        <td v-text='street.Tel'></td>
-        <td v-text='street.AuthCode'></td>
-        <td v-text='street.Intro' class='descr'></td>
-        <td>
+        <td v-text='street.Name' class='flex2'></td>
+        <td v-text='street.PersonInCharge' class='flex1'></td>
+        <td v-text='street.Tel' class='flex1'></td>
+        <td v-text='street.AuthCode' class='flex1'></td>
+        <td v-text='street.Intro' class='descr flex1'></td>
+        <td class="flex1">
           <el-button type="primary" icon="edit" @click="onEdit(street)">编辑</el-button>
         </td>
       </tr>

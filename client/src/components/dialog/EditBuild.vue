@@ -320,7 +320,7 @@ export default {
       }).then(resp => {
         return resp.json()
       }).then(body => {
-        this.streets = body.data
+        this.streets = body.data.streets || []
       })
     },
     fetchAllCommunitiesByStreetID (streetID) {
@@ -353,7 +353,7 @@ export default {
         return resp.json()
       }).then(body => {
         console.info('fetchAllCommunities', body)
-        this.communities = body.data
+        this.communities = body.data.communitites || []
       })
     },
     fetchAllXQs () {
@@ -363,7 +363,7 @@ export default {
         return resp.json()
       }).then(body => {
         console.info('fetchAllXQs', body)
-        this.xqs = body.data
+        this.xqs = body.data.xqs || []
       })
     },
   },

@@ -6,6 +6,11 @@
       <div :class='s.inputWrap'>
         <el-select :class='s.elInput' v-model="searchStreetID" placeholder="请选择">
           <el-option
+            lable='全部'
+            value=''>
+            全部
+          </el-option>
+          <el-option
             v-for="item in streets"
             :key="item.ID"
             :label="item.Name"
@@ -17,6 +22,11 @@
       <div :class='s.title'>社区名</div>
       <div :class='s.inputWrap'>
         <el-select :class='s.elInput' v-model="searchCommunityID" placeholder="请选择">
+          <el-option
+            lable='全部'
+            value=''>
+            全部
+          </el-option>
           <el-option
             v-for="item in searchCommunities"
             :key="item.ID"
@@ -62,7 +72,7 @@
     </div>
     <table>
       <tr >
-        <th>选择</th>
+        <th class="flex1">选择</th>
         <!-- 街道名 -->
         <th class='flex2'>街道名</th>
         <!-- 社区名 -->
@@ -87,7 +97,7 @@
         <td v-text='item.Name'></td>
         <td v-text='item.Address' class='descr'></td>
         <td v-text='item.ContactName'></td>
-        <td v-text='item.Tel'></td>
+        <td v-text='item.Tel' class='descr'></td>
         <td v-text='item.Intro' class='descr'></td>
         <td>
           <!-- <image-button
@@ -337,7 +347,7 @@
     .title{
       background: #e0e0e0;
       padding: 10px;
-      font-size: 20px;
+      font-size: 18px;
     }
     .inputWrap{
       position: relative;

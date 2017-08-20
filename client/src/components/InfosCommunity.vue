@@ -6,6 +6,11 @@
       <div :class='s.inputWrap'>
         <el-select :class='s.elInput' v-model="searchStreetID" placeholder="请选择">
           <el-option
+            lable='全部'
+            value=''>
+            全部
+          </el-option>
+          <el-option
             v-for="item in streets"
             :key="item.ID"
             :label="item.Name"
@@ -31,7 +36,7 @@
     </div>
     <table>
       <tr>
-        <th>选择</th>
+        <th class="flex1">选择</th>
         <th class='flex2'>街道名</th>
         <!-- 街道名 -->
         <th class='flex2'>社区名</th>
@@ -47,7 +52,7 @@
         <td>
           <input type="checkbox" v-model='item.checked'>
         </td>
-        <td v-text='item.StreetName'></td>
+        <td v-text='item.StreetName'  class='flex2'></td>
         <td v-text='item.Name'></td>
         <td v-text='item.PersonInCharge'></td>
         <td v-text='item.Tel'></td>
@@ -259,7 +264,7 @@
     .title{
       background: #e0e0e0;
       padding: 10px;
-      font-size: 20px;
+      font-size: 18px;
     }
     .inputWrap{
       position: relative;

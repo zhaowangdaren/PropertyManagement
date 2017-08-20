@@ -318,7 +318,7 @@ export default {
       }).then(resp => {
         return resp.json()
       }).then(body => {
-        this.streets = body.data
+        this.streets = body.data.streets
       })
     },
     

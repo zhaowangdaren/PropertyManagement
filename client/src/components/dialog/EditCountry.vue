@@ -153,7 +153,7 @@ export default {
       }).then(resp => {
         return resp.json()
       }).then(body => {
-        this.streets = body.data
+        this.streets = body.data.streets || []
       })
     },
     fetchAllCommunities () {
@@ -163,7 +163,7 @@ export default {
         return resp.json()
       }).then(body => {
         console.info('fetchAllCommunities', body)
-        this.communities = body.data
+        this.communities = body.data.communities || []
       })
     },
     fetchAllCommunitiesByStreetID (streetID) {
