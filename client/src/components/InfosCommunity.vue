@@ -32,16 +32,16 @@
     <table>
       <tr>
         <th>选择</th>
-        <th>街道名</th>
+        <th class='flex2'>街道名</th>
         <!-- 街道名 -->
-        <th>社区名</th>
+        <th class='flex2'>社区名</th>
         <!-- 社区名 -->
-        <th>负责人</th>
+        <th class='flex2'>负责人</th>
         <!-- 负责人 -->
-        <th>电话号码</th>
+        <th class='flex1'>电话号码</th>
         <!-- 电话号码 -->
-        <th>描述</th>
-        <th>操作</th>
+        <th class='flex1'>描述</th>
+        <th class='flex1'>操作</th>
       </tr>
       <tr v-for='item in communities' :class='s.street'>
         <td>
@@ -60,7 +60,7 @@
         </td>
       </tr>
       <tr v-if='communities == null || communities.length == 0'>
-        <td colspan="7">无记录</td>
+        <td colspan="7" class='flex1'>无记录</td>
       </tr>
     </table>
     <el-pagination v-if='showPage'

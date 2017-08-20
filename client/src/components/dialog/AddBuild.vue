@@ -191,14 +191,14 @@
         <el-button type="primary" @click="onAdd">提 交</el-button>
       </div>
     </div>
-    <basic-dialog v-model="dialogVisible" size='tiny'>
+    <basic-dialog :visible.sync="showImg" title='图片'>
       <img width="100%" :src="dialogImageUrl" alt="">
     </basic-dialog>
   </el-dialog>
 </template>
 
 <script>
-import BasicDialog from '@/components/dialog/index'
+import BasicDialog from '@/components/dialog/BasicDialog'
 import SearchSelect from '@/components/SearchSelect'
 import { Message } from 'element-ui'
 import fetchpm from '@/fetchpm'
@@ -223,7 +223,7 @@ export default {
         XQID: ''
       },
       dialogImageUrl: '',
-      dialogVisible: false,
+      showImg: false,
 
     }
   },
@@ -256,7 +256,7 @@ export default {
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
-      this.dialogVisible = true;
+      this.showImg = true;
     },
     upload (e) {
       console.info('upload', e)

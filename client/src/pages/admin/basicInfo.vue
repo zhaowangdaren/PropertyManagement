@@ -26,6 +26,7 @@
     padding: 10px;
     display: flex;
     align-items: center;
+    box-shadow: 1px 0px 4px -2px rgba(0, 0, 0, 0.5),-1px 0 4px -2px rgba(0, 0, 0, 0.5), 0 -1px 4px -2px rgba(0, 0, 0, 0.5);
     img{
       width: 20px;
       margin-right: 10px;
@@ -35,6 +36,7 @@
     padding: 10px;
     background: #fff;
     border: solid 1px #4c87b9;
+    box-shadow: 1px 0px 4px -2px rgba(0, 0, 0, 0.5),-1px 0 4px -2px rgba(0, 0, 0, 0.5), 0 1px 4px -2px rgba(0, 0, 0, 0.5);
     .tabs{
       color: #5b9bd1;
       font-size: 15px;

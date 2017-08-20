@@ -41,6 +41,7 @@ export default {
 	border: solid 1px #ddd;
 	border-radius: 5px;
 	padding: 5px;
+	box-shadow: 1px 1px 4px -2px rgba(0, 0, 0, 0.5),-1px -1px 4px -2px rgba(0, 0, 0, 0.5);
 	.pie{
 		height: 180px;
 		width: 270px;

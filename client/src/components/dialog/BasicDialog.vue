@@ -1,9 +1,9 @@
 <template lang="html">
-  <div :class="s.wrap" @click.self='onClose' v-if='visible'>
+  <div :class="s.wrap" @click.self='visible = false' v-if='visible'>
     <div :class="s.body">
       <div :class="s.header">
         <div :class="s.title" v-text='title'></div>
-        <i class='iconfont icon-close' @click='onClose'></i>
+        <i class='iconfont icon-close' @click='visible = false'></i>
       </div>
       <slot></slot>
     </div>

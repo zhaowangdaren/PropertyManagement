@@ -64,19 +64,19 @@
       <tr >
         <th>选择</th>
         <!-- 街道名 -->
-        <th>街道名</th>
+        <th class='flex2'>街道名</th>
         <!-- 社区名 -->
-        <th>社区名</th>
+        <th class='flex2'>社区名</th>
         <!-- 小区名 -->
-        <th>小区名</th>
+        <th class='flex2'>小区名</th>
         <!-- 位置 -->
-        <th>地址</th>
+        <th class='flex1'>地址</th>
         <!-- 负责人 -->
-        <th>负责人</th>
+        <th class='flex1'>负责人</th>
         <!-- 电话号码 -->
-        <th>电话号码</th>
-        <th>描述</th>
-        <th>操作</th>
+        <th class='flex1'>电话号码</th>
+        <th class='flex1'>描述</th>
+        <th class='flex1'>操作</th>
       </tr>
       <tr v-for='(item, index) in xqs' :class='s.street'>
         <td>
@@ -103,7 +103,7 @@
         </td>
       </tr>
       <tr v-if='!xqs || xqs.length == 0'>
-        <td colspan="9">无记录</td>
+        <td colspan="9" class='flex1'>无记录</td>
       </tr>
     </table>
     <el-pagination v-if='showPage'
