@@ -17,8 +17,10 @@
           <input type="password" name="" :class='s.input' v-model='login.password'>
         </div>
         <div :class='s.bottom'>
-          <input type="submit" name="" value='登 录' @click='onLogin' :class='s.login'></span>
-          <span :class='s.cancel' @click='onCancel'>取 消</span>
+          <input type="submit" name="" value='登 录' @click='onLogin' :style='{visibility: "hidden"}' ></span>
+          <el-button type='primary' @click='onLogin' :loading='isLogining'>登 录</el-button>
+          <!-- <span :class='s.cancel' @click='onCancel'>取 消</span> -->
+          <el-button @click='onCancel'>取 消</el-button>
         </div>
       </form>
     </div>
@@ -39,7 +41,8 @@ export default {
         password:'',
         type: 0
       },
-      bgImg: require('@/res/images/bottom_bg.png')
+      bgImg: require('@/res/images/bottom_bg.png'),
+      isLogining: false
     }
   },
   mounted () {
@@ -71,8 +74,8 @@ export default {
       return true
     },
     onLogin () {
-      console.info('onLogin')
-      if (!this.checkInput()) return
+      if (!this.checkInput() || this.isLogining) return
+      this.isLogining = true
       fetch('https://www.maszfglzx.com:3000/login', {
         method: 'POST',
         body: JSON.stringify(this.login)
@@ -87,6 +90,7 @@ export default {
         } else {
           this.warn = body.data.message
         }
+        this.isLogining = false
       })
     },
     onCancel () {

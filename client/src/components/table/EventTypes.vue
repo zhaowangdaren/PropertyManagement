@@ -40,7 +40,7 @@ export default {
 	},
 	methods: {
 		onDel (eventType) {
-			if (isDeling) return
+			if (this.isDeling) return
 			this.isDeling = true
 			fetchpm(this, true, '/pm/event/type/del', {
 				method: 'POST',
@@ -71,6 +71,7 @@ export default {
 				} else {
 					this.newEventType = ''
 					Message({message: '新增成功', type:'success'})
+					this.fetchEventTypes()
 				}
 				this.isAdding = false
 			})

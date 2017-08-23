@@ -7,8 +7,9 @@ function refreshToken () {
     var user = JSON.parse(sessionStorage.getItem('user')) || {}
     var expireTime = user.expire ? new Date(user.expire) : new Date()
     var timeLeft = expireTime.getTime() - new Date ().getTime()
+    console.info('timeLeft', timeLeft)
     if ( 0 < timeLeft && timeLeft <= TenMinute) {
-      console.info('refreshToken()')
+      console.info('refreshToken')
       fetch(HOST + '/pm/refresh_token', {
         method: 'POST',
         headers: {
