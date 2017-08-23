@@ -1,9 +1,9 @@
 <template>
 	<div>
 		<div :class='s.new'>
-			<span>新增事件类型</span>
-			<el-input v-module='newEventType'></el-input>
-			<el-button type='primary' icon='plus' @click='onAdd'>新增</el-button>
+			<div :class='s.title'>新增事件类型:</div>
+			<el-input v-model='newEventType' :class='s.input' placeholder='请输入新增类型'></el-input>
+			<el-button type='primary' icon='plus' @click='onAdd' :loading='isAdding'>新增</el-button>
 		</div>
 		<table>
 			<tr>
@@ -13,7 +13,7 @@
 			<tr v-for='eventType in eventTypes'>
 				<td>{{eventType.Type}}</td>
 				<td class="flex1">
-					<el-button type='danger' icon='delete'>删除</el-button>
+					<el-button type='danger' icon='delete' @click='onDel(eventType)' :loading='isDeling'>删除</el-button>
 				</td>
 			</tr>
 			<tr v-if='eventTypes.length === 0'>
@@ -25,22 +25,60 @@
 
 <script>
 import fetchpm from '@/fetchpm'
+import { Message } from 'element-ui'
 export default {
 	data () {
 		return {
 			eventTypes: [],
-			newEventType: ''
+			newEventType: '',
+			isAdding: false,
+			isDeling: false
 		}
 	},
 	mounted () {
 		this.fetchEventTypes()
 	},
 	methods: {
-		onAdd () {
-
+		onDel (eventType) {
+			if (isDeling) return
+			this.isDeling = true
+			fetchpm(this, true, '/pm/event/type/del', {
+				method: 'POST',
+				body: eventType
+			}).then(resp => {
+				return resp.json()
+			}).then(body => {
+				if (body.error !== 0) {
+					Message({message: body.data, type:'error'})
+				} else {
+					this.fetchEventTypes()
+				}
+				this.isDeling = false
+			})
 		},
-		fetchEventTypes (){
-			fetchpm(this, false, '/open/wx/event/types').then(resp => {
+		onAdd () {
+			if (this.newEventType === '' || this.isAdding) return
+			this.isAdding = true
+			fetchpm(this, true, '/pm/event/type/add', {
+				method: 'POST',
+				body: {type: this.newEventType}
+			}).then(resp => {
+				return resp.json()
+			}).then(body => {
+				console.info('onAdd', body)
+				if (body.error !== 0) {
+					Message({message: body.data, type:'error'})
+				} else {
+					this.newEventType = ''
+					Message({message: '新增成功', type:'success'})
+				}
+				this.isAdding = false
+			})
+		},
+		fetchEventTypes () {
+			fetchpm(this, false, '/open/wx/event/types',{
+				method: 'GET'
+			}).then(resp => {
 				return resp.json()
 			}).then(body => {
 				console.info('fetchEventTypes', body)
@@ -53,8 +91,18 @@ export default {
 }
 </script>
 
-<style lang="less" modules='s'>
+<style lang="less" module='s'>
 .new{
 	display: flex;
+	align-items: center;
+	margin: 5px;
+	.title{
+		font-size: 20px;
+		margin: auto 5px;
+	}
+	.input{
+		flex: 1;
+		margin: auto 5px;
+	}
 }
 </style>

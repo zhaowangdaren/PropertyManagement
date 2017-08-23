@@ -25,7 +25,7 @@ const EventTypeTableName = "EventType"
 
 //InsertEventType insert
 func InsertEventType(db *mgo.Database, eventType string) interface{} {
-	c := db.C(EventHandleTableName)
+	c := db.C(EventTypeTableName)
 	count, err := c.Find(bson.M{"type": eventType}).Count()
 	if err != nil {
 		return gin.H{"error": 1, "data": err.Error()}
@@ -45,7 +45,7 @@ func InsertEventType(db *mgo.Database, eventType string) interface{} {
 
 //DelEventType DelEventType
 func DelEventType(db *mgo.Database, evenTypeStr string) interface{} {
-	c := db.C(EventTableName)
+	c := db.C(EventTypeTableName)
 	err := c.Remove(bson.M{"type": evenTypeStr})
 	if err != nil {
 		return gin.H{"error": 1, "data": err.Error()}
@@ -55,7 +55,7 @@ func DelEventType(db *mgo.Database, evenTypeStr string) interface{} {
 
 //FindEventTypes Find All EventTypes
 func FindEventTypes(db *mgo.Database) interface{} {
-	c := db.C(EventTableName)
+	c := db.C(EventTypeTableName)
 	var result []EventType
 	err := c.Find(nil).All(&result)
 	if err != nil {
