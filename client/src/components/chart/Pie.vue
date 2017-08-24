@@ -7,6 +7,11 @@
 <script>
 import echarts from 'echarts/lib/echarts'
 import 'echarts/lib/chart/pie'
+import 'echarts/lib/component/tooltip'
+import 'echarts/lib/component/title'
+import 'echarts/lib/component/legend'
+
+
 import pieOption from '@/components/chart/pieOption.js'
 export default {
 	props: {
@@ -14,7 +19,8 @@ export default {
 			type: Object,
 			default: function () {
 				return {
-					title: '不同类型的投诉数据'
+					title: '不同类型的投诉数据',
+					data: []
 				}
 			}
 		}
@@ -43,8 +49,8 @@ export default {
 	padding: 5px;
 	box-shadow: 1px 1px 4px -2px rgba(0, 0, 0, 0.5),-1px -1px 4px -2px rgba(0, 0, 0, 0.5);
 	.pie{
-		height: 180px;
-		width: 270px;
+		height: 360px;
+		width: 480px;
 	}
 }
 </style>

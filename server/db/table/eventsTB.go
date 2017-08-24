@@ -24,12 +24,18 @@ type Event struct {
 	XQID        string //投诉小区名
 	Status      int    //事件状态  -1-用户撤销 0-居民提交 1-已审核待处理 2-已解决 3-已关闭
 	EventLevel  int    //事件等级  1-特急、2-加急、3-急
-	Type        string //事件基本类别
+	Type        string `bson:"type" json:"type"` //事件基本类别
 	Content     string //投诉内容
 	Time        int64  //提交时间
 	ToCourt     int8   //0-不推送至法院 1-推送至法院
 	Imgs        string //图片表格，以,为分割符
 	Tel         string //联系电话
+}
+
+//EventNum 不同事件类型的数量
+type EventNum struct {
+	Type string
+	Num  int
 }
 
 func createEventIndex() string {
@@ -145,6 +151,30 @@ func FindEventKVs(db *mgo.Database, kvs map[string]interface{}) interface{} {
 			}
 		}
 		return gin.H{"error": 0, "data": timeResult}
+	}
+	return gin.H{"error": 0, "data": result}
+}
+
+//CountDiffTypeEvents 查询每个类型的事件数量
+func CountDiffTypeEvents(db *mgo.Database) interface{} {
+	c := db.C(EventTypeTableName)
+	var eventTypes []EventType
+	var types []string
+	err := c.Find(nil).All(&eventTypes)
+	for _, item := range eventTypes {
+		types = append(types, item.Type)
+	}
+	fmt.Println("types", types)
+	c = db.C(EventTableName)
+	// query := bson.M{"$group": bson.M{"_id": "$type", "num": bson.M{"$sum": 1}}}
+	queryT := bson.M{"$match": bson.M{"type": bson.M{"$in": types}}}
+	queryE := bson.M{"$group": bson.M{"_id": bson.M{"type": "$type"}, "num": bson.M{"$sum": 1}}}
+
+	pipe := c.Pipe([]bson.M{queryT, queryE})
+	result := []bson.M{}
+	err = pipe.All(&result)
+	if err != nil {
+		return gin.H{"error": 1, "data": err.Error()}
 	}
 	return gin.H{"error": 0, "data": result}
 }

@@ -226,4 +226,8 @@ func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
 	router.GET("/wx/event/types", func(c *gin.Context) {
 		c.JSON(http.StatusOK, table.FindEventTypes(dbc))
 	})
+
+	router.GET("/event/types/num", func(c *gin.Context) {
+		c.JSON(http.StatusOK, table.CountDiffTypeEvents(dbc))
+	})
 }

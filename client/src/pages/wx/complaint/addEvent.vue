@@ -11,7 +11,7 @@
         <div :class='s.title'>Event Type:</div>
         <select v-model='selectedEventType' :class='s.value' @focus='onFocus'>
           <option disabled value="">请选择</option>
-          <option v-for='type in eventTypes' :value='type'></option>
+          <option v-for='type in eventTypes' :value='type.Type'>{{type.Type}}</option>
           </option>
         </select>
       </div>
@@ -72,6 +72,7 @@ export default{
     this.xq.Name = this.$route.query.XQName
     this.headerOptions.leftBtns[0].event = this.onReturn
     this.headerOptions.rightBtns[0].event = this.onNext
+    this.fetchEventTypes()
   },
   methods: {
     onReturn () {
@@ -111,6 +112,18 @@ export default{
     },
     onFocus () {
       this.warn = ''
+    },
+    fetchEventTypes () {
+      fetchpm(this, false, '/open/wx/event/types',{
+        method: 'GET'
+      }).then(resp => {
+        return resp.json()
+      }).then(body => {
+        console.info('fetchEventTypes', body)
+        if (body.error !== 1){
+          this.eventTypes = body.data || []
+        }
+      })
     }
   }
 }

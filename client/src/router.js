@@ -55,6 +55,10 @@ export default new Router({
   // mode: 'history',
   routes: [
     {
+      path: '/test',
+      component: require('@/pages/test')
+    },
+    {
       path: '/',
       component: require('@/pages/index')
     },
