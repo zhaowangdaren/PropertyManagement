@@ -1,9 +1,13 @@
 <template>
   <div :class='s.wrap'>
-    <action-bar></action-bar>
-    <div :class='s.content'>
+    <div :class='s.left'>
       <left-menu :menus='menus' :NEXT='nextPath'/>
-      <router-view :class='s.body'></router-view>
+    </div>
+    <div :class='s.right'>
+      <action-bar></action-bar>
+      <div :class='s.content'>
+        <router-view :class='s.body'></router-view>
+      </div>
     </div>
   </div>
 </template>
@@ -19,8 +23,13 @@ export default {
       menus:[
         {
           icon: 'icon-home',
+          text: '主页',
+          path: '/admin'
+        },
+        {
+          icon: 'icon-jichu',
           text:'基础信息维护',//基础信息维护
-          path:'/admin'
+          path:'/admin/basic'
         },
         {
           icon: 'icon-shuaxin',
@@ -71,20 +80,12 @@ export default {
     width: 100%;
     height: 100%;
     display: flex;
-    flex-direction: column;
-    .content{
+    .right{
       flex: 1;
-      margin-top: 100px;
-      display: flex;
       width: 100%;
-
-      .menu{
-        height: 100%;
-        // position: fixed;
-      }
-      .body{
-        flex: 1;
-      }
+    }
+    .content{
+      margin: 10px;
     }
   }
 </style>

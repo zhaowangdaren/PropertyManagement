@@ -47,10 +47,10 @@ export default {
 	border: solid 1px #ddd;
 	border-radius: 5px;
 	padding: 5px;
-	box-shadow: 1px 1px 4px -2px rgba(0, 0, 0, 0.5),-1px -1px 4px -2px rgba(0, 0, 0, 0.5);
+	box-shadow: 1px 1px 4px 0px #ddedf7,-1px -1px 4px 0px #ddedf7;
 	.pie{
-		height: 360px;
-		width: 480px;
+		height: 420px;
+		width: 100%;
 	}
 }
 </style>

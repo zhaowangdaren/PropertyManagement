@@ -72,7 +72,7 @@ func startXQ(router *gin.RouterGroup, dbc *mgo.Database) {
 		}
 	})
 
-	//通过ID数组查找街道，返回的信息也是数组
+	//通过ID数组查找小区，返回的信息也是数组
 	router.POST("/xq/ids", func(c *gin.Context) {
 		var ids Values
 		err := c.BindJSON(&ids)

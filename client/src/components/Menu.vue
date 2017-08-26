@@ -41,12 +41,11 @@
 
 <style lang="less" module='s'>
   .wrap{
-    border-right: solid 1px #aaa;
     height: 100%;
-    // background-color: #fafafa;
+    background-color: #1f2d3d;
     min-width: 100px;
+    color: #f1f3f6;
     div{
-      border-bottom: solid 1px #ddd;
       padding: 20px 10px;
       font-size: 20px;
       display: flex;
@@ -59,7 +58,6 @@
     }
     .active{
       background: #4c87b9;
-      color: #fff;
     }
   }
 </style>

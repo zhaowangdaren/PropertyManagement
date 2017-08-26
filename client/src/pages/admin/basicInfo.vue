@@ -18,7 +18,6 @@
 <style lang="less" module='s'>
 .wrap{
   margin: 10px;
-  width: 100%;
   .title{
     color: #fff;
     font-size: 20px;

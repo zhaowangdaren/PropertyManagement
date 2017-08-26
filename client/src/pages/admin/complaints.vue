@@ -19,17 +19,24 @@
       </div>
     <p :class="s.red">警告：清除无用数据后，无法恢复，请确认维护人员已经备份，清除操作一般半年为一周期</p>
     <el-button type='danger'>执行清除</el-button> -->
-      <pie :dataProps='diffTypeNum' v-if='hasLoadTypes'></pie>
+      <div :class='s.item'>
+        <num-event-status :class='s.status'></num-event-status>
+        <pie :dataProps='diffTypeNum' v-if='hasLoadTypes'></pie>
+      </div>
+      <div :class='s.item'>
+        <bar :dataProps='barData' v-if='barData.data.x.length !== 0'></bar>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-// import Gauge from '@/components/gauge'
+import NumEventStatus from '@/components/chart/NumEventStatus'
 import Pie from '@/components/chart/Pie'
+import Bar from '@/components/chart/Bar'
 import fetchpm from '@/fetchpm'
 export default {
-  components: { Pie },
+  components: { Pie, NumEventStatus, Bar },
   data () {
     return {
       allEvents: {
@@ -44,11 +51,20 @@ export default {
         title: '不同类型的投诉数据',
         data: []
       },
-      hasLoadTypes: false
+      hasLoadTypes: false,
+      eventXQs:[],
+      barData:{
+        title: '各小区投诉数量',
+        data: {
+          y: [],
+          x: []
+        }
+      }
     }
   },
   mounted () {
     this.fetchDiffTypeNum()
+    this.fetchEventXQ()
   },
   methods: {
     fetchDiffTypeNum () {
@@ -74,6 +90,50 @@ export default {
         result.push({name: types[i]._id.type, value: types[i].num})
       }
       return result
+    },
+    fetchEventXQ () {
+      fetchpm(this, true, '/pm/event/key/nums/xqid', {
+        method: 'GET'
+      }).then(resp => {
+        return resp.json()
+      }).then(body => {
+        console.info('fetchEventXQ', body)
+        if (body.error === 0) this.eventXQs = body.data || []
+        console.info('eventXQs', this.eventXQs)
+        this.formatEventXQ(this.eventXQs).then(data => {
+          this.barData.data = data
+          console.info('fetchEventXQ then',data)
+        })
+      })
+    },
+    formatEventXQ (events) {
+      events.sort((a, b) => {
+        return b.num - a.num
+      })
+      var result = []
+      var ids = []
+      var x = []
+      for (var i = 0; i < events.length; i++) {
+        ids.push(events[i]._id.xqid)
+        x.push({value: events[i].num})
+      }
+      console.info('ids', ids)
+      var y = []
+      return fetchpm(this, true, '/pm/xq/ids', {
+        method: 'POST',
+        body: {values: ids}
+      }).then(resp => {
+        return resp.json()
+      }).then(body => {
+        console.info('xqids', body)
+        if (body.error === 0) {
+          y = body.data || []
+          y = y.map(item => {
+            return item.Name
+          })
+        }
+        return {x: x, y: y}
+      })
     }
   }
 }
@@ -102,19 +162,16 @@ export default {
     text-align: center;
     color: #999;
     display: flex;
-    // justify-content: center;
-    .left, .right {
-      position: relative;
-      .chartTitle{
-        margin-top: -80px;
-        color: #000;
-      }
+    align-items: flex-start;
+    .item{
+      flex: 1;
+      margin: 5px;
     }
   }
-  .red{
-    color: red;
-    margin: 20px;
-  }
 
+}
+
+.status{
+  margin-bottom: 5px;
 }
 </style>

@@ -20,8 +20,5 @@ import PMs from '@/components/table/PMs'
 
 <style lang="less" module='s'>
 .wrap{
-  border: solid 1px #4c87b9;
-  width: 100%;
-  background: #fff;
 }
 </style>
