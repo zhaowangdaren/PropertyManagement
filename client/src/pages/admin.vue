@@ -73,19 +73,19 @@ export default {
 </script>
 
 <style lang="less" module='s'>
-  .wrap{
-    position: absolute;
-    top: 0;
-    left: 0;
+.wrap{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  .right{
+    flex: 1;
     width: 100%;
-    height: 100%;
-    display: flex;
-    .right{
-      flex: 1;
-      width: 100%;
-    }
-    .content{
-      margin: 10px;
-    }
   }
+  .content{
+    margin: 10px;
+  }
+}
 </style>

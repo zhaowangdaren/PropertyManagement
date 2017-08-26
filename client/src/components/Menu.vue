@@ -25,8 +25,6 @@
         next: ''
       }
     },
-    watch: {
-    },
     mounted () {
       console.info('menuPath', this.$route.path)
       this.next = this.NEXT
