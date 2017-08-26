@@ -7,23 +7,24 @@
  申请法院调解请求
  操作记录管理 -->
   <div :class='s.wrap'>
-    <action-bar></action-bar>
-    <div :class='s.content'>
-      <menu-street :class='s.menu' :menus='menus' :NEXT='nextPath'/>
-      <div :class='s.body'>
-        <div :class='s.street'>街道：{{streetName}}</div>
-        <router-view></router-view>
+    <div :class='s.left'>
+      <left-menu :menus='menus' :NEXT='nextPath'/>
+    </div>
+    <div :class='s.right'>
+      <action-bar></action-bar>
+      <div :class='s.content'>
+        <router-view :class='s.body'></router-view>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import MenuStreet from '@/components/Menu'
+import LeftMenu from '@/components/Menu'
 import ActionBar from '@/components/ActionBar'
 import fetchpm from '@/fetchpm'
 export default {
-  components: {MenuStreet, ActionBar},
+  components: {LeftMenu, ActionBar},
   beforeRouteUpdate(to, from, next) {
     console.info('beforeRouteUpdate', to)
     this.nextPath = to.path
@@ -90,32 +91,19 @@ export default {
 </script>
 
 <style lang="less" module='s'>
-  .wrap{
-    display: flex;
-    flex-direction: column;
-    .content{
-      display: flex;
-      // height: 100%;
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      // z-index: 2;
-      margin-top: 100px;
-      .menu{
-        height: 100%;
-      }
-      .body{
-        overflow-y: scroll;
-        flex: 1;
-        .street{
-          background-color: #ddd;
-          font-size: 25px;
-          padding: 5px;
-          margin-bottom: 20px;
-        }
-      }
-    }
+.wrap{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  .right{
+    flex: 1;
+    width: 100%;
   }
+  .content{
+    margin: 10px;
+  }
+}
 </style>

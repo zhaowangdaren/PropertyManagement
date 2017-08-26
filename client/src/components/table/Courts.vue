@@ -145,7 +145,6 @@
   margin: 10px;
   .content{
     border: solid 1px #4c87b9;
-    margin-top: 20px;
     background-color: #fff;
     .title{
       color: #fff;

@@ -1,21 +1,22 @@
 <template>
   <div :class='s.wrap'>
-    <action-bar></action-bar>
-    <div :class='s.content'>
-      <menu-gov :class='s.menu' :menus='menus' :NEXT='nextPath'/>
-      <div :class='s.body'>
-        <div :class='s.userName'>{{realName}}</div>
-        <router-view></router-view>
+    <div :class='s.left'>
+      <left-menu :menus='menus' :NEXT='nextPath'/>
+    </div>
+    <div :class='s.right'>
+      <action-bar></action-bar>
+      <div :class='s.content'>
+        <router-view :class='s.body'></router-view>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import MenuGov from '@/components/Menu'
+import LeftMenu from '@/components/Menu'
 import ActionBar from '@/components/ActionBar'
 export default {
-  components: {MenuGov, ActionBar},
+  components: {LeftMenu, ActionBar},
   beforeRouteUpdate(to, from, next) {
     console.info('beforeRouteUpdate', to)
     this.nextPath = to.path
@@ -75,31 +76,19 @@ export default {
 </script>
 
 <style lang="less" module='s'>
-  .wrap{
-    display: flex;
-    flex-direction: column;
-    .content{
-      display: flex;
-      height: 100%;
-      position: absolute;
-      top: 100px;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      .menu{
-        height: 100%;
-      }
-      .body{
-        flex: 1;
-        margin: 10px;
-        .userName{
-          background-color: #ddd;
-          font-size: 20px;
-          padding: 5px;
-          margin-bottom: 20px;
-        }
-      }
-
-    }
+.wrap{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  .right{
+    flex: 1;
+    width: 100%;
   }
+  .content{
+    margin: 10px;
+  }
+}
 </style>

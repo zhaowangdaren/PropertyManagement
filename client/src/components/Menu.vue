@@ -1,6 +1,10 @@
 <template>
   <div :class='s.wrap'>
-    <div v-for='menu in menus' @click='onClick(menu)' :class='{[s.active]: next == menu.path}'>
+    <div :class='s.logo'>
+      <div><img src="~@/res/images/logo.png"></div>
+      <div>花山物业管理信息平台</div>
+    </div>
+    <div v-for='menu in menus' @click='onClick(menu)' :class='[s.menu, {[s.active]: next == menu.path}]'>
       <i :class='"iconfont" + " " + menu.icon'></i>
       {{menu.text}}
     </div>
@@ -40,24 +44,33 @@
 </script>
 
 <style lang="less" module='s'>
-  .wrap{
-    height: 100%;
-    background-color: #1f2d3d;
-    min-width: 100px;
-    color: #f1f3f6;
-    div{
-      padding: 20px 10px;
-      font-size: 20px;
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      i{
-        width: 30px;
-        margin-right: 10px;
-      }
-    }
-    .active{
-      background: #4c87b9;
+.wrap{
+  height: 100%;
+  background-color: #1f2d3d;
+  min-width: 150px;
+  color: #f1f3f6;
+  .menu{
+    padding: 20px 20px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    i{
+      width: 30px;
+      margin-right: 10px;
     }
   }
+  .active{
+    background: #4c87b9;
+  }
+}
+.logo{
+  border-bottom: solid rgba(255, 255, 255, 0.5) 1px;
+  font-size: 20px;
+  text-align: center;
+  padding: 10px 0;
+  img{
+    width: 30%;
+  }
+}
 </style>

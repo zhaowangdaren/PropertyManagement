@@ -258,7 +258,6 @@ export default {
 .wrap{
   .content{
     border: solid 1px #4c87b9;
-    margin-top: 20px;
     background-color: #fff;
     .title{
       color: #fff;

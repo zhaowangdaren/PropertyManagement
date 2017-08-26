@@ -54,12 +54,11 @@
 </template>
 
 <script>
-import BasicDialog from '@/components/dialog/index'
 import { Message } from 'element-ui'
 import SearchSelect from '@/components/SearchSelect'
 import fetchpm from '@/fetchpm' 
 export default {
-  components: { BasicDialog, SearchSelect },
+  components: { SearchSelect },
   props: {
     community: Object
   },

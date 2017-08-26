@@ -72,12 +72,11 @@
 </template>
 
 <script>
-import BasicDialog from '@/components/dialog/index'
 import SearchSelect from '@/components/SearchSelect'
 import { Message } from 'element-ui'
 import fetchpm from '@/fetchpm'
 export default {
-  components: { BasicDialog, SearchSelect },
+  components: { SearchSelect },
   data () {
     return {
       warn: '',

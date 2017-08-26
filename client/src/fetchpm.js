@@ -1,5 +1,5 @@
-const HOST = 'https://www.maszfglzx.com:3000'
-// const HOST = '//localhost:3000'
+// const HOST = 'https://www.maszfglzx.com:3000'
+const HOST = '//localhost:3000'
 
 const TenMinute = 30 * 60 * 1000
 function refreshToken () {
@@ -62,9 +62,7 @@ export default function (vm, auth, path, options) {
     return fetch(path, options).then(resp => {
       if (resp.status == 401 && vm.$route.path !== '/login') {//认证失败，重新登录
           vm.$router.push({path:'/'})
-          var error = new Error(resp.statusText)
-          error.response = resp
-          throw error
+          return resp
       } else {
         return resp
       }

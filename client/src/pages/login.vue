@@ -28,6 +28,7 @@
 </template>
 
 <script type="text/javascript">
+import fetchpm from '@/fetchpm'
 export default {
   data () {
     return {
@@ -76,9 +77,9 @@ export default {
     onLogin () {
       if (!this.checkInput() || this.isLogining) return
       this.isLogining = true
-      fetch('https://www.maszfglzx.com:3000/login', {
+      fetchpm(this, false, '/login', {
         method: 'POST',
-        body: JSON.stringify(this.login)
+        body: this.login
       }).then(resp => {
         return resp.json()
       }).then( body => {
