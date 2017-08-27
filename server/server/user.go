@@ -19,6 +19,7 @@ func startUser(router *gin.RouterGroup, dbc *mgo.Database) {
 		}
 		c.JSON(http.StatusOK, table.CountUsers(dbc, userType))
 	})
+
 	router.POST("/users", func(c *gin.Context) {
 		var queryInfo QueryUser
 		err := c.BindJSON(&queryInfo)

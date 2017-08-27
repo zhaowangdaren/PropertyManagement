@@ -5,7 +5,7 @@
       <div :class='s.red'>注意：图片大小不要超过5M，最多上传9张</div>
       <el-upload
         :class='s.upload'
-        action="//www.maszfglzx.com:3000/open/upload"
+        :action="host"
         list-type="picture-card"
         :on-success="handleUploadSucc"
         :on-preview="handlePictureCardPreview"
@@ -39,7 +39,9 @@ export default {
       },
       imgs:[],
       warn:'',
-      isUpdating: false
+      isUpdating: false,
+      host:'//www.maszfglzx.com:3000/open/upload'
+      // host:'//localhost:3000/open/upload'
     }
   },
   mounted () {
@@ -64,7 +66,7 @@ export default {
       }
       this.isUpdating = true
       fetchpm(this, false, '/open/event/update', {
-        method: 'PUT',
+        method: 'POST',
         body: this.event
       }).then(response => {
         return response.json()

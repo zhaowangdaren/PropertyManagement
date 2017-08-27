@@ -160,7 +160,7 @@ func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
 		}
 	})
 
-	router.PUT("/event/update", func(c *gin.Context) {
+	router.POST("/event/update", func(c *gin.Context) {
 		var info table.Event
 		err := c.BindJSON(&info)
 		if err != nil {

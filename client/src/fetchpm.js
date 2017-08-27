@@ -57,7 +57,7 @@ export default function (vm, auth, path, options) {
       }
     }
     path = HOST + path
-    if(options.method == 'POST') options.body = JSON.stringify(options.body)
+    if(options.method !== 'GET') options.body = JSON.stringify(options.body)
     console.info(path, options)
     return fetch(path, options).then(resp => {
       if (resp.status == 401 && vm.$route.path !== '/login') {//认证失败，重新登录
