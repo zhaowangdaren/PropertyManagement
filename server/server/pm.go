@@ -13,6 +13,7 @@ func startPM(router *gin.RouterGroup, dbc *mgo.Database) {
 	router.GET("/pms/num", func(c *gin.Context) {
 		c.JSON(http.StatusOK, table.CountPMs(dbc))
 	})
+
 	router.POST("/pm", func(c *gin.Context) {
 		var queryInfo QueryBasic
 		err := c.BindJSON(&queryInfo)

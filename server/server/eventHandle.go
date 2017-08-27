@@ -45,4 +45,8 @@ func startEventHandle(router *gin.RouterGroup, dbc *mgo.Database) {
 			c.JSON(http.StatusOK, table.FindEventHandlesByKV(dbc, params))
 		}
 	})
+
+	router.GET("/eventHandle/today/handles", func(c *gin.Context) {
+		c.JSON(http.StatusOK, table.FindTodayHandles(dbc))
+	})
 }
