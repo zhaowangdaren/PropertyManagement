@@ -129,7 +129,7 @@ export default {
       }).then( data => {
         if (data.error === 0) {
           console.info (data)
-          this.streets = data.data
+          this.streets = data.data.streets || []
         }
       })
     }

@@ -201,7 +201,7 @@ export default {
           city: '0555',
           map: this.map
         })
-        this.placeSearch.search(this.xq.Address, (status, result) => {
+        this.placeSearch.search(this.xq.Address + this.xq.Name, (status, result) => {
           console.info('placeSearch status'+ status, result)
         })
       })

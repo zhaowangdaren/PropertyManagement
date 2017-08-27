@@ -78,7 +78,7 @@
             <td>
               <el-select v-model="inputCommunityID" filterable placeholder="全部">
                 <el-option
-                  v-for="item in communities"
+                  v-for="item in allCommunities"
                   :key="item.ID"
                   :label="item.Name"
                   :value="item.ID">
@@ -89,7 +89,7 @@
             <td>
               <el-select v-model="inputXQID" filterable placeholder="全部">
                 <el-option
-                  v-for="item in xqs"
+                  v-for="item in allXQs"
                   :key="item.ID"
                   :label="item.Name"
                   :value="item.ID">
@@ -152,8 +152,6 @@
     data () {
       return {
         userStreetID: '',
-
-        host: '//localhost:3000',
         //user Input
         inputCommunityID: '',
         inputXQID: '',
@@ -169,20 +167,47 @@
         eventTypes: [{value: 0,label: "全部"}, {value: 1, label:"type1"}, {value: 2, label:"type2"}, {value: 3, label: 'type3'}],
         eventStatus: [{value: 0, label:"全部"}, {value: 1, label: 'status1'}, {value: 2, label:'status2'}, {value: 3, label: 'status3'}, {value: 4, label:'status4'}],
         communities: [],
-        xqs:[]
+        xqs:[],
+        allCommunities: [],
+        allXQs: []
       }
     },
     mounted () {
       this.fetchEvents('')
       var user = JSON.parse(sessionStorage.getItem('user')) || {}
       this.userStreetID = user.StreetID
+      this.fetchAllCommunitiesByStreetID(this.userStreetID)
     },
     watch: {
       inputCommunityID: function (value) {
-        this.fetchXQByCommunityID(value)
+        this.fetchAllXQByCommunityID(value)
       }
     },
     methods: {
+      fetchAllCommunitiesByStreetID (streetID) {
+        if ( !streetID || streetID == '') return null
+        fetchpm( this, true, '/pm/community/kvs', {
+          method: 'POST',
+          body: {streetID: streetID}
+        }).then(resp => {
+          return resp.json()
+        }).then(body => {
+          console.info('fetchAllCommunitiesByStreetID', body)
+          this.allCommunities = body.data
+        })
+      },
+      fetchAllXQByCommunityID (communityID) {
+        if ( !communityID || communityID == '') return null
+        fetchpm( this, true, '/pm/xq/kvs', {
+          method: 'POST',
+          body: {communityID: communityID}
+        }).then(resp => {
+          return resp.json()
+        }).then(body => {
+          console.info('fetchAllXQByCommunityID', body)
+          this.allXQs = body.data
+        })
+      },
       onSearch () {
         var search = this.formatInputData()
         fetchpm(this, true, '/pm/event/kvs', {

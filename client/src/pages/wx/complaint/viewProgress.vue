@@ -51,7 +51,6 @@ export default {
       },
       events: [],
       xqs:[],
-      host:'http://localhost:3000',
       selectedStatus: 0,
       eventStatus:[{value: 0, label:"全部"}, {value: 4, label: '已解决'}, {value: 1, label:'未解决'}],
       selectedTime: 0,

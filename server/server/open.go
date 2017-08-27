@@ -19,7 +19,7 @@ import (
 )
 
 //FileBasicPath file basic path
-const FileBasicPath = "./images"
+const FileBasicPath = "./images/"
 
 func sendHttpRequest(url string) string {
 	response, err := http.Get(url)

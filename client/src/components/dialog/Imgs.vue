@@ -1,6 +1,6 @@
 <template>
   <div :class='s.wrap'>
-    <img v-for='img in sImgs' :src='"http://localhost:3000/open/image/" + img'>
+    <img v-for='img in sImgs' :src='"//www.maszfglzx.com:3000/open/image/" + img'>
   </div>
 </template>
 

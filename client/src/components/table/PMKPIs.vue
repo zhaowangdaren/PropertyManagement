@@ -111,7 +111,6 @@ export default {
   filters: {filterEventStatus, filterEventLevel},
   data () {
     return {
-      host: '//localhost:3000',
       quarters: [{value:0, label:'全部'}, {value:1, label:'1'},{value:2,label:'2'},{value:3, label:'3'},{value:4, label: '4'}],
       selectedYear: 0,
       selectedQuarter: 0,
@@ -162,7 +161,7 @@ export default {
       }).then( data => {
         if (data.error === 0) {
           console.info (data)
-          this.streets = data.data || []
+          this.streets = data.data.streets || []
         }
       })
     },

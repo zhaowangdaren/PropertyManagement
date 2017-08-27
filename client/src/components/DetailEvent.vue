@@ -9,11 +9,11 @@
         <div :class='s.left'>
           用户上传
           <div :class='s.imgs'>
-            <img v-for='img in eventImgs' :src='"//47.94.7.154:3000/open/image/" + img' @click='onImg(img)' :class='s.eventImg'>
+            <img v-for='img in eventImgs' :src='host + "/open/image/" + img' @click='onImg(img)' :class='s.eventImg'>
             <div v-if='eventImgs.length === 0'>暂无图片</div>
           </div>
           <el-dialog v-model="imgVisible" size="tiny">
-            <img width="100%" :src='"//47.94.7.154:3000/open/image/" + showingImg' alt="">
+            <img width="100%" :src='host + "/open/image/" + showingImg' alt="">
           </el-dialog>
         </div>
         <div :class='s.right'>
@@ -66,9 +66,12 @@
             <tr>
               <td :class='s.key'>操作</td>
               <td :class='s.value'>
-                <el-button type='success'>推送至物业公司</el-button>
-                <el-button type='primary' @click='showAduitEventLevel = true'>审核等级</el-button>
+                <el-button type='success' v-if='userType === 3'>推送至物业公司</el-button>
+                <el-button type='primary' 
+                  v-if='userType === 3'
+                  @click='showAduitEventLevel = true'>审核等级</el-button>
                 <el-dialog
+                  v-if='userType === 3'
                   title='审核等级'
                   size='tiny'
                   :visible.sync='showAduitEventLevel'>
@@ -87,7 +90,10 @@
                     @cancel='showAddEventHandle = false'>
                   </add-event-handle>
                 </el-dialog>
-                <el-button type='danger'>申请关闭</el-button>
+                <el-button
+                  v-if='userType == 3'
+                  type='danger'
+                  @click='onClose'>申请关闭</el-button>
               </td>
             </tr>
           </table>
@@ -147,6 +153,8 @@
     },
     data () {
       return {
+        host:'//www.maszfglzx.com/#',
+        userType: 0,
         event: {
           Index: '',
           StreetID: '',
@@ -172,10 +180,14 @@
     },
     mounted () {
       console.info(this.$route)
+      var user = JSON.parse(sessionStorage.getItem('user')) || {}
+      this.userType = user.type
       this.fetchEvent(this.$route.params.index)
       this.fetchEventDetails(this.$route.params.index)
     },
     methods: {
+      onClose () {
+      },
       onAddEventHandleSucc (eventHandle) {
         this.eventHandles.push(eventHandle)
       },

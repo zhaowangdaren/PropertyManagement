@@ -56,7 +56,7 @@ import { Message } from 'element-ui'
 import fetchpm from '@/fetchpm'
   export default {
     props: {
-      street: {
+      streetProps: {
         type: Object,
         default: function () {
           return {
@@ -67,8 +67,14 @@ import fetchpm from '@/fetchpm'
     },
     data () {
       return {
-        warn:''
+        warn:'',
+        street: {
+          Name: ''
+        }
       }
+    },
+    mounted () {
+      Object.assign(this.street, this.streetProps)
     },
     methods:{
       onSave () {
@@ -101,7 +107,7 @@ import fetchpm from '@/fetchpm'
           else {
             // this.warn = '修改成功'
             Message({message:'恭喜，修改成功', type:'success'})
-            this.onCancel()
+            this.$emit('editSucc')
           }
         })
       },

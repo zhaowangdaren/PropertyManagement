@@ -79,10 +79,13 @@ import fetchpm from '@/fetchpm'
 export default {
   components: { SearchSelect },
   props: {
-    country: Object
+    countryProps: Object
   },
   data () {
     return {
+      country: {
+        StreetID: ''
+      },
       warn: '',
       streets: [],
       communities: [],
@@ -91,6 +94,7 @@ export default {
     }
   },
   mounted () {
+    Object.assign(this.country, this.countryProps)
     this.searchStreetID = this.country.StreetID
 
     this.fetchAllStreets()

@@ -60,17 +60,20 @@ import fetchpm from '@/fetchpm'
 export default {
   components: { SearchSelect },
   props: {
-    community: Object
+    communityProps: Object
   },
   data () {
     return {
-      host: 'http://10.176.118.61:3000',
+      community: {
+        Name: ''
+      },
       inputWord: '',
       streets: [],
       warn:''
     }
   },
   mounted () {
+    Object.assign(this.community, this.communityProps)
     this.fetchAllStreetName()
   },
   methods: {

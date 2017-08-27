@@ -15,7 +15,7 @@ export default {
   data () {
     return {
       imgs: [],
-      host: '//47.94.7.154:3000'
+      host: '//www.maszfglzx.com:3000'
     }
   },
   mounted () {

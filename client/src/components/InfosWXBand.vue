@@ -54,7 +54,6 @@
     components: {ImageButton, SearchSelect},
     data () {
       return {
-        host:'http://10.176.118.61:3000',
         users:[],
         showDialog: '',
         wxName: '',

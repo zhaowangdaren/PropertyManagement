@@ -71,7 +71,11 @@
       title='修改街道'
       :visible.sync='showEditDialog'
       size='small'>
-      <edit-street v-if='showEditDialog' :street='editingStreet' @cancel='showEditDialog = false'></edit-street>
+      <edit-street 
+        v-if='showEditDialog' 
+        :streetProps='editingStreet' 
+        @editSucc='onEditSucc'
+        @cancel='showEditDialog = false'></edit-street>
     </el-dialog>
     <el-dialog
       title="提示"
@@ -112,6 +116,9 @@
       this.fetchStreets()
     },
     methods: {
+      onEditSucc () {
+        this.fetchStreets()
+      },
       onChangePage (currentPage) {
         this.pageNo = currentPage - 1
         this.fetchStreets()

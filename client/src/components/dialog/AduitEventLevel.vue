@@ -26,16 +26,22 @@ export default {
   data() {
     return {
       warn: '',
-      options: [{
-        value: 1,
-        label: '特急'
-      }, {
-        value: 2,
-        label: '加急'
-      }, {
-        value: 3,
-        label: '急'
-      }],
+      options: [
+        {
+          value: 0,
+          label: '未定'
+        },
+        {
+          value: 1,
+          label: '特急'
+        }, {
+          value: 2,
+          label: '加急'
+        }, {
+          value: 3,
+          label: '急'
+        }
+      ],
       inputEventLevel: '',
       updateEvent: {}
     }

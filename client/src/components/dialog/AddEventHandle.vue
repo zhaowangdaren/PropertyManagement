@@ -2,7 +2,7 @@
   <div>
     <div :class='s.warn' v-text='warn'></div>
     <el-upload
-      action="//47.94.7.154:3000/open/upload"
+      action="//www.maszfglzx.com:3000/open/upload"
       list-type="picture-card"
       :on-success="handleUploadSucc"
       :on-remove="handleRemove">

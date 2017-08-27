@@ -53,7 +53,6 @@
     filters: {filterEventStatus, filterEventLevel},
     data () {
       return {
-        host: '//localhost:3000',
         searchResult:[],
         streets: [],
         communities: [],

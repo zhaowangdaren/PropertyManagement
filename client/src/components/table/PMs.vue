@@ -358,8 +358,7 @@ export default {
       position: relative;
       margin: 10px;
       .key{
-        background-color: #ddd;
-        font-size: 20px;
+        background-color: #f0f0f0;
       }
     }
     .addDel {

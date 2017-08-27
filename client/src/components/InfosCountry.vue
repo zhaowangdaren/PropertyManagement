@@ -132,7 +132,7 @@
       title='编辑小区'
       :visible.sync='showEditDialog'
       size='small'>
-      <edit-country v-if='showEditDialog' :country='editingXQ' @cancel='showEditDialog = false'></edit-country>
+      <edit-country v-if='showEditDialog' :countryProps='editingXQ' @cancel='showEditDialog = false' @editSucc='onEditSucc'></edit-country>
     </el-dialog>
     <el-dialog
       title="提示"
@@ -218,6 +218,9 @@
       this.fetchAllCommunities()
     },
     methods: {
+      onEditSucc () {
+        this.fetchXQs()
+      },
       onEdit (xq) {
         this.editingXQ = xq
         this.showEditDialog = true

@@ -61,7 +61,6 @@ export default {
   components: { SearchSelect },
   data () {
     return {
-      host: 'http://10.176.118.61:3000',
       inputWord: '',
       streets: [],
       community: {
@@ -125,7 +124,7 @@ export default {
       }).then(resp => {
         return resp.json()
       }).then(body => {
-        this.streets = body.data
+        this.streets = body.data.streets || []
       })
     },
     onFocus () {

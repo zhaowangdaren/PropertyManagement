@@ -88,7 +88,7 @@
       :visible.sync='showEditDialog'
       size='small'>
       <edit-community v-if='showEditDialog'
-        :community='editingCommunity'
+        :communityProps='editingCommunity'
         @cancel='showEditDialog = false'
         @editSucc='fetchCommunities'></edit-community>
     </el-dialog>
@@ -264,7 +264,7 @@
     .title{
       background: #e0e0e0;
       padding: 10px;
-      font-size: 18px;
+      font-size: 15px;
     }
     .inputWrap{
       position: relative;
