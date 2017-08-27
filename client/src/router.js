@@ -56,6 +56,7 @@ const PMQA = resolve => require(['@/pages/wx/pm/qa'], resolve)
 const PMCharge = resolve => require(['@/pages/wx/pmCharge'], resolve)
 const ParkMain = resolve => require(['@/pages/wx/parkMain'], resolve)
 
+const ContactUs = resolve => require(['@/pages/wx/contactUs'], resolve)
 Vue.use(Router)
 
 export default new Router({
@@ -259,6 +260,10 @@ export default new Router({
     {
       path: '/wx/park/main',
       component: ParkMain
+    },
+    {
+      path: '/wx/contact',
+      component: ContactUs
     }
   ]
 })

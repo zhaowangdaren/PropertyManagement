@@ -19,7 +19,7 @@ export default {
     return {
       headerOptions: {
         leftBtns: [{text:'上一步', event: null}],
-        title: 'Select Community'
+        title: '选择社区'
       },
       communities: []
     }

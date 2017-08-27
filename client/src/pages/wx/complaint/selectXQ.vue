@@ -19,7 +19,7 @@ export default {
     return {
       headerOptions: {
         leftBtns: [{text:'上一步', event: null}],
-        title: 'Select XQ',
+        title: '选择小区',
         rightBtns: []
       },
       xqs: []

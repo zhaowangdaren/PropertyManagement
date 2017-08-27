@@ -18,8 +18,8 @@ export default {
   data () {
     return {
       headerOptions: {
-        title: 'Select Street',
-        rightBtns: [{text:'Cancel', event: null}]
+        title: '选择街道',
+        rightBtns: [{text:'取消', event: null}]
       },
       streets: []
     }

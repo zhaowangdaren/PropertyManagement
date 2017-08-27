@@ -5,7 +5,7 @@
       <div :class='s.red'>注意：图片大小不要超过5M，最多上传9张</div>
       <el-upload
         :class='s.upload'
-        action="//47.94.7.154:3000/open/upload"
+        action="//www.maszfglzx.com:3000/open/upload"
         list-type="picture-card"
         :on-success="handleUploadSucc"
         :on-preview="handlePictureCardPreview"
@@ -15,7 +15,7 @@
       <el-dialog v-model="dialogVisible" size="large">
         <img width="100%" :src="dialogImageUrl" alt="">
       </el-dialog>
-      <div :class='s.btn' @click='onNext'>下一步</div>
+      <div :class='s.btn' @click='onNext'>{{isUpdating ? '提交中...': '下一步'}}</div>
     </div>
   </div>
 </template>
@@ -38,7 +38,8 @@ export default {
         Imgs: ''//以逗号为分隔符
       },
       imgs:[],
-      warn:''
+      warn:'',
+      isUpdating: false
     }
   },
   mounted () {
@@ -57,6 +58,11 @@ export default {
     },
     onNext () {
       if(!this.checkImgs()) return
+      if(this.imgs.length === 0) {
+        this.$router.push({path:'/wx/complaint/finish'})
+        return
+      }
+      this.isUpdating = true
       fetchpm(this, false, '/open/event/update', {
         method: 'PUT',
         body: this.event
@@ -68,6 +74,7 @@ export default {
         else {
           Message({message: body.data, type: 'error'})
         }
+        this.isUpdating = false
       })
     },
     checkImgs () {

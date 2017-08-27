@@ -39,12 +39,12 @@
         <div :class='s.text'>投诉记录数</div>
       </div>
       <div :class='s.item'>
-        <div :class='s.value'><span>{{communitiesNum}}</span>条</div>
-        <div :class='s.text'>社区总数</div>
-      </div>
-      <div :class='s.item'>
         <div :class='s.value'><span>{{streetsNum}}</span>条</div>
         <div :class='s.text'>街道总数</div>
+      </div>
+      <div :class='s.item'>
+        <div :class='s.value'><span>{{communitiesNum}}</span>条</div>
+        <div :class='s.text'>社区总数</div>
       </div>
       <div :class='s.item'>
         <div :class='s.value'><span>{{xqsNum}}</span>条</div>

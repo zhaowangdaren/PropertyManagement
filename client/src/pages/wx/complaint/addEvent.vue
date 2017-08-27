@@ -4,7 +4,7 @@
     <div :class='s.body'>
       <div :class='s.header'>
         <span :class='s.name' v-text='xq.Name'></span>
-        XQ
+        <span :class='s.tip'>小区</span>
       </div>
       <div :class='s.warn' v-text='warn'></div>
       <div :class='s.item'>
@@ -24,7 +24,7 @@
           @focus='onFocus'>
       </div>
       <div :class='s.contentWrap'>
-        <div :class='s.title'>Content</div>
+        <div :class='s.title'>投诉内容</div>
         <div :class='s.value'>
           <textarea 
             rows='10'
@@ -46,7 +46,7 @@ export default{
     return {
       headerOptions: {
         leftBtns: [{text:'上一步', event: null}],
-        title: 'Fill in Event',
+        title: '填写投诉内容',
         rightBtns: [{text:'下一步', event: null}]
       },
       xq: {
@@ -140,7 +140,10 @@ export default{
       color: #999;
       background-color: #fff;
       .name{
-        color: #000;
+        color: #565656;
+      }
+      .tip{
+        font-size: 15px;
       }
     }
     .warn{
@@ -174,14 +177,13 @@ export default{
       font-size:25px;
       margin-top: 20px;
       background-color: #fff;
+      padding: 10px;
       .title{
-        margin: 10px;
-        font-size: 30px;
+        font-size: 25px;
         color: #999;
+        margin-bottom: 5px;
       }
       .value{
-        width: 90%;
-        margin: 0 auto;
         textarea{
           width: 100%;
           min-width: 50px;
