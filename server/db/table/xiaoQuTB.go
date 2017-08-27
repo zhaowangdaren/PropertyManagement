@@ -30,6 +30,15 @@ type XiaoQus struct {
 	XiaoQus []XiaoQu
 }
 
+func CountXQs(db *mgo.Database) interface{} {
+	c := db.C(XiaoQuTableName)
+	count, err := c.Find(nil).Count()
+	if err != nil {
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": count}
+}
+
 //InsertXQ 插入user
 func InsertXQ(db *mgo.Database, info XiaoQu) interface{} {
 	c := db.C(XiaoQuTableName)

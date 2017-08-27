@@ -38,10 +38,25 @@ type EventNum struct {
 	Num  int
 }
 
+//FindTodayEvents 获取今日新增事件
+func FindTodayEvents(db *mgo.Database) interface{} {
+	curTime := time.Now()
+	startTime := time.Date(curTime.Year(), curTime.Month(), curTime.Day(), 0, 0, 0, 0, time.UTC)
+	endTime := time.Date(curTime.Year(), curTime.Month(), curTime.Day(), 23, 59, 59, 1000000000, time.UTC)
+	c := db.C(EventTableName)
+	var result []Event
+	fmt.Println(startTime.Unix(), endTime.Unix())
+	err := c.Find(bson.M{"$and": []bson.M{bson.M{"time": bson.M{"$gte": startTime.Unix()}}, bson.M{"time": bson.M{"$lte": endTime.Unix()}}}}).All(&result)
+	if err != nil {
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": result}
+}
+
 func createEventIndex() string {
 	curTime := time.Now()
 	result := curTime.Format("20060102150405")
-	return result + fmt.Sprint(curTime.Clock())
+	return result + fmt.Sprint(curTime.Nanosecond())
 }
 
 //InsertEvent 插入
@@ -57,7 +72,7 @@ func InsertEvent(db *mgo.Database, event Event) interface{} {
 	}
 	event.Index = createEventIndex()
 	event.Time = time.Now().Unix()
-	fmt.Println("event index=", event.Index)
+	fmt.Println("event time", event.Time)
 	err = c.Insert(&event)
 	if err != nil {
 		log.Println(err)
@@ -155,7 +170,7 @@ func FindEventKVs(db *mgo.Database, kvs map[string]interface{}) interface{} {
 	return gin.H{"error": 0, "data": result}
 }
 
-//CountAllEvents
+//CountDiffKeyEvents 统计不同key-value的数量
 func CountDiffKeyEvents(db *mgo.Database, key string) interface{} {
 	c := db.C(EventTableName)
 	key = strings.ToLower(key)
@@ -190,4 +205,13 @@ func CountDiffTypeEvents(db *mgo.Database) interface{} {
 		return gin.H{"error": 1, "data": err.Error()}
 	}
 	return gin.H{"error": 0, "data": result}
+}
+
+func CountEvents(db *mgo.Database) interface{} {
+	c := db.C(EventTableName)
+	count, err := c.Find(nil).Count()
+	if err != nil {
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": count}
 }

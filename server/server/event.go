@@ -66,4 +66,12 @@ func startEvent(router *gin.RouterGroup, dbc *mgo.Database) {
 		key := c.Param("key")
 		c.JSON(http.StatusOK, table.CountDiffKeyEvents(dbc, key))
 	})
+
+	router.GET("/event/today/events", func(c *gin.Context) {
+		c.JSON(http.StatusOK, table.FindTodayEvents(dbc))
+	})
+
+	router.GET("/events/num", func(c *gin.Context) {
+		c.JSON(http.StatusOK, table.CountEvents(dbc))
+	})
 }

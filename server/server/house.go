@@ -10,6 +10,10 @@ import (
 )
 
 func startHouse(router *gin.RouterGroup, dbc *mgo.Database) {
+	router.GET("/houses/num", func(c *gin.Context) {
+		c.JSON(http.StatusOK, table.CountHouses(dbc))
+	})
+
 	router.POST("/house", func(c *gin.Context) {
 		var queryInfo QueryHouse
 		err := c.BindJSON(&queryInfo)

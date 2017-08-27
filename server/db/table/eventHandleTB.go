@@ -24,7 +24,21 @@ type EventHandle struct {
 	Imgs           string //图片列表，以,为分隔符
 }
 
-//InsertEventHandleTB 插入
+//FindTodayHandles 获取今日新增事件
+func FindTodayHandles(db *mgo.Database) interface{} {
+	curTime := time.Now()
+	startTime := time.Date(curTime.Year(), curTime.Month(), curTime.Day(), 0, 0, 0, 0, time.UTC)
+	endTime := time.Date(curTime.Year(), curTime.Month(), curTime.Day(), 23, 59, 59, 1000000000, time.UTC)
+	c := db.C(EventHandleTableName)
+	var result []EventHandle
+	err := c.Find(bson.M{"$and": []bson.M{bson.M{"time": bson.M{"$gte": startTime.Unix()}}, bson.M{"time": bson.M{"$lte": endTime.Unix()}}}}).All(&result)
+	if err != nil {
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": result}
+}
+
+//InsertEventHandle 插入
 func InsertEventHandle(db *mgo.Database, handle EventHandle) interface{} {
 	c := db.C(EventHandleTableName)
 	handle.Time = time.Now().Unix()

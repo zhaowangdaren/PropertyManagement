@@ -43,6 +43,16 @@ type PMs struct {
 	PMs []PM
 }
 
+//CountPMs CountPMs
+func CountPMs(db *mgo.Database) interface{} {
+	c := db.C(PMTableName)
+	count, err := c.Find(nil).Count()
+	if err != nil {
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": count}
+}
+
 //InsertPM 插入user
 func InsertPM(db *mgo.Database, info PM) interface{} {
 	c := db.C(PMTableName)

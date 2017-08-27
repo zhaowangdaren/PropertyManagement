@@ -10,8 +10,10 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+//UserTableName UserTableName
 const UserTableName = "User"
 
+//User user
 type User struct {
 	ID       bson.ObjectId `bson:"_id"`
 	UserName string
@@ -33,6 +35,16 @@ func FindUser(db *mgo.Database, userName string, userType int) User {
 		log.Println(err)
 	}
 	return result
+}
+
+//CountUsers userType
+func CountUsers(db *mgo.Database, userType int) interface{} {
+	c := db.C(UserTableName)
+	count, err := c.Find(bson.M{"type": userType}).Count()
+	if err != nil {
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": count}
 }
 
 //FindUsers 查找用户列表

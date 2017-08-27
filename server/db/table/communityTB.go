@@ -28,6 +28,15 @@ type Communities struct {
 	Communities []Community
 }
 
+func CountCommunities(db *mgo.Database) interface{} {
+	c := db.C(CommunityTableName)
+	count, err := c.Find(nil).Count()
+	if err != nil {
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": count}
+}
+
 //InsertCommunity 插入
 func InsertCommunity(db *mgo.Database, comm Community) interface{} {
 	c := db.C(CommunityTableName)

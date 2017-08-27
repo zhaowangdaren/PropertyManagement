@@ -12,6 +12,10 @@ import (
 
 func startStreet(router *gin.RouterGroup, dbc *mgo.Database) {
 	//查询街道信息，入参：name\pageNo\pageSize，当name为空时会查询所有的街道
+
+	router.GET("/streets/num", func(c *gin.Context) {
+		c.JSON(http.StatusOK, table.CountStreets(dbc))
+	})
 	router.POST("/street", func(c *gin.Context) {
 		var queryInfo QueryBasic
 		err := c.BindJSON(&queryInfo)

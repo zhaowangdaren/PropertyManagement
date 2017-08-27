@@ -12,6 +12,10 @@ import (
 
 func startCommunity(router *gin.RouterGroup, dbc *mgo.Database) {
 	//localhost:3000/communityInfo?name=社区名&pageNo=1&pageSize=1
+	router.GET("/communities/num", func(c *gin.Context) {
+		c.JSON(http.StatusOK, table.CountCommunities(dbc))
+	})
+
 	router.POST("/community", func(c *gin.Context) {
 		var queryInfo QueryBasic
 		err := c.BindJSON(&queryInfo)

@@ -28,6 +28,16 @@ type Streets struct {
 	Streets []Street
 }
 
+//CountStreets CountStreets
+func CountStreets(db *mgo.Database) interface{} {
+	c := db.C(StreetTableName)
+	count, err := c.Find(nil).Count()
+	if err != nil {
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": count}
+}
+
 //InsertStreet 插入
 func InsertStreet(db *mgo.Database, street Street) interface{} {
 	c := db.C(StreetTableName)

@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"../db/table"
 	"github.com/gin-gonic/gin"
@@ -10,6 +11,14 @@ import (
 )
 
 func startUser(router *gin.RouterGroup, dbc *mgo.Database) {
+	router.GET("/users/num/:type", func(c *gin.Context) {
+		userType, err := strconv.Atoi(c.Param("type"))
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, table.CountUsers(dbc, userType))
+	})
 	router.POST("/users", func(c *gin.Context) {
 		var queryInfo QueryUser
 		err := c.BindJSON(&queryInfo)

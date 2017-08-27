@@ -47,6 +47,16 @@ type Houses struct {
 	Houses []House
 }
 
+//CountHouses CountHouses
+func CountHouses(db *mgo.Database) interface{} {
+	c := db.C(HouseTabelName)
+	count, err := c.Find(nil).Count()
+	if err != nil {
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": count}
+}
+
 //InsertHouse 插入
 func InsertHouse(db *mgo.Database, house House) interface{} {
 	c := db.C(HouseTabelName)

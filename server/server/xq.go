@@ -11,6 +11,11 @@ import (
 )
 
 func startXQ(router *gin.RouterGroup, dbc *mgo.Database) {
+
+	router.GET("/xqs/num", func(c *gin.Context) {
+		c.JSON(http.StatusOK, table.CountXQs(dbc))
+	})
+
 	router.POST("/xq", func(c *gin.Context) {
 		var queryInfo QueryBasic
 		err := c.BindJSON(&queryInfo)
