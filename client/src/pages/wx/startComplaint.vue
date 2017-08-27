@@ -1,6 +1,8 @@
 <template>
   <div :class='s.wrap'>
-    <div :class='s.start' @click='onStart'>Start Complaining</div>
+    <div :class='s.start' @click='onStart'>新的投诉</div>
+    <div :class='s.start' @click='onProgress'>投诉进度</div>
+    <div :class='s.start' @click='onMethod'>投诉流程</div>
   </div>
 </template>
 
@@ -14,6 +16,12 @@ export default {
   methods: {
     onStart () {
       this.$router.push({path: '/wx/complaint/selectStreet'})
+    },
+    onProgress () {
+      this.$router.push({path: '/wx/viewProgress'})
+    },
+    onMethod () {
+      this.$router.push({path: '/wx/complaint/method'})
     },
     fetchOpenID () {
       fetchpm(this, false, '/open/wx/openid/' + this.$route.query.code, {
@@ -40,12 +48,16 @@ export default {
   width: 100%;
   height: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   .start{
+    text-align: center;
+    width: 60%;
     border:solid 2px #fff;
     border-radius: 5px;
     padding: 20px;
+    margin: 5px;
     color: #fff;
     font-size: 30px;
     font-weight: bold;

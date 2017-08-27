@@ -66,7 +66,7 @@
   border-bottom: solid rgba(255, 255, 255, 0.5) 1px;
   font-size: 20px;
   text-align: center;
-  padding: 10px 0;
+  padding: 10px;
   img{
     width: 30%;
   }

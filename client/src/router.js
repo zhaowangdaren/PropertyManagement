@@ -30,6 +30,7 @@ const GovBuild = resolve => require(['@/pages/gov/build'], resolve)
 const GovPMKPI = resolve => require(['@/pages/gov/pmkpi'], resolve)
 const GovCourt = resolve => require(['@/pages/gov/court'], resolve)
 const GovAnnouncement = resolve => require(['@/pages/gov/announcement'], resolve)
+
 const WXStartComplaint = resolve => require(['@/pages/wx/startComplaint'], resolve)
 const WXComplaintSelectStreet = resolve => require(['@/pages/wx/complaint/selectStreet'], resolve)
 const WXComplaintSelectCommunity = resolve => require(['@/pages/wx/complaint/selectCommunity'], resolve)
@@ -37,7 +38,8 @@ const WXComplaintSelectXQ = resolve => require(['@/pages/wx/complaint/selectXQ']
 const WXComplaintAddEvent = resolve => require(['@/pages/wx/complaint/addEvent'], resolve)
 const WXComplaintUploadImage = resolve => require(['@/pages/wx/complaint/uploadImage'], resolve)
 const WXComplaintFinish = resolve => require(['@/pages/wx/complaint/finish'], resolve)
-const WXViewProgress = resolve => require(['@/pages/wx/viewProgress'], resolve)
+const WXViewProgress = resolve => require(['@/pages/wx/complaint/viewProgress'], resolve)
+const WXComplaintMethod = resolve => require(['@/pages/wx/complaint/method'], resolve)
 const WXDetailsProgress = resolve => require(['@/pages/wx/progress/detailsProgress'], resolve)
 const WXCheckPM = resolve => require(['@/pages/wx/checkPM'], resolve)
 const WXPMSelectCommunity = resolve => require(['@/pages/wx/pm/selectCommunity'], resolve)
@@ -45,10 +47,14 @@ const WXPMSelectXQ = resolve => require(['@/pages/wx/pm/selectXQ'], resolve)
 const WXPMDetails = resolve => require(['@/pages/wx/pm/details'], resolve)
 const WXPMBind = resolve => require(['@/pages/wx/pm/bind'], resolve)
 
+const PMRule = resolve => require(['@/pages/wx/pmRule'], resolve)
 const PMRules = resolve => require(['@/pages/wx/pm/rules'], resolve)
 const PMMPRules = resolve => require(['@/pages/wx/pm/managementPractices'], resolve)
 const PMKPIRules = resolve => require(['@/pages/wx/pm/kpiRules'], resolve)
 const PMQA = resolve => require(['@/pages/wx/pm/qa'], resolve)
+
+const PMCharge = resolve => require(['@/pages/wx/pmCharge'], resolve)
+const ParkMain = resolve => require(['@/pages/wx/parkMain'], resolve)
 
 Vue.use(Router)
 
@@ -198,6 +204,10 @@ export default new Router({
       component: WXViewProgress
     },
     {
+      path: '/wx/complaint/method',
+      component: WXComplaintMethod
+    },
+    {
       path: '/wx/detailsProgress',
       name: 'detailsProgress',
       component: WXDetailsProgress
@@ -223,6 +233,10 @@ export default new Router({
       component: WXPMBind
     },
     {
+      path: '/wx/pm/rule',
+      component: PMRule
+    },
+    {
       path: '/wx/pm/rules',
       component: PMRules
     },
@@ -237,6 +251,14 @@ export default new Router({
     {
       path: '/wx/pm/rules/qa',
       component: PMQA
+    },
+    {
+      path: '/wx/pm/charge',
+      component: PMCharge
+    },
+    {
+      path: '/wx/park/main',
+      component: ParkMain
     }
   ]
 })
