@@ -19,11 +19,10 @@ export default {
     return {
       headerOptions: {
         leftBtns: [{text:'上一步', event: null}],
-        title: 'Select XQ',
+        title: '选择小区',
         rightBtns: []
       },
-      xqs: [],
-      host:'http://10.176.118.61:3000'
+      xqs: []
     }
   },
   mounted () {

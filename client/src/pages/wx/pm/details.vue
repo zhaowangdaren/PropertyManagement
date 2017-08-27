@@ -5,27 +5,27 @@
     <div :class='s.warn' v-text='warn'></div>
     <div :class='s.tab'>
       <div :class='s.line'></div>
-      PM基本信息
+      物业基本信息
       <div :class='s.line'></div>
     </div>
     <div :class='s.item'>
-      <div :class='s.key'>XQ Name</div>
+      <div :class='s.key'>小区</div>
       <div :class='s.value' v-text='$route.query.XQName'></div>
     </div>
     <div :class='s.item'>
-      <div :class='s.key'>PM Name</div>
+      <div :class='s.key'>物业公司</div>
       <div :class='s.value' v-text='pm.Name'></div>
     </div>
     <div :class='s.item'>
-      <div :class='s.key'>LegalPerson</div>
+      <div :class='s.key'>独立法人</div>
       <div :class='s.value'>{{pm.LegalPerson === '' ? '暂无信息': pm.LegalPerson}}</div>
     </div>
     <div :class='s.item'>
-      <div :class='s.key'>PM zizhi</div>
+      <div :class='s.key'>物业资质</div>
       <div :class='s.value'>{{pm.WuYeZiZhi === '' ? '暂无信息': pm.WuYeZiZhi}}</div>
     </div>
     <div :class='s.item'>
-      <div :class='s.key'>PM类型</div>
+      <div :class='s.key'>物业类型</div>
       <div :class='s.value'>{{pm.WuYeXinZhi === '' ? '暂无信息': pm.WuYeXinZhi}}</div>
     </div>
     <div :class='s.item'>
@@ -34,60 +34,61 @@
     </div>
     <div :class='s.tab'>
       <div :class='s.line'></div>
-      XQ PM基本信息
+      小区物业基本信息
       <div :class='s.line'></div>
     </div>
     <div :class='s.item'>
-      <div :class='s.key'>XQ环境</div>
+      <div :class='s.key'>小区环境</div>
       <div :class='s.value'>{{pm.XQEnv === '' ? '暂无信息': pm.XQEnv}}</div>
     </div>
     <div :class='s.item'>
-      <div :class='s.key'>XQBJ</div>
+      <div :class='s.key'>小区保洁</div>
       <div :class='s.value'>{{pm.XQCleaning === '' ? '暂无信息': pm.XQCleaning}}</div>
     </div>
     <div :class='s.item'>
-      <div :class='s.key'>GreenVegetatio</div>
+      <div :class='s.key'>绿化植被</div>
       <div :class='s.value'>{{pm.GreenVegetatio === '' ? '暂无信息': pm.GreenVegetatio}}</div>
     </div>
     <div :class='s.item'>
-      <div :class='s.key'>GuanYangBaoHu</div>
+      <div :class='s.key'>管养保护</div>
       <div :class='s.value'>{{pm.GuanYangBaoHu === '' ? '暂无信息': pm.GuanYangBaoHu}}</div>
     </div>
     <div :class='s.item'>
-      <div :class='s.key'>XiaoFanJianCha</div>
+      <div :class='s.key'>消防检查</div>
       <div :class='s.value'>{{pm.XiaoFanJianCha === '' ? '暂无信息': pm.XiaoFanJianCha}}</div>
     </div>
     <div :class='s.item'>
-      <div :class='s.key'>DianTiBaoYang</div>
+      <div :class='s.key'>电梯保养</div>
       <div :class='s.value'>{{pm.DianTiBaoYang === '' ? '暂无信息': pm.DianTiBaoYang}}</div>
     </div>
     <div :class='s.item'>
-      <div :class='s.key'>CarParkInOrder</div>
+      <div :class='s.key'>车辆有序停放</div>
       <div :class='s.value'>{{pm.CarParkInOrder === '' ? '暂无信息': pm.CarParkInOrder}}</div>
     </div>
     <div :class='s.item'>
-      <div :class='s.key'>YeZhuCommunity</div>
+      <div :class='s.key'>业主委员会</div>
       <div :class='s.value'>{{pm.YeZhuCommunity === '' ? '暂无信息': pm.YeZhuCommunity}}</div>
     </div>
     <div :class='s.item'>
-      <div :class='s.key'>YeZhuCommunityTel</div>
+      <div :class='s.key'>业主委员会联系方式</div>
       <div :class='s.value'>{{pm.YeZhuCommunityTel === '' ? '暂无信息': pm.YeZhuCommunityTel}}</div>
     </div>
     <div :class='s.item'>
-      <div :class='s.key'>PastYearLevel</div>
+      <div :class='s.key'>上一年物业等级</div>
       <div :class='s.value'>{{pm.PastYearLevel === '' ? '暂无信息': pm.PastYearLevel}}</div>
     </div>
     <div :class='s.item'>
-      <div :class='s.key'>JianYiZhengGaiCuoShi</div>
+      <div :class='s.key'>建议整改措施</div>
       <div :class='s.value'>{{pm.JianYiZhengGaiCuoShi === '' ? '暂无信息': pm.JianYiZhengGaiCuoShi}}</div>
     </div>
     <div :class='s.tab'>
       <div :class='s.line'></div>
-      XQ PM展示
+      小区物业展示
       <div :class='s.line'></div>
     </div>
     <div :class='s.showImgs'>
       <img v-for='img in imgs' :src='host + "/open/image/" + img'>
+      <div v-if='imgs.length === 0'>暂无图片</div>
     </div>
   </div>
 </template>
@@ -103,11 +104,12 @@ export default {
     return {
       headerOptions: {
         leftBtns: [{text:'上一步', event: null}],
-        title: 'PM信息',
+        title: '物业信息',
         rightBtns: []
       },
       pm: {},
-      imgs:[]
+      imgs:[],
+      host:'//www.maszfglzx.com:3000'
     }
   },
   mounted () {
@@ -129,6 +131,7 @@ export default {
         if (body.error === 0 && body.data.length > 0) {
           this.pm = body.data[0] || {}
           this.imgs = filterImgs2Array(this.pm.Imgs)
+          console.info('imgs', this.imgs)
         }
         else this.warn = '查询失败'
       })

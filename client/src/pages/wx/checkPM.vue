@@ -18,8 +18,8 @@ export default {
   data () {
     return {
       headerOptions: {
-        title: 'Select Street',
-        rightBtns: [{text:'Cancel', event: null}]
+        title: '选择街道',
+        rightBtns: [{text:'取消', event: null}]
       },
       streets: []
     }
@@ -41,7 +41,7 @@ export default {
       }).then( data => {
         if (data.error === 0) {
           console.info (data)
-          this.streets = data.data
+          this.streets = data.data.streets || []
         }
       })
     },
