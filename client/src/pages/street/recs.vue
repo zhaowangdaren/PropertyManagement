@@ -1,5 +1,5 @@
 <template>
-  <div :class='s.wrap'>
+  <div>
     <handle-recs></handle-recs>
   </div>
 </template>

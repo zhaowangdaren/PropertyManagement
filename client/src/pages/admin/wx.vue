@@ -19,7 +19,6 @@
 .wrap{
   margin: 10px;
   border: solid 1px #4c87b9;
-  width: 100%;
   background: #fff;
   .title{
     color: #fff;

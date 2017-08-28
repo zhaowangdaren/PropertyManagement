@@ -22,7 +22,6 @@ import PMKPIs from '@/components/table/PMKPIs'
 <style lang="less" module='s'>
 .wrap{
   margin: 10px;
-  // width: 100%;
   .street{
     background-color: #ddd;
     width: 100%;

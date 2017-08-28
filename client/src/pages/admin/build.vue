@@ -21,8 +21,6 @@ import Builds from '@/components/table/Builds'
 <style lang="less" module='s'>
 .wrap{
   margin: 10px;
-  width: 100%;
-  // background: #fff;
   .title{
     color: #fff;
     font-size: 20px;
