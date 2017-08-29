@@ -4,6 +4,7 @@ package server
 import (
 	"crypto/md5"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -15,12 +16,27 @@ import (
 
 	"../db/table"
 	"github.com/gin-gonic/gin"
+	"github.com/golang/glog"
 	mgo "gopkg.in/mgo.v2"
 )
 
 //FileBasicPath file basic path
-const FileBasicPath = "./images/"
+const FileBasicPath = "/root/PropertyManagement/server/dist"
+const WXConfPath = "/root/PropertyManagement/server/dist/wx.json"
 
+//readFile readFile
+func readFile(filename string) (map[string]string, error) {
+	bytes, err := ioutil.ReadFile(filename)
+	if err != nil {
+		fmt.Println("readFile:", err.Error())
+		return nil, err
+	}
+	var result = map[string]string{}
+	if err := json.Unmarshal(bytes, &result); err != nil {
+		fmt.Println("Unmarshal:", err.Error())
+	}
+	return result, nil
+}
 func sendHttpRequest(url string) string {
 	response, err := http.Get(url)
 	if err != nil {
@@ -65,6 +81,7 @@ func Md5File(path string) (string, error) {
 }
 
 func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
+	flag.Parse()
 	//查询街道信息，入参：name\pageNo\pageSize，当name为空时会查询所有的街道
 	router.POST("/street", func(c *gin.Context) {
 		var queryInfo QueryBasic
@@ -118,7 +135,7 @@ func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
 		h := md5.New()
 		io.WriteString(h, strconv.FormatInt(curtime, 10))
 		fileToken := fmt.Sprintf("%x", h.Sum(nil))
-		err := c.SaveUploadedFile(file, FileBasicPath+fileToken)
+		err := c.SaveUploadedFile(file, FileBasicPath+"/images/"+fileToken)
 
 		if err != nil {
 			fmt.Println(err)
@@ -129,7 +146,7 @@ func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
 		}
 	})
 
-	router.Static("/image", FileBasicPath+"/server/images/")
+	router.Static("/image", FileBasicPath+"/images/")
 
 	router.POST("/event/add", func(c *gin.Context) {
 		var info table.Event
@@ -213,13 +230,17 @@ func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
 		}
 	})
 
+	wxInfo, _ := readFile("/root/PropertyManagement/server/dist/wx.json")
 	router.POST("/wx/openid/:code", func(c *gin.Context) {
 		code := c.Param("code")
-		resp := getJson("https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=" + code + "&grant_type=authorization_code ")
+		glog.Info("WeChat Get code:", code)
+		glog.Info("WeChat appid appsecret", wxInfo)
+		resp := getJson("https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + wxInfo["appid"] + "&secret=" + wxInfo["appsecret"] + "&code=" + code + "&grant_type=authorization_code ")
 		if resp == nil {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": "获取用户信息失败"})
 			return
 		}
+		glog.Info("WeChat Get openid", resp)
 		c.JSON(http.StatusOK, gin.H{"error": 0, "data": gin.H{"openid": resp["openid"]}})
 	})
 
@@ -230,4 +251,6 @@ func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
 	router.GET("/event/types/num", func(c *gin.Context) {
 		c.JSON(http.StatusOK, table.CountDiffTypeEvents(dbc))
 	})
+
+	glog.Flush()
 }
