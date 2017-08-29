@@ -241,6 +241,7 @@ func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
 			return
 		}
 		glog.Info("WeChat Get openid", resp)
+		glog.Flush()
 		c.JSON(http.StatusOK, gin.H{"error": 0, "data": gin.H{"openid": resp["openid"]}})
 	})
 
