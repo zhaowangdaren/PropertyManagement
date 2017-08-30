@@ -236,8 +236,12 @@ func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
 		glog.Info("WeChat Get code:", code)
 		glog.Info("WeChat appid appsecret", wxInfo)
 		resp := getJson("https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + wxInfo["appid"] + "&secret=" + wxInfo["appsecret"] + "&code=" + code + "&grant_type=authorization_code ")
+		fmt.Println("wxInfo[appid]", wxInfo["appid"])
+		fmt.Println("wxInfo[appsecret]", wxInfo["appsecret"])
+		fmt.Println("openid error", resp)
 		if resp == nil {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": "获取用户信息失败"})
+
 			return
 		}
 		glog.Info("WeChat Get openid", resp)
