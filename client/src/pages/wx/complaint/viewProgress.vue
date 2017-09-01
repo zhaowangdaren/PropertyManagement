@@ -4,7 +4,7 @@
     <div :class='s.content'>
       <div :class='s.up'>
         <div :class='s.item'>
-          <span :class='s.key'>Evnet Status</span>
+          <span :class='s.key'>投诉状态</span>
           <select v-model='selectedStatus'>
             <option v-for='status in eventStatus' 
               :value='status.value'
@@ -12,7 +12,7 @@
           </select>
         </div>
         <div :class='s.item'>
-          <span :class='s.key'>Time</span>
+          <span :class='s.key'>投诉事件</span>
           <select v-model='selectedTime'>
             <option v-for='time in times' 
               :value='time.value'
@@ -23,7 +23,7 @@
       <div v-for='event, index in showEvents' :class='s.event'>
         <div :class='s.left'>
           <div><span :class='s.key'>编号：</span><span v-text='event.Index'></span></div>
-          <div><span :class='s.key'>XQ Name：</span><span v-if='xqs[index]' v-text='xqs[index].Name'></span></div>
+          <div><span :class='s.key'>小区名：</span><span v-if='xqs[index]' v-text='xqs[index].Name'></span></div>
           <div><span :class='s.key'>进度：</span><span>{{event.Status | filterEventStatus}}</span></div>
           <div><span :class='s.key'>提交时间:</span><span>{{event.Time | filterTime}}</span></div>
         </div>

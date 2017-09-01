@@ -8,7 +8,7 @@
       </div>
       <div :class='s.warn' v-text='warn'></div>
       <div :class='s.item'>
-        <div :class='s.title'>Event Type:</div>
+        <div :class='s.title'>投诉类型:</div>
         <select v-model='selectedEventType' :class='s.value' @focus='onFocus'>
           <option disabled value="">请选择</option>
           <option v-for='type in eventTypes' :value='type.Type'>{{type.Type}}</option>

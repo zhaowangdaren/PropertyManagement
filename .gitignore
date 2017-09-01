@@ -1,4 +1,6 @@
 /client/node_modules
+/client/normalPages/node_modules
+/client/normalPages/dist
 /data
 /doc
 /client/dist

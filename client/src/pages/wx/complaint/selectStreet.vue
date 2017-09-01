@@ -60,10 +60,11 @@ export default {
     color: #20a0ff;
     background-color: #fff;
     box-shadow: 0 1px 1px 1px #ddd;
-    padding: 15px 10px;
+    padding: 20px 10px;
     margin-top: 2px;
     display: flex;
     justify-content: center;
+    align-items: center;
     .name{
       flex: 1;
     }
