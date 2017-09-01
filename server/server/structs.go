@@ -36,6 +36,19 @@ type QueryEvent struct {
 	PageSize int
 }
 
+// 查询时间段内的事件
+type QueryEventByTime struct {
+	StartTime int64 // 查询的开始时间
+	EndTime   int64 // 查询的结束时间
+}
+
+// 查询OpenID所属时间段内的事件
+type QueryEventCheckProgress struct {
+	OpenID    string //openID
+	StartTime int64  // 查询的开始时间
+	EndTime   int64  // 查询的结束时间
+}
+
 type AddEventImg struct {
 	Index string   //事件编号
 	Imgs  []string //图片名称

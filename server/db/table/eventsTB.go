@@ -19,6 +19,7 @@ const EventTableName = "Event"
 type Event struct {
 	Index       string //事件编号
 	Complainant string //投诉人
+	OpenID      string // 投诉人wx open ID
 	StreetID    string //街道
 	CommunityID string //社区
 	XQID        string //投诉小区ID
@@ -46,13 +47,54 @@ func FindTodayEvents(db *mgo.Database) interface{} {
 	c := db.C(EventTableName)
 	var result []Event
 	fmt.Println(startTime.Unix(), endTime.Unix())
-	err := c.Find(bson.M{"$and": []bson.M{bson.M{"time": bson.M{"$gte": startTime.Unix()}}, bson.M{"time": bson.M{"$lte": endTime.Unix()}}}}).All(&result)
+	err := c.Find(
+		bson.M{
+			"$and": []bson.M{
+				bson.M{"time": bson.M{"$gte": startTime.Unix()}},
+				bson.M{"time": bson.M{"$lte": endTime.Unix()}},
+			},
+		}).All(&result)
 	if err != nil {
 		return gin.H{"error": 1, "data": err.Error()}
 	}
 	return gin.H{"error": 0, "data": result}
 }
 
+// FindEventByTime FindEventByTime
+func FindEventByTime(db *mgo.Database, startTime int64, endTime int64) interface{} {
+	var result []Event
+	c := db.C(EventTableName)
+	err := c.Find(
+		bson.M{
+			"$and": []bson.M{
+				bson.M{"time": bson.M{"$gte": startTime}},
+				bson.M{"time": bson.M{"$lte": endTime}},
+			},
+		}).All(&result)
+	if err != nil {
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": result}
+}
+
+//CheckEventProgress 查询open ID时间段内的事件
+func CheckEventProgress(db *mgo.Database, openID string, startTime int64,
+	endTime int64) interface{} {
+	var result []Event
+	c := db.C(EventTableName)
+	err := c.Find(
+		bson.M{
+			"$and": []bson.M{
+				bson.M{"time": bson.M{"$gte": startTime}},
+				bson.M{"time": bson.M{"$lte": endTime}},
+				bson.M{"openid": openID},
+			},
+		}).All(&result)
+	if err != nil {
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": result}
+}
 func createEventIndex() string {
 	curTime := time.Now()
 	result := curTime.Format("20060102150405")
@@ -157,7 +199,6 @@ func FindEventKVs(db *mgo.Database, kvs map[string]interface{}) interface{} {
 		log.Fatal(err)
 		return gin.H{"error": 1, "data": err.Error()}
 	}
-
 	var timeResult []Event
 	if hasTime {
 		for _, item := range result {

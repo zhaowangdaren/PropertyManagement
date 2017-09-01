@@ -1,6 +1,6 @@
 <template>
   <div :class='s.wrap'>
-    <img v-for='img in sImgs' :src='"//www.maszfglzx.com:3000/open/image/" + img'>
+    <img v-for='img in sImgs' :src='"//www.maszfglzx.com:3000/open/image/" + img' v-if='img !== ""'>
   </div>
 </template>
 

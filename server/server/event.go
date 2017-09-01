@@ -51,7 +51,7 @@ func startEvent(router *gin.RouterGroup, dbc *mgo.Database) {
 			c.JSON(http.StatusOK, table.InsertEventType(dbc, info.Type))
 		}
 	})
-
+	//删除事件类型
 	router.POST("/event/type/del", func(c *gin.Context) {
 		var info table.EventType
 		err := c.BindJSON(&info)

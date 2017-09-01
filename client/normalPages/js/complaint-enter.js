@@ -7,7 +7,6 @@ new Vue({
     host: 'https://www.maszfglzx.com'
   },
   mounted () {
-    this.isLoading = false
     this.code = getURLParam('code')
     this.fetchOpenID()
   },
@@ -32,6 +31,7 @@ new Vue({
         if (body.error === 0) {
           sessionStorage.setItem('WXUser', JSON.stringify(body.data))
           this.openid = body.data.openid
+          this.isLoading = false
         }
       })
     }

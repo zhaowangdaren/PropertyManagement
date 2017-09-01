@@ -198,6 +198,25 @@ func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
 		}
 	})
 
+	router.POST("/event/query/time", func(c *gin.Context) {
+		var info QueryEventByTime
+		err := c.BindJSON(&info)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+		} else {
+			c.JSON(http.StatusOK, table.FindEventByTime(dbc, info.StartTime, info.EndTime))
+		}
+	})
+	router.POST("event/check/progress", func(c *gin.Context) {
+		var obj QueryEventCheckProgress
+		err := c.BindJSON(&obj)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+		} else {
+			c.JSON(http.StatusOK, table.CheckEventProgress(dbc, obj.OpenID, obj.StartTime, obj.EndTime))
+		}
+	})
+
 	router.POST("/eventHandle/kvs", func(c *gin.Context) {
 		params := make(map[string]interface{})
 		err := c.BindJSON(&params)

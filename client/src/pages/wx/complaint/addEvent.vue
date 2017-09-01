@@ -58,7 +58,8 @@ export default{
         StreetID:'',
         CommunityID: '',
         XQID: '',
-        Complainant:'',//投诉人
+        Complainant:'',//投诉人,
+        OpenID: '', // 投诉人open ID
         Type: '',//事件类型
         Tel:''
       },
@@ -72,6 +73,7 @@ export default{
     this.xq.Name = this.$route.query.XQName
     this.headerOptions.leftBtns[0].event = this.onReturn
     this.headerOptions.rightBtns[0].event = this.onNext
+    this.event.OpenID = JSON.parse(sessionStorage.getItem('WXUser')).openid || ''
     this.fetchEventTypes()
   },
   methods: {

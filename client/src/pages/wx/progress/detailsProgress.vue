@@ -25,7 +25,7 @@
       
       <div :class='s.event'>
         <div :class='s.left'>
-          <div :class='s.identity'>JuMin</div>
+          <div :class='s.identity'>居民</div>
           <div><span :class='s.key'>提交时间:</span><span>{{event.Time | filterTime}}</span></div>
           <div><span :class='s.key'>提交内容:</span><span v-text='event.Content'></span></div>
           <div><span :class='s.key' v-if='event.Imgs.length > 0'>提交图片:</span><span class='iconfont icon-pic' @click='onShowImgs(event.Imgs)'>点击查看图片</span></div>
@@ -81,13 +81,15 @@ export default {
       this.showImgs = true
       console.info('onShowImgs',this.showingImgs)
     },
-    onRevoke (index) {
-      fetchpm(this, false,'/open/event/del/' + this.eventIndex, {
-        method: 'POST'
+    onRevoke () {
+      this.event.Status = -1
+      fetchpm(this, false,'/open/event/update', {
+        method: 'POST',
+        body: this.event
       }).then(resp => {
         return resp.json()
       }).then(body => {
-        console.info('onCancelEvent', body)
+        console.info('onRevoke', body)
         if (body.error === 0 ) this.warn = '撤销成功'
         else this.warn = body.data
       })

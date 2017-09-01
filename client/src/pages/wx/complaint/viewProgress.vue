@@ -20,7 +20,7 @@
           </select>
         </div>
       </div>
-      <div v-for='event, index in events' :class='s.event'>
+      <div v-for='event, index in showEvents' :class='s.event'>
         <div :class='s.left'>
           <div><span :class='s.key'>编号：</span><span v-text='event.Index'></span></div>
           <div><span :class='s.key'>XQ Name：</span><span v-if='xqs[index]' v-text='xqs[index].Name'></span></div>
@@ -49,18 +49,71 @@ export default {
       headerOptions: {
         title: '查看进度'
       },
+      openid: '',
       events: [],
       xqs:[],
       selectedStatus: 0,
-      eventStatus:[{value: 0, label:"全部"}, {value: 4, label: '已解决'}, {value: 1, label:'未解决'}],
+      eventStatus:[{value: 0, label:"全部", status: null}, {value: 1, label:'未解决', status: 1}, {value: 2, label: '已解决', status: 2}],
+      aMonth: 2592000, // 30 * 24 * 60 * 60 * 1000
+      threeMonth: 7776000, // 3 * 30 * 24 * 60 * 60 * 1000
+      aYear: 31104000, // 12 * 30 * 24 * 60 * 60 * 1000
       selectedTime: 0,
-      times:[{value: 0, label:"近一个月内"}, {value: 1, label: '近三个月内'}, {value: 2, label:'近一年内'}, {value: 3, label: '所有'}]
+      times:[{value: 0, label:"近一个月内", startTime: 0, endTime: 0}, {value: 1, label: '近三个月内', startTime: 0, endTime: 0}, {value: 2, label:'近一年内', startTime: 0, endTime: 0}, {value: 3, label: '所有'}]
+    }
+  },
+  computed: {
+    showEvents: function () {
+      return this.events.filter((item) => {
+        switch(this.selectedStatus){
+          case 0:
+            return true
+          case 1:
+            return item.Status === 0 || item.Status === 1
+          case 2:
+            return item.Status === 2
+          default:
+            return true
+        }
+      })
+    }
+  },
+  watch: {
+    selectedTime: function (val) {
+      switch(this.selectedTime){
+        case 0:
+        case 1:
+        case 2:
+          this.fetchEventsByTime(this.openid, this.times[this.selectedTime].startTime, this.times[this.selectedTime].endTime)
+          break
+        case 3:
+          this.fetchEvents({OpenID: this.openid})
+          break
+      }
+    },
+    showEvents: function (val) {
+      let xqIDs = val.map((item) => {
+        return item.XQID
+      })
+      this.fetchXQs(xqIDs)
     }
   },
   mounted () {
-    this.fetchEvents({})
+    var WXUser = JSON.parse(sessionStorage.getItem('WXUser')) || {openid: ''}
+    this.openid = WXUser.openid
+    this.initData()
+    this.fetchEventsByTime(this.openid, this.times[this.selectedTime].startTime, this.times[this.selectedTime].endTime)
   },
   methods: {
+    initData () {
+      var today = new Date().getTime() / 1000
+      this.times[0].startTime = parseInt(today - this.aMonth)
+      this.times[0].endTime = parseInt(today)
+      this.times[1].startTime = parseInt(today - this.threeMonth)
+      this.times[1].endTime = this.times[0].endTime
+      this.times[2].startTime = parseInt(today - this.aYear)
+      this.times[2].endTime = this.times[0].endTime
+      console.info('times', this.times)
+    },
     onDetails (event) {
       this.$router.push({name:'detailsProgress', query: {index: event.Index, status: event.Status}})
     },
@@ -74,11 +127,21 @@ export default {
         console.info('fetchEvents', body)
         if (body.error === 0) {
           this.events = body.data || []
-          let xqIDs = this.events.map((item) => {
-            return item.XQID
-          })
-          this.fetchXQs(xqIDs)
         }
+        this.xqs = []
+      })
+    },
+    fetchEventsByTime (openID, startTime, endTime) {
+      fetchpm(this, false, '/open/event/check/progress', {
+        method: 'POST',
+        body: {OpenID: openID, StartTime: startTime, EndTime: endTime}
+      }).then(resp => {
+        return resp.json()
+      }).then(body => {
+        console.info('fetchEventsByTime', body)
+        if (body.error === 0) this.events = body.data || []
+        else this.events = []
+        this.xqs = []
       })
     },
     fetchXQs(ids){
