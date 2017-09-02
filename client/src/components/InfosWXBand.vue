@@ -66,7 +66,7 @@
     },
     methods: {
       fetechWXUsers (name) {
-        fetchpm(this, true, '/pm/wxUser', {
+        fetchpm(this, true, '/pm/pmUser', {
           method: 'POST',
           body: {name:name, pageNo: 1, pageSize: 1}
         }).then(resp => {
@@ -80,7 +80,7 @@
         })
       },
       fetechAllWXUsersName () {
-        fetchpm(this, true, '/pm/wxUser/key/wxName', {
+        fetchpm(this, true, '/pm/pmUser/key/wxName', {
           method: 'POST'
         }).then(resp => {
           return resp.json()

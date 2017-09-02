@@ -238,14 +238,18 @@ func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
 		}
 	})
 
+	router.POST("/pms/name/:name", func(c *gin.Context) {
+		name := c.Param("name")
+		c.JSON(http.StatusOK, table.SearchPMByName(dbc, name))
+	})
 	router.POST("/pm/bind", func(c *gin.Context) {
-		var info table.WXUser
+		var info table.PMUser
 		err := c.BindJSON(&info)
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{"error": 1})
 			log.Println(err.Error())
 		} else {
-			c.JSON(http.StatusOK, table.InsertWXUser(dbc, info))
+			c.JSON(http.StatusOK, table.InsertPMUser(dbc, info))
 		}
 	})
 

@@ -92,8 +92,16 @@ export default {
         this.warn = '用户名不能为空'
         return false
       }
+      if (this.user.UserName.search(/\ /g) > -1) {
+        this.warn = '用户名不能包含空格'
+        return false
+      }
       if (this.user.Password === ''){
         this.warn = '密码不能为空'
+        return false
+      }
+      if (this.user.Password.search(/\ /g) > -1) {
+        this.warn = '密码不能包含空格'
         return false
       }
       return true

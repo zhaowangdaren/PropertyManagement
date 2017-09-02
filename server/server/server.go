@@ -90,7 +90,7 @@ func Start() {
 		startStreet(authorized, dbc)
 		startCommunity(authorized, dbc)
 		startXQ(authorized, dbc)
-		startWXUser(authorized, dbc)
+		startPMUser(authorized, dbc)
 		startPM(authorized, dbc)
 		startHouse(authorized, dbc)
 		startEvent(authorized, dbc)
