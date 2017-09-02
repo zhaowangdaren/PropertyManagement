@@ -45,7 +45,8 @@ export default {
   color: #fff;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 1px 1px 1px #ddd;
+  box-shadow: 1px 0px 2px 1px rgba(0,0,0,0.5);
+  z-index: 9999;
   .title{
     flex: 1;
     font-size: 30px;

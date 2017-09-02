@@ -193,7 +193,7 @@ export default {
     width: 100%;
     font-size: 26px;
     background-color: #f5f5f5;
-    box-shadow: 1px 0 2px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: 1px 0 2px 1px rgba(0, 0, 0, 0.3);
     .pm{
       padding: 10px;
       background: #fff;

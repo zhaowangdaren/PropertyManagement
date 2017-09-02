@@ -1,6 +1,7 @@
 package server
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"net/url"
@@ -10,6 +11,7 @@ import (
 	// "github.com/gin-gonic/autotls"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/golang/glog"
 
 	mgo "gopkg.in/mgo.v2"
 
@@ -28,6 +30,7 @@ func mapParams(params url.Values) map[string]string {
 
 //Start 使用Gin Web Framework
 func Start() {
+	flag.Parse()
 	session, err := mgo.Dial("localhost:27017")
 	if err != nil {
 		log.Println(err)
@@ -104,4 +107,5 @@ func Start() {
 	}
 	// router.Run(":3000")
 	router.RunTLS(":3000", "/etc/letsencrypt/live/maszfglzx.com/fullchain.pem", "/etc/letsencrypt/live/maszfglzx.com/privkey.pem")
+	glog.Flush()
 }

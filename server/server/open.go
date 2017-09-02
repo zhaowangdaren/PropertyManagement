@@ -4,7 +4,6 @@ package server
 import (
 	"crypto/md5"
 	"encoding/json"
-	"flag"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -81,7 +80,6 @@ func Md5File(path string) (string, error) {
 }
 
 func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
-	flag.Parse()
 	//查询街道信息，入参：name\pageNo\pageSize，当name为空时会查询所有的街道
 	router.POST("/street", func(c *gin.Context) {
 		var queryInfo QueryBasic
@@ -268,7 +266,6 @@ func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
 			return
 		}
 		glog.Info("WeChat Get openid", resp)
-		glog.Flush()
 		c.JSON(http.StatusOK, gin.H{"error": 0, "data": gin.H{"openid": resp["openid"]}})
 	})
 
