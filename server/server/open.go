@@ -124,7 +124,11 @@ func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
 			c.JSON(http.StatusOK, table.FindXQsByIDs(dbc, ids.Values))
 		}
 	})
-
+	//search
+	router.GET("/xq/name/:name", func(c *gin.Context) {
+		name := c.Param("name")
+		c.JSON(http.StatusOK, table.SearchXQByName(dbc, name))
+	})
 	router.POST("/upload", func(c *gin.Context) {
 		file, _ := c.FormFile("file")
 		log.Println(file.Filename)
@@ -277,5 +281,6 @@ func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
 		c.JSON(http.StatusOK, table.CountDiffTypeEvents(dbc))
 	})
 
+	startPark(router, dbc)
 	glog.Flush()
 }

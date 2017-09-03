@@ -3,40 +3,90 @@
     <div :class='s.searchWrap'>
       <div :class='s.searchIcon'><i class="iconfont icon-ic_serach"></i></div>
       <div :class='s.inputWrap'>
-        <input type="text" name="" placeholder="输入小区名">
+        <input type="text" name="" placeholder="输入小区名" 
+          v-model='xqName'
+          @focus='showSearchResults = true'>
       </div>
+      <div :class='s.closeIcon' v-if='xqName.length > 0' @click='onClearXQName'><i class="iconfont icon-close"></i></div>
     </div>
-    <div :class='s.searchResults'>
-      <div v-for='xq in xqs' :class='s.item'>{{xq.Name}}</div>
+    <div :class='s.searchResults' v-if='showSearchResults && xqs.length > 0'>
+      <div v-for='xq in xqs' :class='s.item' @click='onXQ(xq)'>
+        <div>{{xq.Name}}</div>
+        <div :class='s.address'>{{xq.Address}}</div>
+      </div>
     </div>
     <div :class='s.parkIcon'>
       <i class="iconfont icon-tingchewei"></i>
     </div>
+    <park-free :class='s.parkFree' 
+      v-if='selectedXQ.ID.length > 0' 
+      :xqID='selectedXQ.ID'
+      :xqName='selectedXQ.Name'></park-free>
     <div :class='s.manager' @click='onManager'>我是管理员</div>
   </div>
 </template>
 
 <script>
+import fetchpm from '@/fetchpm'
+import ParkFree from '@/components/mobile/ParkFree'
 export default {
+  components: { ParkFree },
   data () {
     return {
-      xqs: [
-        {Name: 'xq1'},
-        {Name: 'xq1'},
-        {Name: 'xq1'},
-        {Name: 'xq1'},
-        {Name: 'xq1'},
-        {Name: 'xq1'},
-        {Name: 'xq1'}
-      ]
+      xqName: '',
+      showSearchResults: false,
+      xqs: [],
+      selectedXQ: {
+        Name: '小区名',
+        ID: ''
+      }
     }
+  },
+  watch: {
+    xqName: function (val) {
+      if (val.length >= 2) this.fetchXQs(val)
+      else this.xqs = []
+    }
+  },
+  mounted () {
+    this.fetchOpenID()
   },
   methods: {
     onCheck () {
 
     },
     onManager () {
-      
+      this.$router.push({path:'/wx/park/manager'})
+    },
+    onClearXQName () {
+      this.xqName = ''
+    },
+    fetchXQs (name) {
+      fetchpm(this, false, '/open/xq/name/' + name, {
+        method: 'GET'
+      }).then(resp => {
+        return resp.json()
+      }).then(body => {
+        console.info('fetchXQs', body)
+        if (body.error === 0) this.xqs = body.data || []
+        else this.xqs = []
+      })
+    },
+    onXQ (xq) {
+      this.selectedXQ = xq
+      this.showSearchResults = false
+    },
+    fetchOpenID () {
+      fetchpm(this, false, '/open/wx/openid/' + this.$route.query.code, {
+        method: 'POST'
+      }).then(resp => {
+        return resp.json()
+      }).then(body => {
+        console.info('fetchOpenID', body)
+        if (body.error === 0) {
+          sessionStorage.setItem('WXUser', JSON.stringify(body.data))
+        }
+      })
     }
   }
 }
@@ -60,7 +110,7 @@ export default {
   font-size: 23px;
   height: 50px;
   border-radius: 25px;
-  .searchIcon{
+  .searchIcon, .closeIcon{
     color: #999;
     height: 100%;
     display: flex;
@@ -82,7 +132,6 @@ export default {
       box-sizing: border-box;
     }
   }
-  
 }
 .searchResults{
   background-color: #fff;
@@ -93,6 +142,14 @@ export default {
   .item{
     padding: 10px;
     border-bottom: solid 1px #ccc;
+    .address{
+      font-size: 20px;
+      color: #999;
+      width: 100%;
+      overflow: hidden;
+      text-overflow:ellipsis;
+      white-space: nowrap;
+    }
   }
 }
 .parkIcon{
@@ -105,6 +162,12 @@ export default {
   i{
     font-size: 100px;
   }
+}
+.parkFree{
+  position: absolute;
+  top: 30%;
+  width: 80%;
+  left: 10%;
 }
 .manager{
   position: fixed;

@@ -152,3 +152,13 @@ func FindXQsByIDs(db *mgo.Database, ids []string) interface{} {
 	}
 	return gin.H{"error": 0, "data": result}
 }
+
+func SearchXQByName(db *mgo.Database, name string) interface{} {
+	c := db.C(XiaoQuTableName)
+	var result []XiaoQu
+	err := c.Find(bson.M{"name": bson.M{"$regex": name, "$options": "$i"}}).All(&result)
+	if err != nil {
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": result}
+}

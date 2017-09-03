@@ -55,6 +55,11 @@ const PMQA = resolve => require(['@/pages/wx/pm/qa'], resolve)
 
 const PMCharge = resolve => require(['@/pages/wx/pmCharge'], resolve)
 const ParkMain = resolve => require(['@/pages/wx/parkMain'], resolve)
+const ParkManager = resolve => require(['@/pages/wx/park/ParkManager'], resolve)
+const ParkManagerBindXQ = resolve => require(['@/pages/wx/park/bindXQ'], resolve)
+const ParkManagerSelectCommunity = resolve => require(['@/pages/wx/park/selectCommunity'], resolve)
+const ParkManagerSelectXQ = resolve => require(['@/pages/wx/park/selectXQ'], resolve)
+const ParkManagerBindWX = resolve => require(['@/pages/wx/park/bindWX'], resolve)
 
 const ContactUs = resolve => require(['@/pages/wx/contactUs'], resolve)
 Vue.use(Router)
@@ -260,6 +265,26 @@ export default new Router({
     {
       path: '/wx/park/main',
       component: ParkMain
+    },
+    {
+      path: '/wx/park/manager',
+      component: ParkManager
+    },
+    {
+      path: '/wx/park/manager/bind/xq',
+      component: ParkManagerBindXQ
+    },
+    {
+      path: '/wx/park/manager/select/community',
+      component: ParkManagerSelectCommunity
+    },
+    {
+      path: '/wx/park/manager/select/xq',
+      component: ParkManagerSelectXQ
+    },
+    {
+      path: '/wx/park/manager/bind/wx',
+      component: ParkManagerBindWX
     },
     {
       path: '/wx/contact',
