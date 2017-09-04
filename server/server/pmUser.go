@@ -26,4 +26,14 @@ func startPMUser(router *gin.RouterGroup, dbc *mgo.Database) {
 		key := c.Param("key")
 		c.JSON(http.StatusOK, table.FindPMUserDistinct(dbc, key))
 	})
+
+	router.POST("/pmUser/update", func(c *gin.Context) {
+		var info table.PMUser
+		err := c.BindJSON(&info)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+		} else {
+			c.JSON(http.StatusOK, table.UpdatePMUser(dbc, info))
+		}
+	})
 }

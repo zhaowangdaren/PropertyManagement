@@ -69,11 +69,11 @@ import InfosWXRequest from '@/components/InfosWXRequest'
       return {
         tabs: [
           {
-            name: '已绑定用户',//已绑定用户
+            name: '已绑定物业用户',//已绑定用户
             view: InfosWXBand
           },
           {
-            name: '申请中',//申请中
+            name: '申请中物业用户',//申请中
             view: InfosWXRequest
           }
         ],

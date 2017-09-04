@@ -1,15 +1,18 @@
 <template>
   <div :class='s.wrap'>
     <div :class='s.searchWrap'>
-      <div :class='s.key'>微信用户绑定名称(包含)</div>
+      <div :class='s.key'>真实姓名</div>
       <!-- 微信用户绑定名称（包含） -->
-      <search-select v-model='wxName' :values='wxNames' :class='s.searchSelect'/>
-      <!-- <image-button :class='s.searchBt' :clickMethod='onSearch'
-        text='查询'
-        :img='require("@/res/images/ic_serach.png")'
-        bgColor='#4c87b9'
-        color='#fff'
-      /> -->
+      <!-- <search-select v-model='pmName' :values='wxNames' :class='s.searchSelect'/> -->
+      <el-select v-model="searchActualName" placeholder="请输入姓名">
+        <el-option @click='onAll'>全部</el-option>
+        <el-option 
+          v-for='user in filterNameResult'
+          :key='user._id'
+          :label='user.ActualName'
+          :value='user.ActualName'>
+        </el-option>
+      </el-select>
       <el-button
         :class='s.searchBt'
         @click='onSearch'
@@ -19,7 +22,8 @@
     <table>
       <tr >
         <th>序号</th>
-        <th>微信名</th>
+        <th>物业公司</th>
+        <th>真实姓名</th>
         <!-- 用户名 -->
         <th>OpenID</th>
         <!-- OPenID -->
@@ -29,11 +33,29 @@
       </tr>
       <tr v-for='(user, index) in users' :class='s.users'>
         <td v-text='index + 1'></td>
-        <td v-text='user.WXName'></td>
+        <td ><span v-if='pms[index]'>{{pms[index].Name}}</span></td>
+        <td v-text='user.ActualName'></td>
         <td v-text='user.OpenID'></td>
         <td v-text='user.Tel'></td>
         <td align="center">
-          <el-button type="danger" icon="delete">强制解绑</el-button>
+          <el-button
+            type="info"
+            v-if='user.Bind === -1'
+            :loading='isBinding'
+            :disabled='user.Bind === -1'
+            >已解绑</el-button>
+          <el-button
+            @click='onBind'
+            type="primary" 
+            :loading='isBinding'
+            :disabled='user.Bind === 1'
+            >允许绑定</el-button>
+          <el-button 
+            @click='onUnbind'
+            :type='user.Bind === 1 ? "danger" : ""' 
+            icon="delete"
+            :loading='isUnbinding'
+            :disabled='user.Bind === 0'>强制解绑</el-button>
         </td>
       </tr>
       <tr v-if='users.length=== 0'>
@@ -57,35 +79,114 @@
         users:[],
         showDialog: '',
         wxName: '',
-        wxNames: []
+        wxNames: [],
+        pms: [],
+        isUnbinding: false,
+        isBinding: false,
+        searchUser: {
+          ActualName: ''
+        },
+        searchActualName: '',
+        filterNameResult: []
       }
     },
     mounted () {
-      this.fetechWXUsers('')
-      this.fetechAllWXUsersName()
+      this.fetchWXUsers('')
+      this.fetchAllWXUsersName()
     },
     methods: {
-      fetechWXUsers (name) {
+      onUnbind (user) {
+        this.isUnbinding = true
+        var tempUser = Object.assign({}, user)
+        tempUser.Bind = -1
+        fetchpm(this, true, '/pm/pmUser/update', {
+          method: 'POST',
+          body: tempUser
+        }).then(resp => {
+          return resp.json()
+        }).then(body => {
+          console.info('onUnbind', body)
+          if (body.error === 0) {
+            user.Bind = -1
+          } else {
+            this.$message({type:'error', message: body.data})
+          }
+          this.isUnbinding = false
+        })
+      },
+      onBind (user) {
+        this.isBinding = true
+        var tempUser = Object.assign({}, user)
+        tempUser.Bind = 1
+        fetchpm(this, true, '/pm/pmUser/update', {
+          method: 'POST',
+          body: tempUser
+        }).then(resp => {
+          return resp.json()
+        }).then(body => {
+          console.info('onUnbind', body)
+          if (body.error === 0) {
+            user.Bind = 1
+          } else {
+            this.$message({type:'error', message: body.data})
+          }
+          this.isBinding = false
+        })
+      },
+      onAll () {
         fetchpm(this, true, '/pm/pmUser', {
           method: 'POST',
-          body: {name:name, pageNo: 1, pageSize: 1}
+          body: {name:'', pageNo: 1, pageSize: 10}
         }).then(resp => {
           console.info(resp)
           return resp.json()
         }).then( data => {
-          console.info('fetechusers', data)
+          console.info('fetchusers', data)
           if (data.error === 0 ) {
             this.users = data.data || []
+            let ids = this.users.map(item => {
+              return item.PMID
+            })
+            this.fetchPMByID(ids)
           }
         })
       },
-      fetechAllWXUsersName () {
+      fetchWXUsers (name) {
+        fetchpm(this, true, '/pm/pmUser', {
+          method: 'POST',
+          body: {name:name, pageNo: 1, pageSize: 10}
+        }).then(resp => {
+          console.info(resp)
+          return resp.json()
+        }).then( data => {
+          console.info('fetchusers', data)
+          if (data.error === 0 ) {
+            this.users = data.data || []
+            let ids = this.users.map(item => {
+              return item.PMID
+            })
+            this.fetchPMByID(ids)
+          }
+        })
+      },
+      fetchPMByID (ids) {
+        fetchpm(this, true, '/pm/pm/ids', {
+          method: 'POST',
+          body: { Values: ids}
+        }).then(resp => {
+          return resp.json()
+        }).then(body => {
+          console.info('fetchPMByID', body)
+          if (body.error === 0) this.pms = body.data || []
+        })
+      },
+      fetchAllWXUsersName () {
         fetchpm(this, true, '/pm/pmUser/key/wxName', {
           method: 'POST'
         }).then(resp => {
           return resp.json()
         }).then(body => {
-          console.info('fetechAllWXUsersName', body)
+          console.info('fetchAllWXUsersName', body)
           if (body.error !== 1) this.wxNames = body.data || []
         })
       },

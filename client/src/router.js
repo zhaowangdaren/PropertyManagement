@@ -61,6 +61,12 @@ const ParkManagerSelectCommunity = resolve => require(['@/pages/wx/park/selectCo
 const ParkManagerSelectXQ = resolve => require(['@/pages/wx/park/selectXQ'], resolve)
 const ParkManagerBindWX = resolve => require(['@/pages/wx/park/bindWX'], resolve)
 
+const CommunityService = resolve => require(['@/pages/wx/communityService'], resolve)
+const CSConstructs = resolve => require(['@/pages/wx/community/constructs'], resolve)
+const CSCFurniture = resolve => require(['@/pages/wx/community/construct/furniture'], resolve)
+const CSCFix = resolve => require(['@/pages/wx/community/construct/fix'], resolve)
+const CSCompany = resolve => require(['@/pages/wx/community/company'], resolve) // 公司详情
+
 const ContactUs = resolve => require(['@/pages/wx/contactUs'], resolve)
 Vue.use(Router)
 
@@ -285,6 +291,29 @@ export default new Router({
     {
       path: '/wx/park/manager/bind/wx',
       component: ParkManagerBindWX
+    },
+    {
+      path: '/wx/community/service',
+      component: CommunityService
+    },
+    {
+      path: '/wx/community/constructs',
+      component: CSConstructs
+    },
+    {
+      path: '/wx/community/construct/furniture',
+      name: 'CSCFurniture',
+      component: CSCFurniture
+    },
+    {
+      path: '/wx/community/construct/fix',
+      name: 'CSCFix',
+      component: CSCFix
+    },
+    {
+      path: '/wx/community/company',
+      name: 'CSCompany',
+      component: CSCompany
     },
     {
       path: '/wx/contact',

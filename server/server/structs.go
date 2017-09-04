@@ -35,6 +35,11 @@ type QueryEvent struct {
 	PageNo   int
 	PageSize int
 }
+type QueryParkManager struct {
+	ActualName string
+	PageNo     int
+	PageSize   int
+}
 
 // 查询时间段内的事件
 type QueryEventByTime struct {

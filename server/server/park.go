@@ -24,6 +24,17 @@ func startPark(router *gin.RouterGroup, dbc *mgo.Database) {
 		c.JSON(http.StatusOK, table.FindParkByXQID(dbc, xqid))
 	})
 
+	router.POST("/park/managers", func(c *gin.Context) {
+		var query QueryParkManager
+		err := c.BindJSON(&query)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, table.FindPrakManagerByActualName(dbc,
+			query.ActualName, query.PageNo, query.PageSize))
+	})
+
 	router.POST("/park/manager/bind", func(c *gin.Context) {
 		var obj table.ParkManager
 		err := c.BindJSON(&obj)
@@ -37,6 +48,16 @@ func startPark(router *gin.RouterGroup, dbc *mgo.Database) {
 		} else {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": "信息错误"})
 		}
+	})
+
+	router.POST("/park/manager/update", func(c *gin.Context) {
+		var obj table.ParkManager
+		err := c.BindJSON(&obj)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, table.UpdateParkManager(dbc, obj))
 	})
 
 	router.POST("/park/manager/query/openid", func(c *gin.Context) {

@@ -16,8 +16,7 @@ type PMUser struct {
 	ActualName string // 真实姓名
 	OpenID     string // OpenId
 	Tel        string // 电话号码
-	Request    int    // 0-不是申请中的，1-是申请中的
-	Succ       int    // 0-解绑 1-未解绑
+	Bind       int    // 0-，1-绑定成功
 }
 
 //PMUsers 微信物业公司用户集
@@ -44,6 +43,14 @@ func InsertPMUser(db *mgo.Database, info PMUser) interface{} {
 		return gin.H{"error": 1, "data": err.Error()}
 	}
 	return gin.H{"error": 0, "data": ""}
+}
+func UpdatePMUser(db *mgo.Database, info PMUser) interface{} {
+	c := db.C(PMUserTableName)
+	err := c.Update(bson.M{"openid": info.OpenID, "pmid": info.PMID}, info)
+	if err != nil {
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": Succ}
 }
 
 //FindPMUsers 查询小区信息集

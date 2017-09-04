@@ -28,7 +28,7 @@ export default {
   mounted () {
     this.headerOptions.leftBtns[0].event = this.onReturn
     this.fetchXQs(this.$route.query.communityID)
-    sessionStorage.setItem('cpCommunityID', this.$route.query.communityID)
+    sessionStorage.setItem('CommunityID', this.$route.query.communityID)
   },
   methods: {
     onReturn () {

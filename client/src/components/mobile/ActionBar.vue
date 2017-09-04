@@ -49,7 +49,7 @@ export default {
   z-index: 9999;
   .title{
     flex: 1;
-    font-size: 30px;
+    font-size: 25px;
     overflow: hidden;
     text-overflow:ellipsis;
     white-space: nowrap;

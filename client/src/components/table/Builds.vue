@@ -83,7 +83,7 @@
         <td align="center" :class='s.btns'>
           <el-button v-if='EDITABLE' type="primary" icon="edit" @click='onEdit(item)'>编辑</el-button>
           <el-button v-if='EDITABLE' type="danger" icon="delete" @click='onDel(item)'>删除</el-button>
-          <el-button type='primary'>查看</el-button>
+          <el-button type='primary' @click='onDetails(item)'>查看</el-button>
         </td>
       </tr>
       <tr v-if='houses.length === 0'>
@@ -107,6 +107,11 @@
       @close='showEditDialog = false'
       @editSucc='onEditSucc'>
     </edit-build>
+    <details-build
+      v-if='showDetailsDialog'
+      :HOUSE='detailsBuild'
+      @close='showDetailsDialog = false'>
+    </details-build>
     <el-dialog
       title="提示"
       :visible.sync="showDelConfirm"
@@ -126,17 +131,19 @@
   import SearchSelect from '@/components/SearchSelect'
   import AddBuild from '@/components/dialog/AddBuild'
   import EditBuild from '@/components/dialog/EditBuild'
+  import DetailsBuild from '@/components/dialog/DetailsBuild'
   import fetchpm from '@/fetchpm'
   export default {
     props: {
       EDITABLE: Boolean
     },
-    components: {AddBuild, EditBuild},
+    components: {AddBuild, EditBuild, DetailsBuild},
     data () {
       return {
         warn: '',
         showAddDialog: false,
         showEditDialog: false,
+        showDetailsDialog: false,
         showDelConfirm: false,
         streets: [],
         communities: [],
@@ -150,6 +157,7 @@
         isLoadingInput: false,
         houses:[],
         editingHouse: {},
+        detailsBuild: {},
         delHouse: {},
         pageNo: 0,
         pageSize: 10,
@@ -186,6 +194,10 @@
       onEdit (house) {
         this.editingHouse = house
         this.showEditDialog = true
+      },
+      onDetails (house) {
+        this.detailsBuild = house
+        this.showDetailsDialog = true
       },
       onEditSucc () {
         this.fetchHouses()
