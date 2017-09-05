@@ -92,7 +92,7 @@ func DelParkManager(db *mgo.Database, ids []string) interface{} {
 		err = c.Remove(bson.M{"_id": bson.ObjectIdHex(id)})
 		if err != nil {
 			log.Println(err.Error())
-			result += ";" + err.Error()
+			result += err.Error()
 			err = nil
 		}
 	}

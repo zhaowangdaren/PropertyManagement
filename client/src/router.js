@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 
-const Login = resolve => require(['@/pages/login'], resolve)
+const Login = require('@/pages/login')
 
 const Admin = resolve => require(['@/pages/admin'], resolve)
 
