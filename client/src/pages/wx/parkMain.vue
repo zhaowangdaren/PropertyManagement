@@ -49,7 +49,8 @@ export default {
     }
   },
   mounted () {
-    this.fetchOpenID()
+    var WXUser = JSON.parse(sessionStorage.getItem('WXUser') || '{"openid": ""}')
+    if (!WXUser.openid || WXUser.openid === "") this.fetchOpenID()
   },
   methods: {
     onCheck () {

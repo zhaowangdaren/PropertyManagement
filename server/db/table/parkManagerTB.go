@@ -1,6 +1,8 @@
 package table
 
 import (
+	"log"
+
 	"github.com/gin-gonic/gin"
 	"github.com/golang/glog"
 	mgo "gopkg.in/mgo.v2"
@@ -72,7 +74,7 @@ func UpdateParkManager(db *mgo.Database, info ParkManager) interface{} {
 	return gin.H{"error": 0, "data": ""}
 }
 
-func FindParjManagerByOpenID(db *mgo.Database, openID string) interface{} {
+func FindParkManagerByOpenID(db *mgo.Database, openID string) interface{} {
 	c := db.C(ParkManagerTable)
 	var result []ParkManager
 	err := c.Find(bson.M{"openid": openID}).All(&result)
@@ -80,4 +82,22 @@ func FindParjManagerByOpenID(db *mgo.Database, openID string) interface{} {
 		return gin.H{"error": 1, "data": err.Error()}
 	}
 	return gin.H{"error": 0, "data": result}
+}
+
+func DelParkManager(db *mgo.Database, ids []string) interface{} {
+	c := db.C(ParkManagerTable)
+	var err error
+	result := ""
+	for _, id := range ids {
+		err = c.Remove(bson.M{"_id": bson.ObjectIdHex(id)})
+		if err != nil {
+			log.Println(err.Error())
+			result += ";" + err.Error()
+			err = nil
+		}
+	}
+	if result != "" {
+		return gin.H{"error": 1, "data": result}
+	}
+	return gin.H{"error": 0, "data": Succ}
 }

@@ -56,6 +56,11 @@
             icon="delete"
             :loading='isUnbinding'
             :disabled='manager.Bind === 0 || manager.Bind === -1'>强制解绑</el-button>
+          <el-button 
+            @click='onDel(manager)'
+            type='danger' 
+            icon="delete"
+            :loading='isDeling'>删除</el-button>
         </td>
       </tr>
       <tr v-if='managers.length=== 0'>
@@ -84,6 +89,7 @@
         xqs: [],
         isUnbinding: false,
         isBinding: false,
+        isDeling: false,
         query: {
           ActualName: '',
           PageNo: 0,
@@ -95,6 +101,22 @@
       this.fetchParkManagers('')
     },
     methods: {
+      onDel (manager) {
+        this.isDeling = true
+        fetchpm(this, true, '/pm/park/managers/del', {
+          method: 'POST',
+          body: {Values: [manager.ID]}
+        }).then(resp => {
+          return resp.json()
+        }).then(body => {
+          if (body.error !== 0) this.fetchParkManagers('')
+          else Message({type:'error', message: body.data})
+          this.isDeling = false
+        }).catch(error => {
+          Message({type:'error', message: error.message})
+          this.isDeling = false
+        })
+      },
       onUnbind (manager) {
         this.isUnbinding = true
         var tempManager = Object.assign({}, manager)
@@ -109,7 +131,7 @@
           if (body.error === 0) {
             manager.Bind = -1
           } else {
-            this.$message({type:'error', message: body.data})
+            Message({type:'error', message: body.data})
           }
           this.isUnbinding = false
         })
@@ -117,10 +139,7 @@
       onBind (manager) {
         this.isBinding = true
         var tempManager = Object.assign({}, manager)
-        console.info("onBind manager", manager)
-
-        console.info("onBind tempManager", tempManager)
-        tempManager.Bind = -1
+        tempManager.Bind = 1
         fetchpm(this, true, '/pm/park/manager/update', {
           method: 'POST',
           body: tempManager
@@ -145,7 +164,7 @@
           console.info(resp)
           return resp.json()
         }).then( data => {
-          console.info('fetchmanagers', data)
+          console.info('fetchParkManagers', data)
           if (data.error === 0 ) {
             this.managers = data.data.parkManagers || []
             let ids = this.managers.map(item => {

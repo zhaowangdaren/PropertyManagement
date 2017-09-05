@@ -71,7 +71,6 @@ export default {
       pmName: '',
       btnWord: '申请绑定',
       bindSucc: true,
-      code: '',
       isLoading: true
     }
   },
@@ -82,8 +81,8 @@ export default {
     }
   },
   mounted () {
-    this.code = this.$route.query.code
-    this.fetchOpenID()
+    var WXUser = JSON.parse(sessionStorage.getItem('WXUser') || '{"openid": ""}')
+    if (!WXUser.openid || WXUser.openid === "") this.fetchOpenID()
   },
   methods: {
     onPM (pm) {
@@ -136,7 +135,7 @@ export default {
       })
     },
     fetchOpenID () {
-      fetchpm(this, false, '/open/wx/openid/' + this.code, {
+      fetchpm(this, false, '/open/wx/openid/' + this.$route.query.code, {
         method: 'POST',
         body: JSON.stringify({})
       }).then(resp => {

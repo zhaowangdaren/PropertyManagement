@@ -9,6 +9,7 @@ import (
 )
 
 func startPark(router *gin.RouterGroup, dbc *mgo.Database) {
+
 	router.POST("/park/update", func(c *gin.Context) { // 更新停车位信息
 		var obj table.Park
 		err := c.BindJSON(&obj)
@@ -33,6 +34,16 @@ func startPark(router *gin.RouterGroup, dbc *mgo.Database) {
 		}
 		c.JSON(http.StatusOK, table.FindPrakManagerByActualName(dbc,
 			query.ActualName, query.PageNo, query.PageSize))
+	})
+
+	router.POST("/park/managers/del", func(c *gin.Context) {
+		var values Values
+		err := c.BindJSON(&values)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, table.DelParkManager(dbc, values.Values))
 	})
 
 	router.POST("/park/manager/bind", func(c *gin.Context) {
@@ -68,6 +79,6 @@ func startPark(router *gin.RouterGroup, dbc *mgo.Database) {
 			return
 		}
 		openid := query["openid"]
-		c.JSON(http.StatusOK, table.FindParjManagerByOpenID(dbc, openid))
+		c.JSON(http.StatusOK, table.FindParkManagerByOpenID(dbc, openid))
 	})
 }

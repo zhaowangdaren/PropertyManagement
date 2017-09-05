@@ -13,6 +13,10 @@ export default {
     return {
     }
   },
+  mounted () {
+    var WXUser = JSON.parse(sessionStorage.getItem('WXUser') || '{"openid": ""}')
+    if (!WXUser.openid || WXUser.openid === "") this.fetchOpenID()
+  },
   methods: {
     onStart () {
       this.$router.push({path: '/wx/complaint/selectStreet'})

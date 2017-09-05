@@ -29,11 +29,13 @@ export default {
       succ: false,
       park: {
         Sum: 0,
-        FreeNum: 0
+        FreeNum: 0,
+        XQID: ''
       }
     }
   },
   mounted () {
+    this.park.XQID = this.xqId
     this.fetchPark(this.xqId)
   },
   methods: {
