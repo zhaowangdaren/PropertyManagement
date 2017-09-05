@@ -15,8 +15,9 @@ export default {
   data () {
     return {
       headerOptions: {
+        leftBtns: [{text:'上一步', event: this.onBack}],
         title: '选择街道',
-        rightBtns: [{text:'返回', event: this.onBack}]
+        rightBtns: []
       }
     }
   },

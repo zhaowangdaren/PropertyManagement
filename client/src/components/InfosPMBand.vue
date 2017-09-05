@@ -45,17 +45,17 @@
             :disabled='user.Bind === -1'
             >已解绑</el-button>
           <el-button
-            @click='onBind'
+            @click='onBind(user)'
             type="primary" 
             :loading='isBinding'
             :disabled='user.Bind === 1'
             >允许绑定</el-button>
           <el-button 
-            @click='onUnbind'
+            @click='onUnbind(user)'
             :type='user.Bind === 1 ? "danger" : ""' 
             icon="delete"
             :loading='isUnbinding'
-            :disabled='user.Bind === 0'>强制解绑</el-button>
+            :disabled='user.Bind === 0 || user.Bind === -1'>强制解绑</el-button>
         </td>
       </tr>
       <tr v-if='users.length=== 0'>
@@ -67,11 +67,10 @@
 </template>
 
 <script type="text/javascript">
-  import Ajax from '@/Ajax'
   import ImageButton from '@/components/ImageButton'
   import SearchSelect from '@/components/SearchSelect'
   import fetchpm from '@/fetchpm'
-
+  import { Message } from 'element-ui'
   export default {
     components: {ImageButton, SearchSelect},
     data () {
@@ -109,7 +108,7 @@
           if (body.error === 0) {
             user.Bind = -1
           } else {
-            this.$message({type:'error', message: body.data})
+            Message({type:'error', message: body.data})
           }
           this.isUnbinding = false
         })
@@ -128,7 +127,7 @@
           if (body.error === 0) {
             user.Bind = 1
           } else {
-            this.$message({type:'error', message: body.data})
+            Message({type:'error', message: body.data})
           }
           this.isBinding = false
         })
@@ -240,7 +239,7 @@
     }
     .users{
       &:hover {
-        background-color: #ddd;
+        background-color: #f1f3f6;
       }
     }
   }

@@ -1,6 +1,6 @@
 <!-- 工程服务列表 -->
 <template>
-  <div>
+  <div :class="s.wrap">
     <action-bar :OPTIONS='headerOptions'></action-bar>
     <div :class="s.content">
       <div :class="s.up">
@@ -9,57 +9,67 @@
             LOGO
           </div>
           <div :class="s.name">{{company.Name}}</div>
-          <div :class='s.charger'><span>企业负责人：</span>{{company.Charger}}</div>
         </div>
       </div>
       <div :class="s.down">
-        <div><span>联系电话</span>{{company.Tel}}</div>
-        <div><span>加盟时间</span>{{company.JoinTime}}</div>
-        <div><span>服务内容</span>{{company.MainContent}}</div>
-        <div><span>服务时间</span>{{company.WorkSchedule}}</div>
+        <div :class='s.item'><span>企业负责人：</span>{{company.Charger}}</div>
+        <div :class='s.item'><span>联系电话：</span><a :href="'tel:' + company.Tel">{{company.Tel}}</a></div>
+        <div :class='s.item'><span>加盟时间：</span>{{company.JoinTime}}</div>
+        <div :class='s.item'><span>服务内容：</span>{{company.MainContent}}</div>
+        <div :class='s.item'><span>服务时间：</span>{{company.WorkSchedule}}</div>
+        <div :class="s.assess" @click='showAssess = true'>服务评价</div>
       </div>
-      
-
     </div>
+    <div :class="s.bottom">
+      <div :class="s.callBtn"><a :href="'tel:' + company.Tel">呼 叫</a></div>
+    </div>
+    <y-dialog :visible.sync='showAssess'>
+      <assess @close='showAssess = false'></assess>
+    </y-dialog>
   </div>
 </template>
 
 <script>
 import ActionBar from '@/components/mobile/ActionBar'
 import ListMenu from '@/components/mobile/ListMenu'
+import YDialog from '@/components/mobile/YDialog'
+import Assess from '@/components/mobile/Assess'
 export default {
-  components: { ListMenu, ActionBar },
+  components: { ListMenu, ActionBar, YDialog, Assess },
   data () {
     return {
       headerOptions: {
-        leftBtns: [],
-        title: '公司详情',
+        leftBtns: [{text: '上一步', event: this.onBack}],
+        title: '详情',
         rightBtns: []
       },
       company: {
         Logo: '',
-        Name: '马鞍山市雨山区洁美家政服务部',
-        Charger: '左军',
+        Name: '名称名称名称名称名称名称名称吗',
+        Charger: '名字名字',
         Tel: '96345',
         JoinTime: '2015-05-21',
-        MainContent: '家政/保洁',
+        MainContent: '内容内容内容',
         WorkSchedule: '8:00-18:00'
-      }
+      },
+      showAssess: false
     }
   },
   methods: {
-    
+    onBack () {
+      this.$router.go(-1)
+    }
   }
 }
 </script>
 
 <style lang="less" module="s">
+.wrap{
+  height: 100%;
+  background-color: #fff;
+}
 .content{
-  position: fixed;
-  top: 80px;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  margin-top: 80px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -67,29 +77,35 @@ export default {
 }
 .up{
   width: 100%;
-  height: 250px;
-  background-image: url('../../../res/images/yw.jpg');
+  // height: 250px;
+  background-image: url('../../../res/images/upbg5.jpg');
   background-repeat: no-repeat;
-  background-size: 100%;
+  background-size: cover;
   position: relative;
   color: #fff;
 
 }
 .container{
   display: block;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(72, 87, 106, 0.3);
   height: 100%;
   width: 100%;
-  position: absolute;
+  // position: absolute;
   top: 0;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
+}
+.name{
+  font-size: 30px;
+  margin: 10px; 
+  z-index: 2;
+  padding: 100px 10px;
 }
 .down{
   width: 100%;
   flex: 1;
-  background-color: #fff;
 }
 .logo{
   display: none;
@@ -103,15 +119,38 @@ export default {
   text-align: center;
   z-index: 2;
 }
-.name{
-  font-size: 30px;
-  margin: 10px; 
-  z-index: 2;
-}
-.charger{
-  font-size: 20px;
+.item{
+  font-size: 22px;
+  margin: 20px;
+  padding: 10px 10px;
+  background-color: #f1f3f6;
   span{
-    color: #ccc;
+    color: #999;
   }
+}
+.callBtn{
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  font-size: 20px;
+  font-weight: 500;
+  background-color: rgb(25, 163, 24);
+  border-radius: 100px;
+  box-shadow: 0 2px 5px rgba(0,0,0,.25);
+  a{
+    color: #fff;
+  }
+}
+.assess{
+  background-color: #1f2d3d;
+  padding: 10px;
+  color: #f1f3f6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+  margin: 50px;
 }
 </style>

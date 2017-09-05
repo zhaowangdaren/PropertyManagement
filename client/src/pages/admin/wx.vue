@@ -61,23 +61,23 @@
 </style>
 
 <script type="text/javascript">
-import InfosWXBand from '@/components/InfosWXBand'
-import InfosWXRequest from '@/components/InfosWXRequest'
+import InfosPMBand from '@/components/InfosPMBand'
+import BindParkManagers from '@/components/table/BindParkManagers'
   export default {
-    components: { InfosWXBand, InfosWXRequest},
+    components: { InfosPMBand, BindParkManagers},
     data () {
       return {
         tabs: [
           {
-            name: '已绑定物业用户',//已绑定用户
-            view: InfosWXBand
+            name: '绑定物业用户',//已绑定用户
+            view: InfosPMBand
           },
           {
-            name: '申请中物业用户',//申请中
-            view: InfosWXRequest
+            name: '绑定停车管理员',//申请中
+            view: BindParkManagers
           }
         ],
-        curView: InfosWXBand
+        curView: InfosPMBand
       } 
     },
     methods: {

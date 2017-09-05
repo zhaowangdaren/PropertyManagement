@@ -7,10 +7,10 @@
       <el-select v-model="searchActualName" placeholder="请输入姓名">
         <el-option @click='onAll'>全部</el-option>
         <el-option 
-          v-for='user in filterNameResult'
-          :key='user._id'
-          :label='user.ActualName'
-          :value='user.ActualName'>
+          v-for='manager in filterNameResult'
+          :key='manager._id'
+          :label='manager.ActualName'
+          :value='manager.ActualName'>
         </el-option>
       </el-select>
       <el-button
@@ -31,34 +31,34 @@
         <!-- 电话 -->
         <th>操作</th>
       </tr>
-      <tr v-for='(user, index) in users' :class='s.users'>
+      <tr v-for='(manager, index) in managers' :class='s.managers'>
         <td v-text='index + 1'></td>
-        <td v-text='user.ActualName'></td>
+        <td v-text='manager.ActualName'></td>
         <td><span v-if='xqs[index]'>{{xqs[index].Name}}</span></td>
-        <td v-text='user.OpenID'></td>
-        <td v-text='user.Tel'></td>
+        <td v-text='manager.OpenID'></td>
+        <td v-text='manager.Tel'></td>
         <td align="center">
           <el-button
             type="info"
-            v-if='user.Bind === -1'
+            v-if='manager.Bind === -1'
             :loading='isBinding'
-            :disabled='user.Bind === -1'
+            :disabled='manager.Bind === -1'
             >已解绑</el-button>
           <el-button
-            @click='onBind'
+            @click='onBind(manager)'
             type="primary" 
             :loading='isBinding'
-            :disabled='user.Bind === 1'
+            :disabled='manager.Bind === 1'
             >允许绑定</el-button>
           <el-button 
-            @click='onUnbind'
-            :type='user.Bind === 1 ? "danger" : ""' 
+            @click='onUnbind(manager)'
+            :type='manager.Bind === 1 ? "danger" : ""' 
             icon="delete"
             :loading='isUnbinding'
-            :disabled='user.Bind === 0'>强制解绑</el-button>
+            :disabled='manager.Bind === 0 || manager.Bind === -1'>强制解绑</el-button>
         </td>
       </tr>
-      <tr v-if='users.length=== 0'>
+      <tr v-if='managers.length=== 0'>
         <td colspan="6">无记录</td>
       </tr>
     </table>
@@ -86,7 +86,7 @@
         isBinding: false,
         query: {
           ActualName: '',
-          PageNo: 1,
+          PageNo: 0,
           PageSize: 20
         }
       }
@@ -114,9 +114,12 @@
           this.isUnbinding = false
         })
       },
-      onBind (user) {
+      onBind (manager) {
         this.isBinding = true
         var tempManager = Object.assign({}, manager)
+        console.info("onBind manager", manager)
+
+        console.info("onBind tempManager", tempManager)
         tempManager.Bind = -1
         fetchpm(this, true, '/pm/park/manager/update', {
           method: 'POST',
@@ -126,7 +129,7 @@
         }).then(body => {
           console.info('onBind', body)
           if (body.error === 0) {
-            manager.Bind = -1
+            manager.Bind = 1
           } else {
             Message({type:'error', message: body.data})
           }
@@ -142,13 +145,13 @@
           console.info(resp)
           return resp.json()
         }).then( data => {
-          console.info('fetchusers', data)
+          console.info('fetchmanagers', data)
           if (data.error === 0 ) {
-            this.users = data.data.parkManagers || []
-            let ids = this.users.map(item => {
-              return item.PMID
+            this.managers = data.data.parkManagers || []
+            let ids = this.managers.map(item => {
+              return item.XQID
             })
-            this.fetchPMByID(ids)
+            this.fetchXQs(ids)
           }
         })
       },
@@ -207,9 +210,9 @@
       padding: 5px;
       border: solid 1px #ddd;
     }
-    .users{
+    .managers{
       &:hover {
-        background-color: #ddd;
+        background-color: #f1f3f6;
       }
     }
   }

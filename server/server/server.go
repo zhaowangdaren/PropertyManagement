@@ -99,13 +99,14 @@ func Start() {
 		startEvent(authorized, dbc)
 		startEventHandle(authorized, dbc)
 		startPMKPI(authorized, dbc)
+		startPark(authorized, dbc)
 	}
 
 	open := router.Group("/open")
 	{
 		startOpen(open, dbc)
 	}
-	router.Run(":3000")
-	// router.RunTLS(":3000", "/etc/letsencrypt/live/maszfglzx.com/fullchain.pem", "/etc/letsencrypt/live/maszfglzx.com/privkey.pem")
+	// router.Run(":3000")
+	router.RunTLS(":3000", "/etc/letsencrypt/live/maszfglzx.com/fullchain.pem", "/etc/letsencrypt/live/maszfglzx.com/privkey.pem")
 	glog.Flush()
 }

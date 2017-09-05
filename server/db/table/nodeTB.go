@@ -57,3 +57,20 @@ func UpdateNode(db *mgo.Database, node Node) interface{} {
 	}
 	return gin.H{"error": 0, "data": ""}
 }
+
+func FindNodesByIDs(db *mgo.Database, ids []string) interface{} {
+	c := db.C(NodeTable)
+	var result []Node
+	var err error
+	for _, id := range ids {
+		var info Node
+		err = c.Find(bson.M{"_id": bson.ObjectIdHex(id)}).One(&info)
+		if err != nil {
+			result = append(result, (Node{}))
+		} else {
+			result = append(result, info)
+		}
+		err = nil
+	}
+	return gin.H{"error": 0, "data": result}
+}

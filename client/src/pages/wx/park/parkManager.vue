@@ -4,6 +4,7 @@
       :class='s.add'
       @click='onAdd'>
       <i class="iconfont icon-add"></i>
+      <div>绑定小区</div>
     </div>
     <div :class='s.row'>
       <div v-for='(manager, index) in parkManagers'
@@ -11,23 +12,23 @@
         :class='s.item' 
         :style='{backgroundColor: manager.Bind < 1 ? "#ddd" : "#fff", color: manager.Bind < 1 ? "#999" : "#565656"}'>
         <div v-if='xqs[index]' :class='s.name' >{{xqs[index].Name}}</div>
-        <div :class='s.tip' v-if='manager.Bind === 1 ' :style='{color: "rgb(25, 163, 24)"}'>审核通过</div>
+        <div :class='s.tip' v-if='manager.Bind === 1 ' :style='{color: "rgb(25, 163, 24)"}'>通过审核</div>
         <div :class='s.tip' v-if='manager.Bind === 0 ' :style='{color: "#999"}'>等待审核</div>
-        <div :class='s.tip' v-if='manager.Bind === -1 ' :style='{color: "#999"}'>审核未通过</div>
+        <div :class='s.tip' v-if='manager.Bind === -1 ' :style='{color: "#999"}'>未通过审核</div>
       </div>
     </div>
-    <basic-dialog :visible.sync='isUpdatingPark'>
+    <y-dialog :visible.sync='isUpdatingPark'>
       <update-free-park :xqId='updatingXQID'></update-free-park>
-    </basic-dialog>
+    </y-dialog>
   </div>
 </template>
 
 <script>
 import fetchpm from '@/fetchpm'
-import BasicDialog from '@/components/dialog/BasicDialog'
+import YDialog from '@/components/mobile/YDialog'
 import UpdateFreePark from '@/components/mobile/UpdateFreePark'
 export default {
-  components: { BasicDialog, UpdateFreePark },
+  components: { YDialog, UpdateFreePark },
   data () {
     return {
       openid: '',
@@ -105,6 +106,7 @@ export default {
   padding: 20px;
   border-radius: 5px;
   color: #fff;
+  text-align: center;
   i{
     font-size: 40px;
   }

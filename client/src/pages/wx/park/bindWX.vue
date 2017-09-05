@@ -45,7 +45,7 @@ export default {
   data () {
     return {
       headerOptions: {
-        leftBtns: [],
+        leftBtns: [{text: '上一步', event: this.onBack}],
         title: '停车管理员绑定',
         rightBtns: []
       },
@@ -68,6 +68,9 @@ export default {
     this.parkManager.XQID = this.$route.query.xqid
   },
   methods: {
+    onBack () {
+      this.$router.go(-1)
+    },
     onFocus () {
       this.warn = ''
       this.bindSucc = false

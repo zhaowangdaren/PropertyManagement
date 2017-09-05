@@ -1,15 +1,18 @@
 <template>
   <div>
+    <div :class='s.succ'>
+      <i class="iconfont icon-succ" v-if='succ'></i>
+    </div>
     <div :class='s.item'>
       <div>空闲车位</div>
-      <div :class='s.inputWrap'><input :class='s.value' type="number" name="" v-model='park.FreeNum'></div>
+      <div :class='s.inputWrap'><input :class='s.value' type="number" name="" v-model='park.FreeNum' @focus='succ = false'></div>
     </div>
     <div :class='s.item'>
       <div>总车位</div>
-      <div  :class='s.inputWrap'><input :class='s.value' type="number" name="" v-model='park.Sum'></div>
+      <div  :class='s.inputWrap'><input :class='s.value' type="number" name="" v-model='park.Sum' @focus='succ = false'></div>
     </div>
     <div :class='s.btn' @click='onUpdate'>
-      提交
+      发布
     </div>
   </div>
 </template>
@@ -23,6 +26,7 @@ export default {
   },
   data () {
     return {
+      succ: false,
       park: {
         Sum: 0,
         FreeNum: 0
@@ -43,6 +47,7 @@ export default {
         return resp.json()
       }).then(body => {
         console.info('onUpdate', body)
+        if (body.error === 0) this.succ = true
       })
     },
     fetchPark (xqId) {
@@ -60,6 +65,14 @@ export default {
 </script>
 
 <style lang="less" module='s'>
+.succ{
+  margin-top: 10px;
+  text-align: center;
+  i{
+    color: rgb(25, 163, 24);
+    font-size: 40px;
+  }
+}
 .item{
   font-size: 25px;
   margin: 10px 30px;
@@ -67,6 +80,9 @@ export default {
 .inputWrap{
   border: solid 1px #999;
   border-radius: 5px;
+  input{
+    border: none;
+  }
 }
 .value{
   width: 100%;
