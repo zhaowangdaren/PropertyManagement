@@ -109,7 +109,7 @@
         }).then(resp => {
           return resp.json()
         }).then(body => {
-          if (body.error !== 0) this.fetchParkManagers('')
+          if (body.error === 0) this.fetchParkManagers('')
           else Message({type:'error', message: body.data})
           this.isDeling = false
         }).catch(error => {

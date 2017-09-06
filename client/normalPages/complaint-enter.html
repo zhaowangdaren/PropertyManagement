@@ -11,6 +11,18 @@
   <div style="font-size: 0.2rem; text-align: center;margin-top: 10px;">加载中...</div>
 </div>
 <script type="text/javascript">
+  function getURLParam(name) {
+    var url = decodeURI(location.search)
+    var theRequest = {}
+    if (url.indexOf('?') !== -1) {
+      var str = url.substr(1)
+      var strs = str.split('&')
+      for (var i = 0; i < strs.length; i++) {
+        theRequest[strs[i].split('=')[0]] = unescape(strs[i].split('=')[1])
+      }
+    }
+    return theRequest[name] || ''
+  }
   var code = getURLParam('code')
   window.location = 'https://www.maszfglzx.com/#/wx/startComplaint?code=' + code
 </script>

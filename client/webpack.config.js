@@ -14,7 +14,7 @@ const webpackConfig = {
   // entry: ['./src/app.js'],
   output: {
     path: path.resolve(__dirname, 'dist'),
-    publicPath: '/',
+    publicPath: './',
     filename:'[name].[hash].js'
   },
   resolve:{
@@ -135,16 +135,16 @@ const webpackConfig = {
     // Compress extracted CSS. We are using this plugin so that possible
     // duplicated CSS from different components can be deduped.
     new OptimizeCSSPlugin(),
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false,
-        drop_console: false,
-      },
-      comments: false
-    })
+    // new webpack.optimize.UglifyJsPlugin({
+    //   compress: {
+    //     warnings: false,
+    //     drop_console: false,
+    //   },
+    //   comments: false
+    // })
   ],
-  // devtool: 'source-map',
-  devtool: false,
+  devtool: 'source-map',
+  // devtool: false,
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
     compress: false,

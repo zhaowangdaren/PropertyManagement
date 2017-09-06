@@ -3,6 +3,7 @@ import Router from 'vue-router'
 
 
 const Login = require('@/pages/login')
+const Regist = require('@/pages/regist')
 
 const Admin = resolve => require(['@/pages/admin'], resolve)
 
@@ -84,6 +85,11 @@ export default new Router({
     {
       path: '/login',
       component: Login
+    },
+    {
+      path: '/regist',
+      name: 'Regist',
+      component: Regist
     },
     {
       path: '/admin',

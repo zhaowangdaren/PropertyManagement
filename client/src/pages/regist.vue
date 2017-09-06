@@ -1,27 +1,55 @@
 <template>
   <div :class='s.wrap' :style='{backgroundImage: "url(" + bgImg +  ")"}'>
     <div :class='s.formWrap'>
-      <div :class='s.title' v-text='sourceParams.title'></div>
+      <div :class='s.title' v-text='title'></div>
       <form :class='s.body' @submit.prevent='onLogin'>
         <p :class="s.warn" v-text='warn'></p>
-        <div :class='s.row'>
-          <div :class='s.icon'>
-            <i class='iconfont icon-user'></i>
-          </div>
-          <input type="text" name="" :class='s.input' v-model='login.username' autofocus>
-        </div>
-        <div :class='s.row'>
-          <div :class='s.icon'>
-            <i class='iconfont icon-lock'></i>
-          </div>
-          <input type="password" name="" :class='s.input' v-model='login.password'>
-        </div>
-        <div :class='s.bottom'>
-          <input type="submit" name="" value='登 录' @click='onLogin' :style='{visibility: "hidden"}' ></span>
-          <el-button type='primary' @click='onLogin' :loading='isLogining'>登 录</el-button>
-          <el-button type='success' @click='onRegist'>注册</el-button>
-          <!-- <span :class='s.cancel' @click='onCancel'>取 消</span> -->
-          <el-button @click='onCancel'>取 消</el-button>
+        <table :class='s.table'>
+          <tr>
+            <td :class='s.left'><span :class='s.red'>*</span>用户名</td>
+            <td :class='s.mid'><el-input type="text" name=""></el-input></td>
+            <td>由字母、数字或者下划线组成</td>
+          </tr>
+          <tr>
+            <td :class='s.left'><span :class='s.red'>*</span>真实姓名</td>
+            <td :class='s.mid'><el-input type="text" name=""></el-input></td>
+            <td>真实中文名</td>
+          </tr>
+          <tr>
+            <td :class='s.left'><span :class='s.red'>*</span>密码</td>
+            <td :class='s.mid'><el-input type="text" name=""></el-input></td>
+            <td>有6-16个英文字母、数字或下划线组成</td>
+          </tr>
+          <tr>
+            <td :class='s.left'><span :class='s.red'>*</span>联系电话</td>
+            <td :class='s.mid'><el-input type="text" name=""></el-input></td>
+            <td>手机号码或者固定电话</td>
+          </tr>
+          <tr v-if='regist.Type === 3'>
+            <td :class='s.left'><span :class='s.red'>*</span>所属街道</td>
+            <td :class='s.mid'>
+              <el-select v-model="regist.StreetID" filterable placeholder="请选择" :class='s.selectStreet'>
+                <el-option
+                  v-for="item in streets"
+                  :key="item.ID"
+                  :label="item.Name"
+                  :value="item.ID">
+                </el-option>
+              </el-select>
+            </td>
+            <td>选择所属街道</td>
+          </tr>
+          <tr v-if='regist.Type === 3'>
+            <td :class='s.left'><span :class='s.red'>*</span>授权码</td>
+            <td :class='s.mid'>
+              <el-input></el-input>
+            </td>
+            <td>输入指定授权码</td>
+          </tr>
+        </table>
+        <div  :class='s.bottom'>
+          <el-button type='primary' @click='onSubmit'>提交</el-button>
+          <el-button @click='onBack'>返回</el-button>
         </div>
       </form>
     </div>
@@ -34,36 +62,44 @@ export default {
   data () {
     return {
       warn: '',
-      sourceParams: {
-        title: 'Title',
-        target: '' // /admin /gov /street
-      },
-      login: {
-        username:'',
-        password:'',
-        type: 0
+      target: '',
+      title: '注册',
+      regist: {
+        UserName: '',
+        Password: '',
+        RealName: '',
+        Tel: '',
+        StreetID: '',
+        Type: 0,
       },
       bgImg: require('@/res/images/bottom_bg.png'),
       isLogining: false
     }
   },
   mounted () {
-    this.sourceParams.title = this.$route.query.title
-    this.sourceParams.target = this.$route.query.target
-    console.info(this.sourceParams)
-    switch (this.sourceParams.target) {
+    this.target = this.$route.query.target
+    switch (this.target) {
       case '/admin':
-        this.login.type = 1
+        this.title = '管理员注册'
+        this.regist.Type = 1
         break
       case '/gov':
-        this.login.type = 2
+        this.title = '政府工作人员注册'
+        this.regist.Type = 2
         break
       case '/street':
-        this.login.type = 3
+        this.title = '街道工作人员注册'
+        this.regist.Type = 3
         break
     }
   },
   methods: {
+    onSubmit () {
+      
+    },
+    onBack () {
+      this.$router.go(-1)
+    }, 
     onRegist () {
       this.$router.push({name: 'Regist', query: {target: this.sourceParams.target}})
     },
@@ -119,7 +155,7 @@ export default {
   justify-content: center;
   align-items: center;
   .formWrap{
-    width: 40%;
+    min-width: 40%;
     .title{
       font-size: 30px;
       text-align: center;
@@ -133,31 +169,8 @@ export default {
       text-align: center;
     }
     .body{
-      background-color: rgba(254,254,254, 0.3);
+      background-color: rgba(255,255,255, 0.5);
       padding: 20px 50px;
-      .row{
-        display: flex;
-        margin: 5px;
-        .icon{
-          text-align:center;
-          background-color: #fff;
-          padding: 0 10px;
-          height: 48px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          i{
-            color: #666;
-          }
-        }
-        .input{
-          flex: 1;
-          height:46px;
-          border: solid 1px #ddd;
-          background-color: rgb(250, 255, 189);
-          font-size: 20px;
-        }
-      }
       .bottom{
         text-align: center;
         margin-top: 10px;
@@ -196,5 +209,26 @@ export default {
       }
     }
   }
+}
+.table{
+  font-size: 16px;
+  color: #000;
+}
+.red{
+  color: red;
+}
+.left{
+  text-align: right;
+  min-width: 100px;
+}
+.mid{
+  min-width: 300px;
+  input{
+    box-sizing: border-box;
+    width: 100%;
+  }
+}
+.selectStreet{
+  width: 100%;
 }
 </style>
