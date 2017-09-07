@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"time"
 
 	"../db/table"
 	"github.com/gin-gonic/gin"
@@ -71,19 +70,8 @@ func PushNotice2WX(eventHandle table.EventHandle, dbc *mgo.Database) {
 		glog.Error("Event:" + eventHandle.Index + " 没有查询到其OpenID")
 		return
 	}
-	xqName := table.FindXQ(dbc, event.XQID).Name
-	time := time.Unix(event.Time, 0).Format("2006-01-02 15:04:05")
-	// pp := `{"touser":"` + userOpenID + `","template_id": "JfYCUICcZxvOjdYYFUQVVu47AepqfhGau0nvLhGPcVA","url": "https://www.maszfglzx.com/#/wx/detailsProgress?index=` + eventHandle.Index + `&status=` + string(event.Status) + `","data": {"first": {"value": "您好，您的投诉已处理。具体信息如下："},"keyword1": {"value": "` + xqName + `"},
-	// 			"keyword2": {
-	// 				"value": "` + FilterEventStatus(event.Status) + `"
-	// 			},
-	// 			"keyword3": {
-	// 				"value": "` + time + `"
-	// 			},
-	// 			"remark": {
-	// 				"value": "感谢您的反馈"
-	// 			}
-	// 		}}`
+	// xqName := table.FindXQ(dbc, event.XQID).Name
+	// time := time.Unix(event.Time, 0).Format("2006-01-02 15:04:05")
 
 	pjson := `{
   "touser": "oIVRq0ubSS9zMeCAKE55hlIAFBj8",
