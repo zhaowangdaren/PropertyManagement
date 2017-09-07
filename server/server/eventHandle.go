@@ -1,10 +1,10 @@
 package server
 
 import (
+	"bytes"
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"strings"
 	"time"
 
 	"../db/table"
@@ -15,8 +15,8 @@ import (
 
 func PostJson(url, post string) {
 	fmt.Println("PostJson", post)
-	// var jsonStr = []byte(post)
-	req, err := http.NewRequest("POST", url, strings.NewReader(post))
+	var jsonStr = []byte(post)
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 	if err != nil {
 		glog.Error(err.Error())
 	}
@@ -73,25 +73,46 @@ func PushNotice2WX(eventHandle table.EventHandle, dbc *mgo.Database) {
 	}
 	xqName := table.FindXQ(dbc, event.XQID).Name
 	time := time.Unix(event.Time, 0).Format("2006-01-02 15:04:05")
-	post := "{" +
-		"\"touser\": \"" + userOpenID + "\"," +
-		"\"template_id\": \"JfYCUICcZxvOjdYYFUQVVu47AepqfhGau0nvLhGPcVA\"," +
-		"\"url\": \"https://www.maszfglzx.com/#/wx/detailsProgress?index=" + eventHandle.Index + "&status=" + string(event.Status) + "\"," +
-		"\"data\": {" +
-		"\"first\": {" +
-		"\"value\": \"您好，您的投诉已处理。具体信息如下：\"}," +
-		"\"keyword1\": {" +
-		"\"value\": \"" + xqName + "\"}," +
-		"\"keyword2\": {" +
-		"\"value\": \"" + FilterEventStatus(event.Status) + "\"}," +
-		"\"keyword3\": {" +
-		"\"value\": \"" + time + "\"}," +
-		"\"remark\": {" +
-		"\"value\": \"感谢您的反馈\"}" +
-		"}}"
+	pp := `{
+		"touser":` + userOpenID + `",
+		"template_id": "JfYCUICcZxvOjdYYFUQVVu47AepqfhGau0nvLhGPcVA",
+		"url": "https://www.maszfglzx.com/#/wx/detailsProgress?index=` + eventHandle.Index + `&status=` + string(event.Status) + `",
+		"data": {
+				"first": {
+					"value": "您好，您的投诉已处理。具体信息如下："
+				},
+				"keyword1": {
+					"value": "` + xqName + `"
+				},
+				"keyword2": {
+					"value": "` + FilterEventStatus(event.Status) + `"
+				},
+				"keyword3": {
+					"value": "` + time + `"
+				},
+				"remark": {
+					"value": "感谢您的反馈"
+				}
+			}`
+	// post := "{" +
+	// 	"\"touser\": \"" + userOpenID + "\"," +
+	// 	"\"template_id\": \"JfYCUICcZxvOjdYYFUQVVu47AepqfhGau0nvLhGPcVA\"," +
+	// 	"\"url\": \"https://www.maszfglzx.com/#/wx/detailsProgress?index=" + eventHandle.Index + "&status=" + string(event.Status) + "\"," +
+	// 	"\"data\": {" +
+	// 	"\"first\": {" +
+	// 	"\"value\": \"您好，您的投诉已处理。具体信息如下：\"}," +
+	// 	"\"keyword1\": {" +
+	// 	"\"value\": \"" + xqName + "\"}," +
+	// 	"\"keyword2\": {" +
+	// 	"\"value\": \"" + FilterEventStatus(event.Status) + "\"}," +
+	// 	"\"keyword3\": {" +
+	// 	"\"value\": \"" + time + "\"}," +
+	// 	"\"remark\": {" +
+	// 	"\"value\": \"感谢您的反馈\"}" +
+	// 	"}}"
 	access_token := GetAccessToken()
 	wxURL := "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + access_token
-	PostJson(wxURL, post)
+	PostJson(wxURL, pp)
 }
 
 func startEventHandle(router *gin.RouterGroup, dbc *mgo.Database) {
