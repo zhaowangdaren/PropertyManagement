@@ -3,6 +3,7 @@ package server
 import (
 	"bufio"
 	"encoding/json"
+	"fmt"
 	"os"
 	"strconv"
 	"time"
@@ -20,9 +21,7 @@ func WriteFile(path string, content string) {
 	}
 	defer outputFile.Close()
 	outputWriter := bufio.NewWriter(outputFile)
-	for i := 0; i < 10; i++ {
-		outputWriter.WriteString(content)
-	}
+	outputWriter.WriteString(content)
 	outputWriter.Flush()
 }
 
@@ -48,7 +47,7 @@ func FetchNewAccessToken() string {
 			wxinfo["appid"] + "&secret=" + wxinfo["appsecret"])
 	resp["time"] = time.Now().Unix()
 	jsonResp, _ := json.Marshal(resp)
-	glog.Info(jsonResp)
+	fmt.Println(jsonResp)
 	os.Remove(AccessTokenFilePath)
 	WriteFile(AccessTokenFilePath, string(jsonResp))
 	return resp["access_token"].(string)
