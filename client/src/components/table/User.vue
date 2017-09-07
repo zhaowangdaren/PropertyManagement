@@ -20,6 +20,7 @@
         <th v-if='USER_TYPE == 3' >街道</th>
         <th>密码</th>
         <th>办公电话</th>
+        <th>授权码</th>
         <th>操作</th>
       </tr>
       <tr v-for='(user, index) in users' :class='s.gov'>
@@ -28,13 +29,10 @@
         <td v-if='USER_TYPE == 3' v-text='streetNames[index]'></td>
         <td v-text='user.Password'></td>
         <td v-text='user.Tel'></td>
+        <td v-text='user.Code'></td>
         <td :class='s.operations' align="center">
-          <!-- <image-button :class='s.bt'
-            text='编辑'
-            :img='require("@/res/images/edit.png")'
-            bgColor='#26a69a'
-            @click='onEdit(user)'
-          /> -->
+          <el-button type='primary' v-if='user.Pass === 0' @click='onPass(user)' :loading='isPassing'>审核</el-button>
+          <el-button type='info' disabled='true' v-if='user.Pass === 1'>已审核</el-button>
           <el-button
             @click='onEdit(user)'
             type='primary'
@@ -91,7 +89,7 @@
   import ImageButton from '@/components/ImageButton'
   import AddUser from '@/components/dialog/AddUser'
   import EditUser from '@/components/dialog/EditUser'
-
+  import { Message } from 'element-ui'
   import fetchpm from '@/fetchpm'
   export default {
     components: {ImageButton, AddUser, EditUser},
@@ -111,7 +109,8 @@
         pageNo: 0,
         pageSize: 10,
         sum: 0,
-        showPage: true
+        showPage: true,
+        isPassing: false
       }
     },
     computed: {
@@ -130,6 +129,25 @@
       if (this.USER_TYPE == 3) this.fetchAllStreets()
     },
     methods: {
+      onPass (user) {
+        this.isPassing = true
+        var tempUser = Object.assign({}, user)
+        tempUser.Pass = 1
+        fetchpm(this, true, '/pm/user/update', {
+          method: 'POST',
+          body: tempUser
+        }).then(resp => {
+          return resp.json()
+        }).then(body => {
+          console.info('onSave', body)
+          if (body.error == 1) {
+            Message({message:body.data, type:'error'})
+          }
+          else {
+            Message({message:'恭喜，修改成功', type:'success'})
+          }
+        })
+      },
       onChangePage (curPage) {
         this.pageNo = curPage - 1
         this.fetchUsers()

@@ -171,6 +171,13 @@ func FindEvents(db *mgo.Database, index string, pageNo int, pageSize int) interf
 	return gin.H{"error": 0, "data": result}
 }
 
+func FindEvent(db *mgo.Database, index string) Event {
+	c := db.C(EventTableName)
+	var result Event
+	c.Find(bson.M{"index": index}).One(&result)
+	return result
+}
+
 //FindEventKVs find key-value
 func FindEventKVs(db *mgo.Database, kvs map[string]interface{}) interface{} {
 	query := make(map[string]interface{})

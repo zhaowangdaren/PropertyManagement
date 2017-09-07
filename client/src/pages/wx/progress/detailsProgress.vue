@@ -2,6 +2,7 @@
   <div>
     <action-bar :OPTIONS='headerOptions'></action-bar>
     <div :class='s.content'>
+      <div :class='s.warn'>{{warn}}</div>
       <div :class='s.up'>
         <div :class='s.warn' v-text='warn'></div>
         <div :class='s.item'>
@@ -62,20 +63,35 @@ export default {
       eventStatus: 0,
       event: {
         Status: 0,
-        Imgs:''
+        Imgs:'',
+        OpenID: ''
       },
       eventHandles: [],
       showImgs: false,
-      showingImgs: ''
+      showingImgs: '',
+      warn:''
     }
   },
   mounted () {
-    this.eventIndex = this.$route.query.index
-    this.eventStatus = this.$route.query.status
-    this.fetchEvent()
-    this.fetchEventHandle()
+    var WXUser = JSON.parse(sessionStorage.getItem('WXUser')) || {openid: null}
+    this.event.OpenID = WXUser.openid
+    if (this.event.OpenID === null || this.event.OpenID === '') this.fetchOpenID().then(openid => {
+      if (openid === null) {
+        this.warn = '获取用户身份失败，请返回重试'
+        return
+      }
+      this.event.OpenID = openid
+      this.initData()
+    })
+    else this.initData()
   },
   methods: {
+    initData () {
+      this.eventIndex = this.$route.query.index
+      this.eventStatus = this.$route.query.status
+      this.fetchEvent()
+      this.fetchEventHandle()
+    },
     onShowImgs (imgs) {
       this.showingImgs = imgs
       this.showImgs = true
@@ -118,12 +134,31 @@ export default {
           this.eventHandles = body.data || []
         }
       })
+    },
+    fetchOpenID () {
+      return fetchpm(this, false, '/open/wx/openid/' + this.$route.query.code, {
+        method: 'POST'
+      }).then(resp => {
+        return resp.json()
+      }).then(body => {
+        console.info('fetchOpenID', body)
+        if (body.error === 0) {
+          sessionStorage.setItem('WXUser', JSON.stringify(body.data))
+          return body.data.openid
+        } else {
+          return null
+        }
+      })
     }
   }
 }
 </script>
 
 <style lang="less" module='s'>
+.warn{
+  text-align: center;
+  font-size: 20px;
+}
 .content{
   margin-top: 80px;
   font-size: 25px;
@@ -141,7 +176,6 @@ export default {
         flex: 1;
       }
       .revoke {
-
       }
     }
   }

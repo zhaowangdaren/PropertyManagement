@@ -87,6 +87,13 @@ func FindXiaoQus(db *mgo.Database, pageNo int, pageSize int) interface{} {
 	return gin.H{"error": 0, "data": gin.H{"xqs": result, "sum": sum}}
 }
 
+func FindXQ(db *mgo.Database, id string) XiaoQu {
+	c := db.C(XiaoQuTableName)
+	var result XiaoQu
+	c.Find(bson.M{"_id": id}).One(&result)
+	return result
+}
+
 //FindXQDistincts 查找key对应的不同values
 func FindXQDistincts(db *mgo.Database, key string) interface{} {
 	c := db.C(XiaoQuTableName)

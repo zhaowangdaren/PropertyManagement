@@ -26,8 +26,10 @@ export default {
   },
   mounted () {
     this.headerOptions.leftBtns[0].event = this.onReturn
-    this.fetchCommunities(this.$route.query.streetID)
-    sessionStorage.setItem('StreetID', this.$route.query.streetID)
+    if (this.$route.query.streetID && this.$route.query.streetID !== '') {
+      this.fetchCommunities(this.$route.query.streetID)
+      sessionStorage.setItem('StreetID', this.$route.query.streetID)
+    }
   },
   methods: {
     onReturn () {

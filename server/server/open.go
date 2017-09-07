@@ -24,7 +24,7 @@ const FileBasicPath = "/root/PropertyManagement/server/dist"
 const WXConfPath = "/root/PropertyManagement/server/dist/wx.json"
 
 //readFile readFile
-func readFile(filename string) (map[string]string, error) {
+func ReadFile(filename string) (map[string]string, error) {
 	bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
 		fmt.Println("readFile:", err.Error())
@@ -53,7 +53,7 @@ func sendHttpRequest(url string) string {
 	return bodystr
 }
 
-func getJson(url string) map[string]interface{} {
+func GetJson(url string) map[string]interface{} {
 	bodystr := sendHttpRequest(url)
 	var object interface{}
 	err := json.Unmarshal([]byte(bodystr), &object)
@@ -80,6 +80,15 @@ func Md5File(path string) (string, error) {
 }
 
 func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
+	router.POST("/regist", func(c *gin.Context) {
+		var info table.User
+		err := c.BindJSON(&info)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+		} else {
+			c.JSON(http.StatusOK, table.UserRegist(dbc, info))
+		}
+	})
 	//查询街道信息，入参：name\pageNo\pageSize，当name为空时会查询所有的街道
 	router.POST("/street", func(c *gin.Context) {
 		var queryInfo QueryBasic
@@ -128,6 +137,11 @@ func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
 	router.GET("/xq/name/:name", func(c *gin.Context) {
 		name := c.Param("name")
 		c.JSON(http.StatusOK, table.SearchXQByName(dbc, name))
+	})
+
+	router.GET("/streets/search/name/:name", func(c *gin.Context) {
+		name := c.Param("name")
+		c.JSON(http.StatusOK, table.SearchStreetByName(dbc, name))
 	})
 	router.POST("/upload", func(c *gin.Context) {
 		file, _ := c.FormFile("file")
@@ -255,18 +269,19 @@ func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
 		}
 	})
 
-	wxInfo, _ := readFile("/root/PropertyManagement/server/dist/wx.json")
+	wxInfo, _ := ReadFile("/root/PropertyManagement/server/dist/wx.json")
 	router.POST("/wx/openid/:code", func(c *gin.Context) {
 		code := c.Param("code")
 		glog.Info("WeChat Get code:", code)
 		glog.Info("WeChat appid appsecret", wxInfo)
-		resp := getJson("https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + wxInfo["appid"] + "&secret=" + wxInfo["appsecret"] + "&code=" + code + "&grant_type=authorization_code ")
+		resp := GetJson("https://api.weixin.qq.com/sns/oauth2/access_token?appid=" +
+			wxInfo["appid"] + "&secret=" + wxInfo["appsecret"] +
+			"&code=" + code + "&grant_type=authorization_code ")
 		fmt.Println("wxInfo[appid]", wxInfo["appid"])
 		fmt.Println("wxInfo[appsecret]", wxInfo["appsecret"])
 		fmt.Println("openid error", resp)
 		if resp == nil {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": "获取用户信息失败"})
-
 			return
 		}
 		glog.Info("WeChat Get openid", resp)

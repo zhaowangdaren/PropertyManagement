@@ -85,6 +85,25 @@ func InsertUser(db *mgo.Database, user User) interface{} {
 		return gin.H{"error": 1, "data": "已经存在用户名为" + user.UserName + "的用户，请重新设置"}
 	}
 	user.ID = bson.NewObjectId()
+	user.Pass = 1
+	err = nil
+	err = c.Insert(&user)
+	if err != nil {
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": Succ}
+}
+
+func UserRegist(db *mgo.Database, user User) interface{} {
+	c := db.C(UserTableName)
+	count, err := c.Find(bson.M{"username": user.UserName, "type": user.Type}).Count()
+	if err != nil {
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	if count > 0 {
+		return gin.H{"error": 1, "data": "已经存在用户名为" + user.UserName + "的用户，请重新设置"}
+	}
+	user.ID = bson.NewObjectId()
 	err = nil
 	err = c.Insert(&user)
 	if err != nil {

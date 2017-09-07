@@ -37,19 +37,19 @@
                 </el-option>
               </el-select>
             </td>
-            <td>选择所属街道</td>
+            <td :class='s.right'>选择所属街道</td>
           </tr>
           <tr v-if='regist.Type === 3'>
             <td :class='s.left'><span :class='s.red'>*</span>授权码</td>
             <td :class='s.mid'>
               <el-input></el-input>
             </td>
-            <td>输入指定授权码</td>
+            <td :class='s.right'>输入指定授权码</td>
           </tr>
         </table>
         <div  :class='s.bottom'>
           <el-button type='primary' @click='onSubmit'>提交</el-button>
-          <el-button @click='onBack'>返回</el-button>
+          <el-button @click='onCancel'>返回</el-button>
         </div>
       </form>
     </div>
@@ -58,6 +58,7 @@
 
 <script type="text/javascript">
 import fetchpm from '@/fetchpm'
+import { Message } from 'element-ui'
 export default {
   data () {
     return {
@@ -70,6 +71,7 @@ export default {
         RealName: '',
         Tel: '',
         StreetID: '',
+        Code: '', // 授权码
         Type: 0,
       },
       bgImg: require('@/res/images/bottom_bg.png'),
@@ -95,44 +97,58 @@ export default {
   },
   methods: {
     onSubmit () {
-      
-    },
-    onBack () {
-      this.$router.go(-1)
+      fetchpm(this, true, '/open/regist', {
+        method: 'POST',
+        body: this.regist
+      }).then(resp => {
+        return resp.json()
+      }).then(body => {
+        console.info('onSubmit', body)
+        if (body.error === 0) Message({type:'success', message: '恭喜，注册成功，请等待管理员审核'})
+        else this.warn = body.data
+      })
     }, 
     onRegist () {
       this.$router.push({name: 'Regist', query: {target: this.sourceParams.target}})
     },
     checkInput () {
-      if (this.login.username === '') {
+      if (this.regist.UserName === '') {
         this.warn = '请输入用户名'
         return false
       }
-      if (this.login.password === '') {
+      // .search(/\ /g)
+      if (this.regist.UserName.search(/\s/g) > -1) {
+        this.warn = '用户名中不能包含空格'
+        return false
+      }
+      if (this.regist.RealName === '') {
+        this.warn = '请输入真实用户名'
+        return false
+      }
+      if (this.regist.Password === '') {
         this.warn = '请输入密码'
         return false
       }
+      if (this.regist.Password.search(/\s/g) > -1) {
+        this.warn = '密码中不能包含空格'
+        return false
+      }
+
+      if (this.regist.Tel === '') {
+        this.warn = '请输入联系电话'
+        return false
+      }
+
+      if (this.regist.Type === 3 && this.regist.StreetID === '') {
+        this.warn = '请选择所属街道'
+        return false
+      }
+
+      if (this.regist.Type === 3 && this.regist.Code === '') {
+        this.warn = '请输入授权码'
+        return false
+      }
       return true
-    },
-    onLogin () {
-      if (!this.checkInput() || this.isLogining) return
-      this.isLogining = true
-      fetchpm(this, false, '/login', {
-        method: 'POST',
-        body: this.login
-      }).then(resp => {
-        return resp.json()
-      }).then( body => {
-        console.info('onLogin',body)
-        if (body.error == 0 && body.data.token && body.data.token !== "")  {
-          body.data.type = this.login.type
-          sessionStorage.setItem('user', JSON.stringify(body.data))
-          this.$router.push({path: this.sourceParams.target})
-        } else {
-          this.warn = body.data.message
-        }
-        this.isLogining = false
-      })
     },
     onCancel () {
       this.$router.go(-1);

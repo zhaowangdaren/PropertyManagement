@@ -81,8 +81,8 @@ export default{
       this.$router.go(-1)
     },
     onNext () {
-      this.event.StreetID = sessionStorage.getItem('cpStreetID')
-      this.event.CommunityID = sessionStorage.getItem('cpCommunityID')
+      this.event.StreetID = sessionStorage.getItem('StreetID')
+      this.event.CommunityID = sessionStorage.getItem('CommunityID')
       this.event.XQID = this.xq.ID
       this.event.Type = this.selectedEventType
       if(!this.checkEvent()) return
@@ -108,6 +108,18 @@ export default{
       }
       if (this.event.Content === '') {
         this.warn = '请填写内容'
+        return false
+      }
+      if (this.event.StreetID === '' || !this.event.StreetID) {
+        this.warn = '没有选择街道，请返回重新选择'
+        return false
+      }
+      if (this.event.CommunityID === '' || !this.event.CommunityID) {
+        this.warn = '没有选择社区，请返回重新选择'
+        return false
+      }
+      if (this.event.XQID === '' || !this.event.XQID) {
+        this.warn = '没有选择小区，请返回重新选择'
         return false
       }
       return true

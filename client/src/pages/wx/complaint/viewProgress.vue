@@ -12,7 +12,7 @@
           </select>
         </div>
         <div :class='s.item'>
-          <span :class='s.key'>投诉事件</span>
+          <span :class='s.key'>投诉时间</span>
           <select v-model='selectedTime'>
             <option v-for='time in times' 
               :value='time.value'
