@@ -72,9 +72,31 @@ func PushNotice2WX(eventHandle table.EventHandle, dbc *mgo.Database) {
 	}
 	// xqName := table.FindXQ(dbc, event.XQID).Name
 	// time := time.Unix(event.Time, 0).Format("2006-01-02 15:04:05")
-
+	// good
+	// 	pjson := `{
+	//   "touser": "oIVRq0ubSS9zMeCAKE55hlIAFBj8",
+	//   "template_id": "JfYCUICcZxvOjdYYFUQVVu47AepqfhGau0nvLhGPcVA",
+	//   "url": "https://www.maszfglzx.com/#/wx/detailsProgress?index=20170907221818572142744&status=",
+	//   "data": {
+	//     "first": {
+	//       "value": "您好，您的投诉已处理。具体信息如下："
+	//     },
+	//     "keyword1": {
+	//       "value": ""
+	//     },
+	//     "keyword2": {
+	//       "value": "居民提交"
+	//     },
+	//     "keyword3": {
+	//       "value": "2017-09-07 22:18:18"
+	//     },
+	//     "remark": {
+	//       "value": "感谢您的反馈"
+	//     }
+	//   }
+	// }`
 	pjson := `{
-  "touser": "oIVRq0ubSS9zMeCAKE55hlIAFBj8",
+  "touser": "` + userOpenID + `",
   "template_id": "JfYCUICcZxvOjdYYFUQVVu47AepqfhGau0nvLhGPcVA",
   "url": "https://www.maszfglzx.com/#/wx/detailsProgress?index=20170907221818572142744&status=",
   "data": {
@@ -95,22 +117,6 @@ func PushNotice2WX(eventHandle table.EventHandle, dbc *mgo.Database) {
     }
   }
 }`
-	// post := "{" +
-	// 	"\"touser\": \"" + userOpenID + "\"," +
-	// 	"\"template_id\": \"JfYCUICcZxvOjdYYFUQVVu47AepqfhGau0nvLhGPcVA\"," +
-	// 	"\"url\": \"https://www.maszfglzx.com/#/wx/detailsProgress?index=" + eventHandle.Index + "&status=" + string(event.Status) + "\"," +
-	// 	"\"data\": {" +
-	// 	"\"first\": {" +
-	// 	"\"value\": \"您好，您的投诉已处理。具体信息如下：\"}," +
-	// 	"\"keyword1\": {" +
-	// 	"\"value\": \"" + xqName + "\"}," +
-	// 	"\"keyword2\": {" +
-	// 	"\"value\": \"" + FilterEventStatus(event.Status) + "\"}," +
-	// 	"\"keyword3\": {" +
-	// 	"\"value\": \"" + time + "\"}," +
-	// 	"\"remark\": {" +
-	// 	"\"value\": \"感谢您的反馈\"}" +
-	// 	"}}"
 	access_token := GetAccessToken()
 	wxURL := "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + access_token
 	PostJson(wxURL, pjson)
