@@ -174,7 +174,7 @@ func FindEvents(db *mgo.Database, index string, pageNo int, pageSize int) interf
 func FindEvent(db *mgo.Database, index string) Event {
 	c := db.C(EventTableName)
 	var result Event
-	c.Find(bson.M{"index": bson.ObjectIdHex(index)}).One(&result)
+	c.Find(bson.M{"index": index}).One(&result)
 	return result
 }
 
