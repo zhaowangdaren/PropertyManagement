@@ -39,15 +39,11 @@ func FindTodayHandles(db *mgo.Database) interface{} {
 }
 
 //InsertEventHandle 插入
-func InsertEventHandle(db *mgo.Database, handle EventHandle) interface{} {
+func InsertEventHandle(db *mgo.Database, handle EventHandle) (EventHandle, error) {
 	c := db.C(EventHandleTableName)
 	handle.Time = time.Now().Unix()
 	err := c.Insert(&handle)
-	if err != nil {
-		log.Fatal(err)
-		return gin.H{"error": 1, "data": err.Error()}
-	}
-	return gin.H{"error": 0, "data": handle}
+	return handle, err
 }
 
 //FindEventHandle 按编号index查询事件

@@ -73,6 +73,9 @@ func FindStreetsByIDs(db *mgo.Database, ids []string) interface{} {
 	c := db.C(StreetTableName)
 	var result []Street
 	for _, id := range ids {
+		if id == "" {
+			continue
+		}
 		var street Street
 		c.Find(bson.M{"_id": bson.ObjectIdHex(id)}).One(&street)
 		if street != (Street{}) {

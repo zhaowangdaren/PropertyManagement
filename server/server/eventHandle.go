@@ -105,13 +105,13 @@ func startEventHandle(router *gin.RouterGroup, dbc *mgo.Database) {
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
 		} else {
-			result := table.InsertEventHandle(dbc, info)
-			c.JSON(http.StatusOK, result)
-			// errorResult, _ := in.(map([string]result.error
-			errorResult := result.(map[string]interface{})
-			if errorResult["error"].(int) == 0 {
-				PushNotice2WX(info, dbc)
+			result, err := table.InsertEventHandle(dbc, info)
+			if err != nil {
+				c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+				return
 			}
+			c.JSON(http.StatusOK, gin.H{"error": 0, "data": result})
+			PushNotice2WX(info, dbc)
 		}
 	})
 	router.POST("/eventHandle/detail/:index", func(c *gin.Context) {
