@@ -25,6 +25,7 @@ func PostJson(url, post string) {
 	if err != nil {
 		glog.Error(err.Error())
 	}
+	fmt.Println("PostJson", resp)
 	defer resp.Body.Close()
 }
 
