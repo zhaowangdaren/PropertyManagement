@@ -3,6 +3,7 @@ package server
 import (
 	"bytes"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"time"
 
@@ -25,7 +26,12 @@ func PostJson(url, post string) {
 	if err != nil {
 		glog.Error(err.Error())
 	}
-	fmt.Println("PostJson", resp)
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		// handle error
+	}
+
+	fmt.Println(string(body))
 	defer resp.Body.Close()
 }
 
