@@ -23,7 +23,7 @@ type Event struct {
 	StreetID    string //街道
 	CommunityID string //社区
 	XQID        string //投诉小区ID
-	Status      int    //事件状态  -1-用户撤销 0-居民提交 1-已审核待处理 2-已解决 3-已关闭
+	Status      int    //事件状态  -2-已关闭 -1-用户撤销 0-居民提交 1-已审核待处理 2-已处理待确认 3-已解决
 	EventLevel  int    //事件等级  1-特急、2-加急、3-急
 	Type        string `bson:"type" json:"type"` //事件基本类别
 	Content     string //投诉内容

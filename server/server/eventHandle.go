@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	"../db/table"
 	"github.com/gin-gonic/gin"
@@ -36,6 +37,8 @@ func PostJson(url, post string) {
 
 func FilterEventStatus(status int) string {
 	switch status {
+	case -2:
+		return "已关闭"
 	case -1:
 		return "用户撤销"
 	case 0:
@@ -43,9 +46,9 @@ func FilterEventStatus(status int) string {
 	case 1:
 		return "已审核待处理"
 	case 2:
-		return "已解决"
+		return "已处理待确认"
 	case 3:
-		return "已关闭"
+		return "已解决"
 	default:
 		return ""
 	}
@@ -70,8 +73,9 @@ func PushNotice2WX(eventHandle table.EventHandle, dbc *mgo.Database) {
 		glog.Error("Event:" + eventHandle.Index + " 没有查询到其OpenID")
 		return
 	}
-	// xqName := table.FindXQ(dbc, event.XQID).Name
-	// time := time.Unix(event.Time, 0).Format("2006-01-02 15:04:05")
+	xqName := table.FindXQ(dbc, event.XQID).Name
+	time := time.Unix(event.Time, 0).Format("2006-01-02 15:04:05")
+	status := FilterEventStatus(event.Status)
 	// good
 	// 	pjson := `{
 	//   "touser": "oIVRq0ubSS9zMeCAKE55hlIAFBj8",
@@ -98,19 +102,22 @@ func PushNotice2WX(eventHandle table.EventHandle, dbc *mgo.Database) {
 	pjson := `{
   "touser": "` + userOpenID + `",
   "template_id": "JfYCUICcZxvOjdYYFUQVVu47AepqfhGau0nvLhGPcVA",
-  "url": "https://www.maszfglzx.com/#/wx/detailsProgress?index=20170907221818572142744&status=",
+  "url": "https://www.maszfglzx.com/#/wx/detailsProgress?index=` + eventHandle.Index + `",
   "data": {
     "first": {
       "value": "您好，您的投诉已处理。具体信息如下："
     },
     "keyword1": {
-      "value": ""
+      "value": "` + xqName + `"
     },
-    "keyword2": {
-      "value": "居民提交"
+		"keyword2": {
+      "value": "` + time + `"
     },
     "keyword3": {
-      "value": "2017-09-07 22:18:18"
+      "value": "` + status + `"
+    },
+		"keyword4": {
+      "value": ""
     },
     "remark": {
       "value": "感谢您的反馈"
