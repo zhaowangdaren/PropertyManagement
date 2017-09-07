@@ -22,6 +22,8 @@ type User struct {
 	Tel      string
 	StreetID string //所在街道
 	Type     int    //1-admin 2-gov 3-street
+	Pass     int    // 1-通过审核
+	Code     string // 授权码
 }
 
 //FindUser 查找用户信息

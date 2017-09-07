@@ -8,22 +8,22 @@
           <tr>
             <td :class='s.left'><span :class='s.red'>*</span>用户名</td>
             <td :class='s.mid'><el-input type="text" name=""></el-input></td>
-            <td>由字母、数字或者下划线组成</td>
+            <td :class='s.right'>由字母、数字或者下划线组成</td>
           </tr>
           <tr>
             <td :class='s.left'><span :class='s.red'>*</span>真实姓名</td>
             <td :class='s.mid'><el-input type="text" name=""></el-input></td>
-            <td>真实中文名</td>
+            <td :class='s.right'>真实中文名</td>
           </tr>
           <tr>
             <td :class='s.left'><span :class='s.red'>*</span>密码</td>
             <td :class='s.mid'><el-input type="text" name=""></el-input></td>
-            <td>有6-16个英文字母、数字或下划线组成</td>
+            <td :class='s.right'>有6-16个英文字母、数字或下划线组成</td>
           </tr>
           <tr>
             <td :class='s.left'><span :class='s.red'>*</span>联系电话</td>
             <td :class='s.mid'><el-input type="text" name=""></el-input></td>
-            <td>手机号码或者固定电话</td>
+            <td :class='s.right'>手机号码或者固定电话</td>
           </tr>
           <tr v-if='regist.Type === 3'>
             <td :class='s.left'><span :class='s.red'>*</span>所属街道</td>
@@ -227,6 +227,9 @@ export default {
     box-sizing: border-box;
     width: 100%;
   }
+}
+.right{
+  text-align: left;
 }
 .selectStreet{
   width: 100%;
