@@ -183,6 +183,10 @@ func startEventHandle(router *gin.RouterGroup, dbc *mgo.Database) {
 		xqid := c.Query("xqid")
 		pm := table.FindPMByKV(dbc, "xqid", xqid)
 		pmUser := table.FindPMUserByKV(dbc, "pmid", string(pm.ID))
+		if pmUser.OpenId == "" {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": "该小区物业人员未绑定微信"})
+			return
+		}
 		event := table.FindEvent(dbc, eventIndex)
 		xqName := table.FindXQ(dbc, event.XQID).Name
 		pjson := `{
