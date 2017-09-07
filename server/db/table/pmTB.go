@@ -116,6 +116,12 @@ func FindWuYeKVs(db *mgo.Database, kvs map[string]interface{}) interface{} {
 	return gin.H{"error": 0, "data": result}
 }
 
+func FindPMByKV(db *mgo.Database, key string, value string) PM {
+	c := db.C(PMTableName)
+	var result PM
+	c.Find(bson.M{strings.ToLower(key): "value"}).One(&result)
+	return result
+}
 func FindPMsByIDs(db *mgo.Database, ids []string) interface{} {
 	c := db.C(PMTableName)
 	var result []PM

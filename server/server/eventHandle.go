@@ -177,4 +177,39 @@ func startEventHandle(router *gin.RouterGroup, dbc *mgo.Database) {
 	router.GET("/eventHandle/today/handles", func(c *gin.Context) {
 		c.JSON(http.StatusOK, table.FindTodayHandles(dbc))
 	})
+
+	router.GET("/eventHandle/noticepm", func(c *gin.Context) {
+		eventIndex := c.Query("index")
+		xqid := c.Query("xqid")
+		pm := table.FindPMByKV(dbc, "xqid", xqid)
+		pmUser := table.FindPMUserByKV(dbc, "pmid", string(pm.ID))
+		event := table.FindEvent(dbc, eventIndex)
+		xqName := table.FindXQ(dbc, event.XQID).Name
+		pjson := `{
+	  "touser": "` + pmUser.OpenID + `",
+	  "template_id": "TdVxvtwH1i24ArEUcx1FGmWNFI_11WFZvDGfBJ9cjBw",
+	  "url": "https://www.maszfglzx.com/#/wx/pm/event/details?index=` + eventIndex + `",
+	  "data": {
+	    "first": {
+	      "value": "您好，贵公司所服务的` + xqName + `有群众投诉，信息如下："
+	    },
+	    "keyword1": {
+	      "value": "` + eventIndex + `"
+	    },
+			"keyword2": {
+	      "value": "已分派"
+	    },
+	    "keyword3": {
+	      "value": "` + pm.Name + `"
+	    },
+	    "remark": {
+	      "value": "请贵公司及时进行处理"
+	    }
+	  }
+	}`
+		access_token := GetAccessToken()
+		wxURL := "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + access_token
+		PostJson(wxURL, pjson)
+		c.JSON(http.StatusOK, gin.H{"error": 0, "data": ""})
+	})
 }

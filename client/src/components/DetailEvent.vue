@@ -66,7 +66,7 @@
             <tr>
               <td :class='s.key'>操作</td>
               <td :class='s.value'>
-                <el-button type='success' v-if='userType === 3'>推送至物业公司</el-button>
+                <el-button type='success' v-if='userType === 3' @click='onNoticePM'>推送至物业公司</el-button>
                 <el-button type='primary' 
                   v-if='userType === 3'
                   @click='showAduitEventLevel = true'>审核等级</el-button>
@@ -186,6 +186,15 @@
       this.fetchEventDetails(this.$route.params.index)
     },
     methods: {
+      onNoticePM () {
+        fetchpm(this, true, '/pm/eventHandle/noticepm?index=' + this.event.Index + '&xqid=' + this.event.XQID, {
+          method: 'GET'
+        }).then(resp => {
+          return resp.json()
+        }).then(body => {
+          if (body.error == 0) Message({type:'success', message: '推送成功'})
+        })
+      },
       onClose () {
       },
       onAddEventHandleSucc (eventHandle) {

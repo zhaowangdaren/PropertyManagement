@@ -70,6 +70,13 @@ func FindPMUsers(db *mgo.Database, wxName string, pageNo int, pageSize int) inte
 	return gin.H{"error": 0, "data": result}
 }
 
+func FindPMUserByKV(db *mgo.Database, key string, value string) PMUser {
+	c := db.C(PMUserTableName)
+	var result PMUser
+	c.Find(bson.M{strings.ToLower(key): "value"}).One(&result)
+	return result
+}
+
 //FindPMUserDistinct 筛选key对应的value
 func FindPMUserDistinct(db *mgo.Database, key string) interface{} {
 	c := db.C(PMUserTableName)
