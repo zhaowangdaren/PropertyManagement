@@ -1,10 +1,10 @@
 package server
 
 import (
-	"bytes"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"time"
 
 	"../db/table"
@@ -15,8 +15,8 @@ import (
 
 func PostJson(url, post string) {
 	fmt.Println("PostJson", post)
-	var jsonStr = []byte(post)
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
+	// var jsonStr = []byte(post)
+	req, err := http.NewRequest("POST", url, strings.NewReader(post))
 	if err != nil {
 		glog.Error(err.Error())
 	}
