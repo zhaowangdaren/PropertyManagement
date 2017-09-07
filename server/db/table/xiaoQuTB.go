@@ -90,7 +90,7 @@ func FindXiaoQus(db *mgo.Database, pageNo int, pageSize int) interface{} {
 func FindXQ(db *mgo.Database, id string) XiaoQu {
 	c := db.C(XiaoQuTableName)
 	var result XiaoQu
-	c.Find(bson.M{"_id": id}).One(&result)
+	c.Find(bson.M{"_id": bson.ObjectIdHex(id)}).One(&result)
 	return result
 }
 
