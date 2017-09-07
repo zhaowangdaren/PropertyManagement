@@ -48,6 +48,7 @@ func FetchNewAccessToken() string {
 			wxinfo["appid"] + "&secret=" + wxinfo["appsecret"])
 	resp["time"] = time.Now().Unix()
 	jsonResp, _ := json.Marshal(resp)
+	os.Remove(AccessTokenFilePath)
 	WriteFile(AccessTokenFilePath, string(jsonResp))
 	return resp["access_token"].(string)
 }
