@@ -2,6 +2,7 @@ package server
 
 import (
 	"bytes"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -12,6 +13,7 @@ import (
 )
 
 func PostJson(url, post string) {
+	fmt.Println("PostJson", post)
 	var jsonStr = []byte(post)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 	if err != nil {
