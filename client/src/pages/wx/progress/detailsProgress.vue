@@ -2,7 +2,6 @@
   <div>
     <action-bar :OPTIONS='headerOptions'></action-bar>
     <div :class='s.content'>
-      <div :class='s.warn'>{{warn}}</div>
       <div :class='s.up'>
         <div :class='s.warn' v-text='warn'></div>
         <div :class='s.item'>
@@ -12,12 +11,12 @@
             v-if='event.Status == 0 || event.Status == 1'
             type='danger' 
             :class='s.revoke'
-            @click='onRevoke(event.Index)'>撤销事件</el-button>
+            @click='onRevoke'>撤销事件</el-button>
           <el-button 
             v-if='event.Status == 2'
             type='success' 
             :class='s.revoke'
-            @click='onSolved(event.Index)'>确认已解决</el-button>
+            @click='onSolved'>确认已解决</el-button>
         </div>
       </div>
       <div :class='s.event' v-for='handle in eventHandles'>
@@ -65,7 +64,6 @@ export default {
         title: '查看进度详情'
       },
       eventIndex: '',
-      eventStatus: 0,
       event: {
         Status: 0,
         Imgs:'',
@@ -93,7 +91,6 @@ export default {
   methods: {
     initData () {
       this.eventIndex = this.$route.query.index
-      this.eventStatus = this.$route.query.status
       this.fetchEvent()
       this.fetchEventHandle()
     },
@@ -140,14 +137,14 @@ export default {
       }).then(body => {
         console.info('fetchEvent', body)
         if (body.error === 0 ) {
-          this.event = body.data[0] || {}
+          this.event = body.data.events[0] || {}
         }
       })
     },
     fetchEventHandle () {
       fetchpm(this, false, '/open/eventHandle/kvs', {
         method: 'POST',
-        body: {index: this.eventIndex}
+        body: {Index: this.eventIndex}
       }).then(resp => {
         return resp.json()
       }).then(body => {
@@ -186,7 +183,7 @@ export default {
   font-size: 25px;
   .up{
     background-color: #fff;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    box-shadow: 0 1px 2px 2px rgba(0, 0, 0, 0.1);
     .item{
       padding: 10px;
       display: flex;
@@ -209,6 +206,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+    box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, .25);
     .left{
       flex: 1;
       .key{

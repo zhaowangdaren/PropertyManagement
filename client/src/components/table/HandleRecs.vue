@@ -60,16 +60,21 @@ export default {
       showingHandle:{},
       pageNo: 0,
       pageSize: 10,
-      sum: 0
+      sum: 0,
+      user: {
+        UserName: '',
+        type: 0
+      }
     }
   },
   mounted () {
-    var user = JSON.parse(sessionStorage.getItem('user')) || {}
-    this.fetchEventHandles(user.UserName, user.type)
+    this.user = JSON.parse(sessionStorage.getItem('user')) || {}
+    this.fetchEventHandles(this.user.UserName, this.user.type)
   },
   methods: {
-    onChangePage () {
-
+    onChangePage (curPage) {
+      this.pageNo = curPage - 1
+      this.fetchEventHandles(this.user.UserName, this.user.type)
     },
     onHandleDetails (eventHandle) {
       this.showingHandle = eventHandle

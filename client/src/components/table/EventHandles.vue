@@ -282,6 +282,14 @@
               return item.Status > 0
             })
             this.sum = body.data.sum || 0
+            var cids = this.events.map(item => {
+              return item.CommunityID
+            })
+            this.fetchCommunities(cids)
+            var xids = this.events.map(item => {
+              return item.XQID
+            })
+            this.fetchXQs(xids)
           }
           else Message({type: 'error', message: body.data})
         })
@@ -306,7 +314,7 @@
         }).then(resp => {
           return resp.json()
         }).then(body => {
-          console.info('fetchCommunitiesByStreetID', body)
+          console.info('fetchCommunities', body)
           this.communities = body.data || []
         })
       },

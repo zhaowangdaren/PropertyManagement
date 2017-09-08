@@ -17,19 +17,19 @@
       <!-- 用户名 真实姓名  密码  电话  操作 -->
         <th>用户名</th>
         <th>真实姓名</th>
-        <th v-if='USER_TYPE == 3' >街道</th>
+        <th v-if='userType == 3' >街道</th>
         <th>密码</th>
         <th>办公电话</th>
-        <th>授权码</th>
+        <th v-if='userType !== 2'>授权码</th>
         <th>操作</th>
       </tr>
       <tr v-for='(user, index) in users' :class='s.gov'>
         <td v-text='user.UserName'></td>
         <td v-text='user.RealName'></td>
-        <td v-if='USER_TYPE == 3' v-text='streetNames[index]'></td>
+        <td v-if='userType == 3' v-text='streetNames[index]'></td>
         <td v-text='user.Password'></td>
         <td v-text='user.Tel'></td>
-        <td v-text='user.Code'></td>
+        <td v-text='user.Code' v-if='userType !== 2'></td>
         <td :class='s.operations' align="center">
           <el-button type='primary' v-if='user.Pass === 0' @click='onPass(user, index)' :loading='isPassing === index ? true : false'>审核</el-button>
           <el-button type='info' disabled='true' v-if='user.Pass === 1'>已审核</el-button>
@@ -61,7 +61,7 @@
       title='新增用户'
       :visible.sync='showAddDialog'
       size='small'>
-      <add-user v-if='showAddDialog' @cancel='showAddDialog = false' @addSucc='onAddSucc' :USER_TYPE='USER_TYPE'></add-user>
+      <add-user v-if='showAddDialog' @cancel='showAddDialog = false' @addSucc='onAddSucc' :userType='userType'></add-user>
     </el-dialog>
     <el-dialog
       title='编辑用户'
@@ -94,7 +94,7 @@
   export default {
     components: {ImageButton, AddUser, EditUser},
     props: {
-      USER_TYPE: Number//用户类型
+      userType: Number//用户类型
     },
     data () {
       return {
@@ -115,7 +115,7 @@
     },
     computed: {
       streetNames: function () {
-        if (this.USER_TYPE !== 3) return []
+        if (this.userType !== 3) return []
         return this.users.map(user => {
           for (let i = 0; i < this.streets.length; i++) {
             if (this.streets[i].ID == user.StreetID) return this.streets[i].Name
@@ -126,7 +126,7 @@
     },
     mounted () {
       this.fetchUsers()
-      if (this.USER_TYPE == 3) this.fetchAllStreets()
+      if (this.userType == 3) this.fetchAllStreets()
     },
     methods: {
       onPass (user, index) {
@@ -184,7 +184,7 @@
       fetchUsers () {
         fetchpm(this, true, '/pm/users', {
           method: "POST",
-          body: {type : this.USER_TYPE, pageNo: this.pageNo, pageSize: this.pageSize}
+          body: {type : this.userType, pageNo: this.pageNo, pageSize: this.pageSize}
         }).then(resp => {
           return resp.json()
         }).then(body => {
@@ -242,7 +242,7 @@
     }
     .gov{
       &:hover {
-        background-color: #ddd;
+        background-color: #f1f3f6;
       }
       .operations{
         .bt{

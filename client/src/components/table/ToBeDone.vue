@@ -23,8 +23,9 @@
           <tr v-for='(handle, index) in events'>
             <td>
               <i :class='"iconfont icon-gaojing " + s.lv1' v-if='handle.EventLevel === 1' ></i>
-              <i :class='"iconfont icon-gaojing " + s.lv2' v-if='handle.EventLevel === 2' ></i>
-              <i :class='"iconfont icon-gaojing " + s.lv3' v-if='handle.EventLevel === 3' ></i>
+              <i :class='"iconfont icon-gaojing " + s.lv2' v-else-if='handle.EventLevel === 2' ></i>
+              <i :class='"iconfont icon-gaojing " + s.lv3' v-else-if='handle.EventLevel === 3' ></i>
+              <i class="iconfont icon-gaojing" v-else></i>
             </td>
             <td v-text='handle.Index'></td>
             <td>{{ handle.Time | filterTime}}</td>
@@ -51,7 +52,6 @@
           </el-pagination>
           <div :class='s.pageTip'>其中<span>{{sum - events.length}}</span>条事件已关闭或已被用户撤销</div>
         </div>
-        
       </div>
     </div>
   </div>

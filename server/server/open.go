@@ -177,7 +177,7 @@ func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
 
 	router.POST("/event/id/:id", func(c *gin.Context) {
 		eventID := c.Param("id")
-		c.JSON(http.StatusOK, table.FindEvents(dbc, eventID, 1, 1))
+		c.JSON(http.StatusOK, table.FindEvents(dbc, eventID, 0, 1))
 	})
 
 	router.PUT("/event/addImgs", func(c *gin.Context) {

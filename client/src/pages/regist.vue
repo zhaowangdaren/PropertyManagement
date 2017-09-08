@@ -205,7 +205,7 @@ export default {
   align-items: center;
   overflow: auto;
   .formWrap{
-    min-width: 40%;
+    // min-width: 40%;
     .title{
       font-size: 30px;
       text-align: center;

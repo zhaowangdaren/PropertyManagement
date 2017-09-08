@@ -68,7 +68,7 @@ export default {
   },
   mounted () {
     this.user.Type = this.USER_TYPE
-    this.fetchAllStreets()
+    if (this.user.Type == 3) this.fetchAllStreets()
   },
   methods: {
     resetData () {
