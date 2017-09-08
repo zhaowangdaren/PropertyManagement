@@ -4,7 +4,9 @@
  * @return {[type]}      [description]
  */
 export default function (time) {
+  console.info(time)
   var result = new Date(time * 1000)
+  console.info('filterTime', result)
   return result.getFullYear() + '年' 
       + (result.getMonth() + 1 ) + '月' 
       + result.getDate() +'日 '

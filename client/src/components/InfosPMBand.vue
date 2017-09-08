@@ -204,7 +204,8 @@
 <style lang="less" module='s'>
 .wrap{
   .searchWrap{
-    display: flex;
+    display: none;
+    // display: flex;
     align-items: center;
     margin-top: 10px;
     width: 100%;

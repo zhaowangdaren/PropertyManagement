@@ -119,7 +119,7 @@ export default {
   justify-content: center;
   align-items: center;
   .formWrap{
-    width: 40%;
+    // width: 40%;
     .title{
       font-size: 30px;
       text-align: center;

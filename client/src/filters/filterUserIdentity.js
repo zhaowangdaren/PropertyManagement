@@ -1,12 +1,12 @@
 export default function (type) {
   switch (type) {
     case 1:
-      return '管理员'
+      return '系统管理员'
     case 2:
-      return 'Gov'
+      return '政府主管单位'
     case 3:
-      return 'Street'
+      return '街道办公人员'
     default:
-      return '--'
+      return ''
   }
 }

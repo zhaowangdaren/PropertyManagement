@@ -31,4 +31,14 @@ func startPMKPI(router *gin.RouterGroup, dbc *mgo.Database) {
 			c.JSON(http.StatusOK, table.FindPMKPIByKVs(dbc, params))
 		}
 	})
+
+	router.POST("/pmkpi/kvs/page", func(c *gin.Context) {
+		var params QueryKVs
+		err := c.BindJSON(&params)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+		} else {
+			c.JSON(http.StatusOK, table.FindPMKPIByKVsPage(dbc, params.KVs, params.PageNo, params.PageSize))
+		}
+	})
 }

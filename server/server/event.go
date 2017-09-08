@@ -1,7 +1,6 @@
 package server
 
 import (
-	"log"
 	"net/http"
 
 	"../db/table"
@@ -26,9 +25,30 @@ func startEvent(router *gin.RouterGroup, dbc *mgo.Database) {
 		err := c.BindJSON(&params)
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
-			log.Println(err.Error())
 		} else {
 			c.JSON(http.StatusOK, table.FindEventKVs(dbc, params))
+		}
+	})
+
+	router.POST("/event/kvs/page", func(c *gin.Context) {
+		var params QueryKVs
+		err := c.BindJSON(&params)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+		} else {
+			c.JSON(http.StatusOK, table.FindEventKVsPage(dbc, params.KVs, params.PageNo, params.PageSize))
+		}
+	})
+	// 查询当个kv，并分页显示
+	router.POST("/event/kv", func(c *gin.Context) {
+		var params QueryKV
+		err := c.BindJSON(&params)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+		} else {
+			c.JSON(http.StatusOK,
+				table.FindEventKV(dbc,
+					params.Key, params.Value, params.PageNo, params.PageSize))
 		}
 	})
 

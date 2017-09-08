@@ -11,6 +11,7 @@
             <td :class='s.key'>年份</td>
             <td>
               <el-date-picker
+                :class='s.elSelect'
                 v-model="selectedYear"
                 type="year"
                 placeholder="选择年份">
@@ -19,7 +20,7 @@
             <!-- 季度 -->
             <td :class='s.key'>季度</td>
             <td>
-              <el-select v-model="selectedQuarter" filterable placeholder="选择季度">
+              <el-select v-model="selectedQuarter" filterable placeholder="选择季度" :class='s.elSelect'>
                 <el-option
                   v-for="item in quarters"
                   :key="item.value"
@@ -36,7 +37,7 @@
           <tr>
             <td :class='s.key'>街道</td>
             <td>
-              <el-select v-model="selectedStreetID" filterable placeholder="请选择街道">
+              <el-select v-model="selectedStreetID" filterable placeholder="请选择街道" :class='s.elSelect'>
                 <el-option
                   v-for="item in streets"
                   :key="item.ID"
@@ -47,7 +48,7 @@
             </td>
             <td :class='s.key'>社区</td>
             <td>
-              <el-select v-model="selectedCommunityID" filterable placeholder="请选择社区">
+              <el-select v-model="selectedCommunityID" filterable placeholder="请选择社区" :class='s.elSelect'>
                 <el-option
                   v-for="item in communities"
                   :key="item.ID"
@@ -58,7 +59,7 @@
             </td>
             <td :class='s.key'>小区</td>
             <td>
-              <el-select v-model="selectedXQID" filterable placeholder="请选择小区">
+              <el-select v-model="selectedXQID" filterable placeholder="请选择小区" :class='s.elSelect'>
                 <el-option
                   v-for="item in xqs"
                   :key="item.ID"
@@ -98,6 +99,12 @@
             <td colspan="7">无记录</td>
           </tr>
         </table>
+        <el-pagination
+          layout="total, prev, pager, next"
+          @current-change='onChangePage'
+          :page-size='pageSize'
+          :total="sum">
+        </el-pagination>
       </div>
     </div>
   </div>
@@ -121,12 +128,15 @@ export default {
       xqs:[],
       communities: [],
       streets: [],
-      KPIs:[]
+      KPIs:[],
+      sum: 0,
+      pageNo: 0,
+      pageSize: 10
     }
   },
   mounted () {
     this.selectedYear = new Date()
-    this.fetchKPIs('')
+    this.onInputSearch()
     this.fetechAllStreets()
   },
   watch: {
@@ -140,6 +150,10 @@ export default {
     }
   },
   methods: {
+    onChangePage (curPage) {
+      this.pageNo = curPage - 1
+      this.onInputSearch()
+    },
     onCurQuarter () {
       var today = new Date()
 
@@ -203,15 +217,16 @@ export default {
       })
     },
     onSearch (data) {
-      fetchpm(this, true, '/pm/pmkpi/kvs', {
+      fetchpm(this, true, '/pm/pmkpi/kvs/page', {
         method: 'POST',
-        body: data
+        body: {KVs: data, PageNo: this.pageNo, PageSize: this.pageSize}
       }).then(resp => {
         return resp.json()
       }).then(body => {
         console.info('onSearch', body)
         if (body.error === 0) {
-          this.KPIs = body.data || []
+          this.KPIs = body.data.pmkpis || []
+          this.sum = body.data.sum || 0
         } else {
           this.KPIs = []
         }
@@ -282,5 +297,8 @@ export default {
       }
     }    
   }
+}
+.elSelect{
+  width: 100%;
 }
 </style>

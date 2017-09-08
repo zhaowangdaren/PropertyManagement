@@ -18,6 +18,18 @@ type QueryBasic struct {
 	PageSize int
 }
 
+type QueryKV struct {
+	Key      string
+	Value    string
+	PageNo   int
+	PageSize int
+}
+
+type QueryKVs struct {
+	KVs      map[string]interface{}
+	PageNo   int
+	PageSize int
+}
 type QueryHouse struct {
 	BuildNo  string
 	PageNo   int

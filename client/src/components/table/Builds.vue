@@ -8,7 +8,11 @@
       <tr>
         <td :class='s.title'>街道</td>
         <td>
-          <el-select v-model="inputStreetID" filterable placeholder="全部">
+          <el-select v-model="inputStreetID" filterable placeholder="全部" :class='s.elSelect'>
+            <el-option
+              key=''
+              label='全部'
+              value=''></el-option>
             <el-option
               v-for="item in streets"
               :key="item.ID"
@@ -19,7 +23,11 @@
         </td>
         <td :class='s.title'>社区</td>
         <td>
-          <el-select v-model="inputCommunityID" filterable placeholder="全部">
+          <el-select v-model="inputCommunityID" filterable placeholder="全部" :class='s.elSelect'>
+            <el-option
+              key=''
+              label='全部'
+              value=''></el-option>
             <el-option
               v-for="item in communities"
               :key="item.ID"
@@ -30,7 +38,11 @@
         </td>
         <td :class='s.title'>小区</td>
         <td>
-          <el-select v-model="inputXQID" filterable placeholder="全部">
+          <el-select v-model="inputXQID" filterable placeholder="全部" :class='s.elSelect'>
+            <el-option
+              key=''
+              label='全部'
+              value=''></el-option>
             <el-option
               v-for="item in xqs"
               :key="item.ID"
@@ -90,7 +102,7 @@
         <td colspan="6">无记录</td>
       </tr>
     </table>
-    <el-pagination v-if='showPage'
+    <el-pagination
       layout="total, prev, pager, next"
       @current-change='onChangePage'
       :page-size='pageSize'
@@ -168,17 +180,19 @@
     computed: {
     },
     mounted () {
-      this.fetchHouses()
+      this.onSearch()
       this.fetechAllStreets()
     },
     watch: {
       inputStreetID: function (val) {
         this.inputCommunityID = ''
+        this.communities = []
         if (this.isLoadingInput ) return
         this.fetchAllCommunitiesByStreetID(val)
       },
       inputCommunityID: function (val) {
         this.inputXQID = ''
+        this.xqs = []
         if (this.isLoadingInput ) return
         this.fetchAllXQByCommunityID(val)
       },
@@ -186,7 +200,7 @@
     methods: {
       onChangePage (curPage) {
         this.pageNo = curPage - 1
-        this.fetchHouses()
+        this.onSearch()
       },
       onAddSucc () {
         this.fetchHouses()
@@ -224,31 +238,27 @@
       },
       onSearch () {
         //小区》社区》街道
-        if (this.inputXQID !== '') {
-          this.fetchHouseKVs({XQID: this.inputXQID})
-          return
-        }
-        if (this.inputCommunityID !== '') {
-          this.fetchHouseKVs({communityID: this.inputCommunityID})
-          return
-        }
-        if (this.inputStreetID !== '') {
-          this.fetchHouseKVs({streetID: this.inputStreetID})
-          return
-        }
+        var kvs = this.formatInput()
+        this.fetchHouses(kvs, this.pageNo, this.pageSize)
       },
-      fetchHouses () {
-        fetchpm(this, true, '/pm/house', {
+      formatInput () {
+        var result = {}
+        if (this.inputXQID !== '') result.XQID = this.inputXQID
+        if (this.inputCommunityID !== '') result.CommunityID = this.inputCommunityID
+        if (this.inputStreetID !== '') result.StreetID = this.inputStreetID
+        return result
+      },
+      fetchHouses (kvs, pageNo, pageSize) {
+        fetchpm(this, true, '/pm/house/kvs/page', {
           method: 'POST',
-          body: {pageNo: this.pageNo, pageSize: this.pageSize}
+          body: {KVs:kvs, PageNo: pageNo, PageSize: pageSize}
         }).then(resp =>{
           return resp.json()
         }).then(body => {
           console.info('fetchHouses', body)
           if (body.error !== 0) return
-          this.houses = body.data.builds || []
+          this.houses = body.data.houses || []
           this.sum = body.data.sum || 0
-          this.showPage = true
           this.fetchXQNames()
         })
       },
@@ -376,5 +386,8 @@
     color: red;
     text-align: center;
   }
+}
+.elSelect{
+  width: 100%;
 }
 </style>

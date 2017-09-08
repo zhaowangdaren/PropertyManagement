@@ -58,6 +58,7 @@ export default {
       console.info('onSave')
       if (this.inputEventLevel == '') return
       this.updateEvent.EventLevel = this.inputEventLevel
+      if (this.updateEvent.Status === 0) this.updateEvent.Status = 1
       fetchpm(this, true, '/pm/event/update', {
         method: 'POST',
         body: this.updateEvent

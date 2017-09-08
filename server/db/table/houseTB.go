@@ -129,6 +129,27 @@ func FindHouseKVs(db *mgo.Database, kvs map[string]interface{}) interface{} {
 	return gin.H{"error": 0, "data": result}
 }
 
+func FindHouseByKVsPage(db *mgo.Database, kvs map[string]interface{}, pageNo int, pageSize int) interface{} {
+	querys := make(map[string]interface{})
+	for k, v := range kvs {
+		querys[strings.ToLower(k)] = v
+	}
+	c := db.C(HouseTabelName)
+	query := c.Find(querys)
+	sum, _ := query.Count()
+	var err error
+	var result []House
+	if pageSize != 0 {
+		err = query.Skip(pageNo * pageSize).Limit(pageSize).All(&result)
+	} else { //查询所有
+		err = query.All(&result)
+	}
+	if err != nil {
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": gin.H{"houses": result, "sum": sum}}
+}
+
 //DelHouses 删除
 func DelHouses(db *mgo.Database, ids []string) interface{} {
 	c := db.C(HouseTabelName)

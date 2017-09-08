@@ -13,7 +13,7 @@
 			<tr v-for='eventType in eventTypes'>
 				<td>{{eventType.Type}}</td>
 				<td class="flex1">
-					<el-button type='danger' icon='delete' @click='onDel(eventType)' :loading='isDeling'>删除</el-button>
+					<el-button type='danger' icon='delete' @click='onShowDel(eventType)' :loading='isDeling'>删除</el-button>
 				</td>
 			</tr>
 			<tr v-if='eventTypes.length === 0'>
@@ -32,13 +32,26 @@ export default {
 			eventTypes: [],
 			newEventType: '',
 			isAdding: false,
-			isDeling: false
+			isDeling: false,
+			delingType: '',
+			showDel: false
 		}
 	},
 	mounted () {
 		this.fetchEventTypes()
 	},
 	methods: {
+		onShowDel (eventType) {
+			this.$confirm('将删除事件类型：' + eventType.Type + ', 是否继续？', '提示', {
+				confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+			}).then(() => {
+				this.onDel(eventType)
+			}).catch(() => {
+				Message({type: 'info', message: '已取消删除'})
+			})
+		},
 		onDel (eventType) {
 			if (this.isDeling) return
 			this.isDeling = true
@@ -52,6 +65,7 @@ export default {
 					Message({message: body.data, type:'error'})
 				} else {
 					this.fetchEventTypes()
+					Message({type: 'success', message: '删除成功'})
 				}
 				this.isDeling = false
 			})

@@ -10,7 +10,7 @@
           用户上传
           <div :class='s.imgs'>
             <img v-for='img in eventImgs' :src='host + "/open/image/" + img' @click='onImg(img)' :class='s.eventImg'>
-            <div v-if='eventImgs.length === 0'>暂无图片</div>
+            <div v-show='eventImgs.length === 0'>暂无图片</div>
           </div>
           <el-dialog v-model="imgVisible" size="tiny">
             <img width="100%" :src='host + "/open/image/" + showingImg' alt="">
@@ -29,7 +29,11 @@
   事件等级： 特急 -->
             <tr>
               <td :class='s.key'>警告类型</td>
-              <td :class='s.value'><i class="iconfont icon-gaojing"></i></td>
+              <td :class='s.value'>
+                <i :class='"iconfont icon-gaojing " + s.lv1' v-if='event.EventLevel === 1' ></i>
+                <i :class='"iconfont icon-gaojing " + s.lv2' v-if='event.EventLevel === 2' ></i>
+                <i :class='"iconfont icon-gaojing " + s.lv3' v-if='event.EventLevel === 3' ></i>
+              </td>
             </tr>
             <tr>
               <td :class='s.key'>事件编号</td>
@@ -49,7 +53,7 @@
             </tr>
             <tr>
               <td :class='s.key'>投诉时间</td>
-              <td :class='s.value' v-text='event.Time'></td>
+              <td :class='s.value'>{{event.Time | filterTime }}</td>
             </tr>
             <tr>
               <td :class='s.key'>事件类型</td>
@@ -66,7 +70,7 @@
             <tr>
               <td :class='s.key'>操作</td>
               <td :class='s.value'>
-                <el-button type='success' v-if='userType === 3' @click='onNoticePM'>推送至物业公司</el-button>
+                <el-button type='success' v-show='userType === 3' @click='onNoticePM'>推送至物业公司</el-button>
                 <el-button type='primary' 
                   v-if='userType === 3'
                   @click='showAduitEventLevel = true'>审核等级</el-button>
@@ -84,7 +88,7 @@
                 <el-dialog
                   title='询问事件'
                   :visible.sync='showAddEventHandle'>
-                  <add-event-handle 
+                  <add-event-handle
                     :eventIndex='event.Index' 
                     @succ='onAddEventHandleSucc'
                     @cancel='showAddEventHandle = false'>
@@ -93,7 +97,13 @@
                 <el-button
                   v-if='userType == 3'
                   type='danger'
+                  :disabled='(event.RequestClose === 1 ? true : false)'
                   @click='onClose'>申请关闭</el-button>
+                <el-button
+                  v-if='userType == 2'
+                  type='success'
+                  :disabled='(event.Status === -2 ? true : false)'
+                  @click='onAgreeClose'>同意关闭</el-button>
               </td>
             </tr>
           </table>
@@ -117,10 +127,10 @@
             <th>处理内容</th>
             <th>操作</th>
           </tr>
-          <tr v-for='handle in eventHandles'>
-            <td v-text='handle.AuthorCategory'></td>
+          <tr v-for='handle in eventHandles' v-if='eventHandles && eventHandles.length > 0'>
+            <td v-text=''>{{ handle.AuthorCategory | filterUserIdentity}}</td>
             <td v-text='handle.AuthorName'></td>
-            <td v-text='handle.Time'></td>
+            <td >{{handle.Time | filterTime }}</td>
             <td v-text='handle.HandleInfo'></td>
             <td>
               <el-button type="primary" icon="search" @click='showHandleDetails = true'>详情</el-button>
@@ -128,6 +138,9 @@
                 <details-event-handle :eventHandle='handle'></details-event-handle>
               </el-dialog>
             </td>
+          </tr>
+          <tr v-if='!eventHandles || eventHandles.length === 0'>
+            <td colspan="5">无记录</td>
           </tr>
         </table>
       </div>
@@ -138,16 +151,19 @@
 <script>
   import filterEventStatus from '@/filters/filterEventStatus'
   import filterEventLevel from '@/filters/filterEventLevel'
+  import filterUserIdentity from '@/filters/filterUserIdentity'
+  import filterTime from '@/filters/filterTime'
   import fetchpm from '@/fetchpm'
   import BasicDialog from '@/components/dialog/BasicDialog'
   import AduitEventLevel from '@/components/dialog/AduitEventLevel'
   import AddEventHandle from '@/components/dialog/AddEventHandle'
   import DetailsEventHandle from '@/components/dialog/DetailsEventHandle'
+  import { Message } from 'element-ui'
   export default {
     components: {
       BasicDialog, AduitEventLevel, AddEventHandle, DetailsEventHandle
     },
-    filters: {filterEventStatus, filterEventLevel},
+    filters: {filterEventStatus, filterEventLevel, filterTime, filterUserIdentity},
     props: {
       eventIndex: String
     },
@@ -164,6 +180,7 @@
           Type: '',
           Status: 0,
           EventLevel: 0,
+          RequestClose: 0,
           Imgs:''//以逗号为分隔符
         },
         eventImgs: [],
@@ -193,9 +210,43 @@
           return resp.json()
         }).then(body => {
           if (body.error == 0) Message({type:'success', message: '推送成功'})
+          else Message({type: 'error', message: body.data})
+        })
+      },
+      onAgreeClose () {
+        var temp = Object.assign({}, this.event)
+        temp.Status = -2
+        fetchpm(this, true, '/pm/event/update', {
+          method: 'POST',
+          body: temp
+        }).then(resp => {
+          return resp.json()
+        }).then(body => {
+          if (body.error === 0) {
+            Message({type: 'success', message: '成功关闭'})
+            this.event.Status = -2
+          } else {
+            Message({type: 'error', message: body.data})
+          }
         })
       },
       onClose () {
+        var temp = Object.assign({}, this.event)
+        temp.RequestClose = 1
+        fetchpm(this, true, '/pm/event/update', {
+          method: 'POST',
+          body: temp
+        }).then(resp => {
+          return resp.json()
+        }).then(body => {
+          if (body.error === 0) {
+            Message({type: 'success', message: '申请成功'})
+            this.event.RequestClose = 1
+          } else {
+            Message({type: 'error', message: body.data})
+          }
+        })
+
       },
       onAddEventHandleSucc (eventHandle) {
         this.eventHandles.push(eventHandle)
@@ -244,7 +295,7 @@
         }).then(body => {
           console.info('fetchEventHandle', body)
           if (body.error === 0) {
-            this.eventHandles = body.data || []
+            this.eventHandles = body.data.eventHandles || []
           }
           
         })
@@ -412,5 +463,14 @@
       }
     }
   }
+}
+.lv3{
+  color: #4c87b9;
+}
+.lv2{
+  color: orange;
+}
+.lv1{
+  color: red;
 }
 </style>

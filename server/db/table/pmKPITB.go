@@ -62,3 +62,24 @@ func FindPMKPIByKVs(db *mgo.Database, kvs map[string]interface{}) interface{} {
 	}
 	return gin.H{"error": 0, "data": result}
 }
+
+func FindPMKPIByKVsPage(db *mgo.Database, kvs map[string]interface{}, pageNo int, pageSize int) interface{} {
+	querys := make(map[string]interface{})
+	for k, v := range kvs {
+		querys[strings.ToLower(k)] = v
+	}
+	c := db.C(PMKPITableName)
+	query := c.Find(querys)
+	sum, _ := query.Count()
+	var err error
+	var result []PMKPI
+	if pageSize != 0 {
+		err = query.Skip(pageNo * pageSize).Limit(pageSize).All(&result)
+	} else { //查询所有
+		err = query.All(&result)
+	}
+	if err != nil {
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": gin.H{"pmkpis": result, "sum": sum}}
+}

@@ -31,7 +31,7 @@
         <td v-text='user.Tel'></td>
         <td v-text='user.Code'></td>
         <td :class='s.operations' align="center">
-          <el-button type='primary' v-if='user.Pass === 0' @click='onPass(user)' :loading='isPassing'>审核</el-button>
+          <el-button type='primary' v-if='user.Pass === 0' @click='onPass(user, index)' :loading='isPassing === index ? true : false'>审核</el-button>
           <el-button type='info' disabled='true' v-if='user.Pass === 1'>已审核</el-button>
           <el-button
             @click='onEdit(user)'
@@ -110,7 +110,7 @@
         pageSize: 10,
         sum: 0,
         showPage: true,
-        isPassing: false
+        isPassing: -1
       }
     },
     computed: {
@@ -129,8 +129,8 @@
       if (this.USER_TYPE == 3) this.fetchAllStreets()
     },
     methods: {
-      onPass (user) {
-        this.isPassing = true
+      onPass (user, index) {
+        this.isPassing = index
         var tempUser = Object.assign({}, user)
         tempUser.Pass = 1
         fetchpm(this, true, '/pm/user/update', {
@@ -144,8 +144,10 @@
             Message({message:body.data, type:'error'})
           }
           else {
+            user.Pass = 1
             Message({message:'恭喜，修改成功', type:'success'})
           }
+          this.isPassing = -1
         })
       },
       onChangePage (curPage) {

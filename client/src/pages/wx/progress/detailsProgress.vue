@@ -9,10 +9,15 @@
           <div :class='s.key'>进度：</div>
           <div :class='s.value'>{{event.Status | filterEventStatus }}</div>
           <el-button 
-            v-if='event.Status == 0'
+            v-if='event.Status == 0 || event.Status == 1'
             type='danger' 
             :class='s.revoke'
             @click='onRevoke(event.Index)'>撤销事件</el-button>
+          <el-button 
+            v-if='event.Status == 2'
+            type='success' 
+            :class='s.revoke'
+            @click='onSolved(event.Index)'>确认已解决</el-button>
         </div>
       </div>
       <div :class='s.event' v-for='handle in eventHandles'>
@@ -96,6 +101,23 @@ export default {
       this.showingImgs = imgs
       this.showImgs = true
       console.info('onShowImgs',this.showingImgs)
+    },
+    onSolved () {
+      var temp = Object.assign({}, this.event)
+      temp.Status = 3
+      fetchpm(this, false,'/open/event/update', {
+        method: 'POST',
+        body: temp
+      }).then(resp => {
+        return resp.json()
+      }).then(body => {
+        console.info('onRevoke', body)
+        if (body.error === 0 ) {
+          this.event.Status = 3
+          this.warn = '投诉已解决'
+        }
+        else this.warn = body.data
+      })
     },
     onRevoke () {
       this.event.Status = -1

@@ -49,18 +49,25 @@ func InsertEventHandle(db *mgo.Database, handle EventHandle) (EventHandle, error
 //FindEventHandle 按编号index查询事件
 func FindEventHandle(db *mgo.Database, index string, pageNo int, pageSize int) interface{} {
 	c := db.C(EventHandleTableName)
-	var result []EventHandle
-	var err error
+	var query *mgo.Query
 	if index == "" {
-		err = c.Find(nil).All(&result)
+		query = c.Find(nil)
 	} else {
-		err = c.Find(bson.M{"index": index}).All(&result)
+		query = c.Find(bson.M{"index": index})
+	}
+	sum, _ := query.Count()
+	var err error
+	var result []EventHandle
+
+	if pageSize != 0 {
+		err = query.Skip(pageNo * pageSize).Limit(pageSize).All(&result)
+	} else { //查询所有
+		err = query.All(&result)
 	}
 	if err != nil {
-		log.Println(err.Error())
 		return gin.H{"error": 1, "data": err.Error()}
 	}
-	return gin.H{"error": 0, "data": result}
+	return gin.H{"error": 0, "data": gin.H{"eventHandles": result, "sum": sum}}
 }
 
 //FindEventHandlesByKV find by kvs
@@ -77,4 +84,25 @@ func FindEventHandlesByKV(db *mgo.Database, kvs map[string]interface{}) interfac
 		return gin.H{"error": 1, "data": err.Error()}
 	}
 	return gin.H{"error": 0, "data": result}
+}
+
+func FindEventHandleByKVsPage(db *mgo.Database, kvs map[string]interface{}, pageNo int, pageSize int) interface{} {
+	querys := make(map[string]interface{})
+	for k, v := range kvs {
+		querys[strings.ToLower(k)] = v
+	}
+	c := db.C(EventHandleTableName)
+	query := c.Find(querys)
+	sum, _ := query.Count()
+	var err error
+	var result []EventHandle
+	if pageSize != 0 {
+		err = query.Skip(pageNo * pageSize).Limit(pageSize).All(&result)
+	} else { //查询所有
+		err = query.All(&result)
+	}
+	if err != nil {
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": gin.H{"eventHandles": result, "sum": sum}}
 }

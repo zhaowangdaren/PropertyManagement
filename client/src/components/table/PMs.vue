@@ -10,7 +10,7 @@
           <tr>
             <td :class='s.key' v-if='STREET_ID === ""'>街道名</td>
             <td v-if='STREET_ID === ""'>
-              <el-select v-model="inputStreetID" filterable placeholder="选择街道">
+              <el-select v-model="inputStreetID" filterable placeholder="选择街道" :class='s.elSelect'>
                 <el-option
                   v-for="item in streets"
                   :key="item.ID"
@@ -21,7 +21,7 @@
             </td>
             <td :class='s.key'>社区名</td>
             <td>
-              <el-select v-model="inputCommunityID" filterable placeholder="选择社区">
+              <el-select v-model="inputCommunityID" filterable placeholder="选择社区" :class='s.elSelect'>
                 <el-option
                   v-for="item in communities"
                   :key="item.ID"
@@ -32,7 +32,7 @@
             </td>
             <td :class='s.key'>小区名</td>
             <td>
-              <el-select v-model="inputXQID" filterable placeholder="选择小区">
+              <el-select v-model="inputXQID" filterable placeholder="选择小区" :class='s.elSelect'>
                 <el-option
                   v-for="item in xqs"
                   :key="item.ID"
@@ -370,5 +370,8 @@ export default {
       margin: 10px;
     }
   }
+}
+.elSelect{
+  width: 100%;
 }
 </style>

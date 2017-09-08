@@ -17,20 +17,21 @@ const EventTableName = "Event"
 
 //Event 投诉事件表
 type Event struct {
-	Index       string //事件编号
-	Complainant string //投诉人
-	OpenID      string // 投诉人wx open ID
-	StreetID    string //街道
-	CommunityID string //社区
-	XQID        string //投诉小区ID
-	Status      int    //事件状态  -2-已关闭 -1-用户撤销 0-居民提交 1-已审核待处理 2-已处理待确认 3-已解决
-	EventLevel  int    //事件等级  1-特急、2-加急、3-急
-	Type        string `bson:"type" json:"type"` //事件基本类别
-	Content     string //投诉内容
-	Time        int64  //提交时间
-	ToCourt     int8   //0-不推送至法院 1-推送至法院
-	Imgs        string //图片表格，以,为分割符
-	Tel         string //联系电话
+	Index        string //事件编号
+	Complainant  string //投诉人
+	OpenID       string // 投诉人wx open ID
+	StreetID     string //街道
+	CommunityID  string //社区
+	XQID         string //投诉小区ID
+	Status       int    //事件状态  -2-已关闭 -1-用户撤销 0-居民提交 1-已审核待处理 2-已处理待确认 3-已解决
+	RequestClose int    // 1-申请关闭
+	EventLevel   int    //事件等级  1-特急、2-加急、3-急
+	Type         string //事件基本类别
+	Content      string //投诉内容
+	Time         int64  //提交时间
+	ToCourt      int8   //0-不推送至法院 1-推送至法院
+	Imgs         string //图片表格，以,为分割符
+	Tel          string //联系电话
 }
 
 //EventNum 不同事件类型的数量
@@ -159,16 +160,22 @@ func FindEvents(db *mgo.Database, index string, pageNo int, pageSize int) interf
 	c := db.C(EventTableName)
 	var result []Event
 	var err error
+	var query *mgo.Query
 	if index == "" {
-		err = c.Find(nil).All(&result)
+		query = c.Find(nil)
 	} else {
-		err = c.Find(bson.M{"index": index}).All(&result)
+		query = c.Find(bson.M{"index": index})
+	}
+	sum, _ := query.Count()
+	if pageSize != 0 {
+		err = query.Skip(pageNo * pageSize).Limit(pageSize).All(&result)
+	} else { //查询所有
+		err = query.All(&result)
 	}
 	if err != nil {
-		log.Println(err.Error())
 		return gin.H{"error": 1, "data": err.Error()}
 	}
-	return gin.H{"error": 0, "data": result}
+	return gin.H{"error": 0, "data": gin.H{"events": result, "sum": sum}}
 }
 
 func FindEvent(db *mgo.Database, index string) Event {
@@ -216,6 +223,75 @@ func FindEventKVs(db *mgo.Database, kvs map[string]interface{}) interface{} {
 		return gin.H{"error": 0, "data": timeResult}
 	}
 	return gin.H{"error": 0, "data": result}
+}
+
+func FindEventKVsPage(db *mgo.Database, kvs map[string]interface{}, pageNo int, pageSize int) interface{} {
+	querys := make(map[string]interface{})
+	var startTime int64
+	var endTime int64
+	startTime = 0
+	endTime = 9223372036854775807
+	hasTime := false
+	for k, v := range kvs {
+		if k == "StartTime" {
+			startTime = int64(v.(float64))
+			hasTime = true
+			continue
+		}
+		if k == "EndTime" {
+			endTime = int64(v.(float64))
+			hasTime = true
+			continue
+		}
+		querys[strings.ToLower(k)] = v
+	}
+	c := db.C(EventTableName)
+	var result []Event
+	// query := c.Find(querys)
+	var query *mgo.Query
+	if hasTime {
+		selector := bson.M{
+			"$and": []bson.M{
+				bson.M{"time": bson.M{"$gte": startTime}},
+				bson.M{"time": bson.M{"$lte": endTime}},
+				querys,
+			},
+		}
+		query = c.Find(selector)
+	} else {
+		query = c.Find(querys)
+	}
+	sum, _ := query.Count()
+	var err error
+	if pageSize != 0 {
+		err = query.Skip(pageNo * pageSize).Limit(pageSize).All(&result)
+	} else { //查询所有
+		err = query.All(&result)
+	}
+
+	// err := c.Find(querys).All(&result)
+	if err != nil {
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": gin.H{"events": result, "sum": sum}}
+}
+
+func FindEventKV(db *mgo.Database, key string, value string,
+	pageNo int, pageSize int) interface{} {
+	c := db.C(EventTableName)
+	var result []Event
+	var err error
+	query := c.Find(bson.M{strings.ToLower(key): value})
+	sum, _ := query.Count()
+	if pageSize != 0 {
+		err = query.Skip(pageNo * pageSize).Limit(pageSize).All(&result)
+	} else { //查询所有
+		err = query.All(&result)
+	}
+	if err != nil {
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": gin.H{"events": result, "sum": sum}}
 }
 
 //CountDiffKeyEvents 统计不同key-value的数量

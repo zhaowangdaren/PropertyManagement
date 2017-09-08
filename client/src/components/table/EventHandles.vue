@@ -23,7 +23,7 @@
             </td>
             <td :class='s.key'>事件等级</td>
             <td>
-              <el-select v-model="inputEventLevel" filterable placeholder="全部">
+              <el-select v-model="inputEventLevel" filterable placeholder="全部" :class='s.elSelect'>
                 <el-option
                   v-for="item in eventLevels"
                   :key="item.value"
@@ -34,12 +34,17 @@
             </td>
             <td :class='s.key'>事件类型</td>
             <td>
-              <el-select v-model="inputType" filterable placeholder="全部">
+              <el-select v-model="inputType" filterable placeholder="全部" :class='s.elSelect'>
+                <el-option
+                  key=''
+                  label='全部'
+                  value=''>
+                </el-option>
                 <el-option
                   v-for="item in eventTypes"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
+                  :key="item.Type"
+                  :label="item.Type"
+                  :value="item.Type">
                 </el-option>
               </el-select>
             </td>
@@ -48,6 +53,7 @@
             <td :class='s.key'>选择开始时间</td>
             <td>
               <el-date-picker
+                :class='s.elSelect'
                 v-model="inputStartTime"
                 type="datetime"
                 placeholder="选择日期时间">
@@ -56,6 +62,7 @@
             <td :class='s.key'>选择结束时间</td>
             <td>
               <el-date-picker
+                :class='s.elSelect'
                 v-model="inputEndTime"
                 type="datetime"
                 placeholder="选择日期时间">
@@ -63,7 +70,12 @@
             </td>
             <td :class='s.key'>事件状态</td>
             <td>
-              <el-select v-model="inputEventStatus" filterable placeholder="全部">
+              <el-select v-model="inputEventStatus" filterable placeholder="全部" :class='s.elSelect'>
+                <el-option
+                  key=''
+                  label='全部'
+                  value=''>
+                </el-option>
                 <el-option
                   v-for="item in eventStatus"
                   :key="item.value"
@@ -76,7 +88,7 @@
           <tr>
             <td :class='s.key'>社区</td>
             <td>
-              <el-select v-model="inputCommunityID" filterable placeholder="全部">
+              <el-select v-model="inputCommunityID" filterable placeholder="全部" :class='s.elSelect'>
                 <el-option
                   v-for="item in allCommunities"
                   :key="item.ID"
@@ -87,7 +99,7 @@
             </td>
             <td :class='s.key'>小区</td>
             <td>
-              <el-select v-model="inputXQID" filterable placeholder="全部">
+              <el-select v-model="inputXQID" filterable placeholder="全部" :class='s.elSelect'>
                 <el-option
                   v-for="item in allXQs"
                   :key="item.ID"
@@ -117,7 +129,9 @@
           </tr>
           <tr v-for='(handle, index) in events'>
             <td>
-              <i class="iconfont icon-gaojing"></i>
+              <i :class='"iconfont icon-gaojing " + s.lv1' v-if='handle.EventLevel === 1' ></i>
+              <i :class='"iconfont icon-gaojing " + s.lv2' v-if='handle.EventLevel === 2' ></i>
+              <i :class='"iconfont icon-gaojing " + s.lv3' v-if='handle.EventLevel === 3' ></i>
             </td>
             <td v-text='handle.Index'></td>
             <td>{{ handle.Time | filterTime}}</td>
@@ -134,6 +148,16 @@
             <td colspan="9">没有记录</td>
           </tr>
         </table>
+        <div :class='s.pageWrap'>
+          <el-pagination
+            layout="total, prev, pager, next"
+            @current-change='onChangePage'
+            :page-size='pageSize'
+            :total="sum">
+          </el-pagination>
+          <div :class='s.pageTip'>其中<span>{{sum - events.length}}</span>条事件已关闭或已被用户撤销</div>
+        </div>
+        
       </div>
     </div>
   </div>
@@ -152,6 +176,7 @@
     data () {
       return {
         userStreetID: '',
+        userType: 0,
         //user Input
         inputCommunityID: '',
         inputXQID: '',
@@ -163,9 +188,12 @@
         inputEventStatus: '',
 
         events: [],
+        pageNo: 0,
+        pageSize: 10,
+        sum: 0,
         eventLevels:[{value: 0, label:"全部"}, {value: 1, label:"特急"}, {value: 2, label: "加急"}, {value: 3, label: "急"}],
-        eventTypes: [{value: 0,label: "全部"}, {value: 1, label:"type1"}, {value: 2, label:"type2"}, {value: 3, label: 'type3'}],
-        eventStatus: [{value: 0, label:"全部"}, {value: 1, label: 'status1'}, {value: 2, label:'status2'}, {value: 3, label: 'status3'}, {value: 4, label:'status4'}],
+        eventTypes: [],
+        eventStatus: [{value: 0, label:"居民提交"}, {value: -2, label: '已关闭'}, {value: -1, label:'用户撤销'}, {value: 1, label: '已审核待处理'}, {value: 2, label:'已处理待确认'}, {value: 3, label:'已解决'}],
         communities: [],
         xqs:[],
         allCommunities: [],
@@ -173,10 +201,13 @@
       }
     },
     mounted () {
-      this.fetchEvents('')
       var user = JSON.parse(sessionStorage.getItem('user')) || {}
       this.userStreetID = user.StreetID
+      this.userType = user.type
+      // this.fetchEventsByStreetID(this.userStreetID, this.pageNo, this.pageSize)
+      this.onSearch()
       this.fetchAllCommunitiesByStreetID(this.userStreetID)
+      this.fetchEventTypes()
     },
     watch: {
       inputCommunityID: function (value) {
@@ -184,6 +215,23 @@
       }
     },
     methods: {
+      onChangePage (curPage) {
+        this.pageNo = curPage - 1
+        // this.fetchEventsByStreetID(this.userStreetID, this.pageNo, this.pageSize)
+        this.onSearch()
+      },
+      fetchEventTypes () {
+        fetchpm(this, false, '/open/wx/event/types',{
+          method: 'GET'
+        }).then(resp => {
+          return resp.json()
+        }).then(body => {
+          console.info('fetchEventTypes', body)
+          if (body.error !== 1){
+            this.eventTypes = body.data || []
+          }
+        })
+      },
       fetchAllCommunitiesByStreetID (streetID) {
         if ( !streetID || streetID == '') return null
         fetchpm( this, true, '/pm/community/kvs', {
@@ -208,25 +256,39 @@
           this.allXQs = body.data
         })
       },
+      // onSearch () {
+      //   var search = this.formatInputData()
+      //   fetchpm(this, true, '/pm/event/kvs', {
+      //     method: 'POST',
+      //     body: search
+      //   }).then(resp => {
+      //     return resp.json()
+      //   }).then(body => {
+      //     console.info('onSearch', body)
+      //     if (body.error !== 1) this.events = body.data || []
+      //   })
+      // },
       onSearch () {
         var search = this.formatInputData()
-        fetchpm(this, true, '/pm/event/kvs', {
+        fetchpm(this, true, '/pm/event/kvs/page', {
           method: 'POST',
-          body: search
+          body: {KVs: search, PageNo: this.pageNo, PageSize: this.pageSize}
         }).then(resp => {
           return resp.json()
         }).then(body => {
           console.info('onSearch', body)
-          if (body.error !== 1) this.events = body.data || []
+          if (body.error === 0) {
+            this.events = (body.data.events || []).filter(item => {
+              return item.Status > 0
+            })
+            this.sum = body.data.sum || 0
+          }
+          else Message({type: 'error', message: body.data})
         })
       },
       formatInputData () {
-        console.info('inputCommunityID', this.inputCommunityID)
-        console.info('inputXQID', this.inputXQID)
-        console.info('inputIndex', this.inputIndex)
-        console.info('inputType', this.inputType)
-        console.info('inputStartTime', this.inputStartTime)
         var result = {}
+        if (this.userType === 3) result = {StreetID: this.userStreetID}
         if (this.inputIndex !== '') result.Index = this.inputIndex
         if (this.inputEventLevel !== '' && this.inputEventLevel !== 0) result.EventLevel = this.inputEventLevel
         if (this.inputType !== '' && this.inputType !== 0) result.Type = this.inputType
@@ -263,6 +325,31 @@
           }
         })
       },
+      fetchEventsByStreetID (streetID, pageNo, pageSize) {
+        if (!streetID ) {
+          console.info('streetID', streetID)
+        }
+        fetchpm(this, true, '/pm/event/kv', {
+          method: 'POST',
+          body: {Key: 'streetID', Value: streetID, PageNo: pageNo, PageSize: pageSize}
+        }).then(resp => {
+          return resp.json()
+        }).then(body => {
+          console.info('fetchEvents', body)
+          this.events = (body.data.events || []).filter(item => {
+            return item.Status >= 0
+          })
+          this.sum = body.data.sum || 0
+          let communityIDs = this.events.map((item) => {
+            return item.CommunityID
+          })
+          this.fetchCommunities(communityIDs)
+          let xqIDs = this.events.map((item) => {
+            return item.XQID
+          })
+          this.fetchXQs(xqIDs)
+        })
+      },
       fetchEvents (index) {
         if (!index ) {
           console.info('index', index)
@@ -274,7 +361,7 @@
           return resp.json()
         }).then(body => {
           console.info('fetchEvents', body)
-          this.events = body.data || {}
+          this.events = body.data.events || []
           let communityIDs = this.events.map((item) => {
             return item.CommunityID
           })
@@ -315,9 +402,32 @@
     .body{
       margin: 10px;
       .key{
-        background-color: #ddd;
+        background-color: #f1f3f6;
       }
     }    
   }
+}
+.lv3{
+  color: #4c87b9;
+}
+.lv2{
+  color: orange;
+}
+.lv1{
+  color: red;
+}
+.pageWrap{
+  display: flex;
+  align-items: center;
+}
+.pageTip{
+  color: #999;
+  span{
+    color: #222;
+    font-size: 20px;
+  }
+}
+.elSelect{
+  width: 100%;
 }
 </style>

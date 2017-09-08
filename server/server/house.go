@@ -46,6 +46,15 @@ func startHouse(router *gin.RouterGroup, dbc *mgo.Database) {
 		}
 	})
 
+	router.POST("/house/kvs/page", func(c *gin.Context) {
+		var params QueryKVs
+		err := c.BindJSON(&params)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+		} else {
+			c.JSON(http.StatusOK, table.FindHouseByKVsPage(dbc, params.KVs, params.PageNo, params.PageSize))
+		}
+	})
 	router.POST("/house/update", func(c *gin.Context) {
 		var update table.House
 		err := c.BindJSON(&update)

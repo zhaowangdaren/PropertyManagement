@@ -1,17 +1,28 @@
 <template>
   <div :class='s.wrap'>
     <span :class='s.userName'>{{userName}} ,您好</span>
+    <span :class='s.item' @click='onChangePassword'>
+      <i class='iconfont icon-xiugaimima'></i>修改密码
+    </span>
     <span :class='s.item' @click='onLogout'>
       <i class='iconfont icon-kaiguan'></i>退出
     </span>
+    <el-dialog
+      title='修改密码'
+      :visible.sync='showChangePassword'>
+      <change-password v-if='showChangePassword' />
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import ChangePassword from '@/components/dialog/ChangePassword'
 export default {
+  components: { ChangePassword },
   data () {
     return {
-      userName: ''
+      userName: '',
+      showChangePassword: false
     }
   },
   mounted () {
@@ -19,9 +30,11 @@ export default {
     this.userName = user.UserName
   },
   methods:{
+    onChangePassword () {
+      this.showChangePassword = true;
+    },
     onLogout () {
       sessionStorage.clear()
-      debugger
       this.$router.push({path: '/'})
     },
   }
@@ -42,6 +55,8 @@ export default {
   justify-content: flex-end;
   align-items: center;
   font-weight: bold;
+  color: #555;
+  margin: auto 10px;
   i{
     margin-right: 5px;
     color: #999;

@@ -15,7 +15,7 @@
           <th>操作</th>
         </tr>
         <tr v-for='handle in eventHandles'>
-          <td v-text='handle.AuthorCategory'></td>
+          <td >{{handle.AuthorCategory | filterUserIdentity}}</td>
           <td v-text='handle.AuthorName'></td>
           <td>{{ handle.Time | filterTime }}</td>
           <td v-text='handle.HandleInfo' class="descr"></td>
@@ -27,6 +27,12 @@
           <td colspan="5">无记录</td>
         </tr>
       </table>
+      <el-pagination
+        layout="total, prev, pager, next"
+        @current-change='onChangePage'
+        :page-size='pageSize'
+        :total="sum">
+      </el-pagination>
       <el-dialog 
         v-model="showHandleDetails" 
         size="tiny" 
@@ -43,14 +49,18 @@
 import DetailsEventHandle from '@/components/dialog/DetailsEventHandle'
 import fetchpm from '@/fetchpm'
 import filterTime from '@/filters/filterTime'
+import filterUserIdentity from '@/filters/filterUserIdentity'
 export default {
   components: { DetailsEventHandle },
-  filters: { filterTime },
+  filters: { filterTime, filterUserIdentity },
   data () {
     return {
       showHandleDetails: false,
       eventHandles: [],
-      showingHandle:{}
+      showingHandle:{},
+      pageNo: 0,
+      pageSize: 10,
+      sum: 0
     }
   },
   mounted () {
@@ -58,20 +68,24 @@ export default {
     this.fetchEventHandles(user.UserName, user.type)
   },
   methods: {
+    onChangePage () {
+
+    },
     onHandleDetails (eventHandle) {
       this.showingHandle = eventHandle
       this.showHandleDetails = true
     },
     fetchEventHandles (AuthorName, AuthorCategory) {
-      fetchpm(this, true, '/pm/eventHandle/kvs', {
+      fetchpm(this, true, '/pm/eventHandle/kvs/page', {
         method: 'POST',
-        body: {AuthorName: AuthorName, AuthorCategory: AuthorCategory}
+        body: {KVs: {AuthorName: AuthorName, AuthorCategory: AuthorCategory}, PageNo: this.pageNo, PageSize: this.pageSize}
       }).then(resp => {
         return resp.json()
       }).then(body => {
         console.info('fetchEventHandles', body)
         if (body.error === 0) {
-          this.eventHandles = body.data || []
+          this.eventHandles = body.data.eventHandles || []
+          this.sum = body.data.sum || 0
         }
         
       })

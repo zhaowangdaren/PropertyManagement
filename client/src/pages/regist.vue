@@ -7,28 +7,43 @@
         <table :class='s.table'>
           <tr>
             <td :class='s.left'><span :class='s.red'>*</span>用户名</td>
-            <td :class='s.mid'><el-input type="text" name=""></el-input></td>
+            <td :class='s.mid'><el-input type="text" name="" v-model='regist.UserName'></el-input></td>
             <td :class='s.right'>由字母、数字或者下划线组成</td>
           </tr>
           <tr>
             <td :class='s.left'><span :class='s.red'>*</span>真实姓名</td>
-            <td :class='s.mid'><el-input type="text" name=""></el-input></td>
+            <td :class='s.mid'><el-input type="text" name="" v-model='regist.RealName'></el-input></td>
             <td :class='s.right'>真实中文名</td>
           </tr>
           <tr>
             <td :class='s.left'><span :class='s.red'>*</span>密码</td>
-            <td :class='s.mid'><el-input type="text" name=""></el-input></td>
+            <td :class='s.mid'><el-input type="text" name="" v-model='regist.Password'></el-input></td>
             <td :class='s.right'>有6-16个英文字母、数字或下划线组成</td>
           </tr>
           <tr>
             <td :class='s.left'><span :class='s.red'>*</span>联系电话</td>
-            <td :class='s.mid'><el-input type="text" name=""></el-input></td>
+            <td :class='s.mid'><el-input type="text" name="" v-model='regist.Tel'></el-input></td>
             <td :class='s.right'>手机号码或者固定电话</td>
           </tr>
           <tr v-if='regist.Type === 3'>
             <td :class='s.left'><span :class='s.red'>*</span>所属街道</td>
             <td :class='s.mid'>
-              <el-select v-model="regist.StreetID" filterable placeholder="请选择" :class='s.selectStreet'>
+              <!-- <el-select v-model="regist.StreetID" filterable placeholder="请选择" >
+                <el-option
+                  v-for="item in streets"
+                  :key="item.ID"
+                  :label="item.Name"
+                  :value="item.ID">
+                </el-option>
+              </el-select> -->
+              <el-select
+                :class='s.selectStreet'
+                v-model="regist.StreetID"
+                filterable
+                remote
+                placeholder="请输入关键词"
+                :remote-method="searchStreet"
+                :loading="isSearching">
                 <el-option
                   v-for="item in streets"
                   :key="item.ID"
@@ -42,7 +57,7 @@
           <tr v-if='regist.Type === 3'>
             <td :class='s.left'><span :class='s.red'>*</span>授权码</td>
             <td :class='s.mid'>
-              <el-input></el-input>
+              <el-input v-model='regist.Code'></el-input>
             </td>
             <td :class='s.right'>输入指定授权码</td>
           </tr>
@@ -74,6 +89,8 @@ export default {
         Code: '', // 授权码
         Type: 0,
       },
+      streets: [],
+      isSearching: false,
       bgImg: require('@/res/images/bottom_bg.png'),
       isLogining: false
     }
@@ -96,8 +113,24 @@ export default {
     }
   },
   methods: {
+    searchStreet (name) {
+      if (name === '') return
+      this.isSearching = true
+      fetchpm(this, false, '/open/streets/search/name/' + name, {
+        method: 'GET'
+      }).then(resp => {
+        return resp.json()
+      }).then(body => {
+        if (body.error === 0) this.streets = body.data || []
+        else Message({type: 'error', message: body.data})
+        this.isSearching = false
+      }).catch(error => {
+        Message({type: 'error', message: error})
+        this.isSearching = false
+      })
+    },
     onSubmit () {
-      fetchpm(this, true, '/open/regist', {
+      fetchpm(this, false, '/open/regist', {
         method: 'POST',
         body: this.regist
       }).then(resp => {
@@ -170,6 +203,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: auto;
   .formWrap{
     min-width: 40%;
     .title{
