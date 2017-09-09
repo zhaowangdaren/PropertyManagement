@@ -130,8 +130,9 @@
           <tr v-for='(handle, index) in events'>
             <td>
               <i :class='"iconfont icon-gaojing " + s.lv1' v-if='handle.EventLevel === 1' ></i>
-              <i :class='"iconfont icon-gaojing " + s.lv2' v-if='handle.EventLevel === 2' ></i>
-              <i :class='"iconfont icon-gaojing " + s.lv3' v-if='handle.EventLevel === 3' ></i>
+              <i :class='"iconfont icon-gaojing " + s.lv2' v-else-if='handle.EventLevel === 2' ></i>
+              <i :class='"iconfont icon-gaojing " + s.lv3' v-else-if='handle.EventLevel === 3' ></i>
+              <i v-else class="iconfont icon-gaojing"></i>
             </td>
             <td v-text='handle.Index'></td>
             <td>{{ handle.Time | filterTime}}</td>
@@ -141,6 +142,9 @@
             <td>{{handle.EventLevel | filterEventLevel }}</td>
             <td v-text='handle.Type'></td>
             <td>
+              <el-button type='info' :plain="true" v-if='handle.Status === -2'>已关闭</el-button>
+              <el-button type='info' :plain="true" v-else-if='handle.Status === -1'>用户已撤销</el-button>
+              <el-button type='info' :plain="true" v-else-if='handle.Status === 3'>已解决</el-button>
               <el-button type="primary" icon="search" @click='toDetails(handle)'>查看</el-button>
             </td>
           </tr>
@@ -204,7 +208,6 @@
       var user = JSON.parse(sessionStorage.getItem('user')) || {}
       this.userStreetID = user.StreetID
       this.userType = user.type
-      // this.fetchEventsByStreetID(this.userStreetID, this.pageNo, this.pageSize)
       this.onSearch()
       this.fetchAllCommunitiesByStreetID(this.userStreetID)
       this.fetchEventTypes()
@@ -217,7 +220,6 @@
     methods: {
       onChangePage (curPage) {
         this.pageNo = curPage - 1
-        // this.fetchEventsByStreetID(this.userStreetID, this.pageNo, this.pageSize)
         this.onSearch()
       },
       fetchEventTypes () {
@@ -256,18 +258,6 @@
           this.allXQs = body.data
         })
       },
-      // onSearch () {
-      //   var search = this.formatInputData()
-      //   fetchpm(this, true, '/pm/event/kvs', {
-      //     method: 'POST',
-      //     body: search
-      //   }).then(resp => {
-      //     return resp.json()
-      //   }).then(body => {
-      //     console.info('onSearch', body)
-      //     if (body.error !== 1) this.events = body.data || []
-      //   })
-      // },
       onSearch () {
         var search = this.formatInputData()
         fetchpm(this, true, '/pm/event/kvs/page', {
@@ -278,9 +268,12 @@
         }).then(body => {
           console.info('onSearch', body)
           if (body.error === 0) {
-            this.events = (body.data.events || []).filter(item => {
-              return item.Status > 0
+            this.events = (body.data.events || []).sort((a, b) => {
+              return b.Time - a.Time
             })
+            // this.events = (body.data.events || []).filter(item => {
+            //   return item.Status >= 0
+            // })
             this.sum = body.data.sum || 0
             var cids = this.events.map(item => {
               return item.CommunityID
@@ -300,7 +293,7 @@
         if (this.inputIndex !== '') result.Index = this.inputIndex
         if (this.inputEventLevel !== '' && this.inputEventLevel !== 0) result.EventLevel = this.inputEventLevel
         if (this.inputType !== '' && this.inputType !== 0) result.Type = this.inputType
-        if (this.inputEventStatus !== '' && this.inputEventStatus !== 0) result.EventStatus = this.inputEventStatus
+        if (this.inputEventStatus !== '' && this.inputEventStatus !== 0) result.Status = this.inputEventStatus
         if (this.inputStartTime !== '') result.StartTime = this.inputStartTime.getTime() / 1000
         if (this.inputEndTime !== '') result.EndTime = this.inputEndTime.getTime() / 1000
         if (this.inputCommunityID !== '') result.CommunityID = this.inputCommunityID
@@ -331,53 +324,6 @@
           else if (body.data !== null ) {
             this.xqs = body.data
           }
-        })
-      },
-      fetchEventsByStreetID (streetID, pageNo, pageSize) {
-        if (!streetID ) {
-          console.info('streetID', streetID)
-        }
-        fetchpm(this, true, '/pm/event/kv', {
-          method: 'POST',
-          body: {Key: 'streetID', Value: streetID, PageNo: pageNo, PageSize: pageSize}
-        }).then(resp => {
-          return resp.json()
-        }).then(body => {
-          console.info('fetchEvents', body)
-          this.events = (body.data.events || []).filter(item => {
-            return item.Status >= 0
-          })
-          this.sum = body.data.sum || 0
-          let communityIDs = this.events.map((item) => {
-            return item.CommunityID
-          })
-          this.fetchCommunities(communityIDs)
-          let xqIDs = this.events.map((item) => {
-            return item.XQID
-          })
-          this.fetchXQs(xqIDs)
-        })
-      },
-      fetchEvents (index) {
-        if (!index ) {
-          console.info('index', index)
-        }
-        fetchpm(this, true, '/pm/event', {
-          method: 'POST',
-          body: {index: index}
-        }).then(resp => {
-          return resp.json()
-        }).then(body => {
-          console.info('fetchEvents', body)
-          this.events = body.data.events || []
-          let communityIDs = this.events.map((item) => {
-            return item.CommunityID
-          })
-          this.fetchCommunities(communityIDs)
-          let xqIDs = this.events.map((item) => {
-            return item.XQID
-          })
-          this.fetchXQs(xqIDs)
         })
       },
       toDetails (event) {
@@ -429,6 +375,7 @@
   align-items: center;
 }
 .pageTip{
+  display: none;
   color: #999;
   span{
     color: #222;

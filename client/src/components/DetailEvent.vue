@@ -143,6 +143,12 @@
             <td colspan="5">无记录</td>
           </tr>
         </table>
+        <el-pagination
+          layout="total, prev, pager, next"
+          @current-change='onChangePage'
+          :page-size='pageSize'
+          :total="sum">
+        </el-pagination>
       </div>
     </div>
   </div>
@@ -189,6 +195,9 @@
         xqName: '',
         showingImg: '',
         eventHandles:[],
+        pageNo: 0,
+        pageSize: 10,
+        sum: 0,
         imgVisible: false,
         showHandleDetails: false,//查看详情
         showAduitEventLevel: false,
@@ -200,7 +209,7 @@
       var user = JSON.parse(sessionStorage.getItem('user')) || {}
       this.userType = user.type
       this.fetchEvent(this.$route.params.index)
-      this.fetchEventDetails(this.$route.params.index)
+      this.fetchEventHandles(this.$route.params.index)
     },
     methods: {
       onNoticePM () {
@@ -296,22 +305,26 @@
         this.eventImgs = imgs.split(',')
         if (this.eventImgs[this.eventImgs.length - 1] == '') this.eventImgs = this.eventImgs.slice(0, this.eventImgs.length - 1)
       },
-      fetchEventDetails (index) {
+      onChangePage (curPage) {
+        this.pageNo = curPage - 1
+        this.fetchEventHandles(this.event.Index)
+      },
+      fetchEventHandles (index) {
         if (!index ) {
           console.info('index', index)
           index = ''
         }
-        fetchpm(this, true, '/pm/eventHandle/detail/' + index, {
+        fetchpm(this, true, '/pm/eventHandle/kvs/page', {
           method: 'POST',
-          body: {index: index}
+          body: {KVs:{ Index: index}, PageNo: this.pageNo, PageSize: this.pageSize}
         }).then(resp => {
           return resp.json()
         }).then(body => {
-          console.info('fetchEventHandle', body)
+          console.info('fetchEventHandles', body)
           if (body.error === 0) {
             this.eventHandles = body.data.eventHandles || []
+            this.sum = body.data.sum || 0
           }
-          
         })
       },
       fetchStreet (id) {
@@ -322,7 +335,7 @@
           return resp.json()
         }).then(body => {
           console.info('fetchStreet', body)
-          if (body.error == 0 && body.data.length > 0) {
+          if (body.error == 0 && body.data && body.data.length > 0) {
             this.streetName = body.data[0].Name
           }
         })
@@ -335,7 +348,7 @@
           return resp.json()
         }).then(body => {
           console.info('fetchXQ', body)
-          if (body.error == 0 && body.data.length > 0) {
+          if (body.error == 0 && body.data && body.data.length > 0) {
             this.xqName = body.data[0].Name
           }
         })
@@ -348,7 +361,7 @@
           return resp.json()
         }).then(body => {
           console.info('fetchCommunity', body)
-          if (body.error == 0 && body.data.length > 0) {
+          if (body.error == 0 && body.data && body.data.length > 0) {
             this.communityName = body.data[0].Name
           }
         })

@@ -7,7 +7,7 @@
       <!-- 用户名 -->
       <el-input :class='s.elInput' v-model="user.UserName" placeholder="请输入用户名" @focus='onFocus'></el-input>
     </div>
-    <div :class='s.item' v-if='USER_TYPE == 3'>
+    <div :class='s.item' v-if='userType == 3'>
       <div :class='s.red'>*</div>
       街道
       <!-- 用户名 -->
@@ -50,7 +50,7 @@ import { Message } from 'element-ui'
 import fetchpm from '@/fetchpm'
 export default {
   props: {
-    USER_TYPE: Number
+    userType: Number
   },
   data () {
     return {
@@ -67,7 +67,7 @@ export default {
     }
   },
   mounted () {
-    this.user.Type = this.USER_TYPE
+    this.user.Type = this.userType
     if (this.user.Type == 3) this.fetchAllStreets()
   },
   methods: {
@@ -77,7 +77,7 @@ export default {
         Password: '',
         RealName: '',
         Tel: '',
-        Type: this.USER_TYPE
+        Type: this.userType
       }
     },
     onFocus () {

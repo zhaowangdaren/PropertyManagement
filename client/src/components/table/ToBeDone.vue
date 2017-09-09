@@ -158,8 +158,10 @@ export default {
         return resp.json()
       }).then(body => {
         if (body.error === 0) {
-          this.events = (body.data.events || []).filter(item => {
+          this.events = ((body.data.events || []).filter(item => {
             return item.Status >= 0
+          })).sort((a, b) => {
+            return b.Time -a.Time
           })
           this.sum = body.data.sum || 0
           let communityIDs = this.events.map((item) => {

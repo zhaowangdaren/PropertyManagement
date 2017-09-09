@@ -1,6 +1,6 @@
 <template>
   <div :class='s.wrap'>
-    <user :USER_TYPE='userType'></user>
+    <user :userType='userType'></user>
   </div>
 </template>
 

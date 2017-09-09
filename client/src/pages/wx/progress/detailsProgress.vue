@@ -150,7 +150,9 @@ export default {
       }).then(body => {
         console.info('fetchEventHandle', body)
         if (body.error === 0){
-          this.eventHandles = body.data || []
+          this.eventHandles = (body.data || []).sort((a, b) => {
+            return b.Time - a.Time
+          })
         }
       })
     },

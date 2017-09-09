@@ -92,7 +92,7 @@ func FindEventHandleByKVsPage(db *mgo.Database, kvs map[string]interface{}, page
 		querys[strings.ToLower(k)] = v
 	}
 	c := db.C(EventHandleTableName)
-	query := c.Find(querys)
+	query := c.Find(querys).Sort("-time")
 	sum, _ := query.Count()
 	var err error
 	var result []EventHandle
