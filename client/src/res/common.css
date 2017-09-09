@@ -78,3 +78,6 @@ tr:hover{
   font-weight: bold;
   font-size: 19px;
 }
+.solved{
+  color: #1eb504;
+}

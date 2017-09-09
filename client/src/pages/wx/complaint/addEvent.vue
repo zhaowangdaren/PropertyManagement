@@ -33,6 +33,7 @@
             @focus='onFocus'></textarea>
         </div>
       </div>
+      <div :class='s.btn' @click='onNext'>下一步</div>
     </div>
   </div>
 </template>
@@ -170,27 +171,22 @@ export default{
       font-size: 25px;
       display: flex;
       padding: 0px 10px;
-      background-color: #fff;
       .title{
         padding: 15px 0;
         color: #999;
       }
       .value{
+        margin: 5px;
         padding: 15px 10px;
-        border-bottom: solid 2px #20a0ff;
-        border-top: solid 0px;
-        border-left: solid 0;
-        border-right: solid 0;
+        border: solid 1px #999;
         flex: 1;
-        font-size: 30px;
-        background-color: transparent;
-        
+        font-size: 25px;
+        background-color: #fff;
       }
     }
     .contentWrap{
       font-size:25px;
       margin-top: 20px;
-      background-color: #fff;
       padding: 10px;
       .title{
         font-size: 25px;
@@ -199,9 +195,11 @@ export default{
       }
       .value{
         textarea{
-          width: 100%;
+          box-sizing: border-box;
+          width: 96%;
           min-width: 50px;
-          background-color: #f0f0f0;
+          background-color: #fff;
+          border: solid 1px #999;
         }
       }
     }

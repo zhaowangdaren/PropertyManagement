@@ -138,13 +138,10 @@
             <td>{{ handle.Time | filterTime}}</td>
             <td>{{communities[index] ? communities[index].Name : ''}}</td>
             <td>{{xqs[index] ? xqs[index].Name : ''}}</td>
-            <td>{{handle.Status | filterEventStatus }}</td>
+            <td :style='{color: handle.Status === 3 ? "#1eb504" : ""}'>{{handle.Status | filterEventStatus }}</td>
             <td>{{handle.EventLevel | filterEventLevel }}</td>
             <td v-text='handle.Type'></td>
             <td>
-              <el-button type='info' :plain="true" v-if='handle.Status === -2'>已关闭</el-button>
-              <el-button type='info' :plain="true" v-else-if='handle.Status === -1'>用户已撤销</el-button>
-              <el-button type='info' :plain="true" v-else-if='handle.Status === 3'>已解决</el-button>
               <el-button type="primary" icon="search" @click='toDetails(handle)' class='view'>查看</el-button>
             </td>
           </tr>

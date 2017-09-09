@@ -193,39 +193,49 @@ func startEventHandle(router *gin.RouterGroup, dbc *mgo.Database) {
 		eventIndex := c.Query("index")
 		xqid := c.Query("xqid")
 		pm := table.FindPMByKV(dbc, "xqid", xqid)
-		fmt.Println("pmID:", pm.ID.Hex())
-		pmUser := table.FindPMUserByKV(dbc, "pmid", pm.ID.Hex())
-		if pmUser.OpenID == "" {
+		// fmt.Println("pmID:", pm.ID.Hex())
+		// pmUser := table.FindPMUserByKV(dbc, "pmid", pm.ID.Hex())
+		kvs := make(map[string]interface{})
+		kvs["pmid"] = pm.ID.Hex()
+		kvs["bind"] = 1
+		pmUsers := table.FindPMUserByKVs(dbc, kvs)
+		if len(pmUsers) == 0 {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": "该小区物业人员未绑定微信"})
 			return
 		}
+		// if pmUser.OpenID == "" {
+		// 	c.JSON(http.StatusOK, gin.H{"error": 1, "data": "该小区物业人员未绑定微信"})
+		// 	return
+		// }
 		event := table.FindEvent(dbc, eventIndex)
 		xqName := table.FindXQ(dbc, event.XQID).Name
-		pjson := `{
-	  "touser": "` + pmUser.OpenID + `",
-	  "template_id": "TdVxvtwH1i24ArEUcx1FGmWNFI_11WFZvDGfBJ9cjBw",
-		"url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxa768bfacbb694944&redirect_uri=https%3A%2F%2Fwww.maszfglzx.com%2Fcomplaint-progress-pm.html&response_type=code&scope=snsapi_base&state=` + eventIndex + `#wechat_redirect",
-	  "data": {
-	    "first": {
-	      "value": "您好，贵公司所服务的` + xqName + `有群众投诉，信息如下："
-	    },
-	    "keyword1": {
-	      "value": "` + eventIndex + `"
-	    },
-			"keyword2": {
-	      "value": "已分派"
-	    },
-	    "keyword3": {
-	      "value": "` + pm.Name + `"
-	    },
-	    "remark": {
-	      "value": "请贵公司及时进行处理"
-	    }
-	  }
-	}`
-		access_token := GetAccessToken()
-		wxURL := "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + access_token
-		PostJson(wxURL, pjson)
+		for _, pmUser := range pmUsers {
+			pjson := `{
+		  "touser": "` + pmUser.OpenID + `",
+		  "template_id": "TdVxvtwH1i24ArEUcx1FGmWNFI_11WFZvDGfBJ9cjBw",
+			"url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxa768bfacbb694944&redirect_uri=https%3A%2F%2Fwww.maszfglzx.com%2Fcomplaint-progress-pm.html&response_type=code&scope=snsapi_base&state=` + eventIndex + `#wechat_redirect",
+		  "data": {
+		    "first": {
+		      "value": "您好，贵公司所服务的` + xqName + `有群众投诉，信息如下："
+		    },
+		    "keyword1": {
+		      "value": "` + eventIndex + `"
+		    },
+				"keyword2": {
+		      "value": "已分派"
+		    },
+		    "keyword3": {
+		      "value": "` + pm.Name + `"
+		    },
+		    "remark": {
+		      "value": "请贵公司及时进行处理"
+		    }
+		  }
+		}`
+			access_token := GetAccessToken()
+			wxURL := "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + access_token
+			PostJson(wxURL, pjson)
+		}
 		c.JSON(http.StatusOK, gin.H{"error": 0, "data": ""})
 	})
 }
