@@ -45,3 +45,36 @@ tr:hover{
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.add{
+  font-size: 17px;
+}
+.del{
+  font-size: 17px;
+  background-color: gray;
+  border: none;
+}
+.edit{
+  background-color: #2E4C99;
+  font-size: 17px;
+  border: none;
+}
+.view{
+  background-color: #1EB5E3;
+  font-size: 17px;
+  border: none;
+  background-color: #72AD1A;
+}
+.search{
+  background-color: #1EB5E3;
+  font-size: 17px;
+  border: none;
+  background-color: #865F99;
+}
+.searchKey{
+  padding: 10px;
+  margin-right: 0px;
+  background: #e0e0e0;
+  background-color:#BDAFAF;
+  font-weight: bold;
+  font-size: 19px;
+}

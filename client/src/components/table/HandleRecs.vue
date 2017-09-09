@@ -20,7 +20,7 @@
           <td>{{ handle.Time | filterTime }}</td>
           <td v-text='handle.HandleInfo' class="descr"></td>
           <td>
-            <el-button type="primary" icon="search" @click='onHandleDetails(handle)'>详情</el-button>
+            <el-button type="primary" icon="search" @click='onHandleDetails(handle)' class='view'>详情</el-button>
           </td>
         </tr>
         <tr v-if='eventHandles.length === 0'>

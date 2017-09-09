@@ -8,7 +8,7 @@
       <div :class='s.body'>
         <table>
           <tr>
-            <td :class='s.key'>年份</td>
+            <td class='searchKey'>年份</td>
             <td>
               <el-date-picker
                 :class='s.elSelect'
@@ -18,7 +18,7 @@
               </el-date-picker>
             </td>
             <!-- 季度 -->
-            <td :class='s.key'>季度</td>
+            <td class='searchKey'>季度</td>
             <td>
               <el-select v-model="selectedQuarter" filterable placeholder="选择季度" :class='s.elSelect'>
                 <el-option
@@ -29,13 +29,13 @@
                 </el-option>
               </el-select>
             </td>
-            <td :class='s.key'>物业公司名</td>
+            <td class='searchKey'>物业公司名</td>
             <td>
               <el-input v-model="searchCompanyName" placeholder="请输入物业公司名"></el-input>
             </td>
           </tr>
           <tr>
-            <td :class='s.key'>街道</td>
+            <td class='searchKey'>街道</td>
             <td>
               <el-select v-model="selectedStreetID" filterable placeholder="请选择街道" :class='s.elSelect'>
                 <el-option
@@ -46,7 +46,7 @@
                 </el-option>
               </el-select>
             </td>
-            <td :class='s.key'>社区</td>
+            <td class='searchKey'>社区</td>
             <td>
               <el-select v-model="selectedCommunityID" filterable placeholder="请选择社区" :class='s.elSelect'>
                 <el-option
@@ -57,7 +57,7 @@
                 </el-option>
               </el-select>
             </td>
-            <td :class='s.key'>小区</td>
+            <td class='searchKey'>小区</td>
             <td>
               <el-select v-model="selectedXQID" filterable placeholder="请选择小区" :class='s.elSelect'>
                 <el-option
@@ -71,8 +71,8 @@
           </tr>
         </table>
         <div :class='s.searchWrap'>
-          <el-button type="primary" @click='onCurQuarter'>当前季度</el-button>
-          <el-button type="primary" icon="search" @click='onInputSearch'>查询</el-button>
+          <el-button type="primary" @click='onCurQuarter' class='view'>当前季度</el-button>
+          <el-button type="primary" icon="search" @click='onInputSearch' class='search'>查询</el-button>
         </div>
         <!-- search result -->
         <table>

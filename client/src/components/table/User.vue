@@ -8,6 +8,7 @@
         fontSize='20px'
         /> -->
       <el-button
+        class='add'
         @click='showAddDialog = true'
         type='primary'
         icon='plus'>新增</el-button>
@@ -34,6 +35,7 @@
           <el-button type='primary' v-if='user.Pass === 0' @click='onPass(user, index)' :loading='isPassing === index ? true : false'>审核</el-button>
           <el-button type='info' disabled='true' v-if='user.Pass === 1'>已审核</el-button>
           <el-button
+            class='edit'
             @click='onEdit(user)'
             type='primary'
             icon='edit'>编辑</el-button>
@@ -45,6 +47,7 @@
             @click='onDel(user)'
           /> -->
           <el-button
+            class='del'
             @click='onDel(user)'
             type='danger'
             icon='delete'>删除</el-button>

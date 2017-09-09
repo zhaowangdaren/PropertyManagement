@@ -8,6 +8,7 @@
         fontSize='20px'
         /> -->
       <el-button
+        class='add'
         @click='onAdd'
         type='primary'
         icon='plus'>新增</el-button>
@@ -19,6 +20,7 @@
         @click='onDel'
         /> -->
       <el-button
+        class='del'
         @click='onDel'
         type='danger'
         icon='delete'>删除</el-button>
@@ -48,7 +50,7 @@
         <td v-text='street.AuthCode' class='flex1'></td>
         <td v-text='street.Intro' class='descr flex1'></td>
         <td class="flex1">
-          <el-button type="primary" icon="edit" @click="onEdit(street)">编辑</el-button>
+          <el-button type="primary" icon="edit" class='edit' @click="onEdit(street)">编辑</el-button>
         </td>
       </tr>
       <tr v-if='streets.length === 0'>
@@ -189,6 +191,19 @@
     display: flex;
     align-items: center;
     margin: 10px;
+  }
+  .add{
+    font-size: 17px;
+  }
+  .del{
+    font-size: 17px;
+    background-color: gray;
+    border: none;
+  }
+  .edit{
+    background-color: #2E4C99;
+    font-size: 17px;
+    border: none;
   }
 }
 </style>

@@ -17,11 +17,11 @@
           所在小区
            -->
           <tr>
-            <td :class='s.key'>事件编号</td>
+            <td class='searchKey'>事件编号</td>
             <td>
               <el-input v-model="inputIndex" placeholder="请输入事件编号"></el-input>
             </td>
-            <td :class='s.key'>事件等级</td>
+            <td class='searchKey'>事件等级</td>
             <td>
               <el-select v-model="inputEventLevel" filterable placeholder="全部" :class='s.elSelect'>
                 <el-option
@@ -32,7 +32,7 @@
                 </el-option>
               </el-select>
             </td>
-            <td :class='s.key'>事件类型</td>
+            <td class='searchKey'>事件类型</td>
             <td>
               <el-select v-model="inputType" filterable placeholder="全部" :class='s.elSelect'>
                 <el-option
@@ -50,7 +50,7 @@
             </td>
           </tr>
           <tr>
-            <td :class='s.key'>选择开始时间</td>
+            <td class='searchKey'>选择开始时间</td>
             <td>
               <el-date-picker
                 :class='s.elSelect'
@@ -59,7 +59,7 @@
                 placeholder="选择日期时间">
               </el-date-picker>
             </td>
-            <td :class='s.key'>选择结束时间</td>
+            <td class='searchKey'>选择结束时间</td>
             <td>
               <el-date-picker
                 :class='s.elSelect'
@@ -68,7 +68,7 @@
                 placeholder="选择日期时间">
               </el-date-picker>
             </td>
-            <td :class='s.key'>事件状态</td>
+            <td class='searchKey'>事件状态</td>
             <td>
               <el-select v-model="inputEventStatus" filterable placeholder="全部" :class='s.elSelect'>
                 <el-option
@@ -86,7 +86,7 @@
             </td>
           </tr>
           <tr>
-            <td :class='s.key'>社区</td>
+            <td class='searchKey'>社区</td>
             <td>
               <el-select v-model="inputCommunityID" filterable placeholder="全部" :class='s.elSelect'>
                 <el-option
@@ -97,7 +97,7 @@
                 </el-option>
               </el-select>
             </td>
-            <td :class='s.key'>小区</td>
+            <td class='searchKey'>小区</td>
             <td>
               <el-select v-model="inputXQID" filterable placeholder="全部" :class='s.elSelect'>
                 <el-option
@@ -109,7 +109,7 @@
               </el-select>
             </td>
             <td colspan="2" style="text-align:right;">
-              <el-button type='primary' icon='search' @click='onSearch'>查询</el-button>
+              <el-button type='primary' icon='search' @click='onSearch' class='search'>查询</el-button>
             </td>
           </tr>   
         </table>
@@ -145,7 +145,7 @@
               <el-button type='info' :plain="true" v-if='handle.Status === -2'>已关闭</el-button>
               <el-button type='info' :plain="true" v-else-if='handle.Status === -1'>用户已撤销</el-button>
               <el-button type='info' :plain="true" v-else-if='handle.Status === 3'>已解决</el-button>
-              <el-button type="primary" icon="search" @click='toDetails(handle)'>查看</el-button>
+              <el-button type="primary" icon="search" @click='toDetails(handle)' class='view'>查看</el-button>
             </td>
           </tr>
           <tr v-if='events.length == 0'>
