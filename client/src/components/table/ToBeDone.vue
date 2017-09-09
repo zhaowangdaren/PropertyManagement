@@ -110,7 +110,7 @@ export default {
     },
     onGov () {
       var kvs = {
-        RequestClose: 1
+        NoticeGov: 1
       }
       this.fetchEventsByKVsPage(kvs, this.pageNo, this.pageSize)
     },

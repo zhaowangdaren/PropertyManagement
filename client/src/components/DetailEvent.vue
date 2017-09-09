@@ -198,6 +198,7 @@
           Status: 0,
           EventLevel: 0,
           RequestClose: 0,
+          NoticeGov: 0,
           Imgs:''//以逗号为分隔符
         },
         eventImgs: [],
@@ -405,6 +406,11 @@
       padding: 10px;
       display: flex;
       align-items: center;
+      color: #fff;
+      font-size: 30px;
+      font-family: "华文行楷";
+      background: #4c87b9;
+      background: -webkit-gradient(linear,center top, center bottom,from(#ff0000), to(#000000));
       img{
         width: 20px;
         margin-right: 10px;
@@ -478,6 +484,11 @@
       padding: 10px;
       display: flex;
       align-items: center;
+      color: #fff;
+      font-size: 30px;
+      font-family: "华文行楷";
+      background: #4c87b9;
+      background: -webkit-gradient(linear,center top, center bottom,from(#ff0000), to(#000000));
       img{
         width: 20px;
         margin-right: 10px;
