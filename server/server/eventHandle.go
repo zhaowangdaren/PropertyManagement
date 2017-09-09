@@ -203,7 +203,7 @@ func startEventHandle(router *gin.RouterGroup, dbc *mgo.Database) {
 		pjson := `{
 	  "touser": "` + pmUser.OpenID + `",
 	  "template_id": "TdVxvtwH1i24ArEUcx1FGmWNFI_11WFZvDGfBJ9cjBw",
-	  "url": "https://www.maszfglzx.com/#/wx/pm/event/details?index=` + eventIndex + `",
+		"url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxa768bfacbb694944&redirect_uri=https%3A%2F%2Fwww.maszfglzx.com%2Fcomplaint-progress-pm.html&response_type=code&scope=snsapi_base&state=` + eventIndex + `#wechat_redirect",
 	  "data": {
 	    "first": {
 	      "value": "您好，贵公司所服务的` + xqName + `有群众投诉，信息如下："

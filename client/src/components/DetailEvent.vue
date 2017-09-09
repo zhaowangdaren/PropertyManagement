@@ -259,6 +259,7 @@
       },
       onAddEventHandleSucc (eventHandle) {
         this.eventHandles.push(eventHandle)
+        this.updateEvent()
       },
       updateEvent () {
         this.event.Status = 2

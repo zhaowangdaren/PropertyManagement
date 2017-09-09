@@ -6,6 +6,8 @@ export default function (type) {
       return '政府主管单位'
     case 3:
       return '街道办公人员'
+    case 4:
+      return '物业公司'
     default:
       return ''
   }

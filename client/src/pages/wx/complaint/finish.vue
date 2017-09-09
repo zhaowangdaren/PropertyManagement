@@ -4,7 +4,6 @@
     <div :class='s.body'>
       <i class='iconfont icon-succ'></i>
       <p>提交成功</p>
-      <h4>等待人员处理</h4>
       <!-- <div :class='s.btn' @click='onFinish'>好的</div> -->
     </div>
   </div>

@@ -244,6 +244,22 @@ func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
 		}
 	})
 
+	router.POST("/eventHandle/add", func(c *gin.Context) {
+		var info table.EventHandle
+		err := c.BindJSON(&info)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+		} else {
+			result, err := table.InsertEventHandle(dbc, info)
+			if err != nil {
+				c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+				return
+			}
+			c.JSON(http.StatusOK, gin.H{"error": 0, "data": result})
+			PushNotice2WX(info, dbc)
+		}
+	})
+
 	router.POST("/pm/kvs", func(c *gin.Context) {
 		params := make(map[string]interface{})
 		err := c.BindJSON(&params)

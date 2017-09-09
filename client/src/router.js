@@ -53,6 +53,7 @@ const PMRules = resolve => require(['@/pages/wx/pm/rules'], resolve)
 const PMMPRules = resolve => require(['@/pages/wx/pm/managementPractices'], resolve)
 const PMKPIRules = resolve => require(['@/pages/wx/pm/kpiRules'], resolve)
 const PMQA = resolve => require(['@/pages/wx/pm/qa'], resolve)
+const PMEventHandle = resolve => require(['@/pages/wx/pm/eventHandle'], resolve)
 
 const PMCharge = resolve => require(['@/pages/wx/pmCharge'], resolve)
 const ParkMain = require('@/pages/wx/parkMain')
@@ -269,6 +270,10 @@ export default new Router({
     {
       path: '/wx/pm/rules/qa',
       component: PMQA
+    },
+    {
+      path: '/wx/pm/event/handle',
+      component: PMEventHandle
     },
     {
       path: '/wx/pm/charge',

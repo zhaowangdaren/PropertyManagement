@@ -8,15 +8,20 @@
           <div :class='s.key'>进度：</div>
           <div :class='s.value'>{{event.Status | filterEventStatus }}</div>
           <el-button 
-            v-if='event.Status == 0 || event.Status == 1'
+            v-if='(event.Status == 0 || event.Status == 1) && identity === "user"'
             type='danger' 
             :class='s.revoke'
             @click='onRevoke'>撤销事件</el-button>
           <el-button 
-            v-if='event.Status == 2'
+            v-if='event.Status == 2 && identity === "user"'
             type='success' 
             :class='s.revoke'
             @click='onSolved'>确认已解决</el-button>
+          <el-button 
+            v-if='event.Status !== 3 && identity === "pmuser"'
+            type='success' 
+            :class='s.revoke'
+            @click='onHandle'>已处理</el-button>
         </div>
       </div>
       <div :class='s.event' v-for='handle in eventHandles'>
@@ -63,11 +68,13 @@ export default {
       headerOptions: {
         title: '查看进度详情'
       },
+      identity: '',
       eventIndex: '',
       event: {
         Status: 0,
         Imgs:'',
-        OpenID: ''
+        OpenID: '',
+        Index: ''
       },
       eventHandles: [],
       showImgs: false,
@@ -87,6 +94,7 @@ export default {
       this.initData()
     })
     else this.initData()
+    this.identity = this.$route.query.identity || ''
   },
   methods: {
     initData () {
@@ -98,6 +106,9 @@ export default {
       this.showingImgs = imgs
       this.showImgs = true
       console.info('onShowImgs',this.showingImgs)
+    },
+    onHandle () {
+      this.$router.push({name:'PMEvneHandle', query: {index: this.event.Index}})
     },
     onSolved () {
       var temp = Object.assign({}, this.event)

@@ -17,7 +17,7 @@ const EventHandleTableName = "EventHandle"
 //EventHandle 事件处理表
 type EventHandle struct {
 	Index          string //事件编号，属于Event表中的事件编号
-	AuthorCategory int    //提交人类别  住建委、社区、具名
+	AuthorCategory int    //提交人类别  1-系统管理员 2-政府、3-街道、4-物业公司
 	AuthorName     string //提交人用户名
 	Time           int64  //提交的时间
 	HandleInfo     string //处理信息
