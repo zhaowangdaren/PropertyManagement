@@ -5,7 +5,7 @@
       <div :class='s.red'>注意：图片大小不要超过5M，最多上传9张</div>
       <el-upload
         :class='s.upload'
-        :action="host"
+        :action='host + "/open/upload"'
         list-type="picture-card"
         :on-success="handleUploadSucc"
         :on-preview="handlePictureCardPreview"
@@ -40,7 +40,7 @@ export default {
       imgs:[],
       warn:'',
       isUpdating: false,
-      host:'//www.maszfglzx.com:3000/open/upload'
+      host:'//www.maszfglzx.com:3000'
       // host:'//localhost:3000/open/upload'
     }
   },
@@ -55,7 +55,7 @@ export default {
         return response.json()
       }).then(body => {
         console.info('fetchEvent', body)
-        if (body.error === 0 && body.data && body.data.length >0 ) this.event = body.data[0]
+        if (body.error === 0 && body.data ) this.event = body.data.events[0] || {Imgs: ''}
       })
     },
     onNext () {

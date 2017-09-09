@@ -78,7 +78,7 @@ export default {
   mounted () {
     var WXUser = JSON.parse(sessionStorage.getItem('WXUser')) || {openid: null}
     this.event.OpenID = WXUser.openid
-    if (this.event.OpenID === null || this.event.OpenID === '') this.fetchOpenID(this.$router.query.code).then(openid => {
+    if (this.event.OpenID === null || this.event.OpenID === '') this.fetchOpenID(this.$route.query.code).then(openid => {
       if (openid === null) {
         this.warn = '获取用户身份失败，请返回重试'
         return

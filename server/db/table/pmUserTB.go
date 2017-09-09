@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang/glog"
 
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -30,12 +31,12 @@ const PMUserTableName = "PMUser"
 //InsertPMUser 插入user
 func InsertPMUser(db *mgo.Database, info PMUser) interface{} {
 	c := db.C(PMUserTableName)
-	count, err := c.Find(bson.M{"openid": info.OpenID}).Count()
+	count, err := c.Find(bson.M{"openid": info.OpenID, "pmid": info.PMID}).Count()
 	if err != nil { //查询出错或记录不存在
-		log.Fatal(err)
+		glog.Warning("查询数量" + err.Error())
 	}
 	if count > 0 {
-		return gin.H{"error": 1, "data": "微信号已申请了绑定"}
+		return gin.H{"error": 1, "data": "微信号已申请了绑定该物业公司"}
 	}
 	err = c.Insert(&info)
 	if err != nil {

@@ -169,7 +169,7 @@
     },
     data () {
       return {
-        host:'//www.maszfglzx.com/#',
+        host:'//www.maszfglzx.com:3000',
         userType: 0,
         event: {
           Index: '',
@@ -250,6 +250,20 @@
       },
       onAddEventHandleSucc (eventHandle) {
         this.eventHandles.push(eventHandle)
+      },
+      updateEvent () {
+        this.event.Status = 2
+        fetchpm(this, true, '/pm/event/update', {
+          method: 'POST',
+          body: this.event
+        }).then(resp => {
+          return resp.json()
+        }).then(body => {
+          console.info('onSave', body)
+          if (body.error !== 0) {
+            Message({type: 'error', message: body.data})
+          }
+        })
       },
       onAduitLevelSucc (eventLevel) {
         this.event.EventLevel = eventLevel
