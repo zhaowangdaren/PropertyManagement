@@ -28,7 +28,7 @@
   事件状态： 已审核待处理
   事件等级： 特急 -->
             <tr>
-              <td :class='s.key'>警告类型</td>
+              <td class='searchKey'>警告类型</td>
               <td :class='s.value'>
                 <i :class='"iconfont icon-gaojing " + s.lv1' v-if='event.EventLevel === 1' ></i>
                 <i :class='"iconfont icon-gaojing " + s.lv2' v-if='event.EventLevel === 2' ></i>
@@ -36,39 +36,39 @@
               </td>
             </tr>
             <tr>
-              <td :class='s.key'>事件编号</td>
+              <td class='searchKey'>事件编号</td>
               <td :class='s.value' v-text='event.Index'></td>
             </tr>
             <tr>
-              <td :class='s.key'>街道</td>
+              <td class='searchKey'>街道</td>
               <td :class='s.value' v-text='streetName'></td>
             </tr>
             <tr>
-              <td :class='s.key'>社区</td>
+              <td class='searchKey'>社区</td>
               <td :class='s.value' v-text='communityName'></td>
             </tr>
             <tr>
-              <td :class='s.key'>小区</td>
+              <td class='searchKey'>小区</td>
               <td :class='s.value' v-text='xqName'></td>
             </tr>
             <tr>
-              <td :class='s.key'>投诉时间</td>
+              <td class='searchKey'>投诉时间</td>
               <td :class='s.value'>{{event.Time | filterTime }}</td>
             </tr>
             <tr>
-              <td :class='s.key'>事件类型</td>
+              <td class='searchKey'>事件类型</td>
               <td :class='s.value' v-text='event.Type'></td>
             </tr>
             <tr>
-              <td :class='s.key'>事件状态</td>
+              <td class='searchKey'>事件状态</td>
               <td :class='s.value'>{{event.Status | filterEventStatus }}</td>
             </tr>
             <tr>
-              <td :class='s.key'>事件等级</td>
+              <td class='searchKey'>事件等级</td>
               <td :class='s.value'>{{event.EventLevel | filterEventLevel }}</td>
             </tr>
             <tr>
-              <td :class='s.key'>操作</td>
+              <td class='searchKey'>操作</td>
               <td :class='s.value'>
                 <div :class='s.btnWrap'>
                   <el-button type='success' v-show='userType === 3' @click='onNoticePM'>推送至物业公司</el-button>
@@ -406,6 +406,11 @@
       padding: 10px;
       display: flex;
       align-items: center;
+      color: #fff;
+      font-size: 30px;
+      font-family: "华文行楷";
+      background: #4c87b9;
+      background: -webkit-gradient(linear,center top, center bottom,from(#ff0000), to(#000000));
       img{
         width: 20px;
         margin-right: 10px;
@@ -479,6 +484,11 @@
       padding: 10px;
       display: flex;
       align-items: center;
+      color: #fff;
+      font-size: 30px;
+      font-family: "华文行楷";
+      background: #4c87b9;
+      background: -webkit-gradient(linear,center top, center bottom,from(#ff0000), to(#000000));
       img{
         width: 20px;
         margin-right: 10px;

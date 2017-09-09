@@ -1,6 +1,6 @@
 <template>
   <div :class='s.wrap'>
-    <span :class='s.userName'>{{userName}} ,您好</span>
+    <span :class='s.userName'>欢迎，{{userName}}</span>
     <span :class='s.item' @click='onChangePassword'>
       <i class='iconfont icon-xiugaimima'></i>修改密码
     </span>
@@ -47,7 +47,9 @@ export default {
   display: flex;
 }
 .userName{
-  font-size: 20px;
+  font-size: 30px;
+  font-family: "Times New Roman";
+  font-family: "Arial";
   flex: 1;
 }
 .item{
@@ -55,10 +57,10 @@ export default {
   justify-content: flex-end;
   align-items: center;
   font-weight: bold;
-  color: #555;
+  font-size: 15px;
   margin: auto 10px;
   i{
-    margin-right: 5px;
+    margin-right: 10px;
     color: #999;
   }
 }

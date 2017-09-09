@@ -8,7 +8,7 @@
       <div :class='s.searchWrap'>
         <table>
           <tr>
-            <td :class='s.key' v-if='STREET_ID === ""'>街道名</td>
+            <td class='searchKey' v-if='STREET_ID === ""'>街道名</td>
             <td v-if='STREET_ID === ""'>
               <el-select v-model="inputStreetID" filterable placeholder="选择街道" :class='s.elSelect'>
                 <el-option
@@ -19,7 +19,7 @@
                 </el-option>
               </el-select>
             </td>
-            <td :class='s.key'>社区名</td>
+            <td class='searchKey'>社区名</td>
             <td>
               <el-select v-model="inputCommunityID" filterable placeholder="选择社区" :class='s.elSelect'>
                 <el-option
@@ -30,7 +30,7 @@
                 </el-option>
               </el-select>
             </td>
-            <td :class='s.key'>小区名</td>
+            <td class='searchKey'>小区名</td>
             <td>
               <el-select v-model="inputXQID" filterable placeholder="选择小区" :class='s.elSelect'>
                 <el-option
@@ -45,8 +45,8 @@
         </table>
       </div>
       <div :class='s.addDel'>
-        <el-button type="primary" icon="plus" @click='onAdd' v-if='EDITABLE'>新增</el-button>
-        <el-button type="primary" icon="search" @click='onSearch'>查询</el-button>
+        <el-button type="primary" icon="plus" @click='onAdd' v-if='EDITABLE' class='add'>新增</el-button>
+        <el-button type="primary" icon="search" @click='onSearch' class='search'>查询</el-button>
       </div>
       <div :class='s.table'>
         <table>
@@ -70,9 +70,9 @@
             <td v-text='item.WuYeZiZhi'></td>
             <td v-text='item.WuYeXinZhi'></td>
             <td align="center">
-              <el-button v-if='EDITABLE' type="primary" icon="edit" @click='onEdit(item)'>编辑</el-button>
-              <el-button v-if='EDITABLE' type="danger" icon="delete" @click='onDel(item)'>删除</el-button>
-              <el-button type='primary' @click='onDetails(item)'>查看</el-button>
+              <el-button v-if='EDITABLE' type="primary" icon="edit" @click='onEdit(item)' class='edit'>编辑</el-button>
+              <el-button v-if='EDITABLE' type="danger" icon="delete" @click='onDel(item)' class='del'>删除</el-button>
+              <el-button type='primary' @click='onDetails(item)' class='view'>查看</el-button>
             </td>
           </tr>
           <tr v-if='pms.length === 0'>
@@ -347,6 +347,12 @@ export default {
       padding: 10px;
       display: flex;
       align-items: center;
+
+      color: #fff;
+      font-size: 30px;
+      font-family: "华文行楷";
+      background: #4c87b9;
+      background: -webkit-gradient(linear,center top, center bottom,from(#ff0000), to(#000000));
       img{
         width: 20px;
         margin-right: 10px;

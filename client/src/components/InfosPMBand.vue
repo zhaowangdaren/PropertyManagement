@@ -1,7 +1,7 @@
 <template>
   <div :class='s.wrap'>
     <div :class='s.searchWrap'>
-      <div :class='s.key'>真实姓名</div>
+      <div class='searchKey'>真实姓名</div>
       <!-- 微信用户绑定名称（包含） -->
       <!-- <search-select v-model='pmName' :values='wxNames' :class='s.searchSelect'/> -->
       <el-select v-model="searchActualName" placeholder="请输入姓名">

@@ -69,8 +69,8 @@
       </tr>
     </table>
     <div :class='s.addDel'>
-      <el-button v-if='EDITABLE' type="primary" icon="plus" @click='showAddDialog = true'>新增</el-button>
-      <el-button type="primary" icon="search" @click='onSearch'>查询</el-button>
+      <el-button v-if='EDITABLE' type="primary" icon="plus" @click='showAddDialog = true' class='add'>新增</el-button>
+      <el-button type="primary" icon="search" @click='onSearch' class='search'>查询</el-button>
     </div>
     <table>
       <tr >
@@ -93,9 +93,9 @@
         <td v-text='item.HouseNo'></td>
         <td v-text='item.HouseType'></td>
         <td align="center" :class='s.btns'>
-          <el-button v-if='EDITABLE' type="primary" icon="edit" @click='onEdit(item)'>编辑</el-button>
-          <el-button v-if='EDITABLE' type="danger" icon="delete" @click='onDel(item)'>删除</el-button>
-          <el-button type='primary' @click='onDetails(item)'>查看</el-button>
+          <el-button v-if='EDITABLE' type="primary" icon="edit" @click='onEdit(item)' class='edit'>编辑</el-button>
+          <el-button v-if='EDITABLE' type="danger" icon="delete" @click='onDel(item)' class="del">删除</el-button>
+          <el-button type='primary' @click='onDetails(item)' class="view">查看</el-button>
         </td>
       </tr>
       <tr v-if='houses.length === 0'>
@@ -339,6 +339,13 @@
     padding: 10px;
     display: flex;
     align-items: center;
+
+    color: #fff;
+    font-size: 30px;
+    font-family: "华文行楷";
+    background: #4c87b9;
+    background: -webkit-gradient(linear,center top, center bottom,from(#ff0000), to(#000000));
+    
     img{
       width: 20px;
       margin-right: 10px;

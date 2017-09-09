@@ -36,7 +36,7 @@
             <td v-text='handle.Type'></td>
             <td>
               <el-button type='text' :plain="true" v-if='handle.RequestClose === 1' >已申请关闭</el-button>
-              <el-button type="primary" icon="search" @click='toDetails(handle)'>查看</el-button>
+              <el-button type="primary" icon="search" @click='toDetails(handle)' class='view'>查看</el-button>
             </td>
           </tr>
           <tr v-if='events.length == 0'>
@@ -50,7 +50,7 @@
             :page-size='pageSize'
             :total="sum">
           </el-pagination>
-          <div :class='s.pageTip'>其中<span>{{sum - events.length}}</span>条事件已关闭或已被用户撤销</div>
+          <div :class='s.pageTip'>其中<span>{{pageSize - events.length}}</span>条事件已关闭或已被用户撤销</div>
         </div>
       </div>
     </div>
@@ -110,7 +110,7 @@ export default {
     },
     onGov () {
       var kvs = {
-        RequestClose: 1
+        NoticeGov: 1
       }
       this.fetchEventsByKVsPage(kvs, this.pageNo, this.pageSize)
     },
@@ -224,6 +224,13 @@ export default {
       padding: 10px;
       display: flex;
       align-items: center;
+
+      color: #fff;
+      font-size: 30px;
+      font-family: "华文行楷";
+      background: #4c87b9;
+      background: -webkit-gradient(linear,center top, center bottom,from(#ff0000), to(#000000));
+      
       img{
         width: 20px;
         margin-right: 10px;

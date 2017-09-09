@@ -44,7 +44,7 @@
 <style lang="less" module='s'>
 .wrap{
   height: 100%;
-  background-color: #1f2d3d;
+  background-color: gray;
   min-width: 150px;
   color: #f1f3f6;
   .menu{
@@ -53,16 +53,23 @@
     display: flex;
     align-items: center;
     cursor: pointer;
+    border: 2px inset black;
+    padding: 16px;
+    margin: 4px;
+    background: -webkit-gradient(linear,left top,  right bottom,from(rgb(255,255,255)), to(rgb(166, 202, 240)));
+    color: black;
+    font-size:20px;
     i{
       width: 30px;
       margin-right: 10px;
     }
   }
   .active{
-    background: #4c87b9;
+    background: #cf6;
   }
 }
 .logo{
+  background-color: green;
   border-bottom: solid rgba(255, 255, 255, 0.5) 1px;
   font-size: 20px;
   text-align: center;

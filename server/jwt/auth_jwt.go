@@ -195,7 +195,7 @@ func (mw *GinJWTMiddleware) LoginHandler(c *gin.Context) {
 		return
 	}
 	fmt.Println("loginVals", loginVals)
-	
+
 	if mw.Authenticator == nil {
 		mw.unauthorized(c, http.StatusInternalServerError, "Missing define authenticator func")
 		return
@@ -204,7 +204,7 @@ func (mw *GinJWTMiddleware) LoginHandler(c *gin.Context) {
 	user, ok := mw.Authenticator(loginVals.Username, loginVals.Password, loginVals.Type, c)
 
 	if !ok {
-		mw.unauthorized(c, http.StatusUnauthorized, "用户名或密码错误")
+		mw.unauthorized(c, http.StatusUnauthorized, "用户名或密码错误,或未通过审核")
 		return
 	}
 

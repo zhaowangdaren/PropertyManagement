@@ -27,6 +27,11 @@
     padding: 10px;
     display: flex;
     align-items: center;
+    color: #fff;
+    font-size: 30px;
+    font-family: "华文行楷";
+    background: #4c87b9;
+    background: -webkit-gradient(linear,center top, center bottom,from(#ff0000), to(#000000));
     img{
       width: 20px;
       margin-right: 10px;
@@ -41,13 +46,19 @@
       align-items: center;
       cursor: default;
       .tab{
+        border: 1px solid green;
         padding: 10px;
         background: #fff;
+        font-size: 17px;
+        background-color: #6D6E8C;
+        background: -webkit-gradient(linear,left top,  right bottom,from(rgb(255,255,255)), to(rgb(166, 202, 240)));
+        color: black;
       }
       .active{
         border-top: solid 2px red;
         border-left: solid 1px #ddd;
         border-right: solid 1px #ddd;
+        background: #cf6;
       }
     }
     .view{

@@ -194,8 +194,12 @@ export default {
 </script>
 <style lang="less" module='s'>
 .title{
-  font-size: 15px;
-  color: #555;
+  font-size: 30px;
+  font-style: italic;
+  font-weight: bold;
+  background: -webkit-gradient(linear,center top, center bottom,from(#ff0000), to(#000000));
+  color: white;
+  text-align: center; 
 }
 .datas{
   display: flex;
