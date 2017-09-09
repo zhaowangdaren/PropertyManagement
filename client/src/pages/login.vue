@@ -30,6 +30,7 @@
 
 <script type="text/javascript">
 import fetchpm from '@/fetchpm'
+import { Message } from 'element-ui'
 export default {
   data () {
     return {
@@ -95,6 +96,9 @@ export default {
         } else {
           this.warn = body.data.message
         }
+        this.isLogining = false
+      }).catch(error => {
+        Message({type:'error', message: error})
         this.isLogining = false
       })
     },

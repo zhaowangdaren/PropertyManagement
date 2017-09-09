@@ -198,6 +198,7 @@
           Status: 0,
           EventLevel: 0,
           RequestClose: 0,
+          NoticeGov: 0,
           Imgs:''//以逗号为分隔符
         },
         eventImgs: [],
