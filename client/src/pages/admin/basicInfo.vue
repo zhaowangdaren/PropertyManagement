@@ -20,12 +20,16 @@
   margin: 10px;
   .title{
     color: #fff;
-    font-size: 20px;
+    font-size: 25px;
+    font-family: "微软雅黑";
+    font-size: 30px;
+    font-family: "华文行楷";
     background: #4c87b9;
+    background: -webkit-gradient(linear,center top, center bottom,from(#ff0000), to(#000000));
     padding: 10px;
     display: flex;
     align-items: center;
-    box-shadow: 1px 0px 4px -2px rgba(0, 0, 0, 0.5),-1px 0 4px -2px rgba(0, 0, 0, 0.5), 0 -1px 4px -2px rgba(0, 0, 0, 0.5);
+    box-shadow: 1px 0px 4px -2px rgba(0, 0, 0, 0.5),-1px 0 4px -2px rgba(0, 0, 0, 0.5), 0 -1px 4px -2px rgba(0, 0, 0, 0.5); 
     img{
       width: 20px;
       margin-right: 10px;
@@ -43,13 +47,20 @@
       align-items: center;
       cursor: default;
       .tab{
+        border: 1px solid green;
         padding: 10px;
         background: #fff;
+        font-size: 19px;
+        background-color: #6D6E8C;
+        background: -webkit-gradient(linear,left top,  right bottom,from(rgb(255,255,255)), to(rgb(166, 202, 240)));
+        color: black;
+        cursor: pointer;
       }
       .active{
         border-top: solid 2px red;
         border-left: solid 1px #ddd;
         border-right: solid 1px #ddd;
+        background: #cf6;
       }
     }
     .view{
@@ -59,7 +70,6 @@
       height: 100%;
     }
   }
-
 }
 </style>
 
