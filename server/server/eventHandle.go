@@ -99,10 +99,11 @@ func PushNotice2WX(eventHandle table.EventHandle, dbc *mgo.Database) {
 	//     }
 	//   }
 	// }`
+	// https://www.maszfglzx.com/#/wx/detailsProgress?index=` + eventHandle.Index + `
 	pjson := `{
   "touser": "` + userOpenID + `",
   "template_id": "JfYCUICcZxvOjdYYFUQVVu47AepqfhGau0nvLhGPcVA",
-  "url": "https://www.maszfglzx.com/#/wx/detailsProgress?index=` + eventHandle.Index + `",
+  "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxa768bfacbb694944&redirect_uri=https%3A%2F%2Fwww.maszfglzx.com%2Fcomplaint-progress.html&response_type=code&scope=snsapi_base&state=` + eventHandle.Index + `#wechat_redirect",
   "data": {
     "first": {
       "value": "您好，您的投诉已处理。具体信息如下："

@@ -59,7 +59,7 @@ func Start() {
 		Authenticator: func(userName string, password string, userType int, c *gin.Context) (table.User, bool) {
 			result := table.FindUser(dbc, userName, userType)
 			fmt.Println("Authenticator", result)
-			if userName == result.UserName && password == result.Password && userType == result.Type {
+			if userName == result.UserName && password == result.Password && userType == result.Type && result.Pass == 1 {
 				return result, true
 			}
 			return result, false
