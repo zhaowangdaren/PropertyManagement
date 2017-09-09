@@ -53,7 +53,7 @@ export default {
       events: [],
       xqs:[],
       selectedStatus: 0,
-      eventStatus:[{value: 0, label:"全部", status: null}, {value: 1, label:'未解决', status: 1}, {value: 2, label: '已解决', status: 2}],
+      eventStatus:[{value: 0, label:"全部", status: null}, {value: 1, label:'未解决', status: 1}, {value: 3, label: '已解决', status: 3}],
       aMonth: 2592000, // 30 * 24 * 60 * 60 * 1000
       threeMonth: 7776000, // 3 * 30 * 24 * 60 * 60 * 1000
       aYear: 31104000, // 12 * 30 * 24 * 60 * 60 * 1000

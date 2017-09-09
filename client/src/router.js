@@ -273,6 +273,7 @@ export default new Router({
     },
     {
       path: '/wx/pm/event/handle',
+      name: 'PMEvneHandle',
       component: PMEventHandle
     },
     {

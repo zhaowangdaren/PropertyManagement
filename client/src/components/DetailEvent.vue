@@ -70,40 +70,51 @@
             <tr>
               <td :class='s.key'>操作</td>
               <td :class='s.value'>
-                <el-button type='success' v-show='userType === 3' @click='onNoticePM'>推送至物业公司</el-button>
-                <el-button type='primary' 
-                  v-if='userType === 3'
-                  @click='showAduitEventLevel = true'>审核等级</el-button>
-                <el-dialog
-                  v-if='userType === 3'
-                  title='审核等级'
-                  size='tiny'
-                  :visible.sync='showAduitEventLevel'>
-                  <aduit-event-level 
-                    :event='event'
-                    @cancel='showAduitEventLevel = false'
-                    @succ='onAduitLevelSucc' />
-                </el-dialog>
-                <el-button type='primary' @click='showAddEventHandle = true'>询问</el-button>
-                <el-dialog
-                  title='询问事件'
-                  :visible.sync='showAddEventHandle'>
-                  <add-event-handle
-                    :eventIndex='event.Index' 
-                    @succ='onAddEventHandleSucc'
-                    @cancel='showAddEventHandle = false'>
-                  </add-event-handle>
-                </el-dialog>
-                <el-button
-                  v-if='userType == 3'
-                  type='danger'
-                  :disabled='(event.RequestClose === 1 ? true : false)'
-                  @click='onClose'>申请关闭</el-button>
-                <el-button
-                  v-if='userType == 2'
-                  type='success'
-                  :disabled='(event.Status === -2 ? true : false)'
-                  @click='onAgreeClose'>同意关闭</el-button>
+                <div :class='s.btnWrap'>
+                  <el-button type='success' v-show='userType === 3' @click='onNoticePM'>推送至物业公司</el-button>
+                  <el-button type='primary' @click='showAddEventHandle = true'>询问</el-button>
+                  <el-dialog
+                    title='询问事件'
+                    :visible.sync='showAddEventHandle'>
+                    <add-event-handle
+                      :eventIndex='event.Index' 
+                      @succ='onAddEventHandleSucc'
+                      @cancel='showAddEventHandle = false'>
+                    </add-event-handle>
+                  </el-dialog>
+                </div>
+                <div :class='s.btnWrap'>
+                  <el-button 
+                    type='success' 
+                    v-if='userType === 3'
+                    :disabled='event.NoticeGov === 1'
+                    @click='onNoticeGov'>推送至政府部门</el-button>
+                  <el-button type='primary' 
+                    v-if='userType === 3'
+                    @click='showAduitEventLevel = true'>审核等级</el-button>
+                  <el-dialog
+                    v-if='userType === 3'
+                    title='审核等级'
+                    size='tiny'
+                    :visible.sync='showAduitEventLevel'>
+                    <aduit-event-level 
+                      :event='event'
+                      @cancel='showAduitEventLevel = false'
+                      @succ='onAduitLevelSucc' />
+                  </el-dialog>
+                </div>
+                <div :class='s.btnWrap'>
+                  <el-button
+                    v-if='userType == 3'
+                    type='danger'
+                    :disabled='(event.RequestClose === 1 ? true : false)'
+                    @click='onClose'>申请关闭</el-button>
+                  <el-button
+                    v-if='userType == 2'
+                    type='success'
+                    :disabled='(event.Status === -2 ? true : false)'
+                    @click='onAgreeClose'>同意关闭</el-button>
+                </div>
               </td>
             </tr>
           </table>
@@ -212,6 +223,10 @@
       this.fetchEventHandles(this.$route.params.index)
     },
     methods: {
+      onNoticeGov () {
+        this.event.NoticeGov = 1
+        this.updateEvent(this.event)
+      },
       onNoticePM () {
         fetchpm(this, true, '/pm/eventHandle/noticepm?index=' + this.event.Index + '&xqid=' + this.event.XQID, {
           method: 'GET'
@@ -259,13 +274,13 @@
       },
       onAddEventHandleSucc (eventHandle) {
         this.eventHandles.push(eventHandle)
-        this.updateEvent()
-      },
-      updateEvent () {
         this.event.Status = 2
+        this.updateEvent(this.event)
+      },
+      updateEvent (event) {
         fetchpm(this, true, '/pm/event/update', {
           method: 'POST',
-          body: this.event
+          body: event
         }).then(resp => {
           return resp.json()
         }).then(body => {
@@ -500,5 +515,8 @@
 }
 .lv1{
   color: red;
+}
+.btnWrap{
+  margin: 5px auto;
 }
 </style>

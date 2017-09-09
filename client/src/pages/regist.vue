@@ -2,71 +2,71 @@
   <div :class='s.wrap' :style='{backgroundImage: "url(" + bgImg +  ")"}'>
     <div :class='s.formWrap'>
       <div :class='s.title' v-text='title'></div>
-      <form :class='s.body' @submit.prevent='onLogin'>
         <p :class="s.warn" v-text='warn'></p>
-        <table :class='s.table'>
-          <tr>
-            <td :class='s.left'><span :class='s.red'>*</span>用户名</td>
-            <td :class='s.mid'><el-input type="text" name="" v-model='regist.UserName'></el-input></td>
-            <td :class='s.right'>由字母、数字或者下划线组成</td>
-          </tr>
-          <tr>
-            <td :class='s.left'><span :class='s.red'>*</span>真实姓名</td>
-            <td :class='s.mid'><el-input type="text" name="" v-model='regist.RealName'></el-input></td>
-            <td :class='s.right'>真实中文名</td>
-          </tr>
-          <tr>
-            <td :class='s.left'><span :class='s.red'>*</span>密码</td>
-            <td :class='s.mid'><el-input type="text" name="" v-model='regist.Password'></el-input></td>
-            <td :class='s.right'>有6-16个英文字母、数字或下划线组成</td>
-          </tr>
-          <tr>
-            <td :class='s.left'><span :class='s.red'>*</span>联系电话</td>
-            <td :class='s.mid'><el-input type="text" name="" v-model='regist.Tel'></el-input></td>
-            <td :class='s.right'>手机号码或者固定电话</td>
-          </tr>
-          <tr v-if='regist.Type === 3'>
-            <td :class='s.left'><span :class='s.red'>*</span>所属街道</td>
-            <td :class='s.mid'>
-              <!-- <el-select v-model="regist.StreetID" filterable placeholder="请选择" >
-                <el-option
-                  v-for="item in streets"
-                  :key="item.ID"
-                  :label="item.Name"
-                  :value="item.ID">
-                </el-option>
-              </el-select> -->
-              <el-select
-                :class='s.selectStreet'
-                v-model="regist.StreetID"
-                filterable
-                remote
-                placeholder="请输入关键词"
-                :remote-method="searchStreet"
-                :loading="isSearching">
-                <el-option
-                  v-for="item in streets"
-                  :key="item.ID"
-                  :label="item.Name"
-                  :value="item.ID">
-                </el-option>
-              </el-select>
-            </td>
-            <td :class='s.right'>选择所属街道</td>
-          </tr>
-          <tr v-if='regist.Type === 3'>
-            <td :class='s.left'><span :class='s.red'>*</span>授权码</td>
-            <td :class='s.mid'>
-              <el-input v-model='regist.Code'></el-input>
-            </td>
-            <td :class='s.right'>输入指定授权码</td>
-          </tr>
-        </table>
+        <div :class='s.body'>
+          <table :class='s.table'>
+            <tr>
+              <td :class='s.left'><span :class='s.red'>*</span>用户名</td>
+              <td :class='s.mid'><el-input type="text" name="" v-model='regist.UserName'></el-input></td>
+              <td :class='s.right'>由字母、数字或者下划线组成</td>
+            </tr>
+            <tr>
+              <td :class='s.left'><span :class='s.red'>*</span>真实姓名</td>
+              <td :class='s.mid'><el-input type="text" name="" v-model='regist.RealName'></el-input></td>
+              <td :class='s.right'>真实中文名</td>
+            </tr>
+            <tr>
+              <td :class='s.left'><span :class='s.red'>*</span>密码</td>
+              <td :class='s.mid'><el-input type="text" name="" v-model='regist.Password'></el-input></td>
+              <td :class='s.right'>有6-16个英文字母、数字或下划线组成</td>
+            </tr>
+            <tr>
+              <td :class='s.left'><span :class='s.red'>*</span>联系电话</td>
+              <td :class='s.mid'><el-input type="text" name="" v-model='regist.Tel'></el-input></td>
+              <td :class='s.right'>手机号码或者固定电话</td>
+            </tr>
+            <tr v-if='regist.Type === 3'>
+              <td :class='s.left'><span :class='s.red'>*</span>所属街道</td>
+              <td :class='s.mid'>
+                <!-- <el-select v-model="regist.StreetID" filterable placeholder="请选择" >
+                  <el-option
+                    v-for="item in streets"
+                    :key="item.ID"
+                    :label="item.Name"
+                    :value="item.ID">
+                  </el-option>
+                </el-select> -->
+                <el-select
+                  :class='s.selectStreet'
+                  v-model="regist.StreetID"
+                  filterable
+                  remote
+                  placeholder="请输入关键词"
+                  :remote-method="searchStreet"
+                  :loading="isSearching">
+                  <el-option
+                    v-for="item in streets"
+                    :key="item.ID"
+                    :label="item.Name"
+                    :value="item.ID">
+                  </el-option>
+                </el-select>
+              </td>
+              <td :class='s.right'>选择所属街道</td>
+            </tr>
+            <tr v-if='regist.Type === 3'>
+              <td :class='s.left'><span :class='s.red'>*</span>授权码</td>
+              <td :class='s.mid'>
+                <el-input v-model='regist.Code'></el-input>
+              </td>
+              <td :class='s.right'>输入指定授权码</td>
+            </tr>
+          </table>
         <div  :class='s.bottom'>
           <el-button type='primary' @click='onSubmit'>提交</el-button>
           <el-button @click='onCancel'>返回</el-button>
         </div>
-      </form>
+      </div>
     </div>
   </div>
 </template>
@@ -204,82 +204,60 @@ export default {
   justify-content: center;
   align-items: center;
   overflow: auto;
-  .formWrap{
     // min-width: 40%;
-    .title{
-      font-size: 30px;
+  .title{
+    font-size: 30px;
+    text-align: center;
+    padding: 10px 0;
+    background-color: #fff;
+  }
+  .warn{
+    color: red;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+  }
+  .body{
+    background-color: rgba(255,255,255, 0.5);
+    padding: 20px 50px;
+    .bottom{
       text-align: center;
-      padding: 10px 0;
-      background-color: #fff;
-    }
-    .warn{
-      color: red;
-      font-size: 20px;
-      font-weight: bold;
-      text-align: center;
-    }
-    .body{
-      background-color: rgba(255,255,255, 0.5);
-      padding: 20px 50px;
-      .bottom{
-        text-align: center;
-        margin-top: 10px;
-        display: flex;
-        justify-content: center;
-        .login{
-          display: inline-block;
-          line-height: 1;
-          white-space: nowrap;
-          cursor: pointer;
-          border: 1px solid #bfcbd9;
-          color: #fff;
-          -webkit-appearance: none;
-          text-align: center;
-          box-sizing: border-box;
-          outline: none;
-          margin: 0;
-          -moz-user-select: none;
-          -webkit-user-select: none;
-          -ms-user-select: none;
-          padding: 10px 15px;
-          font-size: 18px;
-          border-radius: 4px;
-          background-color: #20a0ff;
-          border-color: #20a0ff;
-        }
-        .cancel{
-          background-color: #fff;
-          border: solid 1px #4db3ff;
-          padding: 5px 15px;
-          font-size: 18px;
-          border-radius: 4px;
-          color: #4db3ff;
-          margin-left: 10px;
-        }
-      }
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
     }
   }
 }
 .table{
   font-size: 16px;
   color: #000;
+  box-sizing: border-box;
+  tr{
+    display: flex;
+  }
 }
 .red{
   color: red;
 }
 .left{
+  flex: 1;
   text-align: right;
   min-width: 100px;
 }
 .mid{
-  min-width: 300px;
+  flex: 2;
+  // min-width: 300px;
   input{
     box-sizing: border-box;
     width: 100%;
   }
 }
 .right{
+  flex: 1;
   text-align: left;
+  overflow: hidden;
+  text-overflow:ellipsis;
+  white-space: nowrap;
 }
 .selectStreet{
   width: 100%;
