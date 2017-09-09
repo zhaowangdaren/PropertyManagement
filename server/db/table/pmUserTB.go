@@ -74,7 +74,7 @@ func FindPMUsers(db *mgo.Database, wxName string, pageNo int, pageSize int) inte
 func FindPMUserByKV(db *mgo.Database, key string, value string) PMUser {
 	c := db.C(PMUserTableName)
 	var result PMUser
-	c.Find(bson.M{strings.ToLower(key): "value"}).One(&result)
+	c.Find(bson.M{strings.ToLower(key): value}).One(&result)
 	return result
 }
 
