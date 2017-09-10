@@ -2,7 +2,7 @@
   <div :class='s.wrap'>
     <div :class='s.searchWrap'>
     <!-- 街道名 -->
-      <div :class='s.title'>街道名</div>
+      <div class='searchKey'>街道名</div>
       <div :class='s.inputWrap'>
         <el-select :class='s.elInput' v-model="searchStreetID" placeholder="请选择">
           <el-option
@@ -19,7 +19,7 @@
         </el-select>
       </div>
       <!-- 小区名 -->
-      <div :class='s.title'>社区名</div>
+      <div class='searchKey'>社区名</div>
       <div :class='s.inputWrap'>
         <el-select :class='s.elInput' v-model="searchCommunityID" placeholder="请选择">
           <el-option
@@ -42,7 +42,7 @@
         color='#fff'
       /> -->
       <el-button
-        :class='s.searchBt'
+        class='searchView'
         @click='onSearch'
         type='primary'
         icon='search'>查询</el-button>
@@ -55,6 +55,7 @@
         fontSize='20px'
         /> -->
       <el-button
+        class='add'
         @click='onAdd'
         type='primary'
         icon='plus'>新增</el-button>
@@ -66,6 +67,7 @@
         @click='onDel'
         /> -->
       <el-button
+        class='del'
         @click='onDel'
         type='danger'
         icon='delete'>删除</el-button>
@@ -107,6 +109,7 @@
             @click='onEdit(item)'
           /> -->
           <el-button
+            class='edit'
             @click='onEdit(item)'
             type='primary'
             icon='edit'>编辑</el-button>
@@ -383,5 +386,13 @@
     font-size: 20px;
     font-weight: bold;
   }
+}
+.view{
+  background-color: #1EB5E3;
+  font-size: 17px;
+  border: none;
+  background-color: #72AD1A;
+  position: absolute;
+  right: 10px;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div :class='s.wrap'>
     <div :class='s.searchWrap'>
-      <div :class='s.title'>街道名</div>
+      <div class='searchKey'>街道名</div>
       <!-- 街道名 -->
       <div :class='s.inputWrap'>
         <el-select :class='s.elInput' v-model="searchStreetID" placeholder="请选择">
@@ -19,17 +19,19 @@
         </el-select>
       </div>
       <el-button
-        :class='s.searchBt'
+        class='searchView'
         @click='onSearch'
         type='primary'
         icon='search'>查询</el-button>
     </div>
     <div :class='s.addDel'>
       <el-button
+        class='add'
         @click='onAdd'
         type='primary'
         icon='plus'>新增</el-button>
       <el-button
+        class="del"
         @click='onDel'
         type='danger'
         icon='delete'>删除</el-button>
@@ -59,6 +61,7 @@
         <td v-text='item.Intro' class='descr'></td>
         <td>
           <el-button
+            class='edit'
             @click='onEdit(item)'
             type='primary'
             icon='edit'>编辑</el-button>
@@ -285,5 +288,13 @@
     align-items: center;
     margin: 10px;
   }
+}
+.view{
+  background-color: #1EB5E3;
+  font-size: 17px;
+  border: none;
+  background-color: #72AD1A;
+  position: absolute;
+  right: 10px;
 }
 </style>

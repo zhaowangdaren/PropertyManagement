@@ -17,9 +17,9 @@
         <div :class='s.item'>
           <span>联系方式：</span>
           <div>
-            <a :href="'tel:' + company.Tel">{{company.mobile}}(手机)</a>
+            <a :href="'tel:' + company.mobile">{{company.mobile}}(手机)</a>
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <a :href="'tel:' + company.Tel">{{company.tel}}(固话)</a>
+            <a :href="'tel:' + company.tel">{{company.tel}}(固话)</a>
           </div>
         </div>
         <div :class='s.item'><span>电子邮件：</span>{{company.email}}</div>
@@ -52,7 +52,7 @@ export default {
         address: '花山区花山路152号科技大厦',
         man: '司先生',
         tel: '0555-2373620',
-        mobile: '15255528528',
+        mobile: '+8615255528528',
         email: 'maszfglzx@163.com'
       },
       showAssess: false

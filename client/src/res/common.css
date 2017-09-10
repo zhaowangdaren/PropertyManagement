@@ -70,6 +70,14 @@ tr:hover{
   border: none;
   background-color: #865F99;
 }
+.searchView{
+  background-color: #1EB5E3;
+  font-size: 17px;
+  border: none;
+  background-color: #72AD1A;
+  position: absolute;
+  right: 10px;
+}
 .searchKey{
   padding: 10px;
   margin-right: 0px;

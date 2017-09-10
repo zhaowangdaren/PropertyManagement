@@ -6,7 +6,7 @@
     </div>
     <table :class='s.searchWrap'>
       <tr>
-        <td :class='s.title'>街道</td>
+        <td class='searchKey'>街道</td>
         <td>
           <el-select v-model="inputStreetID" filterable placeholder="全部" :class='s.elSelect'>
             <el-option
@@ -21,7 +21,7 @@
             </el-option>
           </el-select>
         </td>
-        <td :class='s.title'>社区</td>
+        <td class='searchKey'>社区</td>
         <td>
           <el-select v-model="inputCommunityID" filterable placeholder="全部" :class='s.elSelect'>
             <el-option
@@ -36,7 +36,7 @@
             </el-option>
           </el-select>
         </td>
-        <td :class='s.title'>小区</td>
+        <td class='searchKey'>小区</td>
         <td>
           <el-select v-model="inputXQID" filterable placeholder="全部" :class='s.elSelect'>
             <el-option
@@ -53,16 +53,16 @@
         </td>
       </tr>
       <tr>
-        <td :class='s.title'>房屋楼栋号</td>
+        <td class='searchKey'>房屋楼栋号</td>
         <td>
         <!-- 房屋楼栋号 -->
           <el-input v-model="inputHouseBuildNo" placeholder="请输入号"></el-input>
         </td>
-        <td :class='s.title'>房屋门牌号</td>
+        <td class='searchKey'>房屋门牌号</td>
         <td>
           <el-input v-model="inputHouseNo" placeholder="请输入HouseNo"></el-input>
         </td>
-        <td :class='s.title'>房产登记人</td>
+        <td class='searchKey'>房产登记人</td>
         <td>
           <el-input v-model="inputOwner" placeholder="请输入owner"></el-input>
         </td>

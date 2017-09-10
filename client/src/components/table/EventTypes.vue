@@ -1,9 +1,9 @@
 <template>
 	<div>
 		<div :class='s.new'>
-			<div :class='s.title'>新增事件类型:</div>
+			<div class='searchKey'>新增事件类型:</div>
 			<el-input v-model='newEventType' :class='s.input' placeholder='请输入新增类型'></el-input>
-			<el-button type='primary' icon='plus' @click='onAdd' :loading='isAdding'>新增</el-button>
+			<el-button type='primary' icon='plus' @click='onAdd' :loading='isAdding' class='add'>新增</el-button>
 		</div>
 		<table>
 			<tr>
@@ -13,7 +13,7 @@
 			<tr v-for='eventType in eventTypes'>
 				<td>{{eventType.Type}}</td>
 				<td class="flex1">
-					<el-button type='danger' icon='delete' @click='onShowDel(eventType)' :loading='isDeling'>删除</el-button>
+					<el-button type='danger' icon='delete' @click='onShowDel(eventType)' :loading='isDeling' class='del'>删除</el-button>
 				</td>
 			</tr>
 			<tr v-if='eventTypes.length === 0'>
