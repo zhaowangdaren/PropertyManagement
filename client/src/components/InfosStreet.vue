@@ -20,7 +20,8 @@
         @click='onDel'
         /> -->
       <el-button
-        class='del'
+        :class='s.del'
+        :style='{backgroundColor: dels.length > 0 ? "#ff6d6d" : "gray"}'
         @click='onDel'
         type='danger'
         icon='delete'>删除</el-button>
@@ -40,9 +41,9 @@
         <!-- 描述 -->
         <th class='flex1'>操作</th>
       </tr>
-      <tr v-for='street in streets' :class='s.street'>
+      <tr v-for='(street, index) in streets' :class='s.street'>
         <td>
-          <input type="checkbox" v-model='street.checked'>
+          <input type="checkbox" :value="index" v-model='delIndexs'>
         </td>
         <td v-text='street.Name' class='flex2'></td>
         <td v-text='street.PersonInCharge' class='flex1'></td>
@@ -104,10 +105,10 @@
     data () {
       return {
         streets:[],
+        delIndexs: [],
         showAddDialog: false,
         showEditDialog: false,
         showDelConfirm: false,
-        dels: [],
         editingStreet: null,
         pageNo: 0,
         pageSize: 10,
@@ -116,6 +117,13 @@
     },
     mounted () {
       this.fetchStreets()
+    },
+    computed: {
+      dels: function () {
+        return this.delIndexs.map(item => {
+          return this.streets[item]
+        })
+      }
     },
     methods: {
       onEditSucc () {
@@ -152,9 +160,6 @@
         this.showEditDialog = true
       },
       onDel () {
-        this.dels = this.streets.filter(item => {
-          return item.checked
-        })
         console.info('Del', this.dels)
         if (this.dels.length == 0) return
         this.showDelConfirm = true
@@ -197,7 +202,6 @@
   }
   .del{
     font-size: 17px;
-    background-color: gray;
     border: none;
   }
   .edit{
