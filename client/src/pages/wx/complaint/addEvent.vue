@@ -70,7 +70,7 @@ export default{
         Tel:''
       },
       eventTypes: [],
-      selectedEventType:{value:'', label: '阿斯顿发'},
+      selectedEventType:{value:'', label: ''},
       warn:''
     }
   },
@@ -90,7 +90,7 @@ export default{
       this.event.StreetID = sessionStorage.getItem('StreetID')
       this.event.CommunityID = sessionStorage.getItem('CommunityID')
       this.event.XQID = this.xq.ID
-      this.event.Type = this.selectedEventType
+      this.event.Type = this.selectedEventType.label
       if(!this.checkEvent()) return
       this.addEvent()
     },

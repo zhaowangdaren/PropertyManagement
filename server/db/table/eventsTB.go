@@ -318,7 +318,7 @@ func CountDiffKeyEvents(db *mgo.Database, key string, maxRecs int) interface{} {
 		return gin.H{"error": 1, "data": err.Error()}
 	}
 	resultLen := len(result)
-	if resultLen >= maxRecs {
+	if maxRecs != 0 && resultLen >= maxRecs {
 		return gin.H{"error": 0, "data": result[0:maxRecs]}
 	}
 	return gin.H{"error": 0, "data": result}

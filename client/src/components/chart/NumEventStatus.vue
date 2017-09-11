@@ -28,7 +28,7 @@ export default {
   },
   methods: {
     fetchEvenStatus () {
-      fetchpm(this, true, '/pm/event/key/nums/status', {
+      fetchpm(this, true, '/pm/event/key/nums/status?recs=0', {
         method: 'GET'
       }).then(resp => {
         return resp.json()

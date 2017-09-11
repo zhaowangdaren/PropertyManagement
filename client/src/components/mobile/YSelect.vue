@@ -2,8 +2,9 @@
   <div :class='s.wrap'>
     <div
       :class='[s.selected, {[s.active]: showOptions}]'
-      @click='showOptions = !showOptions' 
-      v-html='selected.label'></div>
+      @click='showOptions = !showOptions'>
+      {{selected.label}}
+    </div>
     <div 
       :class='s.options'
       v-if='showOptions'>
@@ -24,7 +25,7 @@ export default {
       default: function () {
         return {
           value: '',
-          label: 'asdfasdf'
+          label: ''
         }
       }
     },
@@ -37,7 +38,7 @@ export default {
   },
   methods: {
     onOption (option) {
-      this.selected = option
+      this.$emit('update:selected', option)
       this.showOptions = false
     }
   }
@@ -47,6 +48,7 @@ export default {
 <style lang="less" module='s'>
 .wrap{
   position: relative;
+  height: 100%;
 }
 .options{
   position: absolute;
@@ -61,12 +63,11 @@ export default {
   padding: 10px;
 }
 .selected{
-  height: 100%;
+  min-height: 60px;
   background-color: #fff;
   margin: auto 0;
   display: flex;
   align-items: center;
-  border: solid 1px transparent;
 }
 .active{
   border: solid 1px #20a0ff;
