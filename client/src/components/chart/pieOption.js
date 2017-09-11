@@ -9,12 +9,17 @@ export default function function_name(data) {
       formatter: "{b}: {c} ({d}%)"
     },
     legend: {
+      type: 'scroll',
       orient: 'vertical',
-      x: 'left',
-      data: data.data
+      left: 10,
+      top: 20,
+      bottom: 20,
+      data: data.data,
+      width: '10'
     },
     series: [
       {
+        zlevel: 5,
         type:'pie',
         radius: ['50%', '70%'],
         avoidLabelOverlap: false,

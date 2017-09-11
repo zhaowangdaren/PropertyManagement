@@ -2,6 +2,7 @@ package server
 
 import (
 	"net/http"
+	"strconv"
 
 	"../db/table"
 	"github.com/gin-gonic/gin"
@@ -84,7 +85,12 @@ func startEvent(router *gin.RouterGroup, dbc *mgo.Database) {
 
 	router.GET("/event/key/nums/:key", func(c *gin.Context) {
 		key := c.Param("key")
-		c.JSON(http.StatusOK, table.CountDiffKeyEvents(dbc, key))
+		maxRecs, err := strconv.Atoi(c.Query("recs"))
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, table.CountDiffKeyEvents(dbc, key, maxRecs))
 	})
 
 	router.GET("/event/today/events", func(c *gin.Context) {

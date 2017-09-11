@@ -50,7 +50,7 @@
             :page-size='pageSize'
             :total="sum">
           </el-pagination>
-          <div :class='s.pageTip'>其中<span>{{pageSize - events.length}}</span>条事件已关闭或已被用户撤销</div>
+          <!-- <div :class='s.pageTip'>其中<span>{{pageSize - events.length}}</span>条事件已关闭或已被用户撤销</div> -->
         </div>
       </div>
     </div>
@@ -86,9 +86,7 @@ export default {
     var user = JSON.parse(sessionStorage.getItem('user')) || {}
     this.userStreetID = user.StreetID
     this.userType = user.type || 0
-
     this.fetchEvents()
-
   },
   methods: {
     fetchEvents () {
@@ -158,9 +156,7 @@ export default {
         return resp.json()
       }).then(body => {
         if (body.error === 0) {
-          this.events = ((body.data.events || []).filter(item => {
-            return item.Status >= 0
-          })).sort((a, b) => {
+          this.events = (body.data.events || []).sort((a, b) => {
             return b.Time -a.Time
           })
           this.sum = body.data.sum || 0
@@ -177,34 +173,9 @@ export default {
         }
       })
     },
-    // fetchEvents (streetID, pageNo, pageSize) {
-    //   if (!streetID ) {
-    //     console.info('streetID', streetID)
-    //   }
-    //   fetchpm(this, true, '/pm/event/kv', {
-    //     method: 'POST',
-    //     body: {Key: 'streetID', Value: streetID, PageNo: pageNo, PageSize: pageSize}
-    //   }).then(resp => {
-    //     return resp.json()
-    //   }).then(body => {
-    //     console.info('fetchEvents', body)
-    //     this.events = (body.data.events || []).filter(item => {
-    //       return item.Status >= 0
-    //     })
-    //     this.sum = body.data.sum || 0
-    //     let communityIDs = this.events.map((item) => {
-    //       return item.CommunityID
-    //     })
-    //     this.fetchCommunities(communityIDs)
-    //     let xqIDs = this.events.map((item) => {
-    //       return item.XQID
-    //     })
-    //     this.fetchXQs(xqIDs)
-    //   })
-    // },
     toDetails (event) {
       console.info('toDetails', event.Index)
-      this.$router.push({name: 'eventDetail', params:{index: event.Index}})
+      this.$router.push({name: 'GovDetailEvent', params:{index: event.Index}})
       // this.$router.push({path:'/street/detail/' + event.Index})
     }
   }

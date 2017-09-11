@@ -256,6 +256,7 @@ func FindEventKVsPage(db *mgo.Database, kvs map[string]interface{}, pageNo int, 
 				bson.M{"time": bson.M{"$gte": startTime}},
 				bson.M{"time": bson.M{"$lte": endTime}},
 				querys,
+				bson.M{"status": bson.M{"$gte": 0}},
 			},
 		}
 		query = c.Find(selector).Sort("-time")
@@ -296,14 +297,29 @@ func FindEventKV(db *mgo.Database, key string, value string,
 }
 
 //CountDiffKeyEvents 统计不同key-value的数量
-func CountDiffKeyEvents(db *mgo.Database, key string) interface{} {
+func CountDiffKeyEvents(db *mgo.Database, key string, maxRecs int) interface{} {
 	c := db.C(EventTableName)
 	key = strings.ToLower(key)
-	pipe := c.Pipe([]bson.M{bson.M{"$group": bson.M{"_id": bson.M{key: "$" + key}, "num": bson.M{"$sum": 1}}}})
+	pipe := c.Pipe([]bson.M{
+		{
+			"$group": bson.M{
+				"_id": bson.M{key: "$" + key},
+				"num": bson.M{"$sum": 1},
+			},
+		}, {
+			"$sort": bson.M{
+				"num": -1,
+			},
+		},
+	})
 	result := []bson.M{}
 	err := pipe.All(&result)
 	if err != nil {
 		return gin.H{"error": 1, "data": err.Error()}
+	}
+	resultLen := len(result)
+	if resultLen >= maxRecs {
+		return gin.H{"error": 0, "data": result[0:maxRecs]}
 	}
 	return gin.H{"error": 0, "data": result}
 }

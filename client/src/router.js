@@ -31,6 +31,7 @@ const GovBuild = resolve => require(['@/pages/gov/build'], resolve)
 const GovPMKPI = resolve => require(['@/pages/gov/pmkpi'], resolve)
 const GovCourt = resolve => require(['@/pages/gov/court'], resolve)
 const GovAnnouncement = resolve => require(['@/pages/gov/announcement'], resolve)
+const GovDetailEvent = resolve => require(['@/components/DetailEvent'], resolve)
 
 const WXStartComplaint = require('@/pages/wx/startComplaint')
 const WXComplaintSelectStreet = resolve => require(['@/pages/wx/complaint/selectStreet'], resolve)
@@ -172,9 +173,19 @@ export default new Router({
         {
           path:'eventHandle',
           component: GovEventHandle
-        },{
+        },
+        {
+          path: 'eventDetail/:index',
+          name: 'GovDetailEvent',
+          component: GovDetailEvent
+        },
+        {
           path:'pms',
           component: GovPM
+        },
+        {
+          path: 'complaints',
+          component: AdminComplaint
         },{
           path:'build',
           component: GovBuild

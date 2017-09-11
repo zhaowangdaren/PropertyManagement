@@ -53,6 +53,11 @@ export default {
           path:'/gov/build'
         },
         {
+          icon: 'icon-tousu',
+          text:'投诉数据维护',//微信用户绑定管理
+          path:'/gov/complaints'
+        },
+        {
           icon: 'icon-court',
           text:'推送法院调解请求',
           path: '/gov/court'
@@ -84,6 +89,7 @@ export default {
   height: 100%;
   display: flex;
   .right{
+    overflow: auto;
     flex: 1;
     width: 100%;
   }

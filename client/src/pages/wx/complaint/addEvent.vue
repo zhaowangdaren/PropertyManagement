@@ -9,11 +9,15 @@
       <div :class='s.warn' v-text='warn'></div>
       <div :class='s.item'>
         <div :class='s.title'>投诉类型:</div>
-        <select v-model='selectedEventType' :class='s.value' @focus='onFocus'>
+        <!-- <select v-model='selectedEventType' :class='s.value' @focus='onFocus'>
           <option disabled value="">请选择</option>
-          <option v-for='type in eventTypes' :value='type.Type'>{{type.Type}}</option>
+          <option
+            :class='s.option'
+            v-for='type in eventTypes'
+            :value='type.Type'>{{type.Type}}</option>
           </option>
-        </select>
+        </select> -->
+        <y-select :class='s.select' :selected.sync='selectedEventType' :options='eventTypes'></y-select>
       </div>
       <div :class='s.item'>
         <div :class='s.title'>联系电话:</div>
@@ -40,9 +44,10 @@
 
 <script>
 import ActionBar from '@/components/mobile/ActionBar'
+import YSelect from '@/components/mobile/YSelect'
 import fetchpm from '@/fetchpm'
 export default{
-  components: { ActionBar },
+  components: { ActionBar, YSelect },
   data () {
     return {
       headerOptions: {
@@ -65,7 +70,7 @@ export default{
         Tel:''
       },
       eventTypes: [],
-      selectedEventType:"",
+      selectedEventType:{value:'', label: '阿斯顿发'},
       warn:''
     }
   },
@@ -136,7 +141,12 @@ export default{
       }).then(body => {
         console.info('fetchEventTypes', body)
         if (body.error !== 1){
-          this.eventTypes = body.data || []
+          this.eventTypes = (body.data || []).map(item => {
+            return {
+              value: item.Type,
+              label: item.Type
+            }
+          })
         }
       })
     }
@@ -212,5 +222,14 @@ export default{
       margin: 20px;
     }
   }
+}
+.option{
+  word-break: break-all;
+}
+.select{
+  flex: 1;
+  border: solid 1px #999;
+  margin: 5px;
+  font-size: 25px;
 }
 </style>

@@ -112,8 +112,16 @@
                   <el-button
                     v-if='userType == 2'
                     type='success'
+                    @click='onTalkAbout'>
+                    约谈物业公司
+                  </el-button>
+                  <el-button
+                    v-if='userType == 2'
+                    type='success'
                     :disabled='(event.Status === -2 ? true : false)'
-                    @click='onAgreeClose'>同意关闭</el-button>
+                    @click='onAgreeClose'>
+                    同意关闭
+                  </el-button>
                 </div>
               </td>
             </tr>
@@ -224,6 +232,9 @@
       this.fetchEventHandles(this.$route.params.index)
     },
     methods: {
+      onTalkAbout () {
+        Message({type: "warning", message: '该功能正在开发中'})
+      },
       onNoticeGov () {
         this.event.NoticeGov = 1
         this.updateEvent(this.event)

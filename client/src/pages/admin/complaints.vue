@@ -92,7 +92,7 @@ export default {
       return result
     },
     fetchEventXQ () {
-      fetchpm(this, true, '/pm/event/key/nums/xqid', {
+      fetchpm(this, true, '/pm/event/key/nums/xqid?recs=20', {
         method: 'GET'
       }).then(resp => {
         return resp.json()
@@ -108,7 +108,7 @@ export default {
     },
     formatEventXQ (events) {
       events.sort((a, b) => {
-        return b.num - a.num
+        return a.num - b.num
       })
       var result = []
       var ids = []
@@ -142,7 +142,6 @@ export default {
 .wrap{
   margin: 10px;
   border: solid 1px #4c87b9;
-  width: 100%;
   text-align: center;
   .title{
     color: #fff;
@@ -168,7 +167,7 @@ export default {
     font-size: 20px;
     text-align: center;
     color: #999;
-    display: flex;
+    // display: flex;
     align-items: flex-start;
     .item{
       flex: 1;

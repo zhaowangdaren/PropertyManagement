@@ -12,7 +12,7 @@
 			</tr>
 			<tr v-for='eventType in eventTypes'>
 				<td>{{eventType.Type}}</td>
-				<td class="flex1">
+				<td>
 					<el-button type='danger' icon='delete' @click='onShowDel(eventType)' :loading='isDeling' class='del'>删除</el-button>
 				</td>
 			</tr>
