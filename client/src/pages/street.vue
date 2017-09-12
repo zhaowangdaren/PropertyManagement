@@ -99,6 +99,7 @@ export default {
   height: 100%;
   display: flex;
   .right{
+    overflow: auto;
     flex: 1;
     width: 100%;
   }

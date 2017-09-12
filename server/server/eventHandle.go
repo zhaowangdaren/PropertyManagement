@@ -150,6 +150,7 @@ func startEventHandle(router *gin.RouterGroup, dbc *mgo.Database) {
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
 		} else {
+			info.HandleType = 0
 			result, err := table.InsertEventHandle(dbc, info)
 			if err != nil {
 				c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
@@ -189,9 +190,16 @@ func startEventHandle(router *gin.RouterGroup, dbc *mgo.Database) {
 		c.JSON(http.StatusOK, table.FindTodayHandles(dbc))
 	})
 
-	router.GET("/eventHandle/noticepm", func(c *gin.Context) {
-		eventIndex := c.Query("index")
-		xqid := c.Query("xqid")
+	router.POST("/eventHandle/noticepm", func(c *gin.Context) {
+		var eventHandle table.EventHandle
+		err := c.BindJSON(&eventHandle)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		eventHandle.HandleType = 1
+		eventIndex := eventHandle.Index
+		xqid := eventHandle.XQID
 		pm := table.FindPMByKV(dbc, "xqid", xqid)
 		// fmt.Println("pmID:", pm.ID.Hex())
 		// pmUser := table.FindPMUserByKV(dbc, "pmid", pm.ID.Hex())
@@ -203,39 +211,96 @@ func startEventHandle(router *gin.RouterGroup, dbc *mgo.Database) {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": "该小区物业人员未绑定微信"})
 			return
 		}
-		// if pmUser.OpenID == "" {
-		// 	c.JSON(http.StatusOK, gin.H{"error": 1, "data": "该小区物业人员未绑定微信"})
-		// 	return
-		// }
 		event := table.FindEvent(dbc, eventIndex)
 		xqName := table.FindXQ(dbc, event.XQID).Name
-		for _, pmUser := range pmUsers {
-			pjson := `{
-		  "touser": "` + pmUser.OpenID + `",
-		  "template_id": "TdVxvtwH1i24ArEUcx1FGmWNFI_11WFZvDGfBJ9cjBw",
-			"url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxa768bfacbb694944&redirect_uri=https%3A%2F%2Fwww.maszfglzx.com%2Fcomplaint-progress-pm.html&response_type=code&scope=snsapi_base&state=` + eventIndex + `#wechat_redirect",
-		  "data": {
-		    "first": {
-		      "value": "您好，贵公司所服务的` + xqName + `有群众投诉，信息如下："
-		    },
-		    "keyword1": {
-		      "value": "` + eventIndex + `"
-		    },
-				"keyword2": {
-		      "value": "已分派"
-		    },
-		    "keyword3": {
-		      "value": "` + pm.Name + `"
-		    },
-		    "remark": {
-		      "value": "请贵公司及时进行处理"
-		    }
-		  }
-		}`
-			access_token := GetAccessToken()
-			wxURL := "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + access_token
-			PostJson(wxURL, pjson)
-		}
+		PushNotice2PM(pmUsers, xqName, eventIndex, pm.Name)
 		c.JSON(http.StatusOK, gin.H{"error": 0, "data": ""})
+
+		table.InsertEventHandle(dbc, eventHandle)
 	})
+
+	router.POST("/eventHandle/govtalkpm", func(c *gin.Context) {
+		var eventHandle table.EventHandle
+		err := c.BindJSON(&eventHandle)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		eventHandle.HandleType = 2
+		pm := table.FindPMByKV(dbc, "xqid", eventHandle.XQID)
+		kvs := make(map[string]interface{})
+		kvs["pmid"] = pm.ID.Hex()
+		kvs["bind"] = 1
+		pmUsers := table.FindPMUserByKVs(dbc, kvs)
+		if len(pmUsers) == 0 {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": "该小区物业人员未绑定微信"})
+			return
+		}
+		xqName := table.FindXQ(dbc, eventHandle.XQID).Name
+		GOVTalkPM(pmUsers, xqName, eventHandle.Index, pm.Name)
+		c.JSON(http.StatusOK, gin.H{"error": 0, "data": ""})
+
+		table.InsertEventHandle(dbc, eventHandle)
+	})
+}
+
+//PushNotice2PM 通知物业公司人员
+func PushNotice2PM(pmUsers []table.PMUser, xqName string, eventIndex string, pmName string) {
+	for _, pmUser := range pmUsers {
+		pjson := `{
+		"touser": "` + pmUser.OpenID + `",
+		"template_id": "TdVxvtwH1i24ArEUcx1FGmWNFI_11WFZvDGfBJ9cjBw",
+		"url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxa768bfacbb694944&redirect_uri=https%3A%2F%2Fwww.maszfglzx.com%2Fcomplaint-progress-pm.html&response_type=code&scope=snsapi_base&state=` + eventIndex + `#wechat_redirect",
+		"data": {
+			"first": {
+				"value": "您好，贵公司所服务的` + xqName + `有群众投诉，信息如下："
+			},
+			"keyword1": {
+				"value": "` + eventIndex + `"
+			},
+			"keyword2": {
+				"value": "已分派"
+			},
+			"keyword3": {
+				"value": "` + pmName + `"
+			},
+			"remark": {
+				"value": "请贵公司及时进行处理"
+			}
+		}
+	}`
+		access_token := GetAccessToken()
+		wxURL := "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + access_token
+		PostJson(wxURL, pjson)
+	}
+}
+
+func GOVTalkPM(pmUsers []table.PMUser, xqName string, eventIndex string, pmName string) {
+	for _, pmUser := range pmUsers {
+		pjson := `{
+			"touser": "` + pmUser.OpenID + `",
+			"template_id": "TdVxvtwH1i24ArEUcx1FGmWNFI_11WFZvDGfBJ9cjBw",
+			"url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxa768bfacbb694944&redirect_uri=https%3A%2F%2Fwww.maszfglzx.com%2Fcomplaint-progress-pm.html&response_type=code&scope=snsapi_base&state=` + eventIndex + `#wechat_redirect",
+			"data": {
+				"first": {
+					"value": "您好，政府主管单位针对以下投诉` + xqName + `的事件，约谈贵公司"
+				},
+				"keyword1": {
+					"value": "` + eventIndex + `"
+				},
+				"keyword2": {
+					"value": "已分派"
+				},
+				"keyword3": {
+					"value": "` + pmName + `"
+				},
+				"remark": {
+					"value": "请贵公司主动联系主管单位"
+				}
+			}
+		}`
+		access_token := GetAccessToken()
+		wxURL := "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + access_token
+		PostJson(wxURL, pjson)
+	}
 }

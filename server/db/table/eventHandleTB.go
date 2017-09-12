@@ -16,15 +16,19 @@ const EventHandleTableName = "EventHandle"
 
 //EventHandle 事件处理表
 type EventHandle struct {
-	Index          string //事件编号，属于Event表中的事件编号
-	AuthorCategory int    //提交人类别  1-系统管理员 2-政府、3-街道、4-物业公司
-	AuthorName     string //提交人用户名
-	Time           int64  //提交的时间
-	HandleInfo     string //处理信息
-	Imgs           string //图片列表，以,为分隔符
+	Index          string // 事件编号，属于Event表中的事件编号
+	XQID           string // 小区ID
+	AuthorCategory int    // 提交人类别  1-系统管理员 2-政府、3-街道、4-物业公司
+	AuthorName     string // 提交人用户名
+	OpenID         string // 提交人WeChat ID
+	WXNickName     string // 提交人nickname
+	Time           int64  // 提交的时间
+	HandleInfo     string // 处理信息
+	HandleType     int    // 处理的分类 0-普通处理、询问 1-street推送给物业 2-gov约谈PM
+	Imgs           string // 图片列表，以,为分隔符
 }
 
-//FindTodayHandles 获取今日新增事件
+//FindTodayHandles 获取今日新增事件处理
 func FindTodayHandles(db *mgo.Database) interface{} {
 	curTime := time.Now()
 	startTime := time.Date(curTime.Year(), curTime.Month(), curTime.Day(), 0, 0, 0, 0, time.UTC)
@@ -105,4 +109,11 @@ func FindEventHandleByKVsPage(db *mgo.Database, kvs map[string]interface{}, page
 		return gin.H{"error": 1, "data": err.Error()}
 	}
 	return gin.H{"error": 0, "data": gin.H{"eventHandles": result, "sum": sum}}
+}
+
+func FindEventHandlesByIndexSortByTime(db *mgo.Database, index string) (error, []EventHandle) {
+	c := db.C(EventHandleTableName)
+	var result []EventHandle
+	err := c.Find(bson.M{"index": index}).Sort("time").All(&result)
+	return err, result
 }

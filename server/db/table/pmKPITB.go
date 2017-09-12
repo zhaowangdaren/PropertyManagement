@@ -3,8 +3,10 @@ package table
 import (
 	"log"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang/glog"
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -12,9 +14,8 @@ import (
 //PMKPITableName table name
 const PMKPITableName = "PMKPI"
 
-//PMKPI PMKPI
+//PMKPI PMKPI 按小区进行物业考核
 type PMKPI struct {
-	PMID        string //PM ID
 	Name        string // PM 公司名
 	StreetID    string //所在街道ID
 	CommunityID string //所在社区ID
@@ -24,6 +25,7 @@ type PMKPI struct {
 	YWNo        int     //黄色警告次数
 	RWNo        int     //红色警告次数
 	IWNo        int     //重大警告次数
+	Other       int     //其他的分数，由gov用户编辑
 	Score       float32 //得分
 }
 
@@ -82,4 +84,71 @@ func FindPMKPIByKVsPage(db *mgo.Database, kvs map[string]interface{}, pageNo int
 		return gin.H{"error": 1, "data": err.Error()}
 	}
 	return gin.H{"error": 0, "data": gin.H{"pmkpis": result, "sum": sum}}
+}
+
+//CalculatePMKPI
+func CalculatePMKPI(dbc *mgo.Database, xqid string, startTime int64, endTime int64) (error, PMKPI) {
+	var pmkpi PMKPI
+	err, events := FindEventsByXQIDInTimeSortByType(dbc, xqid, startTime, endTime) //查询出该xq的所有事件
+	if err != nil {
+		return err, pmkpi
+	}
+	if len(events) == 0 {
+		return nil, pmkpi
+	}
+	tempType := ""
+	tempTypeCount := 0
+	for _, event := range events {
+		index := event.Index
+		tempErr, eventHandles := FindEventHandlesByIndexSortByTime(dbc, index)
+		if tempErr != nil {
+			glog.Error("CalculatePMKPI " + tempErr.Error())
+			continue
+		}
+		// 统计黄色、红色警告次数
+		yellowWarn, redWarn := CalculatePMKPIWarnTimes(eventHandles)
+		pmkpi.YWNo += yellowWarn
+		pmkpi.RWNo += redWarn
+
+		//统计同一类型投诉
+		if tempType != event.Type {
+			if tempTypeCount > 3 { //同一问题被投诉3次
+				pmkpi.IWNo++
+			}
+			tempType = event.Type
+			tempTypeCount = 0
+		} else {
+			tempTypeCount++
+		}
+	}
+	return err, pmkpi
+}
+
+const ThreeDay = 3 * 24 * 60 * 60
+const SevenDay = 7 * 24 * 60 * 60
+
+//CalculatePMKPIWarnTimes 计算黄色、红色警告的次数
+func CalculatePMKPIWarnTimes(eventHandles []EventHandle) (int, int) {
+	var pushTime int64 //推送给物业的开始时间
+	pushTime = 0
+	pmHandleTime := time.Now().Unix()          //物业首次处理的时间
+	for _, eventHandle := range eventHandles { // 遍历所有的handle，来记分
+		if eventHandle.HandleType == 1 && pushTime == 0 { //推送给物业的时间
+			pushTime = eventHandle.Time
+			continue
+		}
+		// 物业首次处理的时间
+		if eventHandle.AuthorCategory == 4 && pmHandleTime > eventHandle.Time {
+			pmHandleTime = eventHandle.Time
+			break
+		}
+	}
+	dur := pmHandleTime - pushTime
+	if dur >= ThreeDay && dur < SevenDay {
+		return 1, 0
+	}
+	if dur >= SevenDay {
+		return 0, 1
+	}
+	return 0, 0
 }

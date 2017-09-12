@@ -23,7 +23,7 @@ type Event struct {
 	StreetID     string //街道
 	CommunityID  string //社区
 	XQID         string //投诉小区ID
-	Status       int    //事件状态  -2-已关闭 -1-用户撤销 0-居民提交 1-已审核待处理 2-已处理待确认 3-已解决
+	Status       int    //事件状态  -2-已关闭 -1-已撤销 0-居民提交 1-已审核待处理 2-已处理待确认 3-已解决
 	RequestClose int    // 1-申请关闭
 	NoticeGov    int    // 1-推送给政府
 	EventLevel   int    //事件等级  1-特急、2-加急、3-急
@@ -294,6 +294,21 @@ func FindEventKV(db *mgo.Database, key string, value string,
 		return gin.H{"error": 1, "data": err.Error()}
 	}
 	return gin.H{"error": 0, "data": gin.H{"events": result, "sum": sum}}
+}
+
+func FindEventsByXQIDInTimeSortByType(db *mgo.Database, xqid string,
+	startTime int64, endTime int64) (error, []Event) {
+	c := db.C(EventTableName)
+	var result []Event
+	selector := bson.M{
+		"$and": []bson.M{
+			bson.M{"time": bson.M{"$gte": startTime}},
+			bson.M{"time": bson.M{"$lte": endTime}},
+			bson.M{"xqid": xqid},
+		},
+	}
+	err := c.Find(selector).Sort("type").All(&result)
+	return err, result
 }
 
 //CountDiffKeyEvents 统计不同key-value的数量

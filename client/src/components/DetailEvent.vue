@@ -71,7 +71,7 @@
               <td class='searchKey'>操作</td>
               <td :class='s.value'>
                 <div :class='s.btnWrap'>
-                  <el-button type='success' v-show='userType === 3' @click='onNoticePM'>推送至物业公司</el-button>
+                  <el-button type='success' v-show='user.type === 3' @click='onNoticePM'>推送至物业公司</el-button>
                   <el-button type='primary' @click='showAddEventHandle = true'>询问</el-button>
                   <el-dialog
                     title='询问事件'
@@ -86,14 +86,14 @@
                 <div :class='s.btnWrap'>
                   <el-button 
                     type='success' 
-                    v-if='userType === 3'
+                    v-if='user.type === 3'
                     :disabled='event.NoticeGov === 1'
                     @click='onNoticeGov'>推送至政府部门</el-button>
                   <el-button type='primary' 
-                    v-if='userType === 3'
+                    v-if='user.type === 3'
                     @click='showAduitEventLevel = true'>审核等级</el-button>
                   <el-dialog
-                    v-if='userType === 3'
+                    v-if='user.type === 3'
                     title='审核等级'
                     size='tiny'
                     :visible.sync='showAduitEventLevel'>
@@ -105,18 +105,18 @@
                 </div>
                 <div :class='s.btnWrap'>
                   <el-button
-                    v-if='userType == 3'
+                    v-if='user.type == 3'
                     type='danger'
                     :disabled='(event.RequestClose === 1 ? true : false)'
                     @click='onClose'>申请关闭</el-button>
                   <el-button
-                    v-if='userType == 2'
+                    v-if='user.type == 2'
                     type='success'
                     @click='onTalkAbout'>
                     约谈物业公司
                   </el-button>
                   <el-button
-                    v-if='userType == 2'
+                    v-if='user.type == 2'
                     type='success'
                     :disabled='(event.Status === -2 ? true : false)'
                     @click='onAgreeClose'>
@@ -195,7 +195,9 @@
     data () {
       return {
         host:'//www.maszfglzx.com:3000',
-        userType: 0,
+        user: {
+          type: 0,
+        },
         event: {
           Index: '',
           StreetID: '',
@@ -227,7 +229,7 @@
     mounted () {
       console.info(this.$route)
       var user = JSON.parse(sessionStorage.getItem('user')) || {}
-      this.userType = user.type
+      this.user = user
       this.fetchEvent(this.$route.params.index)
       this.fetchEventHandles(this.$route.params.index)
     },
@@ -240,6 +242,15 @@
         this.updateEvent(this.event)
       },
       onNoticePM () {
+        var eventHandle = {
+          Index: this.event.Index,
+          XQID: this.event.XQID,
+          AuthorCategory: this.user.type,
+          AuthorName: this.,
+          HandleInfo: 'push2PM',
+          Imgs: ''
+        }
+
         fetchpm(this, true, '/pm/eventHandle/noticepm?index=' + this.event.Index + '&xqid=' + this.event.XQID, {
           method: 'GET'
         }).then(resp => {
