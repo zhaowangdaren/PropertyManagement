@@ -1,6 +1,6 @@
 <template>
   <div>
-    <event-handles></event-handles>
+    <event-handles from='gov'></event-handles>
   </div>
 </template>
 

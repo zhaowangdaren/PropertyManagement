@@ -172,6 +172,7 @@ export default new Router({
         },
         {
           path:'eventHandle',
+          name: 'GovEventHandle',
           component: GovEventHandle
         },
         {

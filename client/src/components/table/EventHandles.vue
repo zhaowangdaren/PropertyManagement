@@ -171,7 +171,8 @@
   import fetchpm from '@/fetchpm'
   export default {
     props: {
-      editable: Boolean
+      editable: Boolean,
+      from: String
     },
     filters: {filterEventStatus, filterEventLevel, filterTime},
     data () {
@@ -325,6 +326,10 @@
       },
       toDetails (event) {
         console.info('toDetails', event.Index)
+        if (this.from === 'gov') {
+          this.$router.push({name: 'GovDetailEvent', params:{index: event.Index}})
+          return
+        }
         this.$router.push({name: 'eventDetail', params:{index: event.Index}})
         // this.$router.push({path:'/street/detail/' + event.Index})
       }
