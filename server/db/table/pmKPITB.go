@@ -1,6 +1,8 @@
 package table
 
 import (
+	"errors"
+	"fmt"
 	"log"
 	"strings"
 	"time"
@@ -14,6 +16,12 @@ import (
 //PMKPITableName table name
 const PMKPITableName = "PMKPI"
 
+//ThreeDay 3天
+const ThreeDay = 3 * 24 * 60 * 60
+
+//SevenDay 7天
+const SevenDay = 7 * 24 * 60 * 60
+
 //PMKPI PMKPI 按小区进行物业考核
 type PMKPI struct {
 	Name        string // PM 公司名
@@ -21,12 +29,18 @@ type PMKPI struct {
 	CommunityID string //所在社区ID
 	XQID        string //所在小区ID
 	Year        int
-	Quarter     int     //季度
+	Quarter     int     //季度 1 2 3 4
 	YWNo        int     //黄色警告次数
 	RWNo        int     //红色警告次数
 	IWNo        int     //重大警告次数
 	Other       int     //其他的分数，由gov用户编辑
 	Score       float32 //得分
+}
+
+func InsertPMKPI(db *mgo.Database, pmkpi PMKPI) error {
+	c := db.C(PMKPITableName)
+	err := c.Insert(pmkpi)
+	return err
 }
 
 //FindPMKPIsByName 通过Name查询PMKPI
@@ -65,7 +79,8 @@ func FindPMKPIByKVs(db *mgo.Database, kvs map[string]interface{}) interface{} {
 	return gin.H{"error": 0, "data": result}
 }
 
-func FindPMKPIByKVsPage(db *mgo.Database, kvs map[string]interface{}, pageNo int, pageSize int) interface{} {
+func FindPMKPIByKVsPage(db *mgo.Database, kvs map[string]interface{}, pageNo int,
+	pageSize int) interface{} {
 	querys := make(map[string]interface{})
 	for k, v := range kvs {
 		querys[strings.ToLower(k)] = v
@@ -86,8 +101,72 @@ func FindPMKPIByKVsPage(db *mgo.Database, kvs map[string]interface{}, pageNo int
 	return gin.H{"error": 0, "data": gin.H{"pmkpis": result, "sum": sum}}
 }
 
+//FindPMKPI 根据年、季度来查询物业KPI
+/**
+* 查询db中是否存在该记录，若不存在则重新计算
+ */
+func FindPMKPI(db *mgo.Database, xqid string, year int, quarter int) (error, PMKPI) {
+	c := db.C(PMKPITableName)
+	var result PMKPI
+	err := c.Find(bson.M{"xqid": xqid, "year": year, "quarter": quarter}).One(&result)
+	if result.XQID != "" {
+		return err, result
+	}
+	err, pmkpi := CalculatePMKPIQuarter(db, xqid, year, quarter)
+	if err != nil {
+		fmt.Println("InsertPMKPI", pmkpi)
+	}
+	UpsertPNKPI(db, pmkpi)
+	return err, pmkpi
+}
+
+func UpsertPNKPI(db *mgo.Database, pmkpi PMKPI) (*mgo.ChangeInfo, error) {
+	c := db.C(PMKPITableName)
+	changeInfo, err := c.Upsert(bson.M{"xqid": pmkpi.XQID, "year": pmkpi.Year, "quarter": pmkpi.Quarter}, pmkpi)
+	return changeInfo, err
+}
+
+//UpdatePMKPI 更新
+func UpdatePMKPI(db *mgo.Database, pmkpi PMKPI) error {
+	c := db.C(PMKPITableName)
+	err := c.Update(bson.M{"xqid": pmkpi.XQID, "year": pmkpi.Year, "quarter": pmkpi.Quarter}, pmkpi)
+	return err
+}
+
+func UpdatePMKPIOther(db *mgo.Database, pmkpi PMKPI) error {
+	c := db.C(PMKPITableName)
+	err := c.Update(bson.M{"xqid": pmkpi.XQID, "year": pmkpi.Year,
+		"quarter": pmkpi.Quarter}, bson.M{"$set": bson.M{"other": pmkpi.Other}})
+	return err
+}
+
+//CalculatePMKPIQuarter 按季度计算pm kpi
+// @quarter 季度  如果季度为0则查询全年的
+func CalculatePMKPIQuarter(dbc *mgo.Database, xqid string, year int, quarter int) (error, PMKPI) {
+	if year <= 0 || quarter <= 0 {
+		return errors.New("年或季度错误，year=" + string(year) + "季度：" + string(quarter)), PMKPI{}
+	}
+	var startTime int64
+	var endTime int64
+	var tempDate time.Time
+	if quarter <= 0 {
+		tempDate = time.Date(year, time.January, 1, 0, 0, 0, 0, time.UTC)
+		startTime = tempDate.Unix()
+		endTime = tempDate.AddDate(0, 1, -1).Unix()
+	} else if quarter >= 1 && quarter <= 4 {
+		tempDate = time.Date(year, time.Month(quarter*3), 1, 0, 0, 0, 0, time.UTC)
+		endTime = tempDate.AddDate(0, 1, -1).Unix() //
+		startTime = tempDate.AddDate(0, -2, 0).Unix()
+	}
+	err, pmkpi := CalculatePMKPIInTime(dbc, xqid, startTime, endTime)
+	pmkpi.XQID = xqid
+	pmkpi.Year = year
+	pmkpi.Quarter = quarter
+	return err, pmkpi
+}
+
 //CalculatePMKPI
-func CalculatePMKPI(dbc *mgo.Database, xqid string, startTime int64, endTime int64) (error, PMKPI) {
+func CalculatePMKPIInTime(dbc *mgo.Database, xqid string, startTime int64, endTime int64) (error, PMKPI) {
 	var pmkpi PMKPI
 	err, events := FindEventsByXQIDInTimeSortByType(dbc, xqid, startTime, endTime) //查询出该xq的所有事件
 	if err != nil {
@@ -123,9 +202,6 @@ func CalculatePMKPI(dbc *mgo.Database, xqid string, startTime int64, endTime int
 	}
 	return err, pmkpi
 }
-
-const ThreeDay = 3 * 24 * 60 * 60
-const SevenDay = 7 * 24 * 60 * 60
 
 //CalculatePMKPIWarnTimes 计算黄色、红色警告的次数
 func CalculatePMKPIWarnTimes(eventHandles []EventHandle) (int, int) {

@@ -1,14 +1,14 @@
-const HOST = 'https://www.maszfglzx.com:3000'
-// const HOST = '//localhost:3000'
+// const HOST = 'https://www.maszfglzx.com:3000'
+const HOST = '//localhost:3000'
 
-const TenMinute = 30 * 60 * 1000
+const ThirtyMinute = 30 * 60 * 1000
 function refreshToken () {
   return new Promise((resolve, reject) => {
     var user = JSON.parse(sessionStorage.getItem('user')) || {}
     var expireTime = user.expire ? new Date(user.expire) : new Date()
     var timeLeft = expireTime.getTime() - new Date ().getTime()
     console.info('timeLeft', timeLeft)
-    if ( 0 < timeLeft && timeLeft <= TenMinute) {
+    if ( 0 < timeLeft && timeLeft <= ThirtyMinute) {
       console.info('refreshToken')
       fetch(HOST + '/pm/refresh_token', {
         method: 'POST',

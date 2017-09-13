@@ -46,6 +46,17 @@ func startPM(router *gin.RouterGroup, dbc *mgo.Database) {
 		}
 	})
 
+	router.POST("/pm/xqids", func(c *gin.Context) {
+		var ids Values
+		err := c.BindJSON(&ids)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+		} else {
+			_, result := table.FindPMsByXQIDs(dbc, ids.Values)
+			c.JSON(http.StatusOK, gin.H{"error": 0, "data": result})
+		}
+	})
+
 	router.POST("/pm/add", func(c *gin.Context) {
 		var pm table.PM
 		err := c.BindJSON(&pm)

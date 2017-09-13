@@ -1,6 +1,6 @@
 <template>
   <div>
-    <pmkpis></pmkpis>
+    <pmkpis from="gov"></pmkpis>
   </div>
 </template>
 

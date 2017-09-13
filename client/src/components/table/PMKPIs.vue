@@ -29,50 +29,54 @@
                 </el-option>
               </el-select>
             </td>
-            <td class='searchKey'>物业公司名</td>
-            <td>
-              <el-input v-model="searchCompanyName" placeholder="请输入物业公司名"></el-input>
-            </td>
+            <div :class='s.hidden'>
+              <td class='searchKey'>物业公司名</td>
+              <td>
+                <el-input v-model="searchCompanyName" placeholder="请输入物业公司名"></el-input>
+              </td>
+            </div>
           </tr>
-          <tr>
-            <td class='searchKey'>街道</td>
-            <td>
-              <el-select v-model="selectedStreetID" filterable placeholder="请选择街道" :class='s.elSelect'>
-                <el-option
-                  v-for="item in streets"
-                  :key="item.ID"
-                  :label="item.Name"
-                  :value="item.ID">
-                </el-option>
-              </el-select>
-            </td>
-            <td class='searchKey'>社区</td>
-            <td>
-              <el-select v-model="selectedCommunityID" filterable placeholder="请选择社区" :class='s.elSelect'>
-                <el-option
-                  v-for="item in communities"
-                  :key="item.ID"
-                  :label="item.Name"
-                  :value="item.ID">
-                </el-option>
-              </el-select>
-            </td>
-            <td class='searchKey'>小区</td>
-            <td>
-              <el-select v-model="selectedXQID" filterable placeholder="请选择小区" :class='s.elSelect'>
-                <el-option
-                  v-for="item in xqs"
-                  :key="item.ID"
-                  :label="item.Name"
-                  :value="item.ID">
-                </el-option>
-              </el-select>
-            </td>
-          </tr>
+          <div :class='s.hidden'>
+            <tr>
+              <td class='searchKey'>街道</td>
+              <td>
+                <el-select v-model="selectedStreetID" filterable placeholder="请选择街道" :class='s.elSelect'>
+                  <el-option
+                    v-for="item in streets"
+                    :key="item.ID"
+                    :label="item.Name"
+                    :value="item.ID">
+                  </el-option>
+                </el-select>
+              </td>
+              <td class='searchKey'>社区</td>
+              <td>
+                <el-select v-model="selectedCommunityID" filterable placeholder="请选择社区" :class='s.elSelect'>
+                  <el-option
+                    v-for="item in communities"
+                    :key="item.ID"
+                    :label="item.Name"
+                    :value="item.ID">
+                  </el-option>
+                </el-select>
+              </td>
+              <td class='searchKey'>小区</td>
+              <td>
+                <el-select v-model="selectedXQID" filterable placeholder="请选择小区" :class='s.elSelect'>
+                  <el-option
+                    v-for="item in xqs"
+                    :key="item.ID"
+                    :label="item.Name"
+                    :value="item.ID">
+                  </el-option>
+                </el-select>
+              </td>
+            </tr>
+          </div>
         </table>
         <div :class='s.searchWrap'>
           <el-button type="primary" @click='onCurQuarter' class='view'>当前季度</el-button>
-          <el-button type="primary" icon="search" @click='onInputSearch' class='search'>查询</el-button>
+          <el-button type="primary" icon="search" @click='onSearch' class='search'>查询</el-button>
         </div>
         <!-- search result -->
         <table>
@@ -81,19 +85,42 @@
             <th>年份</th>
             <th>季度</th>
             <th>物业公司名</th>
-            <th>红色警告次数</th>
+            <th>小区名</th>
             <th>黄色警告次数</th>
+            <th>红色警告次数</th>
             <th>重大事件警告次数</th>
+            <th>其他</th>
             <th>得分</th>
+            <th v-if='from === "gov"'>操作</th>
           </tr>
-          <tr v-for='item in KPIs'>
+          <tr v-for='(item,index) in KPIs'>
             <td v-text='item.Year'></td>
             <td v-text='item.Quarter'></td>
-            <td v-text='item.Name'></td>
+            <td v-text='item.PMName'></td>
+            <td v-text='item.XQName'></td>
             <td v-text='item.YWNo'></td>
             <td v-text='item.RWNo'></td>
             <td v-text='item.IWNo'></td>
-            <td v-text='item.Score'></td>
+            <td v-text='item.Other'></td>
+            <td >{{ 100 - item.YWNo * 0.5 - item.RWNo * 1 - item.IWNo * 3 - item.Other}}</td>
+            <td v-if='from === "gov"'>
+              <el-button
+                class='edit'
+                @click='onEdit(item)'
+                type='primary'
+                icon='edit'>
+                编辑
+              </el-button>
+              <el-dialog
+                :visible.sync='showEditDialog'
+                title='编辑考核其他扣分项'>
+                <div :class='s.editKPIOther'>扣除物业其他项分数：<input type="" name="" v-model='kpiOther'></div>
+                <div :class='s.editBtns'>
+                  <el-button type="primary" @click='onEditSure'>确定</el-button>
+                  <el-button @click='showEditDialog = false'>取消</el-button>
+                </div>
+              </el-dialog>
+            </td>
           </tr>
           <tr v-if='KPIs.length === 0'>
             <td colspan="7">无记录</td>
@@ -102,7 +129,7 @@
         <el-pagination
           layout="total, prev, pager, next"
           @current-change='onChangePage'
-          :page-size='pageSize'
+          :page-size='queryXQ.PageSize'
           :total="sum">
         </el-pagination>
       </div>
@@ -116,28 +143,45 @@ import filterEventLevel from '@/filters/filterEventLevel'
 import fetchpm from '@/fetchpm'
 export default {
   filters: {filterEventStatus, filterEventLevel},
+  props: {
+    from: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
-      quarters: [{value:0, label:'全部'}, {value:1, label:'1'},{value:2,label:'2'},{value:3, label:'3'},{value:4, label: '4'}],
+      quarters: [{value:1, label:'1'},{value:2,label:'2'},{value:3, label:'3'},{value:4, label: '4'}],
       selectedYear: 0,
       selectedQuarter: 0,
       searchCompanyName: '',
       selectedStreetID:'',
       selectedCommunityID: '',
       selectedXQID: '',
+      KPIs: [],
       xqs:[],
+      pms:[],
       communities: [],
       streets: [],
-      KPIs:[],
       sum: 0,
-      pageNo: 0,
-      pageSize: 10
+
+      queryXQ: {
+        PageNo: 0,
+        PageSize: 10
+      },
+      showEditDialog: false,
+      kpiOther: 0,
+      editingKPI: null
     }
   },
   mounted () {
     this.selectedYear = new Date()
-    this.onInputSearch()
-    this.fetechAllStreets()
+    var thisMonth = new Date().getMonth()
+    this.selectedQuarter = parseInt((thisMonth + 1) / 3) + (((thisMonth + 1) % 3) > 0 ? 1 : 0)
+    // this.onInputSearch()
+    // this.fetechAllStreets()
+    
+    this.onSearch()
   },
   watch: {
     selectedStreetID: function (value) {
@@ -150,21 +194,89 @@ export default {
     }
   },
   methods: {
+    onEdit (item) {
+      this.kpiOther = item.Other
+      this.showEditDialog = true
+      this.editingKPI = item
+    },
+    onEditSure () {
+      this.editingKPI.Other = parseInt(this.kpiOther)
+      fetchpm(this, true, '/pm/pmkpi/update/other', {
+        method: 'POST',
+        body: this.editingKPI
+      }).then(resp => {
+        return resp.json()
+      }).then(body => {
+        console.info('onEditSure', body)
+        if (body.error === 0) this.showEditDialog = false
+      })
+    },
+    onSearch () {
+      var query = {
+        PageNo: 0,
+        PageSize: 10
+      }
+      this.fetchXQs(query)
+    },
+    fetchXQs (params) {
+      fetchpm(this, true, '/pm/xq', {
+        method: 'POST',
+        body: params
+      }).then(resp => {
+        return resp.json()
+      }).then(body => {
+        console.info('fetcXQs', body)
+        if (body.error === 0) {
+          this.xqs = body.data.xqs || []
+          this.sum = body.data.sum || 0
+          this.fetchKPIs(this.xqs, this.selectedYear.getFullYear(), this.selectedQuarter)
+          this.fetchPMs(this.KPIs.map(item => { return item.ID}))
+        }
+      })
+    },
+    fetchKPIs (xqs, year, quarter) {
+      this.KPIs = []
+      for (let i = 0; i < xqs.length; i++) {
+        let params = {
+          XQID: xqs[i].ID,
+          Year: year,
+          Quarter: quarter
+        }
+        fetchpm(this, true, '/pm/pmkpi/query', {
+          method: 'POST',
+          body: params
+        }).then(resp => {
+          return resp.json()
+        }).then(body => {
+          if (body.error === 0) {
+            let pmkpi = body.data || {}
+            pmkpi.XQName = xqs[i].Name
+            this.KPIs.push(pmkpi)
+          } else this.KPIs.push({})
+        })
+      }
+    },
+    fetchPMs (ids) {
+      fetchpm(this, true, '/pm/pm/xqids', {
+        method: 'POST',
+        body: {Values: ids}
+      }).then(resp => {
+        return resp.json()
+      }).then(body => {
+        console.info('fetchPMs', body)
+        if (body.error === 0) {
+          this.pms = body.data || []
+        }
+      })
+    },
     onChangePage (curPage) {
       this.pageNo = curPage - 1
-      this.onInputSearch()
+      this.onSearch()
     },
     onCurQuarter () {
-      var today = new Date()
-
-      var data = {
-        Year: today.getFullYear(),
-        Quarter: (parseInt(today.getMonth() / 3) + 1)
-      }
-      this.onSearch(data)
-    },
-    onInputSearch () {
-      this.onSearch(this.formatSearchData())
+      this.selectedYear = new Date(),
+      this.selectedQuarter = parseInt((this.selectedYear.getMonth() + 1 ) / 3) + (((this.selectedYear.getMonth() + 1) % 3) > 0 ? 1 : 0)
+      this.onSearch()
     },
     fetechAllStreets() {
       fetchpm(this, true, '/pm/street',{
@@ -216,47 +328,11 @@ export default {
         this.isLoadingInput = false
       })
     },
-    onSearch (data) {
-      fetchpm(this, true, '/pm/pmkpi/kvs/page', {
-        method: 'POST',
-        body: {KVs: data, PageNo: this.pageNo, PageSize: this.pageSize}
-      }).then(resp => {
-        return resp.json()
-      }).then(body => {
-        console.info('onSearch', body)
-        if (body.error === 0) {
-          this.KPIs = body.data.pmkpis || []
-          this.sum = body.data.sum || 0
-        } else {
-          this.KPIs = []
-        }
-      })
-    },
     formatSearchData () {
       var searchData = {}
       if (this.selectedYear !== -1 && this.selectedYear !== '') searchData.Year = this.selectedYear.getFullYear()
       if (this.selectedQuarter !== 0) searchData.Quarter = this.selectedQuarter
-      if (this.searchCompanyName !== '') searchData.Name = this.searchCompanyName
-      if (this.selectedStreetID !== '') searchData.StreetID = this.selectedStreetID
-      if (this.selectedCommunityID !== '') searchData.CommunityID = this.selectedCommunityID
-      if (this.selectedXQID !== '') searchData.XQID = this.selectedXQID
-      console.info('formatSearchData', searchData)
       return searchData
-
-    },
-    fetchKPIs (name) {
-      if (!name ) {
-        console.info('name', name)
-      }
-      fetchpm(this,true,'/pm/pmkpi', {
-        method: 'POST',
-        body: {name: name}
-      }).then(resp => {
-        return resp.json()
-      }).then(body => {
-        console.info('fetchKPIs', body)
-        this.KPIs = body.data || []
-      })
     },
     toDetails (event) {
       event.index = 1
@@ -307,5 +383,17 @@ export default {
 }
 .elSelect{
   width: 100%;
+}
+.hidden{
+  display: none;
+}
+.editKPIOther{
+  font-size: 30px;
+  input{
+    background-color: #f1f3f6;
+  }
+}
+.editBtns{
+  margin-top: 20px;
 }
 </style>

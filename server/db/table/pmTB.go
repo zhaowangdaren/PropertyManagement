@@ -139,6 +139,23 @@ func FindPMsByIDs(db *mgo.Database, ids []string) interface{} {
 	return gin.H{"error": 0, "data": result}
 }
 
+func FindPMsByXQIDs(db *mgo.Database, xqids []string) (error, []PM) {
+	c := db.C(PMTableName)
+	var result []PM
+	var err error
+	for _, id := range xqids {
+		var info PM
+		err = c.Find(bson.M{"xqid": id}).One(&info)
+		if err != nil {
+			result = append(result, (PM{}))
+		} else {
+			result = append(result, info)
+		}
+		err = nil
+	}
+	return err, result
+}
+
 //UpdatePM update street
 func UpdatePM(db *mgo.Database, pm PM) interface{} {
 	c := db.C(PMTableName)

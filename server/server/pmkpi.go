@@ -38,7 +38,38 @@ func startPMKPI(router *gin.RouterGroup, dbc *mgo.Database) {
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
 		} else {
-			c.JSON(http.StatusOK, table.FindPMKPIByKVsPage(dbc, params.KVs, params.PageNo, params.PageSize))
+			c.JSON(http.StatusOK, table.FindPMKPIByKVsPage(dbc, params.KVs,
+				params.PageNo, params.PageSize))
 		}
+	})
+
+	router.POST("/pmkpi/update/other", func(c *gin.Context) {
+		var pmkpi table.PMKPI
+		err := c.BindJSON(&pmkpi)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+		} else {
+			err = table.UpdatePMKPIOther(dbc, pmkpi)
+			if err != nil {
+				c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+				return
+			}
+			c.JSON(http.StatusOK, gin.H{"error": 0, "data": ""})
+		}
+	})
+	// 按小区ID、年、季度查询kpi
+	router.POST("/pmkpi/query", func(c *gin.Context) {
+		var params QueryPMKPI
+		err := c.BindJSON(&params)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		err, pmkpi := table.FindPMKPI(dbc, params.XQID, params.Year, params.Quarter)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"error": 0, "data": pmkpi})
 	})
 }

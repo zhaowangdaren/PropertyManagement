@@ -7,6 +7,9 @@
     <span :class='s.item' @click='onLogout'>
       <i class='iconfont icon-kaiguan'></i>退出
     </span>
+    <!-- <span :class='s.item' @click='onRefresh'>
+      <i class='iconfont icon-kaiguan'></i>刷新
+    </span> -->
     <el-dialog
       title='修改密码'
       :visible.sync='showChangePassword'>
@@ -17,12 +20,15 @@
 
 <script>
 import ChangePassword from '@/components/dialog/ChangePassword'
+import { refreshToken } from '@/fetchpm'
 export default {
   components: { ChangePassword },
   data () {
     return {
       userName: '',
-      showChangePassword: false
+      showChangePassword: false,
+      HOST: '//localhost:3000',
+      TenMinute: 30 * 60 * 1000
     }
   },
   mounted () {
@@ -37,6 +43,37 @@ export default {
       sessionStorage.clear()
       this.$router.push({path: '/'})
     },
+    onRefresh () {
+      console.info('onRefresh')
+      this.refreshToken()
+    },
+    refreshToken () {
+      return new Promise((resolve, reject) => {
+        var user = JSON.parse(sessionStorage.getItem('user')) || {}
+        var expireTime = user.expire ? new Date(user.expire) : new Date()
+        var timeLeft = expireTime.getTime() - new Date ().getTime()
+        console.info('timeLeft', timeLeft)
+        if ( 0 < timeLeft && timeLeft <= this.TenMinute) {
+          console.info('refreshToken')
+          fetch(this.HOST + '/pm/refresh_token', {
+            method: 'POST',
+            headers: {
+              'Authorization': 'Bearer ' + user.token
+            }
+          }).then(response => {
+            return response.json()
+          }).then(body => {
+            if (body.error === 0) {
+              Object.assign(user, body.data)
+              sessionStorage.setItem('user', JSON.stringify(user))
+            }
+            resolve()
+          })
+        } else {
+          resolve()
+        }
+      })
+    }
   }
 }
 </script>

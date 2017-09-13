@@ -246,7 +246,7 @@
           Index: this.event.Index,
           XQID: this.event.XQID,
           AuthorCategory: this.user.type,
-          AuthorName: this.,
+          AuthorName: this.user.UserName,
           HandleInfo: 'push2PM',
           Imgs: ''
         }

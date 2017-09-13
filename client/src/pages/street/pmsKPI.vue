@@ -1,6 +1,6 @@
 <template>
   <div :class='s.wrap'>
-    <pmkpis></pmkpis>
+    <pmkpis from="street"></pmkpis>
   </div>
 </template>
 

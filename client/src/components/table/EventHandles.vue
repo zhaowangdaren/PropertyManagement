@@ -172,7 +172,10 @@
   export default {
     props: {
       editable: Boolean,
-      from: String
+      from: {
+        type: String,
+        default: ''
+      }
     },
     filters: {filterEventStatus, filterEventLevel, filterTime},
     data () {

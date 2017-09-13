@@ -66,6 +66,11 @@ type QueryEventCheckProgress struct {
 	EndTime   int64  // 查询的结束时间
 }
 
+type QueryPMKPI struct {
+	XQID    string
+	Year    int
+	Quarter int
+}
 type AddEventImg struct {
 	Index string   //事件编号
 	Imgs  []string //图片名称
