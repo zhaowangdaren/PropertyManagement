@@ -1,5 +1,5 @@
-// const HOST = 'https://www.maszfglzx.com:3000'
-const HOST = '//localhost:3000'
+const HOST = 'https://www.maszfglzx.com:3000'
+// const HOST = '//localhost:3000'
 
 const ThirtyMinute = 30 * 60 * 1000
 function refreshToken () {

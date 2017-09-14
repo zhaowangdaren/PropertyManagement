@@ -191,9 +191,17 @@ export default {
     selectedCommunityID: function (value) {
       this.selectedXQID = ''
       this.fetchXQByCommunityID(value)
+    },
+    KPIs: function (value) {
+      this.fetchPMs(this.KPIs.map(item => { return item.XQID}))
     }
   },
   methods: {
+    sortKPIs (kpis) {
+      return kpis.sort((a, b) => {
+        return a.PMName > b.Name ? 1 : -1
+      })
+    },
     onEdit (item) {
       this.kpiOther = item.Other
       this.showEditDialog = true
@@ -230,7 +238,6 @@ export default {
           this.xqs = body.data.xqs || []
           this.sum = body.data.sum || 0
           this.fetchKPIs(this.xqs, this.selectedYear.getFullYear(), this.selectedQuarter)
-          this.fetchPMs(this.KPIs.map(item => { return item.ID}))
         }
       })
     },
@@ -266,6 +273,9 @@ export default {
         console.info('fetchPMs', body)
         if (body.error === 0) {
           this.pms = body.data || []
+          for (let i = 0; i < this.pms.length; i++) {
+            this.$set(this.KPIs[i], 'PMName', this.pms[i].Name)
+          }
         }
       })
     },

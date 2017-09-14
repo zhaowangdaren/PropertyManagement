@@ -108,16 +108,72 @@ func FindPMKPIByKVsPage(db *mgo.Database, kvs map[string]interface{}, pageNo int
 func FindPMKPI(db *mgo.Database, xqid string, year int, quarter int) (error, PMKPI) {
 	c := db.C(PMKPITableName)
 	var result PMKPI
-	err := c.Find(bson.M{"xqid": xqid, "year": year, "quarter": quarter}).One(&result)
-	if result.XQID != "" {
+	var err error
+	isCurQuarter := IsCurQuarter(year, quarter)
+	if isCurQuarter == -1 { //查询的是往季
+		fmt.Println("查询的是往季")
+
+		query := c.Find(bson.M{"xqid": xqid, "year": year, "quarter": quarter})
+		count, err := query.Count()
+		if count > 0 { //数据库中存在该条记录
+			err = query.One(&result)
+			return err, result
+		} else { //数据库中不存在该条记录，则重新计算
+			err, result = CalculatePMKPIQuarter(db, xqid, year, quarter)
+			if err != nil {
+				glog.Error(err.Error())
+			} else {
+				InsertPMKPI(db, result)
+			}
+			return err, result
+		}
+	}
+
+	if isCurQuarter == 0 { // 查询的是当前季度
+		fmt.Println("查询的是当前季度")
+		err, result = CalculatePMKPIQuarter(db, xqid, year, quarter)
+		if err != nil {
+			glog.Error(err.Error())
+		} else {
+			UpsertPNKPI(db, result)
+		}
 		return err, result
 	}
-	err, pmkpi := CalculatePMKPIQuarter(db, xqid, year, quarter)
-	if err != nil {
-		fmt.Println("InsertPMKPI", pmkpi)
+
+	if isCurQuarter == 1 { //查询未来季节
+		fmt.Println("查询未来季节")
+
+		result.XQID = xqid
+		result.Year = year
+		result.Quarter = quarter
+		return err, result
 	}
-	UpsertPNKPI(db, pmkpi)
-	return err, pmkpi
+
+	return err, result
+}
+
+//IsCurQuarter @return -1：过去 0：当前季度 1:未来
+func IsCurQuarter(year int, quarter int) int {
+	thisYear := time.Now().Year()
+	thisMonth := int(time.Now().Month())
+	if thisYear > year {
+		return -1
+	}
+	if thisYear < year {
+		return 1
+	}
+	if year == thisYear {
+		if (quarter * 3) < thisMonth { //往季
+			return -1
+		}
+		if (quarter*3-2) <= thisMonth && thisMonth <= (quarter*3) {
+			return 0
+		}
+		if thisMonth < (quarter*3 - 2) { //未来
+			return 1
+		}
+	}
+	return 0
 }
 
 func UpsertPNKPI(db *mgo.Database, pmkpi PMKPI) (*mgo.ChangeInfo, error) {
@@ -184,6 +240,7 @@ func CalculatePMKPIInTime(dbc *mgo.Database, xqid string, startTime int64, endTi
 			glog.Error("CalculatePMKPI " + tempErr.Error())
 			continue
 		}
+		fmt.Println("CalculatePMKPIWarnTimes", eventHandles)
 		// 统计黄色、红色警告次数
 		yellowWarn, redWarn := CalculatePMKPIWarnTimes(eventHandles)
 		pmkpi.YWNo += yellowWarn
@@ -210,6 +267,7 @@ func CalculatePMKPIWarnTimes(eventHandles []EventHandle) (int, int) {
 	pmHandleTime := time.Now().Unix()          //物业首次处理的时间
 	for _, eventHandle := range eventHandles { // 遍历所有的handle，来记分
 		if eventHandle.HandleType == 1 && pushTime == 0 { //推送给物业的时间
+			fmt.Println("推送给物业", eventHandle.HandleType)
 			pushTime = eventHandle.Time
 			continue
 		}
@@ -219,6 +277,10 @@ func CalculatePMKPIWarnTimes(eventHandles []EventHandle) (int, int) {
 			break
 		}
 	}
+	if pushTime == 0 { //尚未推送给物业
+		return 0, 0
+	}
+	//已推送给物业
 	dur := pmHandleTime - pushTime
 	if dur >= ThreeDay && dur < SevenDay {
 		return 1, 0
