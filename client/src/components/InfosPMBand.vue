@@ -62,6 +62,12 @@
         <td colspan="6">无记录</td>
       </tr>
     </table>
+    <el-pagination
+      layout="total, prev, pager, next"
+      @current-change='onChangePage'
+      :page-size='searchUser.PageSize'
+      :total="sum">
+    </el-pagination>
     <component :is='showDialog' @close='showDialog = ""' />
   </div>
 </template>
@@ -83,17 +89,24 @@
         isUnbinding: false,
         isBinding: false,
         searchUser: {
-          ActualName: ''
+          ActualName: '',
+          PageNo: 0,
+          PageSize: 10
         },
+        sum: 0,
         searchActualName: '',
         filterNameResult: []
       }
     },
     mounted () {
-      this.fetchWXUsers('')
+      this.fetchWXUsers(this.searchUser)
       this.fetchAllWXUsersName()
     },
     methods: {
+      onChangePage () {
+        this.searchUser.PageNo = curPage - 1
+        this.fetchWXUsers(this.searchUser)
+      },
       onUnbind (user) {
         this.isUnbinding = true
         var tempUser = Object.assign({}, user)
@@ -150,17 +163,18 @@
           }
         })
       },
-      fetchWXUsers (name) {
+      fetchWXUsers (params) {
         fetchpm(this, true, '/pm/pmUser', {
           method: 'POST',
-          body: {name:name, pageNo: 1, pageSize: 10}
+          body: {name:params.ActualName, pageNo: params.PageNo, pageSize: params.PageSize}
         }).then(resp => {
           console.info(resp)
           return resp.json()
-        }).then( data => {
-          console.info('fetchusers', data)
-          if (data.error === 0 ) {
-            this.users = data.data || []
+        }).then( body => {
+          console.info('fetchusers', body)
+          if (body.error === 0 ) {
+            this.users = body.data.pmUsers || []
+            this.sum = body.data.sum
             let ids = this.users.map(item => {
               return item.PMID
             })

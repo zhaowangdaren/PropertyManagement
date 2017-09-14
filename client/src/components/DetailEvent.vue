@@ -112,9 +112,19 @@
                   <el-button
                     v-if='user.type == 2'
                     type='success'
+                    :diabled='(event.TalkAbout === 1 ? true: false)'
                     @click='onTalkAbout'>
                     约谈物业公司
                   </el-button>
+                  <el-dialog
+                    :visible.sync='showTalkAboutDialog'
+                    title='填写约谈内容'>
+                    <textarea v-model='editingTalkAboutContent'></textarea>
+                    <div>
+                      <el-button type='primary' @click='onTalkAboutSure'>确认</el-button>
+                      <el-button @click='showTalkAboutDialog = false'>取消</el-button>
+                    </div>
+                  </el-dialog>
                   <el-button
                     v-if='user.type == 2'
                     type='success'
@@ -127,9 +137,7 @@
             </tr>
           </table>
         </div>
-
       </div>
-
     </div>
     <div :class='s.handleContent'>
       <div :class='s.title'>
@@ -209,6 +217,9 @@
           EventLevel: 0,
           RequestClose: 0,
           NoticeGov: 0,
+          NoticePM: 0,
+          TalkAbout: 0,
+          TalkAboutContent: '', //约谈内容
           Imgs:''//以逗号为分隔符
         },
         eventImgs: [],
@@ -223,7 +234,9 @@
         imgVisible: false,
         showHandleDetails: false,//查看详情
         showAduitEventLevel: false,
-        showAddEventHandle: false//询问
+        showAddEventHandle: false,//询问
+        showTalkAboutDialog: false,
+        editingTalkAboutContent: ''
       }
     },
     mounted () {
@@ -235,7 +248,30 @@
     },
     methods: {
       onTalkAbout () {
-        Message({type: "warning", message: '该功能正在开发中'})
+        // Message({type: "warning", message: '该功能正在开发中'})
+        this.showTalkAboutDialog = true
+      },
+      onTalkAboutSure () {
+        var eventHandle = {
+          Index: this.event.Index,
+          AuthorCategory: 2,
+          AuthorName: this.user.UserName,
+          HandleInfo: this.editingTalkAboutContent,
+          Imgs: ''
+        }
+        this.govTalkAboutPM(eventHandle).then(body => {
+          if (body.error === 0) {
+            this.event.TalkAbout = 1
+          }
+        })
+      },
+      govTalkAboutPM (eventHandle) {
+        return fetchpm(this, true, '/pm/eventHandle/govtalkpm', {
+          method: 'POST',
+          body: eventHandle
+        }).then(resp => {
+          return resp.json()
+        })
       },
       onNoticeGov () {
         this.event.NoticeGov = 1
@@ -247,12 +283,13 @@
           XQID: this.event.XQID,
           AuthorCategory: this.user.type,
           AuthorName: this.user.UserName,
-          HandleInfo: 'push2PM',
+          HandleInfo: '推送给物业公司',
           Imgs: ''
         }
 
-        fetchpm(this, true, '/pm/eventHandle/noticepm?index=' + this.event.Index + '&xqid=' + this.event.XQID, {
-          method: 'GET'
+        fetchpm(this, true, '/pm/eventHandle/noticepm', {
+          method: 'POST',
+          body: eventHandle
         }).then(resp => {
           return resp.json()
         }).then(body => {
@@ -310,6 +347,7 @@
           console.info('onSave', body)
           if (body.error !== 0) {
             Message({type: 'error', message: body.data})
+            this.event = event
           }
         })
       },

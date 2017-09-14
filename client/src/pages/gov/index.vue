@@ -1,6 +1,6 @@
 <template>
   <div :class='s.wrap'>
-    <to-be-done></to-be-done>
+    <to-be-done from='gov'></to-be-done>
   </div>
 </template>
 

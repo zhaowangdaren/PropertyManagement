@@ -67,6 +67,12 @@
         <td colspan="6">无记录</td>
       </tr>
     </table>
+    <el-pagination
+      layout="total, prev, pager, next"
+      @current-change='onChangePage'
+      :page-size='query.PageSize'
+      :total="sum">
+    </el-pagination>
     <component :is='showDialog' @close='showDialog = ""' />
   </div>
 </template>
@@ -93,14 +99,19 @@
         query: {
           ActualName: '',
           PageNo: 0,
-          PageSize: 20
-        }
+          PageSize: 10
+        },
+        sum: 0
       }
     },
     mounted () {
-      this.fetchParkManagers('')
+      this.fetchParkManagers(this.query)
     },
     methods: {
+      onChangePage () {
+        this.query.PageNo = curPage - 1
+        this.fetchParkManagers(this.query)
+      },
       onDel (manager) {
         this.isDeling = true
         fetchpm(this, true, '/pm/park/managers/del', {
@@ -155,18 +166,18 @@
           this.isBinding = false
         })
       },
-      fetchParkManagers (name) {
-        this.query.ActualName = name
+      fetchParkManagers (query) {
         fetchpm(this, true, '/pm/park/managers', {
           method: 'POST',
-          body: this.query
+          body: query
         }).then(resp => {
           console.info(resp)
           return resp.json()
-        }).then( data => {
-          console.info('fetchParkManagers', data)
-          if (data.error === 0 ) {
-            this.managers = data.data.parkManagers || []
+        }).then( body => {
+          console.info('fetchParkManagers', body)
+          if (body.error === 0 ) {
+            this.managers = body.data.parkManagers || []
+            this.sum = body.data.sum
             let ids = this.managers.map(item => {
               return item.XQID
             })

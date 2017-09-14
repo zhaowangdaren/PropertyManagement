@@ -119,7 +119,7 @@ export default {
       return true
     },
     onCancel () {
-
+      this.$emit('cancel')
     },
     onFocus (index) {
       if (this.errorIndex === index) this.errorIndex = 0

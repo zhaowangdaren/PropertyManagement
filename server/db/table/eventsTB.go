@@ -23,9 +23,11 @@ type Event struct {
 	StreetID     string //街道
 	CommunityID  string //社区
 	XQID         string //投诉小区ID
-	Status       int    //事件状态  -2-已关闭 -1-已撤销 0-居民提交 1-已审核待处理 2-已处理待确认 3-已解决
+	Status       int    //事件状态  -2-已关闭 -1-已撤销 0-居民提交 1-已审核待处理 2-已处理待确认 3-已解决 4-未解决
 	RequestClose int    // 1-申请关闭
 	NoticeGov    int    // 1-推送给政府
+	NoticePM     int    // 1-已推送PM Company
+	TalkAbout    int    // 1-Gov约谈PM
 	EventLevel   int    //事件等级  1-特急、2-加急、3-急
 	Type         string //事件基本类别
 	Content      string //投诉内容
@@ -97,6 +99,7 @@ func CheckEventProgress(db *mgo.Database, openID string, startTime int64,
 	}
 	return gin.H{"error": 0, "data": result}
 }
+
 func createEventIndex() string {
 	curTime := time.Now()
 	result := curTime.Format("20060102150405")
@@ -133,6 +136,12 @@ func UpdateEvent(db *mgo.Database, info Event) interface{} {
 		return gin.H{"error": 1, "data": err.Error()}
 	}
 	return gin.H{"error": 0, "data": info.Index}
+}
+
+func UpdateEventTalkAbout(db *mgo.Database, index string, talkAbout int) error {
+	c := db.C(EventTableName)
+	err := c.Update(bson.M{"index": index}, bson.M{"$set": bson.M{"talkabout": talkAbout}})
+	return err
 }
 
 //AddEventImgs add event imgs
@@ -261,7 +270,13 @@ func FindEventKVsPage(db *mgo.Database, kvs map[string]interface{}, pageNo int, 
 		}
 		query = c.Find(selector).Sort("-time")
 	} else {
-		query = c.Find(querys).Sort("-time")
+		selector := bson.M{
+			"$and": []bson.M{
+				querys,
+				bson.M{"status": bson.M{"$gte": 0}},
+			},
+		}
+		query = c.Find(selector).Sort("-time")
 	}
 	sum, _ := query.Count()
 	var err error

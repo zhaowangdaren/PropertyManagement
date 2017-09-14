@@ -65,7 +65,11 @@ import fetchpm from '@/fetchpm'
 import { Message } from 'element-ui'
 export default {
   props: {
-    editable: Boolean
+    editable: Boolean,
+    from: {
+      type: String,
+      default: ''
+    }
   },
   filters: {filterEventStatus, filterEventLevel, filterTime},
   data () {
@@ -175,8 +179,8 @@ export default {
     },
     toDetails (event) {
       console.info('toDetails', event.Index)
-      this.$router.push({name: 'GovDetailEvent', params:{index: event.Index}})
-      // this.$router.push({path:'/street/detail/' + event.Index})
+      if (this.from === 'gov') this.$router.push({name: 'GovDetailEvent', params:{index: event.Index}})
+      else if (this.from === 'street') this.$router.push({name:'eventDetail',  params:{index: event.Index}})
     }
   }
 }

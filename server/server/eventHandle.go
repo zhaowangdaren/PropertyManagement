@@ -237,10 +237,11 @@ func startEventHandle(router *gin.RouterGroup, dbc *mgo.Database) {
 			return
 		}
 		xqName := table.FindXQ(dbc, eventHandle.XQID).Name
-		GOVTalkPM(pmUsers, xqName, eventHandle.Index, pm.Name)
+		GOVTalkPM(pmUsers, xqName, eventHandle.Index, pm.Name, eventHandle.HandleInfo)
 		c.JSON(http.StatusOK, gin.H{"error": 0, "data": ""})
 
 		table.InsertEventHandle(dbc, eventHandle)
+		table.UpdateEventTalkAbout(dbc, eventHandle.Index, 1)
 	})
 }
 
@@ -275,7 +276,8 @@ func PushNotice2PM(pmUsers []table.PMUser, xqName string, eventIndex string, pmN
 	}
 }
 
-func GOVTalkPM(pmUsers []table.PMUser, xqName string, eventIndex string, pmName string) {
+func GOVTalkPM(pmUsers []table.PMUser, xqName string, eventIndex string,
+	pmName string, talkContent string) {
 	for _, pmUser := range pmUsers {
 		pjson := `{
 			"touser": "` + pmUser.OpenID + `",
@@ -283,19 +285,19 @@ func GOVTalkPM(pmUsers []table.PMUser, xqName string, eventIndex string, pmName 
 			"url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxa768bfacbb694944&redirect_uri=https%3A%2F%2Fwww.maszfglzx.com%2Fcomplaint-progress-pm.html&response_type=code&scope=snsapi_base&state=` + eventIndex + `#wechat_redirect",
 			"data": {
 				"first": {
-					"value": "您好，政府主管单位针对以下投诉` + xqName + `的事件，约谈贵公司"
+					"value": "您好，贵公司所服务的` + xqName + `有群众投诉，房管中心正在约谈贵，信息如下"
 				},
 				"keyword1": {
 					"value": "` + eventIndex + `"
 				},
 				"keyword2": {
-					"value": "已分派"
+					"value": "约谈"
 				},
 				"keyword3": {
 					"value": "` + pmName + `"
 				},
 				"remark": {
-					"value": "请贵公司主动联系主管单位"
+					"value": "约谈内容：` + talkContent + `"
 				}
 			}
 		}`

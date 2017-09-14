@@ -18,7 +18,7 @@
             <tr>
               <td :class='s.left'><span :class='s.red'>*</span>密码</td>
               <td :class='s.mid'><el-input type="text" name="" v-model='regist.Password'></el-input></td>
-              <td :class='s.right'>有6-16个英文字母、数字或下划线组成</td>
+              <td :class='s.right'>由6-16个英文字母、数字或下划线组成</td>
             </tr>
             <tr>
               <td :class='s.left'><span :class='s.red'>*</span>联系电话</td>
@@ -166,7 +166,10 @@ export default {
         this.warn = '密码中不能包含空格'
         return false
       }
-
+      if (this.regist.Password.length < 6 || this.regist.Password.length > 16) {
+        this.warn = '密码长度为' + this.regist.Password + ',不符合要求'
+        return false
+      }
       if (this.regist.Tel === '') {
         this.warn = '请输入联系电话'
         return false
@@ -255,9 +258,10 @@ export default {
 .right{
   flex: 1;
   text-align: left;
-  overflow: hidden;
-  text-overflow:ellipsis;
-  white-space: nowrap;
+  
+  // overflow: hidden;
+  // text-overflow:ellipsis;
+  // white-space: nowrap;
 }
 .selectStreet{
   width: 100%;

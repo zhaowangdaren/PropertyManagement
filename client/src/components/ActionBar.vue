@@ -13,7 +13,7 @@
     <el-dialog
       title='修改密码'
       :visible.sync='showChangePassword'>
-      <change-password v-if='showChangePassword' />
+      <change-password v-if='showChangePassword' @cancel='showChangePassword = false'/>
     </el-dialog>
   </div>
 </template>

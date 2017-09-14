@@ -55,20 +55,27 @@ func UpdatePMUser(db *mgo.Database, info PMUser) interface{} {
 }
 
 //FindPMUsers 查询小区信息集
-func FindPMUsers(db *mgo.Database, wxName string, pageNo int, pageSize int) interface{} {
+func FindPMUsers(db *mgo.Database, actualName string, pageNo int, pageSize int) interface{} {
 	c := db.C(PMUserTableName)
-	var result []PMUser
-	var err error
-	if wxName == "" {
-		err = c.Find(nil).All(&result)
+	var query *mgo.Query
+	if actualName == "" {
+		query = c.Find(nil)
 	} else {
-		err = c.Find(bson.M{"wxname": wxName}).All(&result)
+		query = c.Find(bson.M{"actualname": bson.M{"$regex": actualName, "$options": "$i"}})
+	}
+	sum, _ := query.Count()
+	var err error
+	var result []PMUser
+
+	if pageSize != 0 {
+		err = query.Skip(pageNo * pageSize).Limit(pageSize).All(&result)
+	} else { //查询所有
+		err = query.All(&result)
 	}
 	if err != nil {
-		log.Print(err.Error())
 		return gin.H{"error": 1, "data": err.Error()}
 	}
-	return gin.H{"error": 0, "data": result}
+	return gin.H{"error": 0, "data": gin.H{"pmUsers": result, "sum": sum}}
 }
 
 func FindPMUserByKV(db *mgo.Database, key string, value string) PMUser {

@@ -49,7 +49,7 @@ func FindPrakManagerByActualName(db *mgo.Database, actualName string, pageNo int
 	if actualName == "" {
 		query = c.Find(nil)
 	} else {
-		query = c.Find(bson.M{"actualname": actualName})
+		query = c.Find(bson.M{"actualname": bson.M{"$regex": actualName, "$options": "$i"}})
 	}
 
 	sum, _ := query.Count()

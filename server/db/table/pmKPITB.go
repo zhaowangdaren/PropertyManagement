@@ -131,12 +131,23 @@ func FindPMKPI(db *mgo.Database, xqid string, year int, quarter int) (error, PMK
 
 	if isCurQuarter == 0 { // 查询的是当前季度
 		fmt.Println("查询的是当前季度")
+
 		err, result = CalculatePMKPIQuarter(db, xqid, year, quarter)
 		if err != nil {
 			glog.Error(err.Error())
 		} else {
+			query := c.Find(bson.M{"xqid": xqid, "year": year, "quarter": quarter})
+			count, _ := query.Count()
+			if count > 0 { //数据库中存在该条记录，则将已有的other值取出
+				var pmkpi PMKPI
+				err = query.One(&pmkpi)
+				if err == nil {
+					result.Other = pmkpi.Other
+				}
+			}
 			UpsertPNKPI(db, result)
 		}
+
 		return err, result
 	}
 
