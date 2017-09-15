@@ -112,14 +112,14 @@
                   <el-button
                     v-if='user.type == 2'
                     type='success'
-                    :diabled='(event.TalkAbout === 1 ? true: false)'
+                    :disabled='(event.TalkAbout === 1 ? true: false)'
                     @click='onTalkAbout'>
                     约谈物业公司
                   </el-button>
                   <el-dialog
                     :visible.sync='showTalkAboutDialog'
                     title='填写约谈内容'>
-                    <textarea v-model='editingTalkAboutContent'></textarea>
+                    <textarea :class='s.textarea' v-model='editingTalkAboutContent'></textarea>
                     <div>
                       <el-button type='primary' @click='onTalkAboutSure'>确认</el-button>
                       <el-button @click='showTalkAboutDialog = false'>取消</el-button>
@@ -254,6 +254,7 @@
       onTalkAboutSure () {
         var eventHandle = {
           Index: this.event.Index,
+          XQID: this.event.XQID,
           AuthorCategory: 2,
           AuthorName: this.user.UserName,
           HandleInfo: this.editingTalkAboutContent,
@@ -262,6 +263,10 @@
         this.govTalkAboutPM(eventHandle).then(body => {
           if (body.error === 0) {
             this.event.TalkAbout = 1
+            Message({type:'success', message: '约谈成功'})
+            this.showTalkAboutDialog = false
+          } else {
+            Message({type: 'error', message: body.data})
           }
         })
       },
@@ -589,5 +594,10 @@
 }
 .btnWrap{
   margin: 5px auto;
+}
+.textarea{
+  min-width: 50%;
+  max-width: 90%;
+  min-height: 100px;
 }
 </style>

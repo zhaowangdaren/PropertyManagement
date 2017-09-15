@@ -103,7 +103,7 @@
       this.fetchAllWXUsersName()
     },
     methods: {
-      onChangePage () {
+      onChangePage (curPage) {
         this.searchUser.PageNo = curPage - 1
         this.fetchWXUsers(this.searchUser)
       },

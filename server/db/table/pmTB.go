@@ -78,9 +78,9 @@ func FindWuYes(db *mgo.Database, name string, pageNo int, pageSize int) interfac
 	var result []PM
 	var query *mgo.Query
 	if name == "" {
-		query = c.Find(nil)
+		query = c.Find(nil).Sort("-name")
 	} else {
-		query = c.Find(bson.M{"name": name})
+		query = c.Find(bson.M{"name": name}).Sort("-name")
 	}
 	sum, err := query.Count()
 	if err != nil {

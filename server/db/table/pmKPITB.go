@@ -24,17 +24,14 @@ const SevenDay = 7 * 24 * 60 * 60
 
 //PMKPI PMKPI 按小区进行物业考核
 type PMKPI struct {
-	Name        string // PM 公司名
-	StreetID    string //所在街道ID
-	CommunityID string //所在社区ID
-	XQID        string //所在小区ID
-	Year        int
-	Quarter     int     //季度 1 2 3 4
-	YWNo        int     //黄色警告次数
-	RWNo        int     //红色警告次数
-	IWNo        int     //重大警告次数
-	Other       int     //其他的分数，由gov用户编辑
-	Score       float32 //得分
+	XQID    string //所在小区ID
+	Year    int
+	Quarter int     //季度 1 2 3 4
+	YWNo    int     //黄色警告次数
+	RWNo    int     //红色警告次数
+	IWNo    int     //重大警告次数
+	Other   int     //其他的分数，由gov用户编辑
+	Score   float32 //得分
 }
 
 func InsertPMKPI(db *mgo.Database, pmkpi PMKPI) error {

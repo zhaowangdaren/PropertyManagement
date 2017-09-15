@@ -96,8 +96,8 @@
           <tr v-for='(item,index) in KPIs'>
             <td v-text='item.Year'></td>
             <td v-text='item.Quarter'></td>
-            <td v-text='item.PMName'></td>
-            <td v-text='item.XQName'></td>
+            <td v-text='item.Name'></td>
+            <td>{{ xqs[index] ? xqs[index].Name : ""}}</td>
             <td v-text='item.YWNo'></td>
             <td v-text='item.RWNo'></td>
             <td v-text='item.IWNo'></td>
@@ -129,7 +129,7 @@
         <el-pagination
           layout="total, prev, pager, next"
           @current-change='onChangePage'
-          :page-size='queryXQ.PageSize'
+          :page-size='queryPM.PageSize'
           :total="sum">
         </el-pagination>
       </div>
@@ -165,7 +165,8 @@ export default {
       streets: [],
       sum: 0,
 
-      queryXQ: {
+      queryPM: {
+        Name: '',
         PageNo: 0,
         PageSize: 10
       },
@@ -181,7 +182,12 @@ export default {
     // this.onInputSearch()
     // this.fetechAllStreets()
     
-    this.onSearch()
+    var query = {
+        Name: '',
+        PageNo: 0,
+        PageSize: 10
+      }
+    this.onSearch(query)
   },
   watch: {
     selectedStreetID: function (value) {
@@ -219,30 +225,40 @@ export default {
         if (body.error === 0) this.showEditDialog = false
       })
     },
-    onSearch () {
-      var query = {
-        PageNo: 0,
-        PageSize: 10
-      }
-      this.fetchXQs(query)
+    onSearch (query) {
+      this.fetchPMsV2(query)
+      // this.fetchXQs(query)
     },
-    fetchXQs (params) {
-      fetchpm(this, true, '/pm/xq', {
+    fetchPMsV2 (query){
+      fetchpm(this, true, '/pm/pm', {
         method: 'POST',
-        body: params
+        body: query
+      }).then(resp => {
+        return resp.json()
+      }).then(body => {
+        console.info('fetchPMsV2', body)
+        if (body.error === 0) {
+          this.KPIs = body.data.pms || []
+          this.sum = body.data.sum
+          this.fetchKPIs(this.KPIs.map(item => {return item.XQID}), this.selectedYear.getFullYear(), this.selectedQuarter)
+          this.fetchXQsByIds(this.KPIs.map(item => {return item.XQID}))
+        }
+      })
+    },
+    fetchXQsByIds (ids) {
+      fetchpm(this, true, '/pm/xq/ids', {
+        method: 'POST',
+        body: {Values: ids}
       }).then(resp => {
         return resp.json()
       }).then(body => {
         console.info('fetcXQs', body)
         if (body.error === 0) {
-          this.xqs = body.data.xqs || []
-          this.sum = body.data.sum || 0
-          this.fetchKPIs(this.xqs, this.selectedYear.getFullYear(), this.selectedQuarter)
+          this.xqs = body.data || []
         }
       })
     },
     fetchKPIs (xqs, year, quarter) {
-      this.KPIs = []
       for (let i = 0; i < xqs.length; i++) {
         let params = {
           XQID: xqs[i].ID,
@@ -257,9 +273,9 @@ export default {
         }).then(body => {
           if (body.error === 0) {
             let pmkpi = body.data || {}
-            pmkpi.XQName = xqs[i].Name
-            this.KPIs.push(pmkpi)
-          } else this.KPIs.push({})
+            console.info('fetchKPIs', pmkpi)
+            this.KPIs[i] = Object.assign(this.KPIs[i], pmkpi)
+          }
         })
       }
     },
@@ -280,8 +296,8 @@ export default {
       })
     },
     onChangePage (curPage) {
-      this.pageNo = curPage - 1
-      this.onSearch()
+      this.queryPM.PageNo = curPage - 1
+      this.onSearch(this.queryPM)
     },
     onCurQuarter () {
       this.selectedYear = new Date(),
