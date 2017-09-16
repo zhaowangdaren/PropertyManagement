@@ -23,7 +23,7 @@ type Event struct {
 	StreetID     string //街道
 	CommunityID  string //社区
 	XQID         string //投诉小区ID
-	Status       int    //事件状态  -2-已关闭 -1-已撤销 0-居民提交 1-已审核待处理 2-已处理待确认 3-已解决 4-未解决
+	Status       int    //事件状态  -2-已关闭 -1-已撤销 0-居民提交 1-处理中 2-已处理待确认 3-已解决 4-未解决
 	RequestClose int    // 1-申请关闭
 	NoticeGov    int    // 1-推送给政府
 	NoticePM     int    // 1-已推送PM Company
@@ -138,6 +138,11 @@ func UpdateEvent(db *mgo.Database, info Event) interface{} {
 	return gin.H{"error": 0, "data": info.Index}
 }
 
+func UpdateEventStatus(db *mgo.Database, index string, status int) error {
+	c := db.C(EventTableName)
+	err := c.Update(bson.M{"index": index}, bson.M{"$set": bson.M{"status": status}})
+	return err
+}
 func UpdateEventTalkAbout(db *mgo.Database, index string, talkAbout int) error {
 	c := db.C(EventTableName)
 	err := c.Update(bson.M{"index": index}, bson.M{"$set": bson.M{"talkabout": talkAbout}})

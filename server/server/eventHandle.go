@@ -150,7 +150,6 @@ func startEventHandle(router *gin.RouterGroup, dbc *mgo.Database) {
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
 		} else {
-			info.HandleType = 0
 			result, err := table.InsertEventHandle(dbc, info)
 			if err != nil {
 				c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})

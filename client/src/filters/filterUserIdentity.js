@@ -9,6 +9,6 @@ export default function (type) {
     case 4:
       return '物业公司'
     default:
-      return ''
+      return '居民提交'
   }
 }

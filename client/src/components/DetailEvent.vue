@@ -339,7 +339,7 @@
       },
       onAddEventHandleSucc (eventHandle) {
         this.eventHandles.push(eventHandle)
-        this.event.Status = 2
+        if (this.event.Status >= 0) this.event.Status = 1 //处理中
         this.updateEvent(this.event)
       },
       updateEvent (event) {

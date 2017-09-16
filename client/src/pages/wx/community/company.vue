@@ -45,11 +45,11 @@ export default {
       },
       company: {
         Logo: '',
-        Name: '名称名称名称名称名称名称名称吗',
-        Charger: '名字名字',
+        Name: '马鞍山市雨山区洁美家政服务部',
+        Charger: '左军',
         Tel: '96345',
         JoinTime: '2015-05-21',
-        MainContent: '内容内容内容',
+        MainContent: '家政／保洁',
         WorkSchedule: '8:00-18:00'
       },
       showAssess: false

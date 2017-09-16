@@ -117,7 +117,8 @@ export default {
 
 <style lang="less" module='s'>
 .body{
-  margin: 80px 5px 5px 5px;
+  padding-top: 80px;
+  margin: auto 5px;
   font-size: 25px;
   .red{
     color: red;

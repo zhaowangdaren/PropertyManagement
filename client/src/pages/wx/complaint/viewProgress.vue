@@ -141,6 +141,9 @@ export default {
         console.info('fetchEventsByTime', body)
         if (body.error === 0) this.events = body.data || []
         else this.events = []
+        this.events.sort((a, b) => {
+          return b.Time - a.Time
+        })
         this.xqs = []
       })
     },

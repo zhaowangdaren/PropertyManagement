@@ -18,13 +18,13 @@ const EventHandleTableName = "EventHandle"
 type EventHandle struct {
 	Index          string // 事件编号，属于Event表中的事件编号
 	XQID           string // 小区ID
-	AuthorCategory int    // 提交人类别  1-系统管理员 2-政府、3-街道、4-物业公司
+	AuthorCategory int    // 提交人类别  0-用户 1-系统管理员 2-政府、3-街道、4-物业公司
 	AuthorName     string // 提交人用户名
 	OpenID         string // 提交人WeChat ID
 	WXNickName     string // 提交人nickname
 	Time           int64  // 提交的时间
 	HandleInfo     string // 处理信息
-	HandleType     int    // 处理的分类 0-普通处理、询问 1-street推送给物业 2-gov约谈PM
+	HandleType     int    // 处理的分类 0-提交 1-street推送给物业 2-gov约谈PM 3-询问 4-回复 5-物业公司处理
 	Imgs           string // 图片列表，以,为分隔符
 }
 
@@ -57,7 +57,7 @@ func FindEventHandle(db *mgo.Database, index string, pageNo int, pageSize int) i
 	if index == "" {
 		query = c.Find(nil)
 	} else {
-		query = c.Find(bson.M{"index": index})
+		query = c.Find(bson.M{"index": index}).Sort("-time")
 	}
 	sum, _ := query.Count()
 	var err error

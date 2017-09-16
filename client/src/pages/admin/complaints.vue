@@ -2,7 +2,7 @@
   <div :class='s.wrap'>
     <div :class='s.title'>
       <img src="~@/res/images/earth.png">
-      投诉数据
+      主要投诉小区及数量
     </div>
     <div :class="s.content">
       <!-- <div :class="s.left">

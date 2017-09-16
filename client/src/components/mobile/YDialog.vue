@@ -1,5 +1,5 @@
 <template>
-  <div :class="s.wrap" v-if='visible'>
+  <div :class="s.wrap" v-if='visible' @click.self='onClose'>
     <div :class="s.close"><i class="iconfont icon-close" @click='onClose'></i></div>
     <div :class="s.content">
       <slot></slot>
@@ -39,7 +39,7 @@ export default {
   align-items: center;
   i{
     color: #fff;
-    font-size: 30px;
+    font-size: 40px;
     margin-right: 50px;
   }
 }

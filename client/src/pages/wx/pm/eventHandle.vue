@@ -51,7 +51,7 @@ export default {
   },
   methods: {
     onHandle () {
-      fetchpm(this, false, '/open/eventHandle/add', {
+      fetchpm(this, false, '/open/eventHandle/pm/deal', {
         method: 'POST',
         body: this.eventHandle
       }).then(resp => {

@@ -39,6 +39,7 @@ export default {
         AuthorCategory: 0,
         AuthorName: '',
         HandleInfo: '',
+        HandleType: 0,
         Imgs: ''
       }
     }
@@ -51,6 +52,7 @@ export default {
   },
   methods: {
     onSave () {
+      this.eventHandle.HandleType = 3
       if (!this.checkImgs()) return
       fetchpm(this, true, '/pm/eventHandle/add', {
         method: 'POST',

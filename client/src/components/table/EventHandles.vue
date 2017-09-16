@@ -3,7 +3,7 @@
     <div :class='s.content'>
       <div :class='s.title'>
         <img src="~@/res/images/earth.png">
-        主要投诉小区及数量
+        居民物业纠纷处理
       </div>
       <div :class='s.body'>
         <table>

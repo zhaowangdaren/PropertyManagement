@@ -25,9 +25,9 @@ export default {
 
 <style lang="less" module='s'>
 .body{
-  margin-top: 80px;
+  padding-top: 100px;
+  margin: auto 5px;
   font-size: 30px;
-  padding-top: 10%;
   text-align: center;
   i{
     color: #1eb504;
