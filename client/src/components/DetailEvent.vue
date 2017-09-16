@@ -132,7 +132,7 @@
                   <el-button
                     v-if='user.type == 2'
                     type='success'
-                    :disabled='(event.Status === -2 ? true : false)'
+                    :disabled='((event.RequestClose === 1 && event.Status !== -2)? false : true)'
                     @click='onAgreeClose'>
                     同意关闭
                   </el-button>
@@ -283,8 +283,28 @@
         })
       },
       onNoticeGov () {
-        this.event.NoticeGov = 1
-        this.updateEvent(this.event)
+        var eventHandle = {
+          Index: this.event.Index,
+          XQID: this.event.XQID,
+          AuthorCategory: this.user.type,
+          AuthorName: this.user.UserName,
+          HandleInfo: '推送给政府部门',
+          Imgs: ''
+        }
+
+        fetchpm(this, true, '/pm/eventHandle/notice/gov', {
+          method: 'POST',
+          body: eventHandle
+        }).then(resp => {
+          return resp.json()
+        }).then(body => {
+          if (body.error == 0) {
+            this.event.NoticeGov = 1
+            Message({type:'success', message: '推送成功'})
+            this.fetchEventHandles(this.event.Index)
+          }
+          else Message({type: 'error', message: body.data})
+        })
       },
       onNoticePM () {
         var eventHandle = {
@@ -307,38 +327,75 @@
         })
       },
       onAgreeClose () {
-        var temp = Object.assign({}, this.event)
-        temp.Status = -2
-        fetchpm(this, true, '/pm/event/update', {
+        var eventHandle = {
+          Index: this.event.Index,
+          XQID: this.event.XQID,
+          AuthorCategory: this.user.type,
+          AuthorName: this.user.UserName,
+          HandleInfo: '同意关闭',
+          HandleType: 9,
+          EventLevel: this.event.EventLevel,
+          Imgs: ''
+        }
+        fetchpm(this, true, '/pm/eventHandle/agree/close', {
           method: 'POST',
-          body: temp
+          body: eventHandle
         }).then(resp => {
           return resp.json()
         }).then(body => {
           if (body.error === 0) {
-            Message({type: 'success', message: '成功关闭'})
+            Message({type: 'success', message: '关闭成功'})
             this.event.Status = -2
+            this.fetchEventHandles(this.event.Index)
           } else {
             Message({type: 'error', message: body.data})
           }
         })
       },
       onClose () {
-        var temp = Object.assign({}, this.event)
-        temp.RequestClose = 1
-        fetchpm(this, true, '/pm/event/update', {
+        var eventHandle = {
+          Index: '',
+          AuthorCategory: 0,
+          AuthorName: '',
+          HandleInfo: '申请关闭',
+          HandleType: 8,
+          EventLevel: 0,
+          Imgs: ''
+        }
+        eventHandle.Index = this.event.Index
+        var user = JSON.parse(sessionStorage.getItem('user')) || {}
+        eventHandle.AuthorCategory = user.type
+        eventHandle.AuthorName = user.UserName
+        eventHandle.EventLevel = this.event.EventLevel
+        fetchpm(this, true, '/pm/eventHandle/request/close', {
           method: 'POST',
-          body: temp
+          body: eventHandle
         }).then(resp => {
           return resp.json()
         }).then(body => {
           if (body.error === 0) {
             Message({type: 'success', message: '申请成功'})
             this.event.RequestClose = 1
+            this.fetchEventHandles(this.event.Index)
           } else {
             Message({type: 'error', message: body.data})
           }
         })
+        // var temp = Object.assign({}, this.event)
+        // temp.RequestClose = 1
+        // fetchpm(this, true, '/eventHandle/request/close', {
+        //   method: 'POST',
+        //   body: temp
+        // }).then(resp => {
+        //   return resp.json()
+        // }).then(body => {
+        //   if (body.error === 0) {
+        //     Message({type: 'success', message: '申请成功'})
+        //     this.event.RequestClose = 1
+        //   } else {
+        //     Message({type: 'error', message: body.data})
+        //   }
+        // })
       },
       onAddEventHandleSucc (eventHandle) {
         this.eventHandles.push(eventHandle)

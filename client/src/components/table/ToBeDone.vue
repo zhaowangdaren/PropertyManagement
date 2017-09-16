@@ -112,9 +112,8 @@ export default {
     },
     onGov () {
       var kvs = {
-        NoticeGov: 1
       }
-      this.fetchEventsByKVsPage(kvs, this.pageNo, this.pageSize)
+      this.fetchEventsByKVsPageForGov(kvs, this.pageNo, this.pageSize)
     },
     onStreet () {
       var kvs = {
@@ -149,6 +148,31 @@ export default {
         if(body.error !== 0) console.error("Error: search fetchXQByCommunityName. Reason:" + body.data)
         else if (body.data !== null ) {
           this.xqs = body.data
+        }
+      })
+    },
+    fetchEventsByKVsPageForGov(kvs, pageNo, pageSize) {
+      fetchpm(this, true, '/pm/event/kvs/page/gov', {
+        method: 'POST',
+        body: {KVs: kvs, PageNo: pageNo, PageSize: pageSize}
+      }).then(resp => {
+        return resp.json()
+      }).then(body => {
+        if (body.error === 0) {
+          this.events = (body.data.events || []).sort((a, b) => {
+            return b.Time -a.Time
+          })
+          this.sum = body.data.sum || 0
+          let communityIDs = this.events.map((item) => {
+            return item.CommunityID
+          })
+          this.fetchCommunities(communityIDs)
+          let xqIDs = this.events.map((item) => {
+            return item.XQID
+          })
+          this.fetchXQs(xqIDs)
+        } else {
+          Message({type: 'error', message: body.data})
         }
       })
     },

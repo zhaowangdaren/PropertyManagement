@@ -24,9 +24,10 @@ type EventHandle struct {
 	WXNickName     string // 提交人nickname
 	Time           int64  // 提交的时间
 	HandleInfo     string // 处理信息
-	HandleType     int    // 处理的分类 0-提交 1-street推送给物业 2-gov约谈PM 3-询问 4-回复 5-物业公司处理 6-用户评价 7-审核等级 8-street请求关闭
-	EventLevel     int    //事件等级  1-特急、2-加急、3-急
-	Imgs           string // 图片列表，以,为分隔符
+	HandleType     int    // 处理的分类 0-提交 1-street推送给物业 2-gov约谈PM 3-询问
+	// 4-回复 5-物业公司处理 6-用户评价 7-审核等级 8-street请求关闭 9-同意关闭 10-street推送给政府
+	EventLevel int    //事件等级  1-特急、2-加急、3-急
+	Imgs       string // 图片列表，以,为分隔符
 }
 
 //FindTodayHandles 获取今日新增事件处理

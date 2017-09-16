@@ -194,6 +194,7 @@ func startEventHandle(router *gin.RouterGroup, dbc *mgo.Database) {
 	router.GET("/eventHandle/today/handles", func(c *gin.Context) {
 		c.JSON(http.StatusOK, table.FindTodayHandles(dbc))
 	})
+
 	router.POST("/eventHandle/audit/level", func(c *gin.Context) {
 		var eventHandle table.EventHandle
 		err := c.BindJSON(&eventHandle)
@@ -208,6 +209,69 @@ func startEventHandle(router *gin.RouterGroup, dbc *mgo.Database) {
 			return
 		}
 		err = table.UpdateEventLevel(dbc, eventHandle.Index, eventHandle.EventLevel)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"error": 0, "data": ""})
+	})
+
+	router.POST("/eventHandle/request/close", func(c *gin.Context) {
+		var eventHandle table.EventHandle
+		err := c.BindJSON(&eventHandle)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		eventHandle.HandleType = 8
+		_, err = table.InsertEventHandle(dbc, eventHandle)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		err = table.UpdateEventRequestClose(dbc, eventHandle.Index, 1)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"error": 0, "data": ""})
+	})
+
+	router.POST("/eventHandle/agree/close", func(c *gin.Context) {
+		var eventHandle table.EventHandle
+		err := c.BindJSON(&eventHandle)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		eventHandle.HandleType = 9
+		_, err = table.InsertEventHandle(dbc, eventHandle)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		err = table.UpdateEventStatus(dbc, eventHandle.Index, -2)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"error": 0, "data": ""})
+	})
+
+	router.POST("/eventHandle/notice/gov", func(c *gin.Context) {
+		var eventHandle table.EventHandle
+		err := c.BindJSON(&eventHandle)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		eventHandle.HandleType = 10
+		_, err = table.InsertEventHandle(dbc, eventHandle)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		err = table.UpdateEventNoticeGov(dbc, eventHandle.Index, 1)
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
 			return

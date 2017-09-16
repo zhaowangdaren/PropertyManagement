@@ -144,6 +144,11 @@ func UpdateEventStatus(db *mgo.Database, index string, status int) error {
 	return err
 }
 
+func UpdateEventRequestClose(db *mgo.Database, index string, requestClose int) error {
+	c := db.C(EventTableName)
+	err := c.Update(bson.M{"index": index}, bson.M{"$set": bson.M{"requestclose": requestClose}})
+	return err
+}
 func UpdateEventLevel(db *mgo.Database, index string, eventLevel int) error {
 	c := db.C(EventTableName)
 	err := c.Update(bson.M{"index": index}, bson.M{"$set": bson.M{"eventlevel": eventLevel}})
@@ -153,6 +158,12 @@ func UpdateEventLevel(db *mgo.Database, index string, eventLevel int) error {
 func UpdateEventTalkAbout(db *mgo.Database, index string, talkAbout int) error {
 	c := db.C(EventTableName)
 	err := c.Update(bson.M{"index": index}, bson.M{"$set": bson.M{"talkabout": talkAbout}})
+	return err
+}
+
+func UpdateEventNoticeGov(db *mgo.Database, index string, noticeGov int) error {
+	c := db.C(EventTableName)
+	err := c.Update(bson.M{"index": index}, bson.M{"$set": bson.M{"noticegov": noticeGov}})
 	return err
 }
 
@@ -286,6 +297,72 @@ func FindEventKVsPage(db *mgo.Database, kvs map[string]interface{}, pageNo int, 
 			"$and": []bson.M{
 				querys,
 				bson.M{"status": bson.M{"$gte": 0}},
+			},
+		}
+		query = c.Find(selector).Sort("-time")
+	}
+	sum, _ := query.Count()
+	var err error
+	if pageSize != 0 {
+		err = query.Skip(pageNo * pageSize).Limit(pageSize).All(&result)
+	} else { //查询所有
+		err = query.All(&result)
+	}
+
+	// err := c.Find(querys).All(&result)
+	if err != nil {
+		return gin.H{"error": 1, "data": err.Error()}
+	}
+	return gin.H{"error": 0, "data": gin.H{"events": result, "sum": sum}}
+}
+
+func FindEventKVsPageForGov(db *mgo.Database, kvs map[string]interface{}, pageNo int, pageSize int) interface{} {
+	querys := make(map[string]interface{})
+	var startTime int64
+	var endTime int64
+	startTime = 0
+	endTime = 9223372036854775807
+	hasTime := false
+	for k, v := range kvs {
+		if k == "StartTime" {
+			startTime = int64(v.(float64))
+			hasTime = true
+			continue
+		}
+		if k == "EndTime" {
+			endTime = int64(v.(float64))
+			hasTime = true
+			continue
+		}
+		querys[strings.ToLower(k)] = v
+	}
+	c := db.C(EventTableName)
+	var result []Event
+	// query := c.Find(querys)
+	var query *mgo.Query
+	if hasTime {
+		selector := bson.M{
+			"$and": []bson.M{
+				bson.M{"time": bson.M{"$gte": startTime}},
+				bson.M{"time": bson.M{"$lte": endTime}},
+				querys,
+				bson.M{"status": bson.M{"$gte": 0}},
+			},
+			"$or": []bson.M{
+				bson.M{"noticegov": 1},
+				bson.M{"requestclose": 1},
+			},
+		}
+		query = c.Find(selector).Sort("-time")
+	} else {
+		selector := bson.M{
+			"$and": []bson.M{
+				querys,
+				bson.M{"status": bson.M{"$gte": 0}},
+			},
+			"$or": []bson.M{
+				bson.M{"noticegov": 1},
+				bson.M{"requestclose": 1},
 			},
 		}
 		query = c.Find(selector).Sort("-time")
