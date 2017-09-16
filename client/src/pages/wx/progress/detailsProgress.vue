@@ -27,7 +27,7 @@
               v-if='event.Status === 3 || event.Status === 4 || event.Status === -2'
               type='success'
               :class='s.revoke'
-              @click='onAssess'>评 价</el-button>
+              @click='showAssess = true'>评 价</el-button>
           </template>
           <template v-if='identity === "pmuser"'>
             <el-button 
@@ -80,7 +80,7 @@
     </y-dialog>
     <y-dialog
       :visible.sync='showAssess'>
-      <assess @close='showAssess = false'></assess>
+      <assess @submit='onAssess'></assess>
     </y-dialog>
   </div>
 </template>
@@ -118,6 +118,7 @@ export default {
       showReply: false,
       replying: false,
       showAssess: false,
+      assessing: false,
       showAdd: false,
       adding: false,
       addContent: '',
@@ -140,11 +141,35 @@ export default {
     this.identity = this.$route.query.identity || ''
   },
   methods: {
-    onAssess () {
-      this.showAssess = true
+    onAssess (assess) {
+      if (this.assessing) return
+      this.assessing = true
+      var eventHandle = {
+        Index: this.event.Index,
+        XQID: this.event.XQID,
+        OpenID: this.event.OpenID,
+        HandleType: 6,
+        HandleInfo: '评分：' + assess.score + '星。服务意见：' + assess.content
+      }
+      fetchpm(this, false, "/open/eventHandle/user/add", {
+        method: 'POST',
+        body: eventHandle
+      }).then(resp => {
+        return resp.json()
+      }).then(body => {
+        console.info('onReply', body)
+        if (body.error === 0) {
+          Message({type: "success", message: '提交成功'})
+          this.eventHandles.unshift(body.data)
+          this.showAssess = false
+        } else {
+          Message({type: "error", message: body.data})
+        }
+        this.assessing = false
+      })
     },
     onAdd () {
-      if (this.addContent === '') return
+      if (this.addContent === '' || this.adding) return
       this.adding = true
       var eventHandle = {
         Index: this.event.Index,
@@ -171,7 +196,7 @@ export default {
       })
     },
     onReply () {
-      if (this.replyContent === '') return
+      if (this.replyContent === '' || this.replying) return
       this.replying = true
       var eventHandle = {
         Index: this.event.Index,

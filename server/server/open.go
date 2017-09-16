@@ -286,7 +286,6 @@ func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
 			return
 		}
-		info.HandleType = 0
 		info.AuthorCategory = 0
 		result, err := table.InsertEventHandle(dbc, info)
 		if err != nil {

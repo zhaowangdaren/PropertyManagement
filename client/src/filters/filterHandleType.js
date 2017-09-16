@@ -10,6 +10,8 @@ export default function (handleType) {
       return '回复'
     case 5:
       return '物业公司处理'
+    case 6:
+      return '用户评价'
     default:
       return '提交'
   }

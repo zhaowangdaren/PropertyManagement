@@ -9,7 +9,7 @@
         服务意见
       </div>
       <div :class='s.item'>
-        <textarea :class='s.textarea'></textarea>
+        <textarea :class='s.textarea' v-model='content'></textarea>
       </div>
       <div :class='s.item'>
         <div :class='s.btn' @click='onSubmit'>提交</div>
@@ -23,12 +23,18 @@ export default {
   data () {
     return {
       score: 0, //1~5
-      startNum: 5
+      startNum: 5,
+      content: ''
     }
   },
   methods: {
     onSubmit () {
-      this.$emit('close')
+      if (this.content == '' && this.score == 0) return
+      var assess = {
+        score: this.score, 
+        content: this.content
+      }
+      this.$emit('submit', assess)
     }
   }
 }

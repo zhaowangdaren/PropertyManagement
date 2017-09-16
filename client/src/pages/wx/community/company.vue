@@ -24,7 +24,7 @@
       <div :class="s.callBtn"><a :href="'tel:' + company.Tel">呼 叫</a></div>
     </div>
     <y-dialog :visible.sync='showAssess'>
-      <assess @close='showAssess = false'></assess>
+      <assess @submit='showAssess = false'></assess>
     </y-dialog>
   </div>
 </template>
