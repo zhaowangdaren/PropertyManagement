@@ -143,6 +143,13 @@ func UpdateEventStatus(db *mgo.Database, index string, status int) error {
 	err := c.Update(bson.M{"index": index}, bson.M{"$set": bson.M{"status": status}})
 	return err
 }
+
+func UpdateEventLevel(db *mgo.Database, index string, eventLevel int) error {
+	c := db.C(EventTableName)
+	err := c.Update(bson.M{"index": index}, bson.M{"$set": bson.M{"eventlevel": eventLevel}})
+	return err
+}
+
 func UpdateEventTalkAbout(db *mgo.Database, index string, talkAbout int) error {
 	c := db.C(EventTableName)
 	err := c.Update(bson.M{"index": index}, bson.M{"$set": bson.M{"talkabout": talkAbout}})

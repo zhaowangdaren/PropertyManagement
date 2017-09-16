@@ -12,6 +12,8 @@ export default function (handleType) {
       return '物业公司处理'
     case 6:
       return '用户评价'
+    case 7:
+      return '审核事件等级'
     default:
       return '提交'
   }

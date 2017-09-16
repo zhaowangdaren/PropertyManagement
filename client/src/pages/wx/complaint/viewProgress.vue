@@ -53,7 +53,7 @@ export default {
       events: [],
       xqs:[],
       selectedStatus: 0,
-      eventStatus:[{value: 0, label:"全部", status: null}, {value: 1, label:'未解决', status: 1}, {value: 3, label: '已解决', status: 3}],
+      eventStatus:[{value: 0, label:"全部", status: null}, {value: 4, label:'未解决', status: 4}, {value: 3, label: '已解决', status: 3}],
       aMonth: 2592000, // 30 * 24 * 60 * 60 * 1000
       threeMonth: 7776000, // 3 * 30 * 24 * 60 * 60 * 1000
       aYear: 31104000, // 12 * 30 * 24 * 60 * 60 * 1000
@@ -67,10 +67,10 @@ export default {
         switch(this.selectedStatus){
           case 0:
             return true
-          case 1:
-            return item.Status === 0 || item.Status === 1
-          case 2:
-            return item.Status === 2
+          case 3:
+            return item.Status === 3
+          case 4:
+            return item.Status === 4
           default:
             return true
         }

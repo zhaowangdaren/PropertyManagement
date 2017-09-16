@@ -16,7 +16,7 @@
         </tr>
         <tr v-for='handle in eventHandles'>
           <td >{{handle.AuthorCategory | filterUserIdentity}}</td>
-          <td v-text='handle.AuthorName'></td>
+          <td >{{handle.AuthorCategory === 0 ? "居民" : handle.AuthorName}}</td>
           <td>{{ handle.Time | filterTime }}</td>
           <td v-text='handle.HandleInfo' class="descr"></td>
           <td>

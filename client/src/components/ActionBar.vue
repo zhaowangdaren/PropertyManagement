@@ -33,7 +33,7 @@ export default {
   },
   mounted () {
     var user = JSON.parse(sessionStorage.getItem('user')) || {}
-    this.userName = user.UserName
+    this.userName = user.RealName
   },
   methods:{
     onChangePassword () {

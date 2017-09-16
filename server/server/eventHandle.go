@@ -194,6 +194,26 @@ func startEventHandle(router *gin.RouterGroup, dbc *mgo.Database) {
 	router.GET("/eventHandle/today/handles", func(c *gin.Context) {
 		c.JSON(http.StatusOK, table.FindTodayHandles(dbc))
 	})
+	router.POST("/eventHandle/audit/level", func(c *gin.Context) {
+		var eventHandle table.EventHandle
+		err := c.BindJSON(&eventHandle)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		eventHandle.HandleType = 7
+		_, err = table.InsertEventHandle(dbc, eventHandle)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		err = table.UpdateEventLevel(dbc, eventHandle.Index, eventHandle.EventLevel)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"error": 0, "data": ""})
+	})
 
 	router.POST("/eventHandle/noticepm", func(c *gin.Context) {
 		var eventHandle table.EventHandle

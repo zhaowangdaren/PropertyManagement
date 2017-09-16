@@ -160,7 +160,7 @@
           </tr>
           <tr v-for='handle in eventHandles' v-if='eventHandles && eventHandles.length > 0'>
             <td v-text=''>{{ handle.AuthorCategory | filterUserIdentity}}</td>
-            <td v-text='handle.AuthorName'></td>
+            <td >{{handle.AuthorCategory === 0 ? "居民" : handle.AuthorName}}</td>
             <td >{{handle.Time | filterTime }}</td>
             <td v-text='handle.HandleInfo'></td>
             <td>
@@ -361,6 +361,7 @@
       },
       onAduitLevelSucc (eventLevel) {
         this.event.EventLevel = eventLevel
+        this.fetchEventHandles(this.event.Index)
       },
       onHandle (eventIndex) {//事件处理
 

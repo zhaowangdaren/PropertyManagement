@@ -60,7 +60,7 @@
       </div>
     </div>
     <div>
-      <div :class="s.callBtn" @click='showAdd = true' v-if='event.Status !== 3 && event.Status !== -1'>补 充</div>
+      <div :class="s.callBtn" @click='showAdd = true' v-if='event.Status !== 3 && event.Status !== -1 && identity === "user"'>补 充</div>
       <y-dialog
         :visible.sync='showAdd'>
         <div :class='s.title'>补充信息</div>

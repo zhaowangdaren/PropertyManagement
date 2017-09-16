@@ -76,7 +76,7 @@
         </table>
         <div :class='s.searchWrap'>
           <el-button type="primary" @click='onCurQuarter' class='view'>当前季度</el-button>
-          <el-button type="primary" icon="search" @click='onSearch' class='search'>查询</el-button>
+          <el-button type="primary" icon="search" @click='onBTSearch' class='search'>查询</el-button>
         </div>
         <!-- search result -->
         <table>
@@ -93,38 +93,43 @@
             <th>得分</th>
             <th v-if='from === "gov"'>操作</th>
           </tr>
-          <tr v-for='(item,index) in KPIs'>
-            <td v-text='item.Year'></td>
-            <td v-text='item.Quarter'></td>
-            <td v-text='item.Name'></td>
-            <td>{{ xqs[index] ? xqs[index].Name : ""}}</td>
-            <td v-text='item.YWNo'></td>
-            <td v-text='item.RWNo'></td>
-            <td v-text='item.IWNo'></td>
-            <td v-text='item.Other'></td>
-            <td >{{ 100 - item.YWNo * 0.5 - item.RWNo * 1 - item.IWNo * 3 - item.Other}}</td>
-            <td v-if='from === "gov"'>
-              <el-button
-                class='edit'
-                @click='onEdit(item)'
-                type='primary'
-                icon='edit'>
-                编辑
-              </el-button>
-              <el-dialog
-                :visible.sync='showEditDialog'
-                title='编辑考核其他扣分项'>
-                <div :class='s.editKPIOther'>扣除物业其他项分数：<input type="" name="" v-model='kpiOther'></div>
-                <div :class='s.editBtns'>
-                  <el-button type="primary" @click='onEditSure'>确定</el-button>
-                  <el-button @click='showEditDialog = false'>取消</el-button>
-                </div>
-              </el-dialog>
-            </td>
+          <tr v-if='loading'>
+            <td colspan="10" :class='s.loading'>加载中...</td>
           </tr>
-          <tr v-if='KPIs.length === 0'>
-            <td colspan="7">无记录</td>
-          </tr>
+          <template v-else>
+            <tr v-for='(item,index) in KPIs'>
+              <td v-text='item.Year'></td>
+              <td v-text='item.Quarter'></td>
+              <td v-text='item.Name'></td>
+              <td>{{ xqs[index] ? xqs[index].Name : ""}}</td>
+              <td v-text='item.YWNo'></td>
+              <td v-text='item.RWNo'></td>
+              <td v-text='item.IWNo'></td>
+              <td v-text='item.Other'></td>
+              <td >{{ item | calculatPMKPI }}</td>
+              <td v-if='from === "gov"'>
+                <el-button
+                  class='edit'
+                  @click='onEdit(item)'
+                  type='primary'
+                  icon='edit'>
+                  编辑
+                </el-button>
+                <el-dialog
+                  :visible.sync='showEditDialog'
+                  title='编辑考核其他扣分项'>
+                  <div :class='s.editKPIOther'>扣除物业其他项分数：<input type="" name="" v-model='kpiOther'></div>
+                  <div :class='s.editBtns'>
+                    <el-button type="primary" @click='onEditSure'>确定</el-button>
+                    <el-button @click='showEditDialog = false'>取消</el-button>
+                  </div>
+                </el-dialog>
+              </td>
+            </tr>
+            <tr v-if='KPIs.length === 0'>
+              <td colspan="7">无记录</td>
+            </tr>
+          </template>
         </table>
         <el-pagination
           layout="total, prev, pager, next"
@@ -140,9 +145,10 @@
 <script type="text/javascript">
 import filterEventStatus from '@/filters/filterEventStatus'
 import filterEventLevel from '@/filters/filterEventLevel'
+import calculatPMKPI from '@/filters/calculatPMKPI'
 import fetchpm from '@/fetchpm'
 export default {
-  filters: {filterEventStatus, filterEventLevel},
+  filters: {filterEventStatus, filterEventLevel, calculatPMKPI},
   props: {
     from: {
       type: String,
@@ -151,6 +157,7 @@ export default {
   },
   data () {
     return {
+      loading: false,
       quarters: [{value:1, label:'1'},{value:2,label:'2'},{value:3, label:'3'},{value:4, label: '4'}],
       selectedYear: 0,
       selectedQuarter: 0,
@@ -203,6 +210,14 @@ export default {
     }
   },
   methods: {
+    onBTSearch () {
+      var queryPM = {
+        Name: '',
+        PageNo: 0,
+        PageSize: 10
+      }
+      this.onSearch(queryPM)
+    },
     sortKPIs (kpis) {
       return kpis.sort((a, b) => {
         return a.PMName > b.Name ? 1 : -1
@@ -226,6 +241,8 @@ export default {
       })
     },
     onSearch (query) {
+      if (this.loading) return
+      this.loading = true
       this.fetchPMsV2(query)
       // this.fetchXQs(query)
     },
@@ -243,6 +260,9 @@ export default {
           this.fetchKPIs(this.KPIs.map(item => {return item.XQID}), this.selectedYear.getFullYear(), this.selectedQuarter)
           this.fetchXQsByIds(this.KPIs.map(item => {return item.XQID}))
         }
+        setTimeout(() => {
+          this.loading = false
+        }, 1000)
       })
     },
     fetchXQsByIds (ids) {
@@ -258,10 +278,10 @@ export default {
         }
       })
     },
-    fetchKPIs (xqs, year, quarter) {
-      for (let i = 0; i < xqs.length; i++) {
+    fetchKPIs (ids, year, quarter) {
+      for (let i = 0; i < ids.length; i++) {
         let params = {
-          XQID: xqs[i].ID,
+          XQID: ids[i],
           Year: year,
           Quarter: quarter
         }
@@ -273,11 +293,21 @@ export default {
         }).then(body => {
           if (body.error === 0) {
             let pmkpi = body.data || {}
-            console.info('fetchKPIs', pmkpi)
-            this.KPIs[i] = Object.assign(this.KPIs[i], pmkpi)
+            this.setPMKPI(pmkpi)
+            // this.KPIs[i] = Object.assign(this.KPIs[i], pmkpi)
+           // this.$set( this.KPIs[i], 'Score' ,(100 - pmkpi.YWNo * 0.5 - pmkpi.RWNo * 1 - pmkpi.IWNo * 3 - pmkpi.Other))
+            console.info('KPIs', this.KPIs)
           }
         })
       }
+    },
+    setPMKPI (pmkpi) {
+      var index = this.KPIs.findIndex((item, i, array) => {
+        console.info('findIndex', item.XQID + '----' + pmkpi.XQID)
+        return item.XQID === pmkpi.XQID
+      })
+      console.warn('pmkpi index', index)
+      this.KPIs[index] = Object.assign(this.KPIs[index], pmkpi)
     },
     fetchPMs (ids) {
       fetchpm(this, true, '/pm/pm/xqids', {
@@ -300,9 +330,14 @@ export default {
       this.onSearch(this.queryPM)
     },
     onCurQuarter () {
-      this.selectedYear = new Date(),
+      this.selectedYear = new Date()
       this.selectedQuarter = parseInt((this.selectedYear.getMonth() + 1 ) / 3) + (((this.selectedYear.getMonth() + 1) % 3) > 0 ? 1 : 0)
-      this.onSearch()
+      var queryPM = {
+        Name: '',
+        PageNo: 0,
+        PageSize: 10
+      }
+      this.onSearch(queryPM)
     },
     fetechAllStreets() {
       fetchpm(this, true, '/pm/street',{
@@ -421,5 +456,8 @@ export default {
 }
 .editBtns{
   margin-top: 20px;
+}
+.loading{
+
 }
 </style>

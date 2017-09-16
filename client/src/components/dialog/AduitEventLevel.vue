@@ -42,38 +42,70 @@ export default {
           label: '急'
         }
       ],
-      inputEventLevel: '',
-      updateEvent: {}
+      inputEventLevel: 0,
+      updateEvent: {},
+      eventHandle: {
+        Index: '',
+        AuthorCategory: 0,
+        AuthorName: '',
+        HandleInfo: '',
+        HandleType: 7,
+        EventLevel: 0,
+        Imgs: ''
+      }
     }
   },
   mounted () {
-    Object.assign(this.updateEvent, this.event)
-    this.inputEventLevel = this.updateEvent.EventLevel
+    // Object.assign(this.updateEvent, this.event)
+    // this.inputEventLevel = this.updateEvent.EventLevel
+
+    this.eventHandle.Index = this.event.Index
+    var user = JSON.parse(sessionStorage.getItem('user')) || {}
+    this.eventHandle.AuthorCategory = user.type
+    this.eventHandle.AuthorName = user.UserName
+    this.eventHandle.EventLevel = this.event.EventLevel
   },
   methods: {
     onCancel () {
       this.$emit('cancel')
     },
     onSave () {
-      console.info('onSave')
-      if (this.inputEventLevel == '') return
-      this.updateEvent.EventLevel = this.inputEventLevel
-      if (this.updateEvent.Status === 0) this.updateEvent.Status = 1
-      fetchpm(this, true, '/pm/event/update', {
+      this.eventHandle.EventLevel = parseInt(this.inputEventLevel)
+      this.eventHandle.HandleInfo = '审核投诉等级：' + (this.options.find(item => { return item.value === this.eventHandle.EventLevel})).label
+      fetchpm(this, true, '/pm/eventHandle/audit/level', {
         method: 'POST',
-        body: this.updateEvent
+        body: this.eventHandle
       }).then(resp => {
         return resp.json()
       }).then(body => {
-        console.info('onSave', body)
         if (body.error === 0) {
-          // this.warn = '审核成功'
-          Message({message:'恭喜，审核成功', type:'success'})
-          this.onCancel()
-          this.$emit('succ', this.inputEventLevel)
+          Message({message:'恭喜，成功提交事件处理', type:'success'})
+          this.$emit('succ', body.data)
+          this.$emit('cancel')
+        } else {
+          this.warn = body.data
+          Message({message:body.data, type:'error'})
         }
-        else this.warn = body.data
       })
+      // console.info('onSave')
+      // if (this.inputEventLevel == '') return
+      // this.updateEvent.EventLevel = this.inputEventLevel
+      // if (this.updateEvent.Status === 0) this.updateEvent.Status = 1
+      // fetchpm(this, true, '/pm/event/update', {
+      //   method: 'POST',
+      //   body: this.updateEvent
+      // }).then(resp => {
+      //   return resp.json()
+      // }).then(body => {
+      //   console.info('onSave', body)
+      //   if (body.error === 0) {
+      //     // this.warn = '审核成功'
+      //     Message({message:'恭喜，审核成功', type:'success'})
+      //     this.onCancel()
+      //     this.$emit('succ', this.inputEventLevel)
+      //   }
+      //   else this.warn = body.data
+      // })
     }
   }
 }
