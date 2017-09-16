@@ -268,6 +268,7 @@
           if (body.error === 0) {
             this.event.TalkAbout = 1
             Message({type:'success', message: '约谈成功'})
+            this.fetchEventHandles(this.event.Index)
             this.showTalkAboutDialog = false
           } else {
             Message({type: 'error', message: body.data})
@@ -322,7 +323,10 @@
         }).then(resp => {
           return resp.json()
         }).then(body => {
-          if (body.error == 0) Message({type:'success', message: '推送成功'})
+          if (body.error == 0) {
+            Message({type:'success', message: '推送成功'})
+            this.fetchEventHandles(this.event.Index)
+          }
           else Message({type: 'error', message: body.data})
         })
       },
@@ -354,19 +358,14 @@
       },
       onClose () {
         var eventHandle = {
-          Index: '',
-          AuthorCategory: 0,
-          AuthorName: '',
+          Index: this.event.Index,
+          AuthorCategory: parseInt(this.user.Type),
+          AuthorName: this.user.UserName,
           HandleInfo: '申请关闭',
           HandleType: 8,
-          EventLevel: 0,
+          EventLevel: parseInt(this.event.EventLevel),
           Imgs: ''
         }
-        eventHandle.Index = this.event.Index
-        var user = JSON.parse(sessionStorage.getItem('user')) || {}
-        eventHandle.AuthorCategory = user.type
-        eventHandle.AuthorName = user.UserName
-        eventHandle.EventLevel = this.event.EventLevel
         fetchpm(this, true, '/pm/eventHandle/request/close', {
           method: 'POST',
           body: eventHandle
@@ -398,7 +397,7 @@
         // })
       },
       onAddEventHandleSucc (eventHandle) {
-        this.eventHandles.push(eventHandle)
+        this.eventHandles.unshift(eventHandle)
         if (this.event.Status >= 0) this.event.Status = 1 //处理中
         this.updateEvent(this.event)
       },
@@ -417,7 +416,7 @@
         })
       },
       onAduitLevelSucc (eventLevel) {
-        this.event.EventLevel = eventLevel
+        this.event.EventLevel = parseInt(eventLevel)
         this.fetchEventHandles(this.event.Index)
       },
       onHandle (eventIndex) {//事件处理

@@ -21,6 +21,16 @@ func startEvent(router *gin.RouterGroup, dbc *mgo.Database) {
 		}
 	})
 
+	router.GET("/event/del/index/:index", func(c *gin.Context) {
+		index := c.Param("index")
+		err := table.DelEvent(dbc, index)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+		} else {
+			c.JSON(http.StatusOK, gin.H{"error": 0, "data": ""})
+		}
+	})
+
 	router.POST("/event/kvs", func(c *gin.Context) {
 		params := make(map[string]interface{})
 		err := c.BindJSON(&params)

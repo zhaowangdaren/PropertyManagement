@@ -127,22 +127,34 @@
             <th>事件类型</th>
             <th>操作</th>
           </tr>
-          <tr v-for='(handle, index) in events'>
+          <tr v-for='(event, index) in events'>
             <td>
-              <i :class='"iconfont icon-gaojing " + s.lv1' v-if='handle.EventLevel === 1' ></i>
-              <i :class='"iconfont icon-gaojing " + s.lv2' v-else-if='handle.EventLevel === 2' ></i>
-              <i :class='"iconfont icon-gaojing " + s.lv3' v-else-if='handle.EventLevel === 3' ></i>
+              <i :class='"iconfont icon-gaojing " + s.lv1' v-if='event.EventLevel === 1' ></i>
+              <i :class='"iconfont icon-gaojing " + s.lv2' v-else-if='event.EventLevel === 2' ></i>
+              <i :class='"iconfont icon-gaojing " + s.lv3' v-else-if='event.EventLevel === 3' ></i>
               <i v-else class="iconfont icon-gaojing"></i>
             </td>
-            <td v-text='handle.Index'></td>
-            <td>{{ handle.Time | filterTime}}</td>
+            <td v-text='event.Index'></td>
+            <td>{{ event.Time | filterTime}}</td>
             <td>{{communities[index] ? communities[index].Name : ''}}</td>
             <td>{{xqs[index] ? xqs[index].Name : ''}}</td>
-            <td :style='{color: handle.Status === 3 ? "#1eb504" : ""}'>{{handle.Status | filterEventStatus }}</td>
-            <td>{{handle.EventLevel | filterEventLevel }}</td>
-            <td v-text='handle.Type'></td>
+            <td :style='{color: event.Status === 3 ? "#1eb504" : ""}'>{{event.Status | filterEventStatus }}</td>
+            <td>{{event.EventLevel | filterEventLevel }}</td>
+            <td v-text='event.Type'></td>
             <td>
-              <el-button type="primary" icon="search" @click='toDetails(handle)' class='view'>查看</el-button>
+              <el-button type="primary" icon="search" @click='toDetails(event)' class='view'>查看</el-button>
+              <el-button type="primary" icon="delete" @click='onDel(event)' class='del'>删除</el-button>
+              <el-dialog 
+                title="请确认删除"
+                :visible.sync='showDelDialog'>
+                <div :class="s.delItem">事件编号:<span :class='s.value'>{{delEvent.Index}}</span></div>  
+                <div :class="s.delItem">事件类型:<span :class='s.value'>{{delEvent.Type}}</span></div>
+                <div :class="s.delItem">投诉时间:<span :class='s.value'>{{delEvent.Time | filterTime}}</span></div>
+                <div :class='s.bottomBtns'>
+                  <el-button type='primary' @click='onDelSure' :loading='deling'>确 认</el-button>
+                  <el-button @click='showDelDialog = false'>取 消</el-button>
+                </div>
+              </el-dialog>
             </td>
           </tr>
           <tr v-if='events.length == 0'>
@@ -169,6 +181,7 @@
   import filterEventLevel from '@/filters/filterEventLevel'
   import filterTime from '@/filters/filterTime'
   import fetchpm from '@/fetchpm'
+  import { Message } from 'element-ui'
   export default {
     props: {
       editable: Boolean,
@@ -202,7 +215,14 @@
         communities: [],
         xqs:[],
         allCommunities: [],
-        allXQs: []
+        allXQs: [],
+        showDelDialog: false,
+        delEvent: {
+          Index: '',
+          Type: '',
+          Time: 0
+        },
+        deling: false
       }
     },
     mounted () {
@@ -219,6 +239,27 @@
       }
     },
     methods: {
+      onDel (event) {
+        this.delEvent = event
+        this.showDelDialog = true
+      },
+      onDelSure () {
+        this.deling = true
+        fetchpm(this, true, '/pm/event/del/index/' + this.delEvent.Index, {
+          method: 'GET'
+        }).then(resp => {
+          return resp.json()
+        }).then(body => {
+          if (body.error === 0 ) {
+            this.onSearch()
+            this.showDelDialog = false
+            Message({type: 'success', message: '成功删除'})
+          } else {
+            Message({type: 'error', message: body.data})
+          }
+          this.deling = false
+        })
+      },
       onChangePage (curPage) {
         this.pageNo = curPage - 1
         this.onSearch()
@@ -396,5 +437,23 @@
 }
 .elSelect{
   width: 100%;
+}
+.delItem{
+  margin: 2px;
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+  .value{
+    flex: 1;
+    background-color: #f1f3f6;
+    border: solid 1px #ddd;
+    border-radius: 2px;
+    padding: 5px;
+  }
+}
+.bottomBtns{
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
 }
 </style>

@@ -415,6 +415,12 @@ func FindEventsByXQIDInTimeSortByType(db *mgo.Database, xqid string,
 	return err, result
 }
 
+func DelEvent(db *mgo.Database, index string) error {
+	c := db.C(EventTableName)
+	err := c.Remove(bson.M{"index": index})
+	return err
+}
+
 //CountDiffKeyEvents 统计不同key-value的数量
 func CountDiffKeyEvents(db *mgo.Database, key string, maxRecs int) interface{} {
 	c := db.C(EventTableName)
