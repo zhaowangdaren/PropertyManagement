@@ -290,7 +290,7 @@ func GOVTalkPM(pmUsers []table.PMUser, xqName string, eventIndex string,
 			"url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxa768bfacbb694944&redirect_uri=https%3A%2F%2Fwww.maszfglzx.com%2Fcomplaint-progress-pm.html&response_type=code&scope=snsapi_base&state=` + eventIndex + `#wechat_redirect",
 			"data": {
 				"first": {
-					"value": "您好，贵公司所服务的` + xqName + `有群众投诉，房管中心正在约谈贵，信息如下"
+					"value": "您好，贵公司所服务的` + xqName + `有群众投诉，房管中心正在约谈，信息如下"
 				},
 				"keyword1": {
 					"value": "` + eventIndex + `"
