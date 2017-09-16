@@ -20,7 +20,7 @@
         <div :class="s.assess" @click='showAssess = true'>服务评价</div>
       </div>
     </div>
-    <div :class="s.bottom">
+    <div>
       <div :class="s.callBtn"><a :href="'tel:' + company.Tel">呼 叫</a></div>
     </div>
     <y-dialog :visible.sync='showAssess'>

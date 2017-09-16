@@ -115,7 +115,7 @@ export default {
       console.info('times', this.times)
     },
     onDetails (event) {
-      this.$router.push({name:'detailsProgress', query: {index: event.Index, status: event.Status}})
+      this.$router.push({name:'detailsProgress', query: {index: event.Index, status: event.Status, identity: "user"}})
     },
     fetchEvents (query){
       fetchpm(this, false,'/open/event/kvs', {

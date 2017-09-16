@@ -339,7 +339,6 @@
             Message({type: 'error', message: body.data})
           }
         })
-
       },
       onAddEventHandleSucc (eventHandle) {
         this.eventHandles.push(eventHandle)

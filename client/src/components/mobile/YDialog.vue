@@ -1,6 +1,6 @@
 <template>
   <div :class="s.wrap" v-if='visible' @click.self='onClose'>
-    <div :class="s.close"><i class="iconfont icon-close" @click='onClose'></i></div>
+    <div :class="s.close" @click='onClose'><i class="iconfont icon-close"></i></div>
     <div :class="s.content">
       <slot></slot>
     </div>

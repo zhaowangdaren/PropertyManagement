@@ -14,7 +14,7 @@
               :class='s.revoke'
               @click='onRevoke'>撤销事件</el-button>
             <el-button 
-              v-if='event.Status === 2'
+              v-if='event.Status === 2 || event.Status === 4'
               type='success' 
               :class='s.revoke'
               @click='onSolved'>确认已解决</el-button>
@@ -23,6 +23,11 @@
               type='success' 
               :class='s.revoke'
               @click='onUnsolved'>未解决</el-button>
+            <el-button
+              v-if='event.Status === 3 || event.Status === 4 || event.Status === -2'
+              type='success'
+              :class='s.revoke'
+              @click='onAssess'>评 价</el-button>
           </template>
           <template v-if='identity === "pmuser"'>
             <el-button 
@@ -31,7 +36,6 @@
               :class='s.revoke'
               @click='onHandle'>已处理</el-button>
           </template>
-          
         </div>
       </div>
       <div :class='s.event' v-for='handle in eventHandles'>
@@ -41,7 +45,7 @@
           <div><span :class='s.key'>提交内容:</span><span v-text='handle.HandleInfo'></span></div>
           <div><span :class='s.key'>提交类型:</span><span>{{ handle.HandleType | filterHandleType }}</span></div>
           <div v-if='handle.Imgs.length > 0'><span :class='s.key' >提交图片:</span><span class='iconfont icon-pic' @click='onShowImgs(handle.Imgs)'>点击查看图片</span></div>
-          <div v-if='handle.HandleType === 3 && identity === "user"'><div :class='s.replyBtn' @click='showReply = true'>回 复</div></div>
+          <div v-if='handle.HandleType === 3 && identity === "user" && event.Status !== 3'><div :class='s.replyBtn' @click='showReply = true'>回 复</div></div>
         </div>
       </div>
       
@@ -55,6 +59,15 @@
         </div>
       </div>
     </div>
+    <div>
+      <div :class="s.callBtn" @click='showAdd = true' v-if='event.Status !== 3 && event.Status !== -1'>补 充</div>
+      <y-dialog
+        :visible.sync='showAdd'>
+        <div :class='s.title'>补充信息</div>
+        <div :class='s.textarea'><textarea v-model='addContent' placeholder="输入补充内容"></textarea></div>
+        <div :class='s.replyBtn' @click='onAdd'>{{ adding ? "提交中。。。" : "提 交"}}</div>
+      </y-dialog>
+    </div>
     <y-dialog
       :visible.sync='showImgs'>
       <imgs :imgs='showingImgs' v-if='showImgs'></imgs>
@@ -65,6 +78,10 @@
       <div :class='s.textarea'><textarea v-model='replyContent' placeholder="输入回复内容"></textarea></div>
       <div :class='s.replyBtn' @click='onReply'>{{ replying ? "提交中。。。" : "提 交"}}</div>
     </y-dialog>
+    <y-dialog
+      :visible.sync='showAssess'>
+      <assess @close='showAssess = false'></assess>
+    </y-dialog>
   </div>
 </template>
 
@@ -72,6 +89,7 @@
 import ActionBar from '@/components/mobile/ActionBar'
 import YDialog from '@/components/mobile/YDialog'
 import Imgs from '@/components/dialog/Imgs'
+import Assess from '@/components/mobile/Assess'
 import filterEventStatus from '@/filters/filterEventStatus'
 import filterHandleType from '@/filters/filterHandleType'
 import filterTime from '@/filters/filterTime'
@@ -79,7 +97,7 @@ import fetchpm from '@/fetchpm'
 import filterUserIdentity from '@/filters/filterUserIdentity'
 import { Message } from 'element-ui'
 export default {
-  components: { ActionBar, Imgs, YDialog },
+  components: { ActionBar, Imgs, YDialog, Assess },
   filters: { filterEventStatus, filterTime, filterUserIdentity, filterHandleType },
   data () {
     return {
@@ -99,6 +117,10 @@ export default {
       showingImgs: '',
       showReply: false,
       replying: false,
+      showAssess: false,
+      showAdd: false,
+      adding: false,
+      addContent: '',
       warn:'',
       replyContent: ''
     }
@@ -118,6 +140,36 @@ export default {
     this.identity = this.$route.query.identity || ''
   },
   methods: {
+    onAssess () {
+      this.showAssess = true
+    },
+    onAdd () {
+      if (this.addContent === '') return
+      this.adding = true
+      var eventHandle = {
+        Index: this.event.Index,
+        XQID: this.event.XQID,
+        OpenID: this.event.OpenID,
+        HandleInfo: this.addContent
+      }
+      fetchpm(this, false, "/open/eventHandle/user/add", {
+        method: 'POST',
+        body: eventHandle
+      }).then(resp => {
+        return resp.json()
+      }).then(body => {
+        console.info('onReply', body)
+        if (body.error === 0) {
+          Message({type: "success", message: '提交成功'})
+          this.eventHandles.unshift(body.data)
+          this.showAdd = false
+          this.addContent = ''
+        } else {
+          Message({type: "error", message: body.data})
+        }
+        this.adding = false
+      })
+    },
     onReply () {
       if (this.replyContent === '') return
       this.replying = true
@@ -136,7 +188,7 @@ export default {
         console.info('onReply', body)
         if (body.error === 0) {
           Message({type: "success", message: '提交成功'})
-          this.eventHandles.splice(0, 1, body.data)
+          this.eventHandles.unshift(body.data)
           this.showReply = false
           this.replyContent = ''
         } else {
@@ -257,6 +309,7 @@ export default {
 }
 .content{
   padding-top: 80px;
+  padding-bottom: 80px;
   font-size: 25px;
   .up{
     background-color: #fff;
@@ -324,5 +377,18 @@ export default {
     font-size: 25px;
   }
 
+}
+.callBtn{
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  font-size: 20px;
+  font-weight: 500;
+  background-color: rgb(25, 163, 24);
+  border-radius: 100px;
+  box-shadow: 0 2px 5px rgba(0,0,0,.25);
+  color: #fff;
 }
 </style>
