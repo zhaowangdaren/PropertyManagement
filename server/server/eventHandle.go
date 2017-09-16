@@ -40,15 +40,17 @@ func FilterEventStatus(status int) string {
 	case -2:
 		return "已关闭"
 	case -1:
-		return "用户撤销"
+		return "已撤销"
 	case 0:
 		return "居民提交"
 	case 1:
-		return "已审核待处理"
+		return "处理中"
 	case 2:
 		return "已处理待确认"
 	case 3:
 		return "已解决"
+	case 4:
+		return "未解决"
 	default:
 		return ""
 	}
@@ -68,6 +70,10 @@ func FilterEventHandleAuthorCategory(authorCategory int) string {
 func PushNotice2WX(eventHandle table.EventHandle, dbc *mgo.Database) {
 
 	event := table.FindEvent(dbc, eventHandle.Index)
+	if eventHandle.HandleType > 0 && event.Status == 0 {
+		event.Status = 1
+		table.UpdateEventStatus(dbc, event.Index, event.Status)
+	}
 	userOpenID := event.OpenID
 	if userOpenID == "" {
 		glog.Error("Event:" + eventHandle.Index + " 没有查询到其OpenID")

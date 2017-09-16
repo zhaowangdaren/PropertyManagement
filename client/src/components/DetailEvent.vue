@@ -56,6 +56,10 @@
               <td :class='s.value'>{{event.Time | filterTime }}</td>
             </tr>
             <tr>
+              <td class='searchKey'>投诉内容</td>
+              <td :class='s.value'>{{event.Content }}</td>
+            </tr>
+            <tr>
               <td class='searchKey'>事件类型</td>
               <td :class='s.value' v-text='event.Type'></td>
             </tr>
