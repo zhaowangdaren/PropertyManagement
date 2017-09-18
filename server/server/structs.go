@@ -1,5 +1,9 @@
 package server
 
+import (
+	"../db/table"
+)
+
 type QueryUser struct {
 	UserName string
 	Type     int
@@ -71,6 +75,17 @@ type QueryPMKPI struct {
 	Year    int
 	Quarter int
 }
+
+//ResultsPage 分页查询结果
+type ResultsPage struct {
+	Lists []interface{}
+	Sum   int
+}
+
+type AddAnnounces struct {
+	List []table.Announce `json:"list"`
+}
+
 type AddEventImg struct {
 	Index string   //事件编号
 	Imgs  []string //图片名称

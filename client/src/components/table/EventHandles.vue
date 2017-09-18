@@ -143,7 +143,7 @@
             <td v-text='event.Type'></td>
             <td>
               <el-button type="primary" icon="search" @click='toDetails(event)' class='view'>查看</el-button>
-              <el-button type="primary" icon="delete" @click='onDel(event)' class='del'>删除</el-button>
+              <el-button v-if='from === "street" || from === ""' type="danger" icon="delete" @click='onDel(event)' class='del'>删除</el-button>
               <el-dialog 
                 title="请确认删除"
                 :visible.sync='showDelDialog'>
