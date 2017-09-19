@@ -258,6 +258,27 @@ func startEventHandle(router *gin.RouterGroup, dbc *mgo.Database) {
 		c.JSON(http.StatusOK, gin.H{"error": 0, "data": ""})
 	})
 
+	router.POST("/eventHandle/notice/court", func(c *gin.Context) {
+		var eventHandle table.EventHandle
+		err := c.BindJSON(&eventHandle)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		eventHandle.HandleType = 11
+		_, err = table.InsertEventHandle(dbc, eventHandle)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		err = table.UpdateEventToCourt(dbc, eventHandle.Index, 1)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"error": 0, "data": ""})
+	})
+
 	router.POST("/eventHandle/notice/gov", func(c *gin.Context) {
 		var eventHandle table.EventHandle
 		err := c.BindJSON(&eventHandle)

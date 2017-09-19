@@ -47,6 +47,7 @@
   background-color: gray;
   min-width: 150px;
   color: #f1f3f6;
+  overflow: auto;
   .menu{
     padding: 20px 20px;
     font-size: 18px;

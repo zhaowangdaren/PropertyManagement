@@ -11,7 +11,7 @@ import (
 const AnnounceTBName = "Announce"
 
 type Announce struct {
-	ID       bson.ObjectId `bson:"_id" json:"id"`
+	ID       bson.ObjectId `bson:"_id"`
 	UserID   string        `json:"userId"`
 	Classify string        `json:"classify"` // 文件分类
 	MD5      string        `json:"md5"`      // 读取文件的文件名

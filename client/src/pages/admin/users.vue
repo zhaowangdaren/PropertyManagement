@@ -73,9 +73,10 @@
 
 <script type="text/javascript">
 import InfosGov from '@/components/InfosGov'
+import InfosCourt from '@/components/InfosCourt'
 import InfosStreetUser from '@/components/InfosStreetUser'
   export default {
-    components: { InfosGov, InfosStreetUser},
+    components: { InfosGov, InfosStreetUser, InfosCourt},
     data () {
       return {
         tabs: [
@@ -86,6 +87,10 @@ import InfosStreetUser from '@/components/InfosStreetUser'
           {
             name: '街道用户',//街道用户
             view: InfosStreetUser
+          },
+          {
+            name: '法官',//街道用户
+            view: InfosCourt
           }
         ],
         curView: InfosGov

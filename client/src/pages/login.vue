@@ -62,6 +62,9 @@ export default {
       case '/street':
         this.login.type = 3
         break
+      case '/court':
+        this.login.type =4
+        break
     }
   },
   methods: {

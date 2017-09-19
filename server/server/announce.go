@@ -34,7 +34,7 @@ func startAnnounce(router *gin.RouterGroup, dbc *mgo.Database) {
 			return
 		}
 		err = table.InsertAnnounces(dbc, announces.List)
-		if err != nil {
+		if err.Error() != "" {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
 			return
 		}

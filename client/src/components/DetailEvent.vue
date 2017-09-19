@@ -137,6 +137,16 @@
                     同意关闭
                   </el-button>
                 </div>
+                <div :class='s.btnWrap'>
+                  <el-button
+                    v-if='user.type === 2'
+                    type='success'
+                    :disabled='event.ToCourt === 1 ? true : false'
+                    :loading='toCourting'
+                    @click='onToCourt'>
+                    推送至法官
+                  </el-button>
+                </div>
               </td>
             </tr>
           </table>
@@ -222,6 +232,7 @@
           RequestClose: 0,
           NoticeGov: 0,
           NoticePM: 0,
+          ToCourt: 0,
           TalkAbout: 0,
           TalkAboutContent: '', //约谈内容
           Imgs:''//以逗号为分隔符
@@ -240,7 +251,8 @@
         showAduitEventLevel: false,
         showAddEventHandle: false,//询问
         showTalkAboutDialog: false,
-        editingTalkAboutContent: ''
+        editingTalkAboutContent: '',
+        toCourting: false
       }
     },
     mounted () {
@@ -251,6 +263,33 @@
       this.fetchEventHandles(this.$route.params.index)
     },
     methods: {
+      onToCourt () {
+        if (this.toCourting) return
+        this.toCourting = true
+        var eventHandle = {
+          Index: this.event.Index,
+          XQID: this.event.XQID,
+          AuthorCategory: this.user.type,
+          AuthorName: this.user.UserName,
+          HandleInfo: '推送至法官',
+          Imgs: ''
+        }
+
+        fetchpm(this, true, '/pm/eventHandle/notice/court', {
+          method: 'POST',
+          body: eventHandle
+        }).then(resp => {
+          return resp.json()
+        }).then(body => {
+          if (body.error == 0) {
+            this.event.NoticeGov = 1
+            Message({type:'success', message: '推送成功'})
+            this.fetchEventHandles(this.event.Index)
+          }
+          else Message({type: 'error', message: body.data})
+          this.toCourting = false
+        })
+      },
       onTalkAbout () {
         // Message({type: "warning", message: '该功能正在开发中'})
         this.showTalkAboutDialog = true
@@ -324,6 +363,7 @@
           return resp.json()
         }).then(body => {
           if (body.error == 0) {
+            this.event.ToCourt = 1
             Message({type:'success', message: '推送成功'})
             this.fetchEventHandles(this.event.Index)
           }

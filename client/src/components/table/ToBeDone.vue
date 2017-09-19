@@ -104,6 +104,9 @@ export default {
         case 3:
           this.onStreet()
           break
+        case 4:
+          this.onCourt()
+          break
       }
     },
     onAdminFetch () {
@@ -120,6 +123,12 @@ export default {
         StreetID: this.userStreetID
       }
       this.fetchEventsByKVsPage(kvs, this.pageNo, this.pageSize)
+    },
+    onCourt () {
+      var kvs = {
+        ToCourt: 1
+      }
+      this.fetchEventsByKVsPageForGov(kvs, this.pageNo, this.pageSize)
     },
     onChangePage (curPage) {
       this.pageNo = curPage - 1
@@ -202,9 +211,16 @@ export default {
       })
     },
     toDetails (event) {
-      console.info('toDetails', event.Index)
-      if (this.from === 'gov') this.$router.push({name: 'GovDetailEvent', params:{index: event.Index}})
-      else if (this.from === 'street') this.$router.push({name:'eventDetail',  params:{index: event.Index}})
+      switch (this.from) {
+        case 'gov':
+          this.$router.push({name: 'GovDetailEvent', params:{index: event.Index}})
+          break
+        case 'street':
+          this.$router.push({name:'eventDetail',  params:{index: event.Index}})
+          break
+        case 'court':
+          this.$router.push({name:'CourtDetailEvent',  params:{index: event.Index}})
+      }
     }
   }
 }

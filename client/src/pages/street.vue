@@ -56,11 +56,6 @@ export default {
           text:'物业考核查询'//物业考核查询
         },
         {
-          path:'/street/court',
-          icon: 'icon-court',
-          text:'申请法院调解请求'//申请法院调解请求
-        },
-        {
           path:'/street/operationRecs',
           icon: 'icon-records',
           text:'操作记录'//操作记录管理

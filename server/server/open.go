@@ -10,6 +10,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path"
 	"strconv"
 	"time"
 
@@ -21,6 +22,9 @@ import (
 
 //FileBasicPath file basic path
 const FileBasicPath = "/root/PropertyManagement/server/dist"
+
+// const FileBasicPath = "/Users/gtja/Documents/myDoc/golang/PropertyManagement/server/dist"
+
 const WXConfPath = "/root/PropertyManagement/server/dist/wx.json"
 
 //readFile readFile
@@ -163,6 +167,28 @@ func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
 		}
 	})
 
+	router.POST("/upload/file", func(c *gin.Context) {
+		file, _ := c.FormFile("file")
+		log.Println(file.Filename)
+
+		h := md5.New()
+		src, _ := file.Open()
+		io.Copy(h, src)
+		fileToken := fmt.Sprintf("%x", h.Sum(nil))
+		fileExt := path.Ext(file.Filename)
+		fmt.Println(fileToken, fileExt)
+		err := c.SaveUploadedFile(file, FileBasicPath+"/files/"+fileToken+fileExt)
+
+		if err != nil {
+			fmt.Println(err)
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": "上传失败"})
+		} else {
+			// md5Value, _ := Md5File(FileBasicPath + file.Filename)
+			c.JSON(http.StatusOK, gin.H{"error": 0, "data": gin.H{"md5": fileToken + fileExt}})
+		}
+	})
+
+	router.Static("/file", FileBasicPath+"/files/")
 	router.Static("/image", FileBasicPath+"/images/")
 
 	router.POST("/event/add", func(c *gin.Context) {

@@ -32,7 +32,7 @@ type Event struct {
 	Type         string //事件基本类别
 	Content      string //投诉内容
 	Time         int64  //提交时间
-	ToCourt      int8   //0-不推送至法院 1-推送至法院
+	ToCourt      int    //0-不推送至法院 1-推送至法院
 	Imgs         string //图片表格，以,为分割符
 	Tel          string //联系电话
 }
@@ -164,6 +164,12 @@ func UpdateEventTalkAbout(db *mgo.Database, index string, talkAbout int) error {
 func UpdateEventNoticeGov(db *mgo.Database, index string, noticeGov int) error {
 	c := db.C(EventTableName)
 	err := c.Update(bson.M{"index": index}, bson.M{"$set": bson.M{"noticegov": noticeGov}})
+	return err
+}
+
+func UpdateEventToCourt(db *mgo.Database, index string, toCourt int) error {
+	c := db.C(EventTableName)
+	err := c.Update(bson.M{"index": index}, bson.M{"$set": bson.M{"tocourt": toCourt}})
 	return err
 }
 

@@ -30,15 +30,20 @@
             </div>
           </div>
         </div>
-        <div :class='s.right' @click='toGov'>
-          <div :class='s.gov'>
+        <div :class='s.right'>
+          <div :class='s.gov' @click='toGov'>
             花山区住房管理中心工作人员
             <div :class='s.hide'>
               <span :class='s.yellow'>花山区住房管理<br/>中心工作人员</span>
               <br/>纠纷、法院调解、推送政府公告
             </div>
           </div>
-          
+          <div :class='s.court' @click='toCourt'>
+            法官
+            <div :class='s.hide'>
+              <span :class='s.yellow'>法官</span>居民居民投诉调解
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -71,6 +76,9 @@
       },
       toGov () {
         this.$router.push({path:'/login', query: {title:'区住房管理中心工作人员', target: '/gov'}})
+      },
+      toCourt () {
+        this.$router.push({path:'/login', query: {title: '法官', target: '/court'}})
       }
     }
   }
@@ -181,6 +189,29 @@
             }
             &:hover .hide{
               display: block;
+            }
+          }
+          .court{
+            margin-top: 5px;
+            flex: 1;
+            padding: 5px;
+            background-color: rgb(0, 167, 201);
+            position: relative;
+            // height: 145px;
+            &:hover .hide{
+              display: block;
+            }
+          }
+          .court > .hide {
+            display: none;
+            font-size: 15px;
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            .yellow{
+              color: yellow;
+              font-size: 25px;
+              font-style:italic;
             }
           }
         }

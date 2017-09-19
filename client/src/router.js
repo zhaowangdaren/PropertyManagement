@@ -5,7 +5,7 @@ import Router from 'vue-router'
 const Login = require('@/pages/login')
 const Regist = require('@/pages/regist')
 
-const Admin = resolve => require(['@/pages/admin'], resolve)
+const Admin = require('@/pages/admin')
 
 const AdminHome = resolve => require(['@/pages/admin/home'], resolve)
 const AdminBasicInfo = resolve => require(['@/pages/admin/basicInfo'], resolve)
@@ -15,23 +15,25 @@ const AdminWX = resolve => require(['@/pages/admin/wx'], resolve)
 const AdminComplaint = resolve => require(['@/pages/admin/complaints'], resolve)
 const AdminPM = resolve => require(['@/pages/admin/pm'], resolve)
 const AdminBuild = resolve => require(['@/pages/admin/build'], resolve)
-const Street = resolve => require(['@/pages/street'], resolve)
+const Street = require('@/pages/street')
 const StreetIndex = resolve => require(['@/pages/street/index'], resolve)
 const StreetDetailEvent = resolve => require(['@/components/DetailEvent'], resolve)
 const StreetEventHandle = resolve => require(['@/components/table/EventHandles'], resolve)
 const StreetPM= resolve => require(['@/pages/street/pms'], resolve)
 const StreetPMKPI= resolve => require(['@/pages/street/pmsKPI'], resolve)
-const StreetCourts= resolve => require(['@/components/table/Courts'], resolve)
 const StreetRecs= resolve => require(['@/pages/street/recs'], resolve)
-const Gov = resolve => require(['@/pages/gov'], resolve)
+const Gov = require('@/pages/gov')
 const GovIndex = resolve => require(['@/pages/gov/index'], resolve)
 const GovEventHandle = resolve => require(['@/pages/gov/eventHandle'], resolve)
 const GovPM = resolve => require(['@/pages/gov/pm'], resolve)
 const GovBuild = resolve => require(['@/pages/gov/build'], resolve)
 const GovPMKPI = resolve => require(['@/pages/gov/pmkpi'], resolve)
-const GovCourt = resolve => require(['@/pages/gov/court'], resolve)
 const GovAnnouncement = resolve => require(['@/pages/gov/announcement'], resolve)
 const GovDetailEvent = resolve => require(['@/components/DetailEvent'], resolve)
+
+const Court = require('@/pages/court')
+const CourtHome = resolve => require(['@/pages/court/events'], resolve)
+const CourtDetailEvent = resolve => require(['@/components/DetailEvent'], resolve)
 
 const WXStartComplaint = require('@/pages/wx/startComplaint')
 const WXComplaintSelectStreet = resolve => require(['@/pages/wx/complaint/selectStreet'], resolve)
@@ -153,12 +155,24 @@ export default new Router({
           component: StreetPMKPI
         },
         {
-          path: 'court',
-          component: StreetCourts
-        },
-        {
           path: 'operationRecs',
           component: StreetRecs
+        }
+      ]
+    },
+    {
+      path: '/court',
+      component: Court,
+      children: [
+        {
+          path: '',
+          name: 'CourtHome',
+          component: CourtHome
+        },
+        {
+          path: 'eventDetail/:index',
+          name: 'CourtDetailEvent',
+          component: CourtDetailEvent
         }
       ]
     },
@@ -193,9 +207,6 @@ export default new Router({
         },{
           path:'pmkpis',
           component: GovPMKPI
-        },{
-          path:'court',
-          component: GovCourt
         },{
           path:'announcement',
           component: GovAnnouncement

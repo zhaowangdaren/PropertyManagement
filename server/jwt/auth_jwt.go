@@ -244,6 +244,7 @@ func (mw *GinJWTMiddleware) LoginHandler(c *gin.Context) {
 			"StreetID": user.StreetID,
 			"UserName": user.UserName,
 			"RealName": user.RealName,
+			"ID":       user.ID,
 		},
 	})
 }

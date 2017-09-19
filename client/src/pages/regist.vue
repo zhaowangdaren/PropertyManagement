@@ -110,6 +110,10 @@ export default {
         this.title = '街道工作人员注册'
         this.regist.Type = 3
         break
+      case '/court':
+        this.title = '法官注册'
+        this.regist.Type = 4
+        break
     }
   },
   methods: {

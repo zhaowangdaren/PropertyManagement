@@ -28,39 +28,9 @@ export default {
       nextPath: '',
       menus: [
         {
-          path: '/gov',
+          path: '/court',
           icon: 'icon-home',
-          text:'主页'
-        },
-        {
-          icon: 'icon-tousu',
-          text:'居民物业纠纷处理',
-          path:'/gov/eventHandle'
-        },
-        {
-          icon: 'icon-wuyeguanli',
-          text:'查看物业信息',
-          path:'/gov/pms'
-        },
-        {
-          icon: 'icon-kaohechengji',
-          text:'物业考核查询',
-          path:'/gov/pmkpis'
-        },
-        {
-          icon: 'icon-build',
-          text:'查看建筑信息',
-          path:'/gov/build'
-        },
-        {
-          icon: 'icon-tousu',
-          text:'投诉数据维护',//微信用户绑定管理
-          path:'/gov/complaints'
-        },
-        {
-          icon: 'icon-gonggao',
-          text:'推送政府公告',
-          path: '/gov/announcement'
+          text:'居民投诉调解'
         }
       ]
     }
