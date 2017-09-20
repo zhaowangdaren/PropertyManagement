@@ -8,6 +8,8 @@ export default function (type) {
       return '街道办公人员'
     case 4:
       return '物业公司'
+    case 5:
+      return '法官'
     default:
       return '居民提交'
   }

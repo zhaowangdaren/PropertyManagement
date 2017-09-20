@@ -104,7 +104,7 @@ export default {
         case 3:
           this.onStreet()
           break
-        case 4:
+        case 5:
           this.onCourt()
           break
       }

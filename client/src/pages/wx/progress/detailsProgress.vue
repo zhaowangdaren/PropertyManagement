@@ -61,6 +61,7 @@
     </div>
     <div>
       <div :class="s.callBtn" @click='showAdd = true' v-if='event.Status !== 3 && event.Status !== -1 && identity === "user"'>补 充</div>
+      <div :class="s.callBtn" @click='showAdd = true' v-if='event.Status !== 3 && event.Status !== -1 && identity === "court"'>询 问</div>
       <y-dialog
         :visible.sync='showAdd'>
         <div :class='s.title'>补充信息</div>
@@ -170,6 +171,13 @@ export default {
     },
     onAdd () {
       if (this.addContent === '' || this.adding) return
+      if (this.identity === 'user') this.onUserAdd()
+      if (this.identity === 'court') this.onCourtAsk()
+    },
+    onCourtAsk () {
+
+    },
+    onUserAdd () {
       this.adding = true
       var eventHandle = {
         Index: this.event.Index,

@@ -1,4 +1,6 @@
-// const HOST = 'https://www.maszfglzx.com:3000'
+// import { Message } from 'element-ui'
+
+const HOST = 'https://www.maszfglzx.com:3000'
 // const HOST = '//localhost:3000'
 
 
@@ -30,7 +32,6 @@ function refreshToken () {
     }
   })
 }
-import { Message } from 'element-ui'
 /**
  * 统一处理请求
  * @param  {Object} vm      Vue Example：this
@@ -62,8 +63,8 @@ export default function (vm, auth, path, options) {
     console.info(path, options)
     return fetch(path, options).then(resp => {
       if (resp.status == 401 && vm.$route.path !== '/login') {//认证失败，重新登录
-          vm.$router.push({path:'/'})
-          return resp
+        vm.$router.push({path:'/'})
+        return resp
       } else {
         return resp
       }

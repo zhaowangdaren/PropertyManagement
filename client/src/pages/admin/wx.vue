@@ -76,8 +76,9 @@
 <script type="text/javascript">
 import InfosPMBand from '@/components/InfosPMBand'
 import BindParkManagers from '@/components/table/BindParkManagers'
+import BindCourts from '@/components/table/BindCourts'
   export default {
-    components: { InfosPMBand, BindParkManagers},
+    components: { InfosPMBand, BindParkManagers, BindCourts},
     data () {
       return {
         tabs: [
@@ -88,6 +89,10 @@ import BindParkManagers from '@/components/table/BindParkManagers'
           {
             name: '绑定停车管理员',//申请中
             view: BindParkManagers
+          },
+          {
+            name: '绑定法官',
+            view: BindCourts
           }
         ],
         curView: InfosPMBand

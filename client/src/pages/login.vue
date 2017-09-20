@@ -63,7 +63,7 @@ export default {
         this.login.type = 3
         break
       case '/court':
-        this.login.type =4
+        this.login.type =5
         break
     }
   },

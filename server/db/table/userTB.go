@@ -21,7 +21,7 @@ type User struct {
 	RealName string //真实姓名
 	Tel      string
 	StreetID string //所在街道
-	Type     int    //1-admin 2-gov 3-street 4-court
+	Type     int    //1-admin 2-gov 3-street 4-物业公司 5-法官
 	Pass     int    // 1-通过审核
 	Code     string // 授权码
 }

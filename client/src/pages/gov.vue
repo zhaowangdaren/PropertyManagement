@@ -54,12 +54,12 @@ export default {
         },
         {
           icon: 'icon-tousu',
-          text:'投诉数据维护',//微信用户绑定管理
+          text:'投诉数据分析',//微信用户绑定管理
           path:'/gov/complaints'
         },
         {
           icon: 'icon-gonggao',
-          text:'推送政府公告',
+          text:'政府公告',
           path: '/gov/announcement'
         }
       ]

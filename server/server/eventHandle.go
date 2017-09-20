@@ -277,6 +277,13 @@ func startEventHandle(router *gin.RouterGroup, dbc *mgo.Database) {
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{"error": 0, "data": ""})
+
+		// push to WeChat
+		xqName := table.FindXQ(dbc, eventHandle.XQID).Name
+		kvs := make(map[string]interface{})
+		kvs["bind"] = 1
+		courts := table.FindCourtByKVs(dbc, kvs)
+		PushNotice2Court(courts, xqName, eventHandle.Index)
 	})
 
 	router.POST("/eventHandle/notice/gov", func(c *gin.Context) {
@@ -355,31 +362,61 @@ func startEventHandle(router *gin.RouterGroup, dbc *mgo.Database) {
 	})
 }
 
+func PushNotice2Court(courts []table.CourtWX, xqName string, eventIndex string) {
+	for _, court := range courts {
+		pjson := `{
+			"touser": "` + court.OpenID + `",
+			"template_id": "TdVxvtwH1i24ArEUcx1FGmWNFI_11WFZvDGfBJ9cjBw",
+			"url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxa768bfacbb694944&redirect_uri=https%3A%2F%2Fwww.maszfglzx.com%2Fcomplaint-progress-court.html&response_type=code&scope=snsapi_base&state=` + eventIndex + `#wechat_redirect",
+			"data": {
+				"first": {
+					"value": "法官您好，房管中心向您推送了` + xqName + `小区的投诉事件，信息如下："
+				},
+				"keyword1": {
+					"value": "` + eventIndex + `"
+				},
+				"keyword2": {
+					"value": "推送给法官"
+				},
+				"keyword3": {
+					"value": "房管中心"
+				},
+				"remark": {
+					"value": "请您及时进行处理"
+				}
+			}
+		}`
+		access_token := GetAccessToken()
+		wxURL := "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + access_token
+		PostJson(wxURL, pjson)
+	}
+}
+
 //PushNotice2PM 通知物业公司人员
 func PushNotice2PM(pmUsers []table.PMUser, xqName string, eventIndex string, pmName string) {
 	for _, pmUser := range pmUsers {
 		pjson := `{
-		"touser": "` + pmUser.OpenID + `",
-		"template_id": "TdVxvtwH1i24ArEUcx1FGmWNFI_11WFZvDGfBJ9cjBw",
-		"url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxa768bfacbb694944&redirect_uri=https%3A%2F%2Fwww.maszfglzx.com%2Fcomplaint-progress-pm.html&response_type=code&scope=snsapi_base&state=` + eventIndex + `#wechat_redirect",
-		"data": {
-			"first": {
-				"value": "您好，贵公司所服务的` + xqName + `有群众投诉，信息如下："
-			},
-			"keyword1": {
-				"value": "` + eventIndex + `"
-			},
-			"keyword2": {
-				"value": "已分派"
-			},
-			"keyword3": {
-				"value": "` + pmName + `"
-			},
-			"remark": {
-				"value": "请贵公司及时进行处理"
+			"touser": "` + pmUser.OpenID + `",
+			"template_id": "TdVxvtwH1i24ArEUcx1FGmWNFI_11WFZvDGfBJ9cjBw",
+			"url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxa768bfacbb694944&redirect_uri=https%3A%2F%2Fwww.maszfglzx.com%2Fcomplaint-progress-pm.html&response_type=code&scope=snsapi_base&state=` + eventIndex + `#wechat_redirect",
+			"data": {
+				"first": {
+					"value": "您好，贵公司所服务的` + xqName + `有群众投诉，信息如下："
+				},
+				"keyword1": {
+					"value": "` + eventIndex + `"
+				},
+				"keyword2": {
+					"value": "已分派"
+				},
+				"keyword3": {
+					"value": "` + pmName + `"
+				},
+				"remark": {
+					"value": "请贵公司及时进行处理"
+				}
 			}
-		}
-	}`
+		}`
 		access_token := GetAccessToken()
 		wxURL := "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + access_token
 		PostJson(wxURL, pjson)

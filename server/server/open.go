@@ -23,8 +23,6 @@ import (
 //FileBasicPath file basic path
 const FileBasicPath = "/root/PropertyManagement/server/dist"
 
-// const FileBasicPath = "/Users/gtja/Documents/myDoc/golang/PropertyManagement/server/dist"
-
 const WXConfPath = "/root/PropertyManagement/server/dist/wx.json"
 
 //readFile readFile
@@ -321,6 +319,23 @@ func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
 		c.JSON(http.StatusOK, gin.H{"error": 0, "data": result})
 	})
 
+	router.POST("/eventHandle/court/ask", func(c *gin.Context) {
+		var info table.EventHandle
+		err := c.BindJSON(&info)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		info.AuthorCategory = 5 //法官
+		info.HandleType = 3     //询问
+		result, err := table.InsertEventHandle(dbc, info)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"error": 0, "data": result})
+	})
+
 	router.POST("/pm/kvs", func(c *gin.Context) {
 		params := make(map[string]interface{})
 		err := c.BindJSON(&params)
@@ -375,5 +390,6 @@ func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
 	})
 
 	startPark(router, dbc)
+	startOpenCourt(router, dbc)
 	glog.Flush()
 }

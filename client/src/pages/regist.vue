@@ -112,7 +112,7 @@ export default {
         break
       case '/court':
         this.title = '法官注册'
-        this.regist.Type = 4
+        this.regist.Type = 5
         break
     }
   },

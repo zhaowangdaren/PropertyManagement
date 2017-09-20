@@ -34,6 +34,7 @@ const GovDetailEvent = resolve => require(['@/components/DetailEvent'], resolve)
 const Court = require('@/pages/court')
 const CourtHome = resolve => require(['@/pages/court/events'], resolve)
 const CourtDetailEvent = resolve => require(['@/components/DetailEvent'], resolve)
+const CourtBind = resolve => require(['@/pages/wx/court/bind'], resolve)
 
 const WXStartComplaint = require('@/pages/wx/startComplaint')
 const WXComplaintSelectStreet = resolve => require(['@/pages/wx/complaint/selectStreet'], resolve)
@@ -273,6 +274,10 @@ export default new Router({
     {
       path: '/wx/pm/bind',
       component: WXPMBind
+    },
+    {
+      path: '/wx/court/bind',
+      component: CourtBind
     },
     {
       path: '/wx/pm/rule',

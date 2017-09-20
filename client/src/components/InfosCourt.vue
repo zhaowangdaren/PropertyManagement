@@ -10,7 +10,7 @@
     components: {User},
     data () {
       return {
-        userType: 4
+        userType: 5
       }
     },
     mounted () {

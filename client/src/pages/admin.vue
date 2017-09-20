@@ -48,7 +48,7 @@ export default {
         },
         {
           icon: 'icon-tousu',
-          text:'投诉数据维护',//微信用户绑定管理
+          text:'投诉数据分析',//
           path:'/admin/complaints'
         },
         {
