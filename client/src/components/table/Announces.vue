@@ -7,7 +7,7 @@
       </div>
       <div :class='s.body'>
         <!-- search result -->
-        <div :class='s.uploadWrap'>
+        <div :class='s.uploadWrap' v-if='from === "gov"'>
           <el-button type='primary' class='add' icon='plus' @click='showUploadDialog = true'>新 增</el-button>
           <el-dialog
             title='上传文件'
@@ -24,7 +24,7 @@
             :class='s.file'
             ><a :href='host + "/open/file/" + announce.md5'>{{announce.filename}}</a>
           </div>
-          <i class="iconfont icon-close" @click='onDel(announce)'></i>
+          <i class="iconfont icon-close" @click='onDel(announce)'  v-if='from === "gov"'></i>
         </div>
         <el-pagination
           layout="total, prev, pager, next"
@@ -53,6 +53,12 @@
   export default {
     components: { Upload },
     filters: {},
+    props: {
+      from: {
+        type: String,
+        default: ''
+      }
+    },
     data () {
       return {
         host: "https://www.maszfglzx.com:3000",

@@ -22,6 +22,8 @@ const StreetEventHandle = resolve => require(['@/components/table/EventHandles']
 const StreetPM= resolve => require(['@/pages/street/pms'], resolve)
 const StreetPMKPI= resolve => require(['@/pages/street/pmsKPI'], resolve)
 const StreetRecs= resolve => require(['@/pages/street/recs'], resolve)
+const StreetAnnouncement = resolve => require(['@/pages/street/announcement'], resolve)
+
 const Gov = require('@/pages/gov')
 const GovIndex = resolve => require(['@/pages/gov/index'], resolve)
 const GovEventHandle = resolve => require(['@/pages/gov/eventHandle'], resolve)
@@ -158,6 +160,10 @@ export default new Router({
         {
           path: 'operationRecs',
           component: StreetRecs
+        },
+        {
+          path: 'announcement',
+          component: StreetAnnouncement
         }
       ]
     },

@@ -59,6 +59,11 @@ export default {
           path:'/street/operationRecs',
           icon: 'icon-records',
           text:'操作记录'//操作记录管理
+        },
+        {
+          icon: 'icon-gonggao',
+          text:'政府公告',
+          path: '/street/announcement'
         }
       ]
     }

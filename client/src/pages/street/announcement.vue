@@ -1,6 +1,6 @@
 <template>
   <div>
-    <announces from='gov'></announces>
+    <announces from='street'></announces>
   </div>
 </template>
 

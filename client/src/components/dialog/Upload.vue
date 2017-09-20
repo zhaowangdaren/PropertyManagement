@@ -51,5 +51,6 @@ export default {
 <style lang="less" module='s'>
 .upload{
   width: 80%;
+  margin: 0 auto;
 }
 </style>

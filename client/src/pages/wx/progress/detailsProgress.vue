@@ -175,7 +175,30 @@ export default {
       if (this.identity === 'court') this.onCourtAsk()
     },
     onCourtAsk () {
-
+      this.adding = true
+      var eventHandle = {
+        Index: this.event.Index,
+        XQID: this.event.XQID,
+        OpenID: this.event.OpenID,
+        HandleInfo: this.addContent
+      }
+      fetchpm(this, false, '/open/eventHandle/court/ask', {
+        method: 'POST',
+        body: eventHandle
+      }).then(resp => {
+        return resp.json()
+      }).then(body => {
+        console.info('onCourtAsk', body)
+        if (body.error === 0) {
+          Message({type: "success", message: '提交成功'})
+          this.eventHandles.unshift(body.data)
+          this.showAdd = false
+          this.addContent = ''
+        } else {
+          Message({type: "error", message: body.data})
+        }
+        this.adding = false
+      })
     },
     onUserAdd () {
       this.adding = true
