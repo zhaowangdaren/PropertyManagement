@@ -68,74 +68,6 @@ func FilterEventHandleAuthorCategory(authorCategory int) string {
 	}
 	return ""
 }
-func PushNotice2WX(eventHandle table.EventHandle, dbc *mgo.Database) {
-
-	event := table.FindEvent(dbc, eventHandle.Index)
-	if eventHandle.HandleType > 0 && event.Status == 0 {
-		event.Status = 1
-		table.UpdateEventStatus(dbc, event.Index, event.Status)
-	}
-	userOpenID := event.OpenID
-	if userOpenID == "" {
-		glog.Error("Event:" + eventHandle.Index + " 没有查询到其OpenID")
-		return
-	}
-	xqName := table.FindXQ(dbc, event.XQID).Name
-	time := time.Unix(event.Time, 0).Format("2006-01-02 15:04:05")
-	status := FilterEventStatus(event.Status)
-	// good
-	// 	pjson := `{
-	//   "touser": "oIVRq0ubSS9zMeCAKE55hlIAFBj8",
-	//   "template_id": "JfYCUICcZxvOjdYYFUQVVu47AepqfhGau0nvLhGPcVA",
-	//   "url": "https://www.maszfglzx.com/#/wx/detailsProgress?index=20170907221818572142744&status=",
-	//   "data": {
-	//     "first": {
-	//       "value": "您好，您的投诉已处理。具体信息如下："
-	//     },
-	//     "keyword1": {
-	//       "value": ""
-	//     },
-	//     "keyword2": {
-	//       "value": "居民提交"
-	//     },
-	//     "keyword3": {
-	//       "value": "2017-09-07 22:18:18"
-	//     },
-	//     "remark": {
-	//       "value": "感谢您的反馈"
-	//     }
-	//   }
-	// }`
-	// https://www.maszfglzx.com/#/wx/detailsProgress?index=` + eventHandle.Index + `
-	pjson := `{
-  "touser": "` + userOpenID + `",
-  "template_id": "JfYCUICcZxvOjdYYFUQVVu47AepqfhGau0nvLhGPcVA",
-  "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxa768bfacbb694944&redirect_uri=https%3A%2F%2Fwww.maszfglzx.com%2Fcomplaint-progress.html&response_type=code&scope=snsapi_base&state=` + eventHandle.Index + `#wechat_redirect",
-  "data": {
-    "first": {
-      "value": "您好，您的投诉已处理。具体信息如下："
-    },
-    "keyword1": {
-      "value": "` + xqName + `"
-    },
-		"keyword2": {
-      "value": "` + time + `"
-    },
-    "keyword3": {
-      "value": "` + status + `"
-    },
-		"keyword4": {
-      "value": ""
-    },
-    "remark": {
-      "value": "感谢您的反馈"
-    }
-  }
-}`
-	access_token := GetAccessToken()
-	wxURL := "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + access_token
-	PostJson(wxURL, pjson)
-}
 
 func startEventHandle(router *gin.RouterGroup, dbc *mgo.Database) {
 	// 按index 查询事件，如果index==“”则查询所有的
@@ -354,7 +286,7 @@ func startEventHandle(router *gin.RouterGroup, dbc *mgo.Database) {
 }
 
 //NoticePM 通知PM
-func NoticePM(dbc *mgo.Database, eventIndex string) error {
+func NoticeCourtAccepted2PM(dbc *mgo.Database, eventIndex string) error {
 	event := table.FindEvent(dbc, eventIndex)
 	pm := table.FindPMByKV(dbc, "xqid", event.XQID)
 	// fmt.Println("pmID:", pm.ID.Hex())
@@ -368,7 +300,7 @@ func NoticePM(dbc *mgo.Database, eventIndex string) error {
 	}
 
 	xqName := table.FindXQ(dbc, event.XQID).Name
-	PushNotice2PM(pmUsers, xqName, eventIndex, pm.Name)
+	PushCourtAccepted2PM(pmUsers, xqName, eventIndex, pm.Name)
 	return nil
 }
 
@@ -463,11 +395,11 @@ func startOpenEventHandle(router *gin.RouterGroup, dbc *mgo.Database) {
 		}
 		c.JSON(http.StatusOK, gin.H{"error": 0, "data": result})
 
-		err = NoticePM(dbc, info.Index)
+		err = NoticeCourtAccepted2PM(dbc, info.Index)
 		if err != nil {
 			glog.Error(err)
 		}
-		PushNotice2WX(info, dbc)
+		PushCourtAccepted2WX(info, dbc)
 	})
 
 	router.POST("/eventHandle/court/ask", func(c *gin.Context) {
@@ -509,6 +441,35 @@ func PushNotice2Court(courts []table.CourtWX, xqName string, eventIndex string) 
 				},
 				"remark": {
 					"value": "请您及时进行处理"
+				}
+			}
+		}`
+		access_token := GetAccessToken()
+		wxURL := "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + access_token
+		PostJson(wxURL, pjson)
+	}
+}
+func PushCourtAccepted2PM(pmUsers []table.PMUser, xqName string, eventIndex string, pmName string) {
+	for _, pmUser := range pmUsers {
+		pjson := `{
+			"touser": "` + pmUser.OpenID + `",
+			"template_id": "TdVxvtwH1i24ArEUcx1FGmWNFI_11WFZvDGfBJ9cjBw",
+			"url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxa768bfacbb694944&redirect_uri=https%3A%2F%2Fwww.maszfglzx.com%2Fcomplaint-progress-pm.html&response_type=code&scope=snsapi_base&state=` + eventIndex + `#wechat_redirect",
+			"data": {
+				"first": {
+					"value": "您好，贵公司所服务的` + xqName + `有群众投诉，法官已受理信息如下："
+				},
+				"keyword1": {
+					"value": "` + eventIndex + `"
+				},
+				"keyword2": {
+					"value": "法官受理"
+				},
+				"keyword3": {
+					"value": "` + pmName + `"
+				},
+				"remark": {
+					"value": "请贵公司及时进行处理"
 				}
 			}
 		}`
@@ -578,4 +539,115 @@ func GOVTalkPM(pmUsers []table.PMUser, xqName string, eventIndex string,
 		wxURL := "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + access_token
 		PostJson(wxURL, pjson)
 	}
+}
+
+func PushCourtAccepted2WX(eventHandle table.EventHandle, dbc *mgo.Database) {
+	event := table.FindEvent(dbc, eventHandle.Index)
+	if eventHandle.HandleType > 0 && event.Status == 0 {
+		event.Status = 1
+		table.UpdateEventStatus(dbc, event.Index, event.Status)
+	}
+	userOpenID := event.OpenID
+	if userOpenID == "" {
+		glog.Error("Event:" + eventHandle.Index + " 没有查询到其OpenID")
+		return
+	}
+	xqName := table.FindXQ(dbc, event.XQID).Name
+	time := time.Unix(event.Time, 0).Format("2006-01-02 15:04:05")
+	status := FilterEventStatus(event.Status)
+	pjson := `{
+	  "touser": "` + userOpenID + `",
+	  "template_id": "JfYCUICcZxvOjdYYFUQVVu47AepqfhGau0nvLhGPcVA",
+	  "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxa768bfacbb694944&redirect_uri=https%3A%2F%2Fwww.maszfglzx.com%2Fcomplaint-progress.html&response_type=code&scope=snsapi_base&state=` + eventHandle.Index + `#wechat_redirect",
+	  "data": {
+	    "first": {
+	      "value": "您好，您的投诉法官已处理。具体信息如下："
+	    },
+	    "keyword1": {
+	      "value": "` + xqName + `"
+	    },
+			"keyword2": {
+	      "value": "` + time + `"
+	    },
+	    "keyword3": {
+	      "value": "` + status + `"
+	    },
+			"keyword4": {
+	      "value": ""
+	    },
+	    "remark": {
+	      "value": "感谢您的反馈"
+	    }
+	  }
+	}`
+	access_token := GetAccessToken()
+	wxURL := "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + access_token
+	PostJson(wxURL, pjson)
+}
+func PushNotice2WX(eventHandle table.EventHandle, dbc *mgo.Database) {
+	event := table.FindEvent(dbc, eventHandle.Index)
+	if eventHandle.HandleType > 0 && event.Status == 0 {
+		event.Status = 1
+		table.UpdateEventStatus(dbc, event.Index, event.Status)
+	}
+	userOpenID := event.OpenID
+	if userOpenID == "" {
+		glog.Error("Event:" + eventHandle.Index + " 没有查询到其OpenID")
+		return
+	}
+	xqName := table.FindXQ(dbc, event.XQID).Name
+	time := time.Unix(event.Time, 0).Format("2006-01-02 15:04:05")
+	status := FilterEventStatus(event.Status)
+	// good
+	// 	pjson := `{
+	//   "touser": "oIVRq0ubSS9zMeCAKE55hlIAFBj8",
+	//   "template_id": "JfYCUICcZxvOjdYYFUQVVu47AepqfhGau0nvLhGPcVA",
+	//   "url": "https://www.maszfglzx.com/#/wx/detailsProgress?index=20170907221818572142744&status=",
+	//   "data": {
+	//     "first": {
+	//       "value": "您好，您的投诉已处理。具体信息如下："
+	//     },
+	//     "keyword1": {
+	//       "value": ""
+	//     },
+	//     "keyword2": {
+	//       "value": "居民提交"
+	//     },
+	//     "keyword3": {
+	//       "value": "2017-09-07 22:18:18"
+	//     },
+	//     "remark": {
+	//       "value": "感谢您的反馈"
+	//     }
+	//   }
+	// }`
+	// https://www.maszfglzx.com/#/wx/detailsProgress?index=` + eventHandle.Index + `
+	pjson := `{
+	  "touser": "` + userOpenID + `",
+	  "template_id": "JfYCUICcZxvOjdYYFUQVVu47AepqfhGau0nvLhGPcVA",
+	  "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxa768bfacbb694944&redirect_uri=https%3A%2F%2Fwww.maszfglzx.com%2Fcomplaint-progress.html&response_type=code&scope=snsapi_base&state=` + eventHandle.Index + `#wechat_redirect",
+	  "data": {
+	    "first": {
+	      "value": "您好，您的投诉已处理。具体信息如下："
+	    },
+	    "keyword1": {
+	      "value": "` + xqName + `"
+	    },
+			"keyword2": {
+	      "value": "` + time + `"
+	    },
+	    "keyword3": {
+	      "value": "` + status + `"
+	    },
+			"keyword4": {
+	      "value": ""
+	    },
+	    "remark": {
+	      "value": "感谢您的反馈"
+	    }
+	  }
+	}`
+	access_token := GetAccessToken()
+	wxURL := "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + access_token
+	PostJson(wxURL, pjson)
 }

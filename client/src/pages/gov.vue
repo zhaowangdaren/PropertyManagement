@@ -38,6 +38,11 @@ export default {
           path:'/gov/eventHandle'
         },
         {
+          icon: 'icon-tousu',
+          text:'投诉数据分析',//微信用户绑定管理
+          path:'/gov/complaints'
+        },
+        {
           icon: 'icon-wuyeguanli',
           text:'查看物业信息',
           path:'/gov/pms'
@@ -51,11 +56,6 @@ export default {
           icon: 'icon-build',
           text:'查看建筑信息',
           path:'/gov/build'
-        },
-        {
-          icon: 'icon-tousu',
-          text:'投诉数据分析',//微信用户绑定管理
-          path:'/gov/complaints'
         },
         {
           icon: 'icon-gonggao',

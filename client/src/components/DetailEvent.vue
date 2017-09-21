@@ -142,7 +142,7 @@
                   <div :class="s.btnWrap">
                     <el-button
                       type='success'
-                      :diabled='event.CourtAccepted === 1 ? true : false'
+                      :disabled='event.CourtAccepted === 1 ? true : false'
                       @click='onCourtAccepted'>
                       {{event.CourtAccepted === 1 ? "已受理" : "受理"}}
                     </el-button>
@@ -300,7 +300,7 @@
         }
         fetchpm(this, false, '/open/eventHandle/court/accept', {
           method: 'POST',
-          body: handleType
+          body: eventHandle
         }).then(resp => {
           return resp.json()
         }).then(body => {

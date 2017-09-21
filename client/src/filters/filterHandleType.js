@@ -30,6 +30,8 @@ export default function (handleType) {
       return '物业回复法官'
     case 15:
       return '居民回复法官'
+    case 16:
+      return '法官受理'
     default:
       return '提交'
   }
