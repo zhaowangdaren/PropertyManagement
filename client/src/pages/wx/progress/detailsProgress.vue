@@ -8,19 +8,19 @@
           <div :class='s.key'>进度：</div>
           <div :class='s.value'>{{event.Status | filterEventStatus }}</div>
           <template v-if='identity === "user"'>
-            <el-button 
+            <el-button
               v-if='(event.Status >= 0 && event.Status < 2) || event.Status === 4'
-              type='danger' 
+              type='danger'
               :class='s.revoke'
               @click='onRevoke'>撤销事件</el-button>
-            <el-button 
+            <el-button
               v-if='event.Status === 2 || event.Status === 4'
-              type='success' 
+              type='success'
               :class='s.revoke'
               @click='onSolved'>确认已解决</el-button>
-            <el-button 
+            <el-button
               v-if='event.Status === 2'
-              type='success' 
+              type='success'
               :class='s.revoke'
               @click='onUnsolved'>未解决</el-button>
             <el-button
@@ -30,9 +30,9 @@
               @click='showAssess = true'>评 价</el-button>
           </template>
           <template v-if='identity === "pmuser"'>
-            <el-button 
+            <el-button
               v-if='event.Status !== 3'
-              type='success' 
+              type='success'
               :class='s.revoke'
               @click='onHandle'>已处理</el-button>
           </template>
@@ -45,10 +45,12 @@
           <div><span :class='s.key'>提交内容:</span><span v-text='handle.HandleInfo'></span></div>
           <div><span :class='s.key'>提交类型:</span><span>{{ handle.HandleType | filterHandleType }}</span></div>
           <div v-if='handle.Imgs.length > 0'><span :class='s.key' >提交图片:</span><span class='iconfont icon-pic' @click='onShowImgs(handle.Imgs)'>点击查看图片</span></div>
-          <div v-if='handle.HandleType === 3 && identity === "user" && event.Status !== 3'><div :class='s.replyBtn' @click='showReply = true'>回 复</div></div>
+          <div
+            v-if='(((handle.HandleType === 3 || handle.HandleType === 13)&& identity === "user") || (handle.HandleType === 12 && identity === "pmuser"))
+              && event.Status !== 3'><div :class='s.replyBtn' @click='onShowReply(handle.HandleType)'>回 复</div></div>
         </div>
       </div>
-      
+
       <div :class='s.event' v-if='event.Index !== ""'>
         <div :class='s.left'>
           <div :class='s.identity'>居民</div>
@@ -59,9 +61,14 @@
         </div>
       </div>
     </div>
-    <div>
+    <div :class="s.bottomBtns" v-if='event.Status !== -2'>
       <div :class="s.callBtn" @click='showAdd = true' v-if='event.Status !== 3 && event.Status !== -1 && identity === "user"'>补 充</div>
-      <div :class="s.callBtn" @click='showAdd = true' v-if='event.Status !== 3 && event.Status !== -1 && identity === "court"'>询 问</div>
+      <template v-if='event.Status !== 3 && event.Status !== -1 && identity === "court"'>
+        <div :class="s.btn" :style="{background: event.CourtAccepted === 1 ? 'gray' : 'rgb(56,191,202)'}" @click='onCourtAccepted'>受理</div>
+        <div :class="s.btn" :style="{background: 'rgb(142,198,80)'}" @click='onCourtAskPM'>询问物业公司</div>
+        <div :class="s.btn" :style="{background: 'rgb(249,83,48)'}" @click='onCourtAskUser'>询问居民</div>
+      </template>
+
       <y-dialog
         :visible.sync='showAdd'>
         <div :class='s.title'>补充信息</div>
@@ -76,8 +83,14 @@
     <y-dialog
       :visible.sync='showReply'>
       <div :class='s.title'>回复</div>
-      <div :class='s.textarea'><textarea v-model='replyContent' placeholder="输入回复内容"></textarea></div>
+      <div :class='s.textarea'><textarea v-model='replyContent' placeholder="输入内容"></textarea></div>
       <div :class='s.replyBtn' @click='onReply'>{{ replying ? "提交中。。。" : "提 交"}}</div>
+    </y-dialog>
+    <y-dialog
+      :visible.sync='showAsk'>
+      <div :class='s.title'>询问</div>
+      <div :class='s.textarea'><textarea v-model='askContent' placeholder="输入询问内容"></textarea></div>
+      <div :class='s.replyBtn' @click='onCourtAsk'>{{ asking ? "提交中。。。" : "提 交"}}</div>
     </y-dialog>
     <y-dialog
       :visible.sync='showAssess'>
@@ -111,7 +124,8 @@ export default {
         Status: 0,
         Imgs:'',
         OpenID: '',
-        Index: ''
+        Index: '',
+        CourtAccepted: 0
       },
       eventHandles: [],
       showImgs: false,
@@ -122,9 +136,13 @@ export default {
       assessing: false,
       showAdd: false,
       adding: false,
+      replyHandleType: 4,
       addContent: '',
       warn:'',
-      replyContent: ''
+      replyContent: '',
+      showAsk: false,
+      askHandleType: 3,
+      askContent: ''
     }
   },
   mounted () {
@@ -142,6 +160,57 @@ export default {
     this.identity = this.$route.query.identity || ''
   },
   methods: {
+    onShowReply(handleType){
+       this.showReply = true
+       switch(handleType) {
+         case 3:
+          this.replyHandleType = 4
+          break
+        case 12:
+          this.replyHandleType = 14 //物业回复法官
+          break
+        case 13:
+          this.replyHandleType = 15 //居民回复法官
+          break
+        default:
+          this.replyHandleType = 4
+       }
+    },
+    onCourtAccepted () {
+      if (this.event.CourtAccepted === 1) return
+      var eventHandle = {
+        Index: this.event.Index,
+        XQID: this.event.XQID,
+        AuthorCategory: 5,
+        AuthorName: '法官',
+        HandleInfo: '法官受理',
+        HandleType: 16,
+        Imgs: ''
+      }
+      fetchpm(this, false, '/open/eventHandle/court/accept', {
+        method: 'POST',
+        body: eventHandle
+      }).then(resp => {
+        return resp.json()
+      }).then(body => {
+        if (body.error === 0) {
+          Message({message: '受理成功', type:'success'})
+          this.event.CourtAccepted = 1
+        } else {
+          Message({type: 'error', message: body.data})
+        }
+      }).catch(error => {
+        Message({type: 'error', message: error})
+      })
+    },
+    onCourtAskPM(){
+      this.askHandleType = 12
+      this.showAsk = true
+    },
+    onCourtAskUser(){
+      this.askHandleType = 13
+      this.showAsk = true
+    },
     onAssess (assess) {
       if (this.assessing) return
       this.assessing = true
@@ -172,15 +241,15 @@ export default {
     onAdd () {
       if (this.addContent === '' || this.adding) return
       if (this.identity === 'user') this.onUserAdd()
-      if (this.identity === 'court') this.onCourtAsk()
     },
     onCourtAsk () {
-      this.adding = true
+      this.asking = true
       var eventHandle = {
         Index: this.event.Index,
         XQID: this.event.XQID,
         OpenID: this.event.OpenID,
-        HandleInfo: this.addContent
+        HandleInfo: this.askContent,
+        HandleType: this.askHandleType
       }
       fetchpm(this, false, '/open/eventHandle/court/ask', {
         method: 'POST',
@@ -192,12 +261,12 @@ export default {
         if (body.error === 0) {
           Message({type: "success", message: '提交成功'})
           this.eventHandles.unshift(body.data)
-          this.showAdd = false
-          this.addContent = ''
+          this.showAsk = false
+          this.askContent = ''
         } else {
           Message({type: "error", message: body.data})
         }
-        this.adding = false
+        this.asking = false
       })
     },
     onUserAdd () {
@@ -214,7 +283,7 @@ export default {
       }).then(resp => {
         return resp.json()
       }).then(body => {
-        console.info('onReply', body)
+        console.info('onUserAdd', body)
         if (body.error === 0) {
           Message({type: "success", message: '提交成功'})
           this.eventHandles.unshift(body.data)
@@ -233,7 +302,19 @@ export default {
         Index: this.event.Index,
         XQID: this.event.XQID,
         OpenID: this.event.OpenID,
-        HandleInfo: this.replyContent
+        HandleInfo: this.replyContent,
+        HandleType: this.replyHandleType
+        // AuthorCategory: this.u
+      }
+      switch (this.identity) {
+        case 'pmuser':
+          eventHandle.AuthorCategory = 4
+          break;
+        case 'court':
+          eventHandle.AuthorCategory = 5
+          break;
+        default:
+          eventHandle.AuthorCategory = 0
       }
       fetchpm(this, false, "/open/eventHandle/user/reply", {
         method: 'POST',
@@ -320,20 +401,22 @@ export default {
       }).then(body => {
         console.info('fetchEvent', body)
         if (body.error === 0 ) {
-          this.event = body.data.events[0] || {}
+          if (body.data.events && body.data.events.length > 0) {
+            this.event = body.data.events[0]
+          }
         }
       })
     },
     fetchEventHandle () {
-      fetchpm(this, false, '/open/eventHandle/kvs', {
+      fetchpm(this, false, '/open/eventHandle/kvs/page', {
         method: 'POST',
-        body: {Index: this.eventIndex}
+        body: { KVs:{ Index: this.eventIndex}, PageNo: 0, PageSize: 0 }
       }).then(resp => {
         return resp.json()
       }).then(body => {
         console.info('fetchEventHandle', body)
         if (body.error === 0){
-          this.eventHandles = (body.data || []).sort((a, b) => {
+          this.eventHandles = (body.data.eventHandles || []).sort((a, b) => {
             return b.Time - a.Time
           })
         }
@@ -434,11 +517,21 @@ export default {
   }
 
 }
-.callBtn{
+.bottomBtns{
+  display: flex;
   position: fixed;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 0;
+  left: 0;
+  right: 0;
+  .btn{
+    flex: 1;
+    padding: 15px 10px;
+    text-align: center;
+    color: #fff;
+  }
+}
+.callBtn{
+  margin: 10px auto;
   padding: 10px 20px;
   font-size: 20px;
   font-weight: 500;

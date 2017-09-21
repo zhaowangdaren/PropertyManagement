@@ -258,84 +258,6 @@ func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
 		}
 	})
 
-	router.POST("/eventHandle/kvs", func(c *gin.Context) {
-		params := make(map[string]interface{})
-		err := c.BindJSON(&params)
-		if err != nil {
-			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
-		} else {
-			c.JSON(http.StatusOK, table.FindEventHandlesByKV(dbc, params))
-		}
-	})
-
-	router.POST("/eventHandle/pm/deal", func(c *gin.Context) {
-		var info table.EventHandle
-		err := c.BindJSON(&info)
-		if err != nil {
-			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
-			return
-		}
-		info.HandleType = 5
-		result, err := table.InsertEventHandle(dbc, info)
-		if err != nil {
-			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
-			return
-		}
-		c.JSON(http.StatusOK, gin.H{"error": 0, "data": result})
-		table.UpdateEventStatus(dbc, info.Index, 2)
-		PushNotice2WX(info, dbc)
-	})
-
-	router.POST("/eventHandle/user/reply", func(c *gin.Context) {
-		var info table.EventHandle
-		err := c.BindJSON(&info)
-		if err != nil {
-			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
-			return
-		}
-		info.HandleType = 4
-		info.AuthorCategory = 0
-		result, err := table.InsertEventHandle(dbc, info)
-		if err != nil {
-			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
-			return
-		}
-		c.JSON(http.StatusOK, gin.H{"error": 0, "data": result})
-	})
-
-	router.POST("/eventHandle/user/add", func(c *gin.Context) {
-		var info table.EventHandle
-		err := c.BindJSON(&info)
-		if err != nil {
-			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
-			return
-		}
-		info.AuthorCategory = 0
-		result, err := table.InsertEventHandle(dbc, info)
-		if err != nil {
-			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
-			return
-		}
-		c.JSON(http.StatusOK, gin.H{"error": 0, "data": result})
-	})
-
-	router.POST("/eventHandle/court/ask", func(c *gin.Context) {
-		var info table.EventHandle
-		err := c.BindJSON(&info)
-		if err != nil {
-			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
-			return
-		}
-		info.AuthorCategory = 5 //法官
-		info.HandleType = 3     //询问
-		result, err := table.InsertEventHandle(dbc, info)
-		if err != nil {
-			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
-			return
-		}
-		c.JSON(http.StatusOK, gin.H{"error": 0, "data": result})
-	})
-
 	router.POST("/pm/kvs", func(c *gin.Context) {
 		params := make(map[string]interface{})
 		err := c.BindJSON(&params)
@@ -391,5 +313,6 @@ func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
 
 	startPark(router, dbc)
 	startOpenCourt(router, dbc)
+	startOpenEventHandle(router, dbc)
 	glog.Flush()
 }

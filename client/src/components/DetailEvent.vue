@@ -76,24 +76,15 @@
               <td :class='s.value'>
                 <div :class='s.btnWrap'>
                   <el-button type='success' v-show='user.type === 3' @click='onNoticePM'>推送至物业公司</el-button>
-                  <el-button type='primary' @click='showAddEventHandle = true'>询问</el-button>
-                  <el-dialog
-                    title='询问事件'
-                    :visible.sync='showAddEventHandle'>
-                    <add-event-handle
-                      :eventIndex='event.Index' 
-                      @succ='onAddEventHandleSucc'
-                      @cancel='showAddEventHandle = false'>
-                    </add-event-handle>
-                  </el-dialog>
+                  <el-button type='primary' @click='onAsk' v-show="user.type !== 5">询问</el-button>
                 </div>
                 <div :class='s.btnWrap'>
-                  <el-button 
-                    type='success' 
+                  <el-button
+                    type='success'
                     v-if='user.type === 3'
                     :disabled='event.NoticeGov === 1'
                     @click='onNoticeGov'>推送至政府部门</el-button>
-                  <el-button type='primary' 
+                  <el-button type='primary'
                     v-if='user.type === 3'
                     @click='showAduitEventLevel = true'>审核等级</el-button>
                   <el-dialog
@@ -101,7 +92,7 @@
                     title='审核等级'
                     size='tiny'
                     :visible.sync='showAduitEventLevel'>
-                    <aduit-event-level 
+                    <aduit-event-level
                       :event='event'
                       @cancel='showAduitEventLevel = false'
                       @succ='onAduitLevelSucc' />
@@ -147,6 +138,29 @@
                     推送至法官
                   </el-button>
                 </div>
+                <template v-if='user.type === 5'>
+                  <div :class="s.btnWrap">
+                    <el-button
+                      type='success'
+                      :diabled='event.CourtAccepted === 1 ? true : false'
+                      @click='onCourtAccepted'>
+                      {{event.CourtAccepted === 1 ? "已受理" : "受理"}}
+                    </el-button>
+                  </div>
+                  <div :class="s.btnWrap">
+                    <el-button
+                      type='success'
+                      @click='onCourtAskPM'>
+                      询问物业公司
+                    </el-button>
+                    <el-button
+                      type='success'
+                      @click='onCourtAskUser'>
+                      询问居民
+                    </el-button>
+                  </div>
+                </template>
+
               </td>
             </tr>
           </table>
@@ -192,6 +206,16 @@
         </el-pagination>
       </div>
     </div>
+    <el-dialog
+      title='询问事件'
+      :visible.sync='showAddEventHandle'>
+      <add-event-handle
+        :eventIndex='event.Index'
+        :handleType='addEventHandleType'
+        @succ='onAddEventHandleSucc'
+        @cancel='showAddEventHandle = false'>
+      </add-event-handle>
+    </el-dialog>
   </div>
 </template>
 
@@ -252,7 +276,8 @@
         showAddEventHandle: false,//询问
         showTalkAboutDialog: false,
         editingTalkAboutContent: '',
-        toCourting: false
+        toCourting: false,
+        addEventHandleType: 3 // 事件处理类型
       }
     },
     mounted () {
@@ -263,6 +288,44 @@
       this.fetchEventHandles(this.$route.params.index)
     },
     methods: {
+      onCourtAccepted () {
+        var eventHandle = {
+          Index: this.event.Index,
+          XQID: this.event.XQID,
+          AuthorCategory: this.user.type,
+          AuthorName: this.user.UserName,
+          HandleInfo: '法官受理',
+          handleType: 16,
+          Imgs: ''
+        }
+        fetchpm(this, false, '/open/eventHandle/court/accept', {
+          method: 'POST',
+          body: handleType
+        }).then(resp => {
+          return resp.json()
+        }).then(body => {
+          if (body.error === 0) {
+            Message({message: '受理成功', type:'success'})
+            this.event.CourtAccepted = 1
+          } else {
+            Message({type: 'error', message: body.data})
+          }
+        }).catch(error => {
+          Message({type: 'error', message: error})
+        })
+      },
+      onAsk () { //普通的询问
+        this.addEventHandleType = 3
+        this.showAddEventHandle = true
+      },
+      onCourtAskPM () { // 法官询问物业
+        this.addEventHandleType = 12
+        this.showAddEventHandle = true
+      },
+      onCourtAskUser () { // 法官询问居民
+        this.addEventHandleType = 13
+        this.showAddEventHandle = true
+      },
       onToCourt () {
         if (this.toCourting) return
         this.toCourting = true
@@ -498,7 +561,7 @@
         }
         fetchpm(this, true, '/pm/eventHandle/kvs/page', {
           method: 'POST',
-          body: {KVs:{ Index: index}, PageNo: this.pageNo, PageSize: this.pageSize}
+          body: { KVs:{ Index: index}, PageNo: this.pageNo, PageSize: this.pageSize }
         }).then(resp => {
           return resp.json()
         }).then(body => {
@@ -585,7 +648,7 @@
       display: flex;
       width: 100%;
       font-size: 18px;
-      background-color: #fff; 
+      background-color: #fff;
       .left{
         padding: 20px;
         text-align: center;
@@ -641,7 +704,7 @@
   .handleContent{
     border: solid 1px #4c87b9;
     margin-top: 50px;
-    background-color: #fff; 
+    background-color: #fff;
     .title{
       color: #fff;
       font-size: 20px;

@@ -2,6 +2,7 @@ package server
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -169,16 +170,6 @@ func startEventHandle(router *gin.RouterGroup, dbc *mgo.Database) {
 		index := c.Param("index")
 		c.JSON(http.StatusOK, table.FindEventHandle(dbc, index,
 			1, 1))
-	})
-
-	router.POST("/eventHandle/kvs", func(c *gin.Context) {
-		params := make(map[string]interface{})
-		err := c.BindJSON(&params)
-		if err != nil {
-			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
-		} else {
-			c.JSON(http.StatusOK, table.FindEventHandlesByKV(dbc, params))
-		}
 	})
 
 	router.POST("/eventHandle/kvs/page", func(c *gin.Context) {
@@ -362,6 +353,141 @@ func startEventHandle(router *gin.RouterGroup, dbc *mgo.Database) {
 	})
 }
 
+//NoticePM 通知PM
+func NoticePM(dbc *mgo.Database, eventIndex string) error {
+	event := table.FindEvent(dbc, eventIndex)
+	pm := table.FindPMByKV(dbc, "xqid", event.XQID)
+	// fmt.Println("pmID:", pm.ID.Hex())
+	// pmUser := table.FindPMUserByKV(dbc, "pmid", pm.ID.Hex())
+	kvs := make(map[string]interface{})
+	kvs["pmid"] = pm.ID.Hex()
+	kvs["bind"] = 1
+	pmUsers := table.FindPMUserByKVs(dbc, kvs)
+	if len(pmUsers) == 0 {
+		return errors.New("该小区物业人员未绑定微信")
+	}
+
+	xqName := table.FindXQ(dbc, event.XQID).Name
+	PushNotice2PM(pmUsers, xqName, eventIndex, pm.Name)
+	return nil
+}
+
+func startOpenEventHandle(router *gin.RouterGroup, dbc *mgo.Database) {
+	// router.POST("/eventHandle/kvs", func(c *gin.Context) {
+	// 	params := make(map[string]interface{})
+	// 	err := c.BindJSON(&params)
+	// 	if err != nil {
+	// 		c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+	// 	} else {
+	// 		c.JSON(http.StatusOK, table.FindEventHandlesByKV(dbc, params))
+	// 	}
+	// })
+	router.POST("/eventHandle/kvs/page", func(c *gin.Context) {
+		var params QueryKVs
+		err := c.BindJSON(&params)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+		} else {
+			c.JSON(http.StatusOK, table.FindEventHandleByKVsPage(dbc, params.KVs, params.PageNo, params.PageSize))
+		}
+	})
+
+	router.POST("/eventHandle/pm/deal", func(c *gin.Context) {
+		var info table.EventHandle
+		err := c.BindJSON(&info)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		info.HandleType = 5
+		result, err := table.InsertEventHandle(dbc, info)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"error": 0, "data": result})
+		table.UpdateEventStatus(dbc, info.Index, 2)
+		PushNotice2WX(info, dbc)
+	})
+
+	router.POST("/eventHandle/user/reply", func(c *gin.Context) {
+		var info table.EventHandle
+		err := c.BindJSON(&info)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		// info.AuthorCategory = 0
+		result, err := table.InsertEventHandle(dbc, info)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"error": 0, "data": result})
+	})
+
+	router.POST("/eventHandle/user/add", func(c *gin.Context) {
+		var info table.EventHandle
+		err := c.BindJSON(&info)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		info.AuthorCategory = 0
+		result, err := table.InsertEventHandle(dbc, info)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"error": 0, "data": result})
+	})
+
+	// 法官受理投诉 通知居民和PM
+	router.POST("/eventHandle/court/accept", func(c *gin.Context) {
+		var info table.EventHandle
+		err := c.BindJSON(&info)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		info.AuthorCategory = 5 //法官
+		result, err := table.InsertEventHandle(dbc, info)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		err = table.UpdateEventCourtAccepted(dbc, info.Index, 1)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"error": 0, "data": result})
+
+		err = NoticePM(dbc, info.Index)
+		if err != nil {
+			glog.Error(err)
+		}
+		PushNotice2WX(info, dbc)
+	})
+
+	router.POST("/eventHandle/court/ask", func(c *gin.Context) {
+		var info table.EventHandle
+		err := c.BindJSON(&info)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		info.AuthorCategory = 5 //法官
+		result, err := table.InsertEventHandle(dbc, info)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"error": 0, "data": result})
+	})
+}
+
+//PushNotice2Court 发送微信通知给法官
 func PushNotice2Court(courts []table.CourtWX, xqName string, eventIndex string) {
 	for _, court := range courts {
 		pjson := `{

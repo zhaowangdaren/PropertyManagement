@@ -2,7 +2,7 @@
   <div :class='s.wrap'>
     <div :class='s.title'>
       <img src="~@/res/images/earth.png">
-      主要投诉小区及数量
+      投诉数据分析
     </div>
     <div :class="s.content">
       <!-- <div :class="s.left">
@@ -54,7 +54,7 @@ export default {
       hasLoadTypes: false,
       eventXQs:[],
       barData:{
-        title: '各小区投诉数量',
+        title: '主要投诉小区及数量',
         data: {
           y: [],
           x: []
@@ -156,7 +156,7 @@ export default {
     font-family: "华文行楷";
     background: #4c87b9;
     background: -webkit-gradient(linear,center top, center bottom,from(#ff0000), to(#000000));
-    
+
     img{
       width: 20px;
       margin-right: 10px;

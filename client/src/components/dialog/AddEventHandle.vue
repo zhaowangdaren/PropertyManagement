@@ -28,7 +28,11 @@ import fetchpm from '@/fetchpm'
 export default {
   components: { BasicDialog },
   props: {
-    eventIndex: String
+    eventIndex: String,
+    handleType: {
+      type: Number,
+      default: 3
+    }
   },
   data () {
     return {
@@ -52,7 +56,7 @@ export default {
   },
   methods: {
     onSave () {
-      this.eventHandle.HandleType = 3
+      this.eventHandle.HandleType = this.handleType
       if (!this.checkImgs()) return
       fetchpm(this, true, '/pm/eventHandle/add', {
         method: 'POST',

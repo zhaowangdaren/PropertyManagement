@@ -17,24 +17,25 @@ const EventTableName = "Event"
 
 //Event 投诉事件表
 type Event struct {
-	Index        string //事件编号
-	Complainant  string //投诉人
-	OpenID       string // 投诉人wx open ID
-	StreetID     string //街道
-	CommunityID  string //社区
-	XQID         string //投诉小区ID
-	Status       int    //事件状态  -2-已关闭 -1-已撤销 0-居民提交 1-处理中 2-已处理待确认 3-已解决 4-未解决
-	RequestClose int    // 1-申请关闭
-	NoticeGov    int    // 1-推送给政府
-	NoticePM     int    // 1-已推送PM Company
-	TalkAbout    int    // 1-Gov约谈PM
-	EventLevel   int    //事件等级  1-特急、2-加急、3-急
-	Type         string //事件基本类别
-	Content      string //投诉内容
-	Time         int64  //提交时间
-	ToCourt      int    //0-不推送至法院 1-推送至法院
-	Imgs         string //图片表格，以,为分割符
-	Tel          string //联系电话
+	Index         string //事件编号
+	Complainant   string //投诉人
+	OpenID        string // 投诉人wx open ID
+	StreetID      string //街道
+	CommunityID   string //社区
+	XQID          string //投诉小区ID
+	Status        int    //事件状态  -2-已关闭 -1-已撤销 0-居民提交 1-处理中 2-已处理待确认 3-已解决 4-未解决
+	RequestClose  int    // 1-申请关闭
+	NoticeGov     int    // 1-推送给政府
+	NoticePM      int    // 1-已推送PM Company
+	TalkAbout     int    // 1-Gov约谈PM
+	EventLevel    int    //事件等级  1-特急、2-加急、3-急
+	Type          string //事件基本类别
+	Content       string //投诉内容
+	Time          int64  //提交时间
+	ToCourt       int    //0-不推送至法院 1-推送至法院
+	CourtAccepted int    //0-法官未受理 1-已受理
+	Imgs          string //图片表格，以,为分割符
+	Tel           string //联系电话
 }
 
 //EventNum 不同事件类型的数量
@@ -170,6 +171,12 @@ func UpdateEventNoticeGov(db *mgo.Database, index string, noticeGov int) error {
 func UpdateEventToCourt(db *mgo.Database, index string, toCourt int) error {
 	c := db.C(EventTableName)
 	err := c.Update(bson.M{"index": index}, bson.M{"$set": bson.M{"tocourt": toCourt}})
+	return err
+}
+
+func UpdateEventCourtAccepted(db *mgo.Database, index string, courtAccepted int) error {
+	c := db.C(EventTableName)
+	err := c.Update(bson.M{"index": index}, bson.M{"$set": bson.M{"courtaccepted": courtAccepted}})
 	return err
 }
 
@@ -404,6 +411,13 @@ func FindEventKV(db *mgo.Database, key string, value string,
 		return gin.H{"error": 1, "data": err.Error()}
 	}
 	return gin.H{"error": 0, "data": gin.H{"events": result, "sum": sum}}
+}
+
+func FindSingleEventByIndex(db *mgo.Database, eventIndex string) (Event, error) {
+	c := db.C(EventTableName)
+	var result Event
+	err := c.Find(bson.M{"index": eventIndex}).One(&result)
+	return result, err
 }
 
 func FindEventsByXQIDInTimeSortByType(db *mgo.Database, xqid string,

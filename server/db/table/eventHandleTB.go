@@ -26,7 +26,8 @@ type EventHandle struct {
 	HandleInfo     string // 处理信息
 	HandleType     int    // 处理的分类 0-提交 1-street推送给物业 2-gov约谈PM 3-询问
 	// 4-回复 5-物业公司处理 6-用户评价 7-审核等级 8-street请求关闭
-	// 9-同意关闭 10-street推送给政府 11-推送给法官
+	// 9-同意关闭 10-street推送给政府 11-推送给法官 12-法官询问物业 13-法官询问居民
+	// 14-物业回复法官 15-居民回复法官 16-法官受理
 	EventLevel int    //事件等级  1-特急、2-加急、3-急
 	Imgs       string // 图片列表，以,为分隔符
 }
