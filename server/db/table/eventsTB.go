@@ -413,13 +413,6 @@ func FindEventKV(db *mgo.Database, key string, value string,
 	return gin.H{"error": 0, "data": gin.H{"events": result, "sum": sum}}
 }
 
-func FindSingleEventByIndex(db *mgo.Database, eventIndex string) (Event, error) {
-	c := db.C(EventTableName)
-	var result Event
-	err := c.Find(bson.M{"index": eventIndex}).One(&result)
-	return result, err
-}
-
 func FindEventsByXQIDInTimeSortByType(db *mgo.Database, xqid string,
 	startTime int64, endTime int64) (error, []Event) {
 	c := db.C(EventTableName)

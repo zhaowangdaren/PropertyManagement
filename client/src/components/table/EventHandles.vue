@@ -7,7 +7,7 @@
       </div>
       <div :class='s.body'>
         <table>
-        <!-- 
+        <!--
           事件编号
           事件等级
           事件类型
@@ -86,9 +86,32 @@
             </td>
           </tr>
           <tr>
+            <template v-if='from === "gov"'>
+              <td class='searchKey'>街道</td>
+              <td>
+                <el-select v-model="inputStreetID" filterable placeholder="全部" :class='s.elSelect'>
+                  <el-option
+                    key=''
+                    label='全部'
+                    value=''>
+                  </el-option>
+                  <el-option
+                    v-for="item in allStreets"
+                    :key="item.ID"
+                    :label="item.Name"
+                    :value="item.ID">
+                  </el-option>
+                </el-select>
+              </td>
+            </template>
             <td class='searchKey'>社区</td>
             <td>
               <el-select v-model="inputCommunityID" filterable placeholder="全部" :class='s.elSelect'>
+                <el-option
+                  key=''
+                  label='全部'
+                  value=''>
+                </el-option>
                 <el-option
                   v-for="item in allCommunities"
                   :key="item.ID"
@@ -101,6 +124,11 @@
             <td>
               <el-select v-model="inputXQID" filterable placeholder="全部" :class='s.elSelect'>
                 <el-option
+                  key=''
+                  label='全部'
+                  value=''>
+                </el-option>
+                <el-option
                   v-for="item in allXQs"
                   :key="item.ID"
                   :label="item.Name"
@@ -111,7 +139,7 @@
             <td colspan="2" style="text-align:right;">
               <el-button type='primary' icon='search' @click='onSearch' class='search'>查询</el-button>
             </td>
-          </tr>   
+          </tr>
         </table>
         <!-- search result -->
         <table>
@@ -144,10 +172,10 @@
             <td>
               <el-button type="primary" icon="search" @click='toDetails(event)' class='view'>查看</el-button>
               <el-button v-if='from === "street" || from === ""' type="danger" icon="delete" @click='onDel(event)' class='del'>删除</el-button>
-              <el-dialog 
+              <el-dialog
                 title="请确认删除"
                 :visible.sync='showDelDialog'>
-                <div :class="s.delItem">事件编号:<span :class='s.value'>{{delEvent.Index}}</span></div>  
+                <div :class="s.delItem">事件编号:<span :class='s.value'>{{delEvent.Index}}</span></div>
                 <div :class="s.delItem">事件类型:<span :class='s.value'>{{delEvent.Type}}</span></div>
                 <div :class="s.delItem">投诉时间:<span :class='s.value'>{{delEvent.Time | filterTime}}</span></div>
                 <div :class='s.bottomBtns'>
@@ -170,7 +198,7 @@
           </el-pagination>
           <div :class='s.pageTip'>其中<span>{{sum - events.length}}</span>条事件已关闭或已被用户撤销</div>
         </div>
-        
+
       </div>
     </div>
   </div>
@@ -196,6 +224,7 @@
         userStreetID: '',
         userType: 0,
         //user Input
+        inputStreetID: '',
         inputCommunityID: '',
         inputXQID: '',
         inputIndex: '',
@@ -214,6 +243,7 @@
         eventStatus: [{value: 0, label:"居民提交"}, {value: -2, label: '已关闭'}, {value: -1, label:'用户撤销'}, {value: 1, label: '已审核待处理'}, {value: 2, label:'已处理待确认'}, {value: 3, label:'已解决'}],
         communities: [],
         xqs:[],
+        allStreets: [],
         allCommunities: [],
         allXQs: [],
         showDelDialog: false,
@@ -230,15 +260,34 @@
       this.userStreetID = user.StreetID
       this.userType = user.type
       this.onSearch()
-      this.fetchAllCommunitiesByStreetID(this.userStreetID)
+      if (this.userType === 2 || this.userType === 1) this.fetchAllStreets()
+      else if (this.userType === 3) this.fetchAllCommunitiesByStreetID(this.userStreetID)
       this.fetchEventTypes()
     },
     watch: {
+      inputStreetID: function (value) {
+        this.inputCommunityID = ''
+        if (value === '') return
+        if (this.from === 'gov'){
+          this.fetchAllCommunitiesByStreetID(value)
+        }
+      },
       inputCommunityID: function (value) {
+        this.inputXQID = ''
+        if (value === '') return
         this.fetchAllXQByCommunityID(value)
       }
     },
     methods: {
+      fetchAllStreets () {//获取所有街道
+        fetchpm( this, true, '/pm/street', {
+          method: 'POST'
+        }).then(resp => {
+          return resp.json()
+        }).then(body => {
+          this.allStreets = body.data.streets
+        })
+      },
       onDel (event) {
         this.delEvent = event
         this.showDelDialog = true
@@ -331,7 +380,8 @@
       },
       formatInputData () {
         var result = {}
-        if (this.userType === 3) result = {StreetID: this.userStreetID}
+        if (this.userType === 3 && this.userStreetID !== '') result = {StreetID: this.userStreetID}
+        else if ((this.userType === 1 || this.userType === 2) && this.inputStreetID !== '') result = {StreetID: this.inputStreetID}
         if (this.inputIndex !== '') result.Index = this.inputIndex
         if (this.inputEventLevel !== '' && this.inputEventLevel !== 0) result.EventLevel = this.inputEventLevel
         if (this.inputType !== '' && this.inputType !== 0) result.Type = this.inputType
@@ -400,7 +450,7 @@
       font-family: "华文行楷";
       background: #4c87b9;
       background: -webkit-gradient(linear,center top, center bottom,from(#ff0000), to(#000000));
-      
+
       img{
         width: 20px;
         margin-right: 10px;
@@ -411,7 +461,7 @@
       .key{
         background-color: #f1f3f6;
       }
-    }    
+    }
   }
 }
 .lv3{
