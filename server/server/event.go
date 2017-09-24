@@ -6,10 +6,115 @@ import (
 
 	"../db/table"
 	"github.com/gin-gonic/gin"
+	"github.com/tealeg/xlsx"
 	"gopkg.in/mgo.v2"
 )
 
+func ExportEventOverviewFile(eventOverviews []table.EventOverview, streetName string, fileName string) error {
+	var file *xlsx.File
+	var sheet *xlsx.Sheet
+	var row *xlsx.Row
+	var err error
+	file = xlsx.NewFile()
+	sheet, err = file.AddSheet(strconv.Itoa(eventOverviews[0].Year) + "年" +
+		eventOverviews[0].StreetName + "投诉数据")
+	row = sheet.AddRow()
+	row.AddCell().Value = "年"
+	row.AddCell().Value = "月份"
+	row.AddCell().Value = "街道名"
+	row.AddCell().Value = "总投诉"
+	row.AddCell().Value = "未处理"
+	row.AddCell().Value = "未处理占比"
+	row.AddCell().Value = "已处理"
+	row.AddCell().Value = "已处理占比"
+	row.AddCell().Value = "未解决"
+	row.AddCell().Value = "未解决占比"
+	row.AddCell().Value = "已解决"
+	row.AddCell().Value = "已解决占比"
+	for _, eventOverview := range eventOverviews {
+		row = sheet.AddRow()
+		row.AddCell().Value = strconv.Itoa(eventOverview.Year)
+		row.AddCell().Value = strconv.Itoa(eventOverview.Month)
+		row.AddCell().Value = streetName
+		row.AddCell().Value = strconv.Itoa(eventOverview.Sum)
+		row.AddCell().Value = strconv.Itoa(eventOverview.Unhandle)
+		if eventOverview.Sum == 0 {
+			row.AddCell().Value = "0%"
+		} else {
+			row.AddCell().Value = strconv.Itoa((eventOverview.Unhandle/
+				eventOverview.Sum)*100) + "%"
+		}
+		row.AddCell().Value = strconv.Itoa(eventOverview.Handled)
+		if eventOverview.Sum == 0 {
+			row.AddCell().Value = "0%"
+		} else {
+			row.AddCell().Value = strconv.Itoa((eventOverview.Handled/
+				eventOverview.Sum)*100) + "%"
+		}
+		row.AddCell().Value = strconv.Itoa(eventOverview.Unsolved)
+		if eventOverview.Sum == 0 {
+			row.AddCell().Value = "0%"
+		} else {
+			row.AddCell().Value = strconv.Itoa((eventOverview.Unsolved/
+				eventOverview.Sum)*100) + "%"
+		}
+		row.AddCell().Value = strconv.Itoa(eventOverview.Solved)
+		if eventOverview.Sum == 0 {
+			row.AddCell().Value = "0%"
+		} else {
+			row.AddCell().Value = strconv.Itoa((eventOverview.Solved/
+				eventOverview.Sum)*100) + "%"
+		}
+	}
+	err = file.Save(FileBasicPath + "/export/" + fileName)
+	return err
+}
 func startEvent(router *gin.RouterGroup, dbc *mgo.Database) {
+	//TODO
+	router.POST("/event/overview/export", func(c *gin.Context) {
+		var params QueryEventOverview
+		err := c.BindJSON(&params)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		var eventOverviews []table.EventOverview
+		for month := 1; month <= 12; month++ {
+			eventOverview, err := table.QueryEventOverview(dbc, params.StreetID,
+				params.Year, month, params.UserType)
+			if err != nil {
+				c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+				return
+			}
+			temp := eventOverview
+			eventOverviews = append(eventOverviews, temp)
+		}
+		fileName := strconv.Itoa(params.Year) + params.StreetID + ".xlsx"
+
+		err = ExportEventOverviewFile(eventOverviews, params.StreetName, fileName)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"error": 0, "data": gin.H{"file": fileName}})
+	})
+
+	router.POST("/event/overview", func(c *gin.Context) {
+		var params QueryEventOverview
+		err := c.BindJSON(&params)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+		}
+		result, err := table.QueryEventOverview(dbc, params.StreetID, params.Year,
+			params.Month, params.UserType)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"error": 0, "data": result})
+	})
+
 	router.POST("/event", func(c *gin.Context) {
 		var queryInfo QueryEvent
 		err := c.BindJSON(&queryInfo)

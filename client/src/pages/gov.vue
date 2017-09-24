@@ -61,6 +61,11 @@ export default {
           icon: 'icon-gonggao',
           text:'政府公告',
           path: '/gov/announcement'
+        },
+        {
+          icon: 'icon-gonggao',
+          text:'投诉数据导出',
+          path: '/gov/event/overview'
         }
       ]
     }

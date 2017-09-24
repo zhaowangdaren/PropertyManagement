@@ -23,6 +23,7 @@ const StreetPM= resolve => require(['@/pages/street/pms'], resolve)
 const StreetPMKPI= resolve => require(['@/pages/street/pmsKPI'], resolve)
 const StreetRecs= resolve => require(['@/pages/street/recs'], resolve)
 const StreetAnnouncement = resolve => require(['@/pages/street/announcement'], resolve)
+const StreetEventOverview = resolve => require(['@/pages/gov/EventOverview'], resolve)
 
 const Gov = require('@/pages/gov')
 const GovIndex = resolve => require(['@/pages/gov/index'], resolve)
@@ -32,6 +33,7 @@ const GovBuild = resolve => require(['@/pages/gov/build'], resolve)
 const GovPMKPI = resolve => require(['@/pages/gov/pmkpi'], resolve)
 const GovAnnouncement = resolve => require(['@/pages/gov/announcement'], resolve)
 const GovDetailEvent = resolve => require(['@/components/DetailEvent'], resolve)
+const GovEventOverview = resolve => require(['@/pages/gov/EventOverview'], resolve)
 
 const Court = require('@/pages/court')
 const CourtHome = resolve => require(['@/pages/court/events'], resolve)
@@ -137,6 +139,10 @@ export default new Router({
       component: Street,
       children: [
         {
+          path:'event/overview',
+          component: StreetEventOverview
+        },
+        {
           path: '',
           component: StreetIndex
         },
@@ -187,6 +193,10 @@ export default new Router({
       path: '/gov',
       component: Gov,
       children: [
+        {
+          path:'event/overview',
+          component: GovEventOverview
+        },
         {
           path:'',
           component: GovIndex

@@ -345,7 +345,7 @@
     font-family: "华文行楷";
     background: #4c87b9;
     background: -webkit-gradient(linear,center top, center bottom,from(#ff0000), to(#000000));
-    
+
     img{
       width: 20px;
       margin-right: 10px;

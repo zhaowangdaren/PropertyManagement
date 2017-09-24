@@ -5,7 +5,7 @@ const HOST = 'https://www.maszfglzx.com:3000'
 
 
 const ThirtyMinute = 30 * 60 * 1000
-function refreshToken () {
+function refreshToken (vm) {
   return new Promise((resolve, reject) => {
     var user = JSON.parse(sessionStorage.getItem('user')) || {}
     var expireTime = user.expire ? new Date(user.expire) : new Date()
@@ -19,6 +19,7 @@ function refreshToken () {
           'Authorization': 'Bearer ' + user.token
         }
       }).then(response => {
+        console.info('refreshToken',response)
         return response.json()
       }).then(body => {
         if (body.error === 0) {
@@ -41,7 +42,7 @@ function refreshToken () {
  * @return {Promise}         [description]
  */
 export default function (vm, auth, path, options) {
-  return refreshToken().then(() => {
+  return refreshToken(vm).then(() => {
     var user = JSON.parse(sessionStorage.getItem('user')) || {}
     var token = user.token
 

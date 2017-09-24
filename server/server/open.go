@@ -22,7 +22,6 @@ import (
 
 //FileBasicPath file basic path
 const FileBasicPath = "/root/PropertyManagement/server/dist"
-
 const WXConfPath = "/root/PropertyManagement/server/dist/wx.json"
 
 //readFile readFile
@@ -185,7 +184,7 @@ func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
 			c.JSON(http.StatusOK, gin.H{"error": 0, "data": gin.H{"md5": fileToken + fileExt}})
 		}
 	})
-
+	router.Static("/export", FileBasicPath+"/export/")
 	router.Static("/file", FileBasicPath+"/files/")
 	router.Static("/image", FileBasicPath+"/images/")
 

@@ -4,6 +4,14 @@ import (
 	"../db/table"
 )
 
+type QueryEventOverview struct {
+	StreetID   string
+	StreetName string
+	Year       int
+	Month      int
+	UserType   int
+}
+
 type QueryUser struct {
 	UserName string
 	Type     int

@@ -44,6 +44,200 @@ type EventNum struct {
 	Num  int
 }
 
+func getEventOverivewQueryGroup(year int, month int, userType int) interface{} {
+	// startTime := time.Date(year, time.Month(month), 0, 0, 0, 0, 0, time.UTC)
+	// endTime := startTime.AddDate(0, 1, -1)
+	// switch userType {
+	// case 2: // gov
+	return []bson.M{
+		bson.M{
+			"$match": bson.M{
+				"status": 1,
+			},
+		},
+		bson.M{
+			"$group": bson.M{
+				"_id": nil,
+				"Sum": bson.M{"$sum": 1},
+				"Unhandle": bson.M{
+					"$sum": 1,
+				},
+			},
+		},
+	}
+	// }
+}
+func QueryEventOverviewV2(db *mgo.Database, year int, month int, userType int) error {
+	startTime := time.Date(year, time.Month(month), 0, 0, 0, 0, 0, time.UTC)
+	endTime := startTime.AddDate(0, 1, -1)
+	c := db.C(EventTableName)
+	//查总数
+	selector := []bson.M{
+		bson.M{
+			"$match": []bson.M{
+				bson.M{
+					"$and": []bson.M{
+						bson.M{"time": bson.M{"$gte": startTime.Unix()}},
+						bson.M{"time": bson.M{"$lte": endTime.Unix()}},
+					},
+				},
+			},
+		},
+		bson.M{
+			"$group": bson.M{
+				"_id": bson.M{"StreetID": "$streetid"},
+				"sum": bson.M{"$sum": 1},
+			},
+		},
+		bson.M{
+			"$sort": bson.M{
+				"_id": 1,
+			},
+		},
+	}
+	pipe := c.Pipe(selector)
+	var resultGroup []EventOverviewGroup
+	err := pipe.All(&resultGroup)
+	if err != nil {
+		return err
+	}
+	var result []EventOverview
+	for _, g := range resultGroup {
+		result = append(result, EventOverview{
+			StreetID: g.ID["StreetID"],
+			Sum:      g.Count,
+		})
+	}
+	// 查未解决
+	selector = []bson.M{
+		bson.M{
+			"$match": []bson.M{
+				bson.M{
+					"$and": []bson.M{
+						bson.M{"time": bson.M{"$gte": startTime.Unix()}},
+						bson.M{"time": bson.M{"$lte": endTime.Unix()}},
+						bson.M{"status": 4},
+					},
+				},
+			},
+		},
+		bson.M{
+			"$group": bson.M{
+				"_id": bson.M{"StreetID": "$streetid"},
+				"sum": bson.M{"$sum": 1},
+			},
+		},
+		bson.M{
+			"$sort": bson.M{
+				"_id": 1,
+			},
+		},
+	}
+	pipe = c.Pipe(selector)
+	err = pipe.All(&resultGroup)
+	if err != nil {
+		return err
+	}
+	// for index, g := range resultGroup {
+	// 	result[]
+	// }
+	return err
+}
+
+// QueryEventOverview 按年份、月份、人员类型
+//userType 1-admin 2-gov 3-street
+func QueryEventOverview(db *mgo.Database, streetID string, year int, month int, userType int) (EventOverview, error) {
+	c := db.C(EventTableName)
+	startTime := time.Date(year, time.Month(month), 0, 0, 0, 0, 0, time.UTC)
+	endTime := startTime.AddDate(0, 1, -1)
+	query := bson.M{
+		"$and": []bson.M{
+			bson.M{"streetid": streetID},
+			bson.M{"time": bson.M{"$gte": startTime.Unix()}},
+			bson.M{"time": bson.M{"$lte": endTime.Unix()}},
+		},
+	}
+	sum, err := c.Find(query).Count()
+	var eventOverview EventOverview
+	if err != nil {
+		return eventOverview, err
+	}
+	eventOverview.Sum = sum
+	query = bson.M{
+		"$and": []bson.M{
+			bson.M{"streetid": streetID},
+			bson.M{"time": bson.M{"$gte": startTime.Unix()}},
+			bson.M{"time": bson.M{"$lte": endTime.Unix()}},
+			bson.M{"status": 4},
+		},
+	}
+	unsolved, err := c.Find(query).Count()
+	if err != nil {
+		return eventOverview, err
+	}
+	eventOverview.Unsolved = unsolved
+	query = bson.M{
+		"$and": []bson.M{
+			bson.M{"streetid": streetID},
+			bson.M{"time": bson.M{"$gte": startTime.Unix()}},
+			bson.M{"time": bson.M{"$lte": endTime.Unix()}},
+			bson.M{"status": 3},
+		},
+	}
+	solved, err := c.Find(query).Count()
+	if err != nil {
+		return eventOverview, err
+	}
+	eventOverview.Solved = solved
+	switch userType {
+	case 2: //gov
+		query = bson.M{
+			"$and": []bson.M{
+				bson.M{"streetid": streetID},
+				bson.M{"time": bson.M{"$gte": startTime.Unix()}},
+				bson.M{"time": bson.M{"$lte": endTime.Unix()}},
+			},
+			"$or": []bson.M{
+				bson.M{"talkabout": 1},
+				bson.M{"tocourt": 1},
+				bson.M{"status": -2},
+			},
+		}
+		handled, err := c.Find(query).Count()
+		if err != nil {
+			return eventOverview, err
+		}
+		eventOverview.Handled = handled
+
+		eventOverview.Unhandle = sum - handled
+		break
+	case 3: // street
+		query = bson.M{
+			"$and": []bson.M{
+				bson.M{"streetid": streetID},
+				bson.M{"time": bson.M{"$gte": startTime.Unix()}},
+				bson.M{"time": bson.M{"$lte": endTime.Unix()}},
+			},
+			"$or": []bson.M{
+				bson.M{"eventlevel": bson.M{"$ne": 0}},
+				bson.M{"requestclose": 1},
+				bson.M{"noticegov": 1},
+				bson.M{"notivepm": 1},
+			},
+		}
+		handled, err := c.Find(query).Count()
+		if err != nil {
+			return eventOverview, err
+		}
+		eventOverview.Handled = handled
+		eventOverview.Unhandle = sum - handled
+		break
+	}
+	eventOverview.Year = year
+	eventOverview.Month = month
+	return eventOverview, err
+}
+
 //FindTodayEvents 获取今日新增事件
 func FindTodayEvents(db *mgo.Database) interface{} {
 	curTime := time.Now()
