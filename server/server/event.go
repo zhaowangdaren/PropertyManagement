@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -41,22 +42,22 @@ func ExportEventOverviewFile(eventOverviews []table.EventOverview, streetName st
 		if eventOverview.Sum == 0 {
 			row.AddCell().Value = "0%"
 		} else {
-			row.AddCell().Value = strconv.Itoa((eventOverview.Unhandle/
-				eventOverview.Sum)*100) + "%"
+			row.AddCell().Value = fmt.Sprintf("%.2f", (float32(eventOverview.Unhandle)/
+				float32(eventOverview.Sum))*100) + "%"
 		}
 		row.AddCell().Value = strconv.Itoa(eventOverview.Handled)
 		if eventOverview.Sum == 0 {
 			row.AddCell().Value = "0%"
 		} else {
-			row.AddCell().Value = strconv.Itoa((eventOverview.Handled/
-				eventOverview.Sum)*100) + "%"
+			row.AddCell().Value = fmt.Sprintf("%.2f", (float32(eventOverview.Handled)/
+				float32(eventOverview.Sum))*100) + "%"
 		}
 		row.AddCell().Value = strconv.Itoa(eventOverview.Unsolved)
 		if eventOverview.Sum == 0 {
 			row.AddCell().Value = "0%"
 		} else {
-			row.AddCell().Value = strconv.Itoa((eventOverview.Unsolved/
-				eventOverview.Sum)*100) + "%"
+			row.AddCell().Value = fmt.Sprintf("%.2f", (float32(eventOverview.Unsolved)/
+				float32(eventOverview.Sum))*100) + "%"
 		}
 		row.AddCell().Value = strconv.Itoa(eventOverview.Solved)
 		if eventOverview.Sum == 0 {
