@@ -240,7 +240,7 @@
         sum: 0,
         eventLevels:[{value: 0, label:"全部"}, {value: 1, label:"特急"}, {value: 2, label: "加急"}, {value: 3, label: "急"}],
         eventTypes: [],
-        eventStatus: [{value: 0, label:"居民提交"}, {value: -2, label: '已关闭'}, {value: -1, label:'用户撤销'}, {value: 1, label: '已审核待处理'}, {value: 2, label:'已处理待确认'}, {value: 3, label:'已解决'}],
+        eventStatus: [{value: 0, label:"居民提交"}, {value: -2, label: '已关闭'}, {value: -1, label:'已撤销'}, {value: 1, label: '处理中'}, {value: 2, label:'已处理待确认'}, {value: 3, label:'已解决'}, {value: 4, label:'未解决'}],
         communities: [],
         xqs:[],
         allStreets: [],

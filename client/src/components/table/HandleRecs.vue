@@ -8,15 +8,17 @@
       <table>
         <!-- 提交人类别  提交人用户名  提交时间  提交文本说明  操作 -->
         <tr>
-          <th>提交人类别</th>
-          <th>提交人用户名</th>
-          <th>提交时间</th>
-          <th>提交内容</th>
-          <th>操作</th>
+          <th>事件编号</th>
+          <th>人员类别</th>
+          <th>姓名</th>
+          <th>操作时间</th>
+          <th>操作类型</th>
+          <th>说明</th>
         </tr>
         <tr v-for='handle in eventHandles'>
-          <td >{{handle.AuthorCategory | filterUserIdentity}}</td>
-          <td >{{handle.AuthorCategory === 0 ? "居民" : handle.AuthorName}}</td>
+          <td @click='toDetails(handle.Index)'>{{handle.Index}}</td>
+          <td>{{handle.AuthorCategory | filterUserIdentity}}</td>
+          <td>{{handle.AuthorCategory === 0 ? "居民" : handle.AuthorName}}</td>
           <td>{{ handle.Time | filterTime }}</td>
           <td v-text='handle.HandleInfo' class="descr"></td>
           <td>
@@ -94,6 +96,14 @@ export default {
         }
         
       })
+    },
+    toDetails (eventIndex) {
+      if (this.user.type === 2) {
+        this.$router.push({name: 'GovDetailEvent', params:{index: eventIndex}})
+        return
+      }
+      if (this.user.type === 3) this.$router.push({name: 'eventDetail', params:{index: eventIndex}})
+      // this.$router.push({path:'/street/detail/' + event.Index})
     }
   }
 }

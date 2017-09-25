@@ -176,17 +176,19 @@
         <table>
           <!-- 提交人类别  提交人用户名  提交时间  提交文本说明  操作 -->
           <tr>
-            <th>提交人类别</th>
-            <th>提交人名</th>
-            <th>提交时间</th>
-            <th>处理内容</th>
-            <th>操作</th>
+            <th>事件编号</th>
+            <th>人员类别</th>
+            <th>姓名</th>
+            <th>操作时间</th>
+            <th>操作类型</th>
+            <th>说明</th>
           </tr>
           <tr v-for='handle in eventHandles' v-if='eventHandles && eventHandles.length > 0'>
+            <td>{{handle.Index}}</td>
             <td v-text=''>{{ handle.AuthorCategory | filterUserIdentity}}</td>
             <td >{{handle.AuthorCategory === 0 ? "居民" : handle.AuthorName}}</td>
             <td >{{handle.Time | filterTime }}</td>
-            <td v-text='handle.HandleInfo'></td>
+            <td>{{handle.HandleType | filterHandleType}}</td>
             <td>
               <el-button type="primary" icon="search" @click='showHandleDetails = true'>详情</el-button>
               <el-dialog v-model="showHandleDetails" size="tiny" title='事件处理详情'>
@@ -223,6 +225,7 @@
   import filterEventStatus from '@/filters/filterEventStatus'
   import filterEventLevel from '@/filters/filterEventLevel'
   import filterUserIdentity from '@/filters/filterUserIdentity'
+  import filterHandleType from '@/filters/filterHandleType'
   import filterTime from '@/filters/filterTime'
   import fetchpm from '@/fetchpm'
   import BasicDialog from '@/components/dialog/BasicDialog'
@@ -234,7 +237,7 @@
     components: {
       BasicDialog, AduitEventLevel, AddEventHandle, DetailsEventHandle
     },
-    filters: {filterEventStatus, filterEventLevel, filterTime, filterUserIdentity},
+    filters: {filterEventStatus, filterEventLevel, filterTime, filterUserIdentity, filterHandleType},
     props: {
       eventIndex: String
     },
@@ -462,7 +465,7 @@
       onClose () {
         var eventHandle = {
           Index: this.event.Index,
-          AuthorCategory: parseInt(this.user.Type),
+          AuthorCategory: this.user.type,
           AuthorName: this.user.UserName,
           HandleInfo: '申请关闭',
           HandleType: 8,

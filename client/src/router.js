@@ -34,6 +34,7 @@ const GovPMKPI = resolve => require(['@/pages/gov/pmkpi'], resolve)
 const GovAnnouncement = resolve => require(['@/pages/gov/announcement'], resolve)
 const GovDetailEvent = resolve => require(['@/components/DetailEvent'], resolve)
 const GovEventOverview = resolve => require(['@/pages/gov/EventOverview'], resolve)
+const GovRecs= resolve => require(['@/components/table/HandleRecs'], resolve)
 
 const Court = require('@/pages/court')
 const CourtHome = resolve => require(['@/pages/court/events'], resolve)
@@ -193,6 +194,10 @@ export default new Router({
       path: '/gov',
       component: Gov,
       children: [
+        {
+          path: 'event/handle/recs',
+          component: GovRecs
+        },
         {
           path:'event/overview',
           component: GovEventOverview

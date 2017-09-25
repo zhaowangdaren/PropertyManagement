@@ -146,7 +146,8 @@ func QueryEventOverviewV2(db *mgo.Database, year int, month int, userType int) e
 
 // QueryEventOverview 按年份、月份、人员类型
 //userType 1-admin 2-gov 3-street
-func QueryEventOverview(db *mgo.Database, streetID string, year int, month int, userType int) (EventOverview, error) {
+func QueryEventOverview(db *mgo.Database, streetID string, year int, month int,
+	userType int) (EventOverview, error) {
 	c := db.C(EventTableName)
 	startTime := time.Date(year, time.Month(month), 0, 0, 0, 0, 0, time.UTC)
 	endTime := startTime.AddDate(0, 1, -1)
@@ -495,7 +496,7 @@ func FindEventKVsPage(db *mgo.Database, kvs map[string]interface{}, pageNo int, 
 				bson.M{"time": bson.M{"$gte": startTime}},
 				bson.M{"time": bson.M{"$lte": endTime}},
 				querys,
-				bson.M{"status": bson.M{"$gte": 0}},
+				// bson.M{"status": bson.M{"$gte": 0}},
 			},
 		}
 		query = c.Find(selector).Sort("-time")
@@ -503,7 +504,7 @@ func FindEventKVsPage(db *mgo.Database, kvs map[string]interface{}, pageNo int, 
 		selector := bson.M{
 			"$and": []bson.M{
 				querys,
-				bson.M{"status": bson.M{"$gte": 0}},
+				// bson.M{"status": bson.M{"$gte": 0}},
 			},
 		}
 		query = c.Find(selector).Sort("-time")
@@ -553,7 +554,7 @@ func FindEventKVsPageForGov(db *mgo.Database, kvs map[string]interface{}, pageNo
 				bson.M{"time": bson.M{"$gte": startTime}},
 				bson.M{"time": bson.M{"$lte": endTime}},
 				querys,
-				bson.M{"status": bson.M{"$gte": 0}},
+				// bson.M{"status": bson.M{"$gte": 0}},
 			},
 			"$or": []bson.M{
 				bson.M{"noticegov": 1},
@@ -565,7 +566,7 @@ func FindEventKVsPageForGov(db *mgo.Database, kvs map[string]interface{}, pageNo
 		selector := bson.M{
 			"$and": []bson.M{
 				querys,
-				bson.M{"status": bson.M{"$gte": 0}},
+				// bson.M{"status": bson.M{"$gte": 0}},
 			},
 			"$or": []bson.M{
 				bson.M{"noticegov": 1},

@@ -66,8 +66,12 @@ export default {
           icon: 'icon-gonggao',
           text:'投诉数据导出',
           path: '/gov/event/overview'
+        },
+        {
+          path:'/gov/event/handle/recs',
+          icon: 'icon-records',
+          text:'操作记录'//操作记录管理
         }
-      ]
     }
   },
   created () {
