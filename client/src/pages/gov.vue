@@ -70,8 +70,9 @@ export default {
         {
           path:'/gov/event/handle/recs',
           icon: 'icon-records',
-          text:'操作记录'//操作记录管理
+          text: '操作记录'//操作记录管理
         }
+      ]
     }
   },
   created () {

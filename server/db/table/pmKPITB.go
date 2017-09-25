@@ -24,7 +24,10 @@ const SevenDay = 7 * 24 * 60 * 60
 
 //PMKPI PMKPI 按小区进行物业考核
 type PMKPI struct {
+	PMID    string
+	PMName  string
 	XQID    string //所在小区ID
+	XQName  string
 	Year    int
 	Quarter int     //季度 1 2 3 4
 	YWNo    int     //黄色警告次数
@@ -98,10 +101,10 @@ func FindPMKPIByKVsPage(db *mgo.Database, kvs map[string]interface{}, pageNo int
 	return gin.H{"error": 0, "data": gin.H{"pmkpis": result, "sum": sum}}
 }
 
-//FindPMKPI 根据年、季度来查询物业KPI
 /**
 * 查询db中是否存在该记录，若不存在则重新计算
  */
+//FindPMKPI 根据年、季度来查询物业KPI
 func FindPMKPI(db *mgo.Database, xqid string, year int, quarter int) (error, PMKPI) {
 	c := db.C(PMKPITableName)
 	var result PMKPI

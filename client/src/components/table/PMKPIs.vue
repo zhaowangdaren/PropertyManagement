@@ -75,6 +75,7 @@
           </div>
         </table>
         <div :class='s.searchWrap'>
+          <el-button type="primary" @click='onExport'>数据导出</el-button>
           <el-button type="primary" @click='onCurQuarter' class='view'>当前季度</el-button>
           <el-button type="primary" icon="search" @click='onBTSearch' class='search'>查询</el-button>
         </div>
@@ -139,6 +140,14 @@
         </el-pagination>
       </div>
     </div>
+    <el-dialog
+      title="物业考核数据导出"
+      :visible.sync='showExportDailog'>
+      <div :class='s.loading' v-if='exportFile.isExporting'>数据导出中...</div>
+      <div :class='s.loading' v-else>
+        <a :href="exportFile.path">{{exportFile.fileName}}</a>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -147,6 +156,8 @@ import filterEventStatus from '@/filters/filterEventStatus'
 import filterEventLevel from '@/filters/filterEventLevel'
 import calculatPMKPI from '@/filters/calculatPMKPI'
 import fetchpm from '@/fetchpm'
+import { Message } from 'element-ui'
+
 export default {
   filters: {filterEventStatus, filterEventLevel, calculatPMKPI},
   props: {
@@ -157,8 +168,15 @@ export default {
   },
   data () {
     return {
+      host: '//localhost:3000',
+      // host: 'https://www.maszfglzx.com:3000',
       loading: false,
-      quarters: [{value:1, label:'1'},{value:2,label:'2'},{value:3, label:'3'},{value:4, label: '4'}],
+      quarters: [
+        {value:1, label:'1'},
+        {value:2,label:'2'},
+        {value:3, label:'3'},
+        {value:4, label: '4'}
+      ],
       selectedYear: 0,
       selectedQuarter: 0,
       searchCompanyName: '',
@@ -179,7 +197,14 @@ export default {
       },
       showEditDialog: false,
       kpiOther: 0,
-      editingKPI: null
+      editingKPI: null,
+      showExportDailog: false,
+      exportFile: {
+        isExporting: false,
+        path: '',
+        fileName: ''
+      }
+
     }
   },
   mounted () {
@@ -210,6 +235,27 @@ export default {
     }
   },
   methods: {
+    onExport() {
+      this.exportFile.isExporting = true
+      this.showExportDailog = true
+      fetchpm(this, true, '/pm/pm/kpi/export', {
+        method: 'POST',
+        body: {
+          Year: this.selectedYear.getFullYear(),
+          Quarter: this.selectedQuarter
+        }
+      }).then(resp => {
+        return resp.json()
+      }).then(body => {
+        if (body.error === 0) {
+          this.exportFile.fileName = body.data.file
+          this.exportFile.path = this.host + '/open/export/' + body.data.file
+        } else {
+          Message({type: "error", message: body.data})
+        }
+        this.exportFile.isExporting = false
+      })
+    },
     onBTSearch () {
       var queryPM = {
         Name: '',

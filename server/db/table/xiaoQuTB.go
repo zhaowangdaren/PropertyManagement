@@ -87,6 +87,19 @@ func FindXiaoQus(db *mgo.Database, pageNo int, pageSize int) interface{} {
 	return gin.H{"error": 0, "data": gin.H{"xqs": result, "sum": sum}}
 }
 
+//FindAllXiaoQus 查询所有小区信息集
+func FindAllXQs(db *mgo.Database) ([]XiaoQu, error) {
+	c := db.C(XiaoQuTableName)
+	var result []XiaoQu
+	var err error
+	query := c.Find(nil)
+	err = query.All(&result)
+	if err != nil {
+		return result, err
+	}
+	return result, err
+}
+
 func FindXQ(db *mgo.Database, id string) XiaoQu {
 	c := db.C(XiaoQuTableName)
 	var result XiaoQu
