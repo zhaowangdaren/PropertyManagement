@@ -9,6 +9,7 @@ type ResultsPage struct {
 //EventOverview 事件总览
 type EventOverview struct {
 	Year       int
+	Quarter    int
 	Month      int
 	StreetName string
 	StreetID   string

@@ -8,8 +8,11 @@ type QueryEventOverview struct {
 	StreetID   string
 	StreetName string
 	Year       int
+	Quarter    int
 	Month      int
 	UserType   int
+	PageSize   int
+	PageNo     int
 }
 
 type QueryUser struct {

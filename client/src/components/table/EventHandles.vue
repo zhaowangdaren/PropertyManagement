@@ -385,7 +385,7 @@
         if (this.inputIndex !== '') result.Index = this.inputIndex
         if (this.inputEventLevel !== '' && this.inputEventLevel !== 0) result.EventLevel = this.inputEventLevel
         if (this.inputType !== '' && this.inputType !== 0) result.Type = this.inputType
-        if (this.inputEventStatus !== '' && this.inputEventStatus !== 0) result.Status = this.inputEventStatus
+        if (this.inputEventStatus !== '') result.Status = this.inputEventStatus
         if (this.inputStartTime !== '') result.StartTime = this.inputStartTime.getTime() / 1000
         if (this.inputEndTime !== '') result.EndTime = this.inputEndTime.getTime() / 1000
         if (this.inputCommunityID !== '') result.CommunityID = this.inputCommunityID

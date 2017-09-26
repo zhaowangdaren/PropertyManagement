@@ -14,17 +14,34 @@
           :value="item.value">
         </el-option>
       </el-select>
-      <template v-if='user.type === 2 || user.type === 1'>
-        <div :class="s.key">街道</div>
-        <el-select v-model="selectStreetIndex" placeholder="请选择街道">
-          <el-option
-            v-for="(item, index) in streets"
-            :key="item.ID"
-            :label="item.Name"
-            :value="index">
-          </el-option>
-        </el-select>
-      </template>
+      <div :class="s.key">季度</div>
+      <el-select v-model="selectQuarter" placeholder="请选择年份">
+        <el-option
+          :key='0'
+          label='全部'
+          :value='0'>
+        </el-option>
+        <el-option
+          v-for="item in quarters"
+          :key="item"
+          :label="item"
+          :value="item">
+        </el-option>
+      </el-select>
+      <div :class="s.key">月份</div>
+      <el-select v-model="queryEventOverview.Month" placeholder="请选择月份">
+        <el-option
+          :key='0'
+          label='全部'
+          :value='0'>
+        </el-option>
+        <el-option
+          v-for="item in months"
+          :key="item"
+          :label="item"
+          :value="item">
+        </el-option>
+      </el-select>
       <el-button :class='s.searchBtn' type="primary" icon='search' @click='onSearch'>搜 索</el-button>
       <el-button type="success" @click='onExport'>数据导出</el-button>
     </div>
@@ -47,10 +64,11 @@
       </tr>
       <tr v-for='eventOverview in eventOverviews'>
         <td>{{eventOverview.Year}}</td>
-        <td>{{eventOverview.Month | calculatQuart}}</td>
+        <td>{{eventOverview.Quarter}}</td>
         <td>{{eventOverview.Month}}</td>
-        <td v-if='user.type === 2 || user.type === 1'>{{streets[queryEventOverview.curPage].Name}}</td>
-        <td v-else>{{queryEventOverview.StreetName}}</td>
+        <td>{{eventOverview.StreetName}}</td>
+        <!-- <td v-if='user.type === 2 || user.type === 1'>{{eventOverview.StreetName}}</td> -->
+        <!-- <td v-else>{{queryEventOverview.StreetName}}</td> -->
         <td>{{eventOverview.Sum}}</td>
         <td>{{eventOverview.Unhandle}}</td>
         <td v-if='eventOverview.Sum > 0'>{{Number(( eventOverview.Unhandle / eventOverview.Sum ) * 100).toFixed(2) + '%'}}</td>
@@ -73,8 +91,8 @@
       v-if='user.type === 2 || user.type === 1'
       layout="total, prev, pager, next"
       @current-change='onChangePage'
-      :page-size='12'
-      :total="12 * streets.length">
+      :page-size='queryEventOverview.PageSize'
+      :total="sum">
     </el-pagination>
     <el-dialog
       title="投诉数据导出"
@@ -101,7 +119,8 @@ export default {
   },
   data() {
     return {
-      host: 'https://www.maszfglzx.com:3000',
+      // host: 'https://www.maszfglzx.com:3000',
+      host: '//localhost:3000',
       user: {},
       tableTitle: '',
       years:[],
@@ -110,7 +129,7 @@ export default {
       eventOverviews: [
         {
           Year: 2017,
-          Quart: 3,
+          Quarter: 3,
           Month: 9,
           StreetName: '街道名',
           Sum: 100, //总投诉
@@ -120,11 +139,16 @@ export default {
           Solved: 5 // 已解决
         }
       ],
+      sum: 0,
+      quarters:[ 1, 2, 3, 4],
+      selectQuarter: 0,
       queryEventOverview: {
-        curPage: 0,
+        PageNo: 0,
+        PageSize: 10,
         StreetID: '',
         StreetName: '',
         Year: 0,
+        Quarter: 3,
         Month: 9,
         UserType: 0
       },
@@ -137,32 +161,57 @@ export default {
       showExportDailog: false
     }
   },
-  mounted() {
+  watch: {
+    selectQuarter: function (value) {
+      this.queryEventOverview.Month = 0
+    }
+  },
+  computed: {
+    months: function () {
+      if(this.selectQuarter === 0) {
+        return []
+      }
+      var months = []
+      months.push(this.selectQuarter * 3 - 2)
+      months.push(this.selectQuarter * 3 - 1)
+      months.push(this.selectQuarter * 3)
+      return months
+    }
+  },
+  mounted () {
     this.user = JSON.parse(sessionStorage.getItem('user')) || {}
     this.queryEventOverview.UserType = this.user.type
-    var todayYear = new Date().getFullYear()
-    this.queryEventOverview.Year = todayYear
+    var today = new Date()
+    this.queryEventOverview.Year = today.getFullYear()
     for (var i = 0; i < 20; i++) {
       this.years.push({
-        value: todayYear - i,
-        label: (todayYear - i) + '年'
+        value: this.queryEventOverview.Year - i,
+        label: (this.queryEventOverview.Year - i) + '年'
       })
     }
-    if (this.user.type === 2 || this.user.type === 1) this.fetchAllStreets()
-    else this.fetchStreet(this.user.StreetID)
+    this.selectQuarter = calculatQuart(today.getMonth() + 1)
+    this.onSearch()
   },
   methods: {
+    initMonths(quarter) {
+      this.months = []
+      this.months.push(quarter * 3 - 2)
+      this.months.push(quarter * 3 - 1)
+      this.months.push(quarter * 3)
+    },
     onSearch () {
-      if (this.user.type === 2 || this.user.type === 1) this.onChangePage(this.selectStreetIndex + 1)
-      else {
-        this.fetchStreetEventOverview()
-      }
+      this.queryEventOverview.Quarter = this.selectQuarter
+      this.fetchEventOverviews(this.queryEventOverview)
+      // if (this.user.type === 2 || this.user.type === 1) this.onChangePage(this.selectStreetIndex + 1)
+      // else {
+      //   this.()
+      // }
     },
     onExport() {
       this.showExportDailog = true
 
       this.exportFile.isExporting = true
-      fetchpm(this, true, '/pm/event/overview/export', {
+      fetchpm(this, true, '/pm/event/overview/export/street', {
         method: 'POST',
         body: this.queryEventOverview
       }).then(resp => {
@@ -179,19 +228,8 @@ export default {
       })
     },
     onChangePage(curPage) {
-      this.queryEventOverview.curPage = curPage - 1
-      this.queryEventOverview.StreetID = this.streets[this.queryEventOverview.curPage].ID
-      this.queryEventOverview.StreetName = this.streets[this.queryEventOverview.curPage].Name
-      this.fetchStreetEventOverview()
-    },
-    fetchStreetEventOverview() {
-      this.isLoading = true
-      this.eventOverviews = []
-      for (var i = 0; i < 12; i++) {
-        this.queryEventOverview.Month = i + 1
-        let query = Object.assign({}, this.queryEventOverview)
-        this.fetchEventOverviews(query)
-      }
+      this.queryEventOverview.PageNo = curPage - 1
+      this.fetchEventOverviews(this.queryEventOverview)
     },
     fetchEventOverviews(query) {
       fetchpm(this, true, '/pm/event/overview', {
@@ -202,40 +240,13 @@ export default {
       }).then(body => {
         console.info('fetchEventOverviews', body)
         if (body.error === 0) {
-          this.eventOverviews.push(body.data || {})
+          this.eventOverviews = body.data.list || []
+          console.info('eventOverviews', this.eventOverviews)
+          this.sum = body.data.sum || 0
         } else {
           Message({type:'error', message: body.data})
         }
-        if (query.Month === 12) {
-          this.eventOverviews = this.eventOverviews.sort((a, b) => {
-            return a.Month - b.Month
-          })
-          this.isLoading = false
-        }
-      })
-    },
-    fetchAllStreets() {//获取所有街道名称
-      fetchpm( this, true, '/pm/street', {
-        method: 'POST'
-      }).then(resp => {
-        return resp.json()
-      }).then(body => {
-        this.streets = body.data.streets || []
-        this.onChangePage(1)
-      })
-    },
-    fetchStreet(streetID) {
-      fetchpm(this, true, '/pm/street/ids', {
-        method: 'POST',
-        body: {Values: [streetID]}
-      }).then(resp => {
-        return resp.json()
-      }).then(body => {
-        if (body.error === 0) {
-          this.queryEventOverview.StreetID = body.data[0].ID
-          this.queryEventOverview.StreetName = body.data[0].Name
-          this.fetchStreetEventOverview()
-        }
+        this.isLoading = false
       })
     }
   }

@@ -31,6 +31,11 @@ export default {
           path: '/court',
           icon: 'icon-home',
           text:'居民投诉调解'
+        },
+        {
+          path:'/court/event/handle/recs',
+          icon: 'icon-records',
+          text: '操作记录'//操作记录管理
         }
       ]
     }

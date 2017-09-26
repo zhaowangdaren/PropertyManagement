@@ -7,6 +7,7 @@ import (
 
 	"../db/table"
 	"github.com/gin-gonic/gin"
+	"github.com/golang/glog"
 	"github.com/tealeg/xlsx"
 	"gopkg.in/mgo.v2"
 )
@@ -17,10 +18,14 @@ func ExportEventOverviewFile(eventOverviews []table.EventOverview, streetName st
 	var row *xlsx.Row
 	var err error
 	file = xlsx.NewFile()
-	sheet, err = file.AddSheet(strconv.Itoa(eventOverviews[0].Year) + "年" +
-		eventOverviews[0].StreetName + "投诉数据")
+	fmt.Println("evenOverviews length", len(eventOverviews))
+	sheet, err = file.AddSheet(strconv.Itoa(eventOverviews[0].Year) + "年")
+	if err != nil {
+		return err
+	}
 	row = sheet.AddRow()
 	row.AddCell().Value = "年"
+	row.AddCell().Value = "季度"
 	row.AddCell().Value = "月份"
 	row.AddCell().Value = "街道名"
 	row.AddCell().Value = "总投诉"
@@ -35,8 +40,9 @@ func ExportEventOverviewFile(eventOverviews []table.EventOverview, streetName st
 	for _, eventOverview := range eventOverviews {
 		row = sheet.AddRow()
 		row.AddCell().Value = strconv.Itoa(eventOverview.Year)
+		row.AddCell().Value = strconv.Itoa(eventOverview.Quarter)
 		row.AddCell().Value = strconv.Itoa(eventOverview.Month)
-		row.AddCell().Value = streetName
+		row.AddCell().Value = eventOverview.StreetName
 		row.AddCell().Value = strconv.Itoa(eventOverview.Sum)
 		row.AddCell().Value = strconv.Itoa(eventOverview.Unhandle)
 		if eventOverview.Sum == 0 {
@@ -70,7 +76,100 @@ func ExportEventOverviewFile(eventOverviews []table.EventOverview, streetName st
 	err = file.Save(FileBasicPath + "/export/" + fileName)
 	return err
 }
+
+//QueryAllStreetEventOverviewByMonth
+func QueryAllStreetEventOverviewByMonth(db *mgo.Database, year int, month int,
+	userType int) ([]table.EventOverview, error) {
+	allStreets, err := table.FindAllStreets(db)
+	var eventOverviews []table.EventOverview
+	if err != nil {
+		return eventOverviews, err
+	}
+	for _, street := range allStreets {
+		eventOverview, err := table.QueryEventOverview(db, street.ID.Hex(),
+			year, month, userType)
+		if err != nil {
+			glog.Error(err.Error())
+			continue
+		}
+		SetEventOverviewStreetName(&eventOverview, street.Name, month)
+		eventOverviews = append(eventOverviews, eventOverview)
+	}
+	return eventOverviews, err
+}
+
+func SetEventOverviewStreetName(eventOverview *table.EventOverview, streetName string, month int) {
+	eventOverview.StreetName = streetName
+}
+
+func ExportEventOverviewByStreet(dbc *mgo.Database, params QueryEventOverview) []table.EventOverview {
+	var eventOverviews []table.EventOverview
+	var err error
+	if params.Month > 0 { //查询某一月份所有街道
+		eventOverviews, err = QueryAllStreetEventOverviewByMonth(dbc, params.Year,
+			params.Month, params.UserType)
+	} else if params.Quarter > 0 && params.Quarter <= 4 {
+		eventOverviews = ExportEventOverviewByQuarter(dbc, params, params.Quarter)
+	} else if params.Quarter == 0 {
+		for quarter := 1; quarter <= 4; quarter++ {
+			tmp := ExportEventOverviewByQuarter(dbc, params, quarter)
+			eventOverviews = append(eventOverviews, tmp...)
+		}
+	}
+	if err != nil {
+		glog.Error(err.Error())
+	}
+	return eventOverviews
+}
+func ExportEventOverviewByQuarter(dbc *mgo.Database, params QueryEventOverview, quarter int) []table.EventOverview {
+	var eventOverviews []table.EventOverview
+	eo1, err := QueryAllStreetEventOverviewByMonth(dbc, params.Year,
+		quarter*3-2, params.UserType)
+	if err == nil {
+		eventOverviews = append(eventOverviews, eo1...)
+	}
+	eo2, err := QueryAllStreetEventOverviewByMonth(dbc, params.Year,
+		quarter*3-1, params.UserType)
+	if err == nil {
+		eventOverviews = append(eventOverviews, eo2...)
+	}
+	eo3, err := QueryAllStreetEventOverviewByMonth(dbc, params.Year,
+		quarter*3, params.UserType)
+	if err == nil {
+		eventOverviews = append(eventOverviews, eo3...)
+	}
+	return eventOverviews
+}
+func GetPageDate(data []table.EventOverview, pageNo int, pageSize int) []table.EventOverview {
+	sum := len(data)
+
+	if (pageNo+1)*pageSize > sum {
+		return data[(pageNo * pageSize):sum]
+	}
+	return data[(pageNo * pageSize):((pageNo + 1) * pageSize)]
+}
+
 func startEvent(router *gin.RouterGroup, dbc *mgo.Database) {
+	//针对某一季度所有街道的数据
+	router.POST("/event/overview/export/street", func(c *gin.Context) {
+		var params QueryEventOverview
+		err := c.BindJSON(&params)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		eventOverviews := ExportEventOverviewByStreet(dbc, params)
+		fileName := "events_" + strconv.Itoa(params.Year) +
+			strconv.Itoa(params.Quarter) + ".xlsx"
+		err = ExportEventOverviewFile(eventOverviews, params.StreetName, fileName)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"error": 0, "data": gin.H{"file": fileName}})
+	})
+
 	//TODO
 	router.POST("/event/overview/export", func(c *gin.Context) {
 		var params QueryEventOverview
@@ -107,13 +206,20 @@ func startEvent(router *gin.RouterGroup, dbc *mgo.Database) {
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
 		}
-		result, err := table.QueryEventOverview(dbc, params.StreetID, params.Year,
-			params.Month, params.UserType)
+		// result, err := table.QueryEventOverview(dbc, params.StreetID, params.Year,
+		// 	params.Month, params.UserType)
+		eventOverviews := ExportEventOverviewByStreet(dbc, params)
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{"error": 0, "data": result})
+		var result []table.EventOverview
+		if params.PageSize == 0 {
+			result = eventOverviews
+		} else {
+			result = GetPageDate(eventOverviews, params.PageNo, params.PageSize)
+		}
+		c.JSON(http.StatusOK, gin.H{"error": 0, "data": gin.H{"list": result, "sum": len(eventOverviews)}})
 	})
 
 	router.POST("/event", func(c *gin.Context) {

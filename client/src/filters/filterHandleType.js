@@ -25,7 +25,7 @@ export default function (handleType) {
     case 12:
       return '法官询问物业公司'
     case 13:
-      return '法官询问居民'
+      return '法官询问投诉人'
     case 14:
       return '物业回复法官'
     case 15:

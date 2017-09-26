@@ -168,8 +168,8 @@ export default {
   },
   data () {
     return {
-      host: '//localhost:3000',
-      // host: 'https://www.maszfglzx.com:3000',
+      // host: '//localhost:3000',
+      host: 'https://www.maszfglzx.com:3000',
       loading: false,
       quarters: [
         {value:1, label:'1'},

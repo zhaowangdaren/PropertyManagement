@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang/glog"
 
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -236,6 +237,11 @@ func QueryEventOverview(db *mgo.Database, streetID string, year int, month int,
 	}
 	eventOverview.Year = year
 	eventOverview.Month = month
+	if month%3 > 0 {
+		eventOverview.Quarter = month/3 + 1
+	} else {
+		eventOverview.Quarter = month / 3
+	}
 	return eventOverview, err
 }
 
@@ -320,6 +326,23 @@ func InsertEvent(db *mgo.Database, event Event) interface{} {
 	if err != nil {
 		log.Println(err)
 		return gin.H{"error": 1, "data": err.Error()}
+	}
+	eventHandle := EventHandle{
+		event.Index,
+		event.XQID,
+		0,
+		event.OpenID,
+		event.OpenID,
+		"",
+		event.Time,
+		event.Content,
+		0,
+		0,
+		"",
+	}
+	_, err = InsertEventHandle(db, eventHandle)
+	if err != nil {
+		glog.Error(err.Error())
 	}
 	return gin.H{"error": 0, "data": event.Index}
 }

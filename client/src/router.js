@@ -32,13 +32,12 @@ const GovPM = resolve => require(['@/pages/gov/pm'], resolve)
 const GovBuild = resolve => require(['@/pages/gov/build'], resolve)
 const GovPMKPI = resolve => require(['@/pages/gov/pmkpi'], resolve)
 const GovAnnouncement = resolve => require(['@/pages/gov/announcement'], resolve)
-const GovDetailEvent = resolve => require(['@/components/DetailEvent'], resolve)
+const DetailEvent = resolve => require(['@/components/DetailEvent'], resolve)
 const GovEventOverview = resolve => require(['@/pages/gov/EventOverview'], resolve)
-const GovRecs= resolve => require(['@/components/table/HandleRecs'], resolve)
+const Recs= resolve => require(['@/components/table/HandleRecs'], resolve)
 
 const Court = require('@/pages/court')
 const CourtHome = resolve => require(['@/pages/court/events'], resolve)
-const CourtDetailEvent = resolve => require(['@/components/DetailEvent'], resolve)
 const CourtBind = resolve => require(['@/pages/wx/court/bind'], resolve)
 
 const WXStartComplaint = require('@/pages/wx/startComplaint')
@@ -186,7 +185,11 @@ export default new Router({
         {
           path: 'eventDetail/:index',
           name: 'CourtDetailEvent',
-          component: CourtDetailEvent
+          component: DetailEvent
+        },
+        {
+          path: 'event/handle/recs',
+          component: Recs
         }
       ]
     },
@@ -196,7 +199,7 @@ export default new Router({
       children: [
         {
           path: 'event/handle/recs',
-          component: GovRecs
+          component: Recs
         },
         {
           path:'event/overview',
@@ -214,7 +217,7 @@ export default new Router({
         {
           path: 'eventDetail/:index',
           name: 'GovDetailEvent',
-          component: GovDetailEvent
+          component: DetailEvent
         },
         {
           path:'pms',

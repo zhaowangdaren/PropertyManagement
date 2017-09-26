@@ -16,7 +16,7 @@
           <th>说明</th>
         </tr>
         <tr v-for='handle in eventHandles'>
-          <td @click='toDetails(handle.Index)'>{{handle.Index}}</td>
+          <td @click='toDetails(handle.Index)' :class='s.eventIndex'>{{handle.Index}}</td>
           <td>{{handle.AuthorCategory | filterUserIdentity}}</td>
           <td>{{handle.AuthorCategory === 0 ? "居民" : handle.AuthorName}}</td>
           <td>{{ handle.Time | filterTime }}</td>
@@ -102,6 +102,10 @@ export default {
         this.$router.push({name: 'GovDetailEvent', params:{index: eventIndex}})
         return
       }
+      if (this.user.type === 5) {
+        this.$router.push({name: 'CourtDetailEvent', params:{index: eventIndex}})
+        return
+      }
       if (this.user.type === 3) this.$router.push({name: 'eventDetail', params:{index: eventIndex}})
       // this.$router.push({path:'/street/detail/' + event.Index})
     }
@@ -136,6 +140,11 @@ export default {
   }
   .body{
     margin: 10px;
+  }
+}
+.eventIndex{
+  &:hover{
+    cursor: pointer;
   }
 }
 </style>

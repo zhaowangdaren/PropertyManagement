@@ -196,6 +196,7 @@ func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
 		} else {
 			c.JSON(http.StatusOK, table.InsertEvent(dbc, info))
 		}
+
 	})
 
 	router.POST("/event/id/:id", func(c *gin.Context) {

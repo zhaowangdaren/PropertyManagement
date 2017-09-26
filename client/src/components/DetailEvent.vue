@@ -75,7 +75,7 @@
               <td class='searchKey'>操作</td>
               <td :class='s.value'>
                 <div :class='s.btnWrap'>
-                  <el-button type='success' v-show='user.type === 3' @click='onNoticePM'>推送至物业公司</el-button>
+                  <el-button type='success' v-show='user.type === 3' @click='showAddReason = true;reasonType = 1'>推送至物业公司</el-button>
                   <el-button type='primary' @click='onAsk' v-show="user.type !== 5">询问</el-button>
                 </div>
                 <div :class='s.btnWrap'>
@@ -83,7 +83,7 @@
                     type='success'
                     v-if='user.type === 3'
                     :disabled='event.NoticeGov === 1'
-                    @click='onNoticeGov'>推送至政府部门</el-button>
+                    @click='showAddReason = true;reasonType = 10'>推送至政府部门</el-button>
                   <el-button type='primary'
                     v-if='user.type === 3'
                     @click='showAduitEventLevel = true'>审核等级</el-button>
@@ -103,7 +103,7 @@
                     v-if='user.type == 3'
                     type='danger'
                     :disabled='(event.RequestClose === 1 ? true : false)'
-                    @click='onClose'>申请关闭</el-button>
+                    @click='showAddReason = true;reasonType = 8'>申请关闭</el-button>
                   <el-button
                     v-if='user.type == 2'
                     type='success'
@@ -134,7 +134,7 @@
                     type='success'
                     :disabled='event.ToCourt === 1 ? true : false'
                     :loading='toCourting'
-                    @click='onToCourt'>
+                    @click='showAddReason = true;reasonType = 11'>
                     推送至法官
                   </el-button>
                 </div>
@@ -156,7 +156,7 @@
                     <el-button
                       type='success'
                       @click='onCourtAskUser'>
-                      询问居民
+                      询问投诉人
                     </el-button>
                   </div>
                 </template>
@@ -181,6 +181,7 @@
             <th>姓名</th>
             <th>操作时间</th>
             <th>操作类型</th>
+            <th>内容</th>
             <th>说明</th>
           </tr>
           <tr v-for='handle in eventHandles' v-if='eventHandles && eventHandles.length > 0'>
@@ -189,15 +190,16 @@
             <td >{{handle.AuthorCategory === 0 ? "居民" : handle.AuthorName}}</td>
             <td >{{handle.Time | filterTime }}</td>
             <td>{{handle.HandleType | filterHandleType}}</td>
+            <td>{{handle.HandleInfo}}</td>
             <td>
-              <el-button type="primary" icon="search" @click='showHandleDetails = true'>详情</el-button>
-              <el-dialog v-model="showHandleDetails" size="tiny" title='事件处理详情'>
-                <details-event-handle :eventHandle='handle'></details-event-handle>
+              <el-button type="primary" icon="search" @click='onShowHandelDetail(handle)'>详情</el-button>
+              <el-dialog :visible.sync="showHandleDetails" size="tiny" title='事件处理详情'>
+                <details-event-handle :eventHandle='handleDetail'></details-event-handle>
               </el-dialog>
             </td>
           </tr>
           <tr v-if='!eventHandles || eventHandles.length === 0'>
-            <td colspan="5">无记录</td>
+            <td colspan="7">无记录</td>
           </tr>
         </table>
         <el-pagination
@@ -217,6 +219,17 @@
         @succ='onAddEventHandleSucc'
         @cancel='showAddEventHandle = false'>
       </add-event-handle>
+    </el-dialog>
+    <el-dialog
+      title='理由'
+      :visible.sync='showAddReason'>
+      <div :class='s.reason'>
+        <textarea v-model='reasonContent' placeholder="请输入理由"></textarea>
+      </div>
+      <div :class='s.bottom'>
+        <el-button type='primary' @click='onReasonSure'>确 定</el-button>
+        <el-button @click='onReasonCancel'>取 消</el-button>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -278,9 +291,21 @@
         showAduitEventLevel: false,
         showAddEventHandle: false,//询问
         showTalkAboutDialog: false,
+        showAddReason: false,
+        reasonContent: '',//理由
+        reasonType: 0, // 1
         editingTalkAboutContent: '',
         toCourting: false,
-        addEventHandleType: 3 // 事件处理类型
+        addEventHandleType: 3, // 事件处理类型
+        handleDetail: {}
+      }
+    },
+    watch: {
+      showAddReason: function (value) {
+        if (!value) {
+          this.reasonType = 0
+          this.reasonContent = ''
+        }
       }
     },
     mounted () {
@@ -291,6 +316,31 @@
       this.fetchEventHandles(this.$route.params.index)
     },
     methods: {
+      onShowHandelDetail (handle) {
+        this.showHandleDetails = true
+        this.handleDetail = handle
+      },
+      onReasonSure () {
+        switch (this.reasonType) {
+          case 1:
+            this.onNoticePM()
+            break
+          case 10:
+            this.onNoticeGov()
+            break
+          case 8:
+            this.onClose()
+            break
+          case 11:
+            this.onToCourt()
+            break
+        }
+      },
+      onReasonCancel () {
+        this.showAddReason = false
+        this.reasonType = 0
+        this.reasonContent = ''
+      },
       onCourtAccepted () {
         var eventHandle = {
           Index: this.event.Index,
@@ -325,7 +375,7 @@
         this.addEventHandleType = 12
         this.showAddEventHandle = true
       },
-      onCourtAskUser () { // 法官询问居民
+      onCourtAskUser () { // 法官询问投诉人
         this.addEventHandleType = 13
         this.showAddEventHandle = true
       },
@@ -337,7 +387,7 @@
           XQID: this.event.XQID,
           AuthorCategory: this.user.type,
           AuthorName: this.user.UserName,
-          HandleInfo: '推送至法官',
+          HandleInfo: this.reasonContent,
           Imgs: ''
         }
 
@@ -354,6 +404,7 @@
           }
           else Message({type: 'error', message: body.data})
           this.toCourting = false
+          this.showAddReason = false
         })
       },
       onTalkAbout () {
@@ -394,7 +445,7 @@
           XQID: this.event.XQID,
           AuthorCategory: this.user.type,
           AuthorName: this.user.UserName,
-          HandleInfo: '推送给政府部门',
+          HandleInfo: this.reasonContent,
           Imgs: ''
         }
 
@@ -410,6 +461,7 @@
             this.fetchEventHandles(this.event.Index)
           }
           else Message({type: 'error', message: body.data})
+          this.showAddReason = false
         })
       },
       onNoticePM () {
@@ -418,7 +470,7 @@
           XQID: this.event.XQID,
           AuthorCategory: this.user.type,
           AuthorName: this.user.UserName,
-          HandleInfo: '推送给物业公司',
+          HandleInfo: this.reasonContent,
           Imgs: ''
         }
 
@@ -434,6 +486,7 @@
             this.fetchEventHandles(this.event.Index)
           }
           else Message({type: 'error', message: body.data})
+          this.showAddReason = false
         })
       },
       onAgreeClose () {
@@ -467,7 +520,7 @@
           Index: this.event.Index,
           AuthorCategory: this.user.type,
           AuthorName: this.user.UserName,
-          HandleInfo: '申请关闭',
+          HandleInfo: this.reasonContent,
           HandleType: 8,
           EventLevel: parseInt(this.event.EventLevel),
           Imgs: ''
@@ -485,6 +538,7 @@
           } else {
             Message({type: 'error', message: body.data})
           }
+          this.showAddReason = false
         })
         // var temp = Object.assign({}, this.event)
         // temp.RequestClose = 1
@@ -618,6 +672,14 @@
   }
 </script>
 <style lang="less" module='s'>
+.reason{
+  text-align: center;
+  textarea{
+    margin: 0 auto;
+    width: 80%;
+    min-height: 200px;
+  }
+}
 .wrap{
   margin: 10px;
   // width: 100%;
@@ -765,5 +827,10 @@
   min-width: 50%;
   max-width: 90%;
   min-height: 100px;
+}
+.bottom{
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 </style>
