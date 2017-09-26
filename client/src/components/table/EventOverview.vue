@@ -88,7 +88,6 @@
       </tr>
     </table>
     <el-pagination
-      v-if='user.type === 2 || user.type === 1'
       layout="total, prev, pager, next"
       @current-change='onChangePage'
       :page-size='queryEventOverview.PageSize'
@@ -119,8 +118,8 @@ export default {
   },
   data() {
     return {
-      // host: 'https://www.maszfglzx.com:3000',
-      host: '//localhost:3000',
+      host: 'https://www.maszfglzx.com:3000',
+      // host: '//localhost:3000',
       user: {},
       tableTitle: '',
       years:[],

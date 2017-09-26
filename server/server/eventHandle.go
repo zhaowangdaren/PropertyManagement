@@ -206,7 +206,7 @@ func startEventHandle(router *gin.RouterGroup, dbc *mgo.Database) {
 		kvs := make(map[string]interface{})
 		kvs["bind"] = 1
 		courts := table.FindCourtByKVs(dbc, kvs)
-		PushNotice2Court(courts, xqName, eventHandle.Index)
+		PushNotice2Court(courts, xqName, eventHandle.Index, eventHandle.HandleInfo)
 	})
 
 	router.POST("/eventHandle/notice/gov", func(c *gin.Context) {
@@ -253,7 +253,7 @@ func startEventHandle(router *gin.RouterGroup, dbc *mgo.Database) {
 		}
 		event := table.FindEvent(dbc, eventIndex)
 		xqName := table.FindXQ(dbc, event.XQID).Name
-		PushNotice2PM(pmUsers, xqName, eventIndex, pm.Name)
+		PushNotice2PM(pmUsers, xqName, eventIndex, pm.Name, eventHandle.HandleInfo)
 		c.JSON(http.StatusOK, gin.H{"error": 0, "data": ""})
 
 		table.InsertEventHandle(dbc, eventHandle)
@@ -420,7 +420,7 @@ func startOpenEventHandle(router *gin.RouterGroup, dbc *mgo.Database) {
 }
 
 //PushNotice2Court 发送微信通知给法官
-func PushNotice2Court(courts []table.CourtWX, xqName string, eventIndex string) {
+func PushNotice2Court(courts []table.CourtWX, xqName string, eventIndex string, handleInfo string) {
 	for _, court := range courts {
 		pjson := `{
 			"touser": "` + court.OpenID + `",
@@ -440,7 +440,7 @@ func PushNotice2Court(courts []table.CourtWX, xqName string, eventIndex string) 
 					"value": "房管中心"
 				},
 				"remark": {
-					"value": "请您及时进行处理"
+					"value": "推送理由：` + handleInfo + `。请您及时进行处理"
 				}
 			}
 		}`
@@ -480,7 +480,7 @@ func PushCourtAccepted2PM(pmUsers []table.PMUser, xqName string, eventIndex stri
 }
 
 //PushNotice2PM 通知物业公司人员
-func PushNotice2PM(pmUsers []table.PMUser, xqName string, eventIndex string, pmName string) {
+func PushNotice2PM(pmUsers []table.PMUser, xqName string, eventIndex string, pmName string, handleInfo string) {
 	for _, pmUser := range pmUsers {
 		pjson := `{
 			"touser": "` + pmUser.OpenID + `",
@@ -500,7 +500,7 @@ func PushNotice2PM(pmUsers []table.PMUser, xqName string, eventIndex string, pmN
 					"value": "` + pmName + `"
 				},
 				"remark": {
-					"value": "请贵公司及时进行处理"
+					"value": "推送理由:` + handleInfo + `。请贵公司及时进行处理"
 				}
 			}
 		}`
