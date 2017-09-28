@@ -9,6 +9,9 @@
         :value="item.value">
       </el-option>
     </el-select>
+    <div :class='s.reason'>
+      <textarea placeholder="请输入理由" v-model='eventHandle.HandleInfo'></textarea>
+    </div>
     <div :class='s.btns'>
       <el-button type='primary' @click='onSave'>确 认</el-button>
       <el-button @click='onCancel'>取 消</el-button>
@@ -21,7 +24,14 @@ import { Message } from 'element-ui'
 import fetchpm from '@/fetchpm'
 export default {
   props: {
-    event: Object
+    event: {
+      type: Object,
+      default: function () {
+        return {
+          EventLevel: 0
+        }
+      }
+    }
   },
   data() {
     return {
@@ -57,7 +67,7 @@ export default {
   },
   mounted () {
     // Object.assign(this.updateEvent, this.event)
-    // this.inputEventLevel = this.updateEvent.EventLevel
+    this.inputEventLevel = this.event.EventLevel
 
     this.eventHandle.Index = this.event.Index
     var user = JSON.parse(sessionStorage.getItem('user')) || {}
@@ -71,7 +81,7 @@ export default {
     },
     onSave () {
       this.eventHandle.EventLevel = parseInt(this.inputEventLevel)
-      this.eventHandle.HandleInfo = '审核投诉等级：' + (this.options.find(item => { return item.value === this.eventHandle.EventLevel})).label
+      // this.eventHandle.HandleInfo = '审核投诉等级：' + (this.options.find(item => { return item.value === this.eventHandle.EventLevel})).label
       fetchpm(this, true, '/pm/eventHandle/audit/level', {
         method: 'POST',
         body: this.eventHandle
@@ -80,7 +90,8 @@ export default {
       }).then(body => {
         if (body.error === 0) {
           Message({message:'恭喜，成功提交事件处理', type:'success'})
-          this.$emit('succ', body.data)
+          this.eventHandle.HandleInfo = ''  
+          this.$emit('succ', this.eventHandle.EventLevel)
           this.$emit('cancel')
         } else {
           this.warn = body.data
@@ -122,6 +133,15 @@ export default {
     margin: 10px 20px;
     display: flex;
     justify-content: flex-end;
+  }
+}
+.reason{
+  margin-top: 10px; 
+  text-align: center;
+  textarea{
+    margin: 0 auto;
+    width: 80%;
+    min-height: 200px;
   }
 }
 </style>

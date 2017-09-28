@@ -148,6 +148,7 @@
             <th>警告类型</th>
             <th>事件编号</th>
             <th>开始时间</th>
+            <th>OpenID</th>
             <th>所在社区</th>
             <th>所在小区</th>
             <th>事件状态</th>
@@ -164,6 +165,7 @@
             </td>
             <td v-text='event.Index'></td>
             <td>{{ event.Time | filterTime}}</td>
+            <td>{{event.OpenID}}</td>
             <td>{{communities[index] ? communities[index].Name : ''}}</td>
             <td>{{xqs[index] ? xqs[index].Name : ''}}</td>
             <td :style='{color: event.Status === 3 ? "#1eb504" : ""}'>{{event.Status | filterEventStatus }}</td>

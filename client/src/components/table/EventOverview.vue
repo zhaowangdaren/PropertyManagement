@@ -118,8 +118,8 @@ export default {
   },
   data() {
     return {
-      host: 'https://www.maszfglzx.com:3000',
-      // host: '//localhost:3000',
+      // host: 'https://www.maszfglzx.com:3000',
+      host: '//localhost:3000',
       user: {},
       tableTitle: '',
       years:[],
@@ -178,8 +178,9 @@ export default {
     }
   },
   mounted () {
-    this.user = JSON.parse(sessionStorage.getItem('user')) || {}
+    this.user = JSON.parse(sessionStorage.getItem('user') || '{}') || {}
     this.queryEventOverview.UserType = this.user.type
+    this.queryEventOverview.StreetID = this.user.StreetID || ''
     var today = new Date()
     this.queryEventOverview.Year = today.getFullYear()
     for (var i = 0; i < 20; i++) {
@@ -208,7 +209,6 @@ export default {
     },
     onExport() {
       this.showExportDailog = true
-
       this.exportFile.isExporting = true
       fetchpm(this, true, '/pm/event/overview/export/street', {
         method: 'POST',

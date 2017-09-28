@@ -122,6 +122,13 @@ func FindAllStreets(db *mgo.Database) ([]Street, error) {
 	return result, err
 }
 
+func FindStreetByID(db *mgo.Database, streetID string) (Street, error) {
+	c := db.C(StreetTableName)
+	var result Street
+	err := c.Find(bson.M{"_id": bson.ObjectIdHex(streetID)}).One(&result)
+	return result, err
+}
+
 //DelStreets 删除
 func DelStreets(db *mgo.Database, names []string) interface{} {
 	c := db.C(StreetTableName)

@@ -79,12 +79,10 @@ func ExportEventOverviewFile(eventOverviews []table.EventOverview, streetName st
 
 //QueryAllStreetEventOverviewByMonth
 func QueryAllStreetEventOverviewByMonth(db *mgo.Database, year int, month int,
-	userType int) ([]table.EventOverview, error) {
-	allStreets, err := table.FindAllStreets(db)
+	userType int, allStreets []table.Street) ([]table.EventOverview, error) {
+	// allStreets, err := table.FindAllStreets(db)
 	var eventOverviews []table.EventOverview
-	if err != nil {
-		return eventOverviews, err
-	}
+	var err error
 	for _, street := range allStreets {
 		eventOverview, err := table.QueryEventOverview(db, street.ID.Hex(),
 			year, month, userType)
@@ -105,14 +103,27 @@ func SetEventOverviewStreetName(eventOverview *table.EventOverview, streetName s
 func ExportEventOverviewByStreet(dbc *mgo.Database, params QueryEventOverview) []table.EventOverview {
 	var eventOverviews []table.EventOverview
 	var err error
+	var allStreets []table.Street
+	if params.StreetID != "" {
+		street, err := table.FindStreetByID(dbc, params.StreetID)
+		if err != nil {
+			return eventOverviews
+		}
+		allStreets = append(allStreets, street)
+	} else {
+		allStreets, err = table.FindAllStreets(dbc)
+		if err != nil {
+			return eventOverviews
+		}
+	}
 	if params.Month > 0 { //查询某一月份所有街道
 		eventOverviews, err = QueryAllStreetEventOverviewByMonth(dbc, params.Year,
-			params.Month, params.UserType)
+			params.Month, params.UserType, allStreets)
 	} else if params.Quarter > 0 && params.Quarter <= 4 {
-		eventOverviews = ExportEventOverviewByQuarter(dbc, params, params.Quarter)
+		eventOverviews = ExportEventOverviewByQuarter(dbc, params, params.Quarter, allStreets)
 	} else if params.Quarter == 0 {
 		for quarter := 1; quarter <= 4; quarter++ {
-			tmp := ExportEventOverviewByQuarter(dbc, params, quarter)
+			tmp := ExportEventOverviewByQuarter(dbc, params, quarter, allStreets)
 			eventOverviews = append(eventOverviews, tmp...)
 		}
 	}
@@ -121,20 +132,20 @@ func ExportEventOverviewByStreet(dbc *mgo.Database, params QueryEventOverview) [
 	}
 	return eventOverviews
 }
-func ExportEventOverviewByQuarter(dbc *mgo.Database, params QueryEventOverview, quarter int) []table.EventOverview {
+func ExportEventOverviewByQuarter(dbc *mgo.Database, params QueryEventOverview, quarter int, streets []table.Street) []table.EventOverview {
 	var eventOverviews []table.EventOverview
 	eo1, err := QueryAllStreetEventOverviewByMonth(dbc, params.Year,
-		quarter*3-2, params.UserType)
+		quarter*3-2, params.UserType, streets)
 	if err == nil {
 		eventOverviews = append(eventOverviews, eo1...)
 	}
 	eo2, err := QueryAllStreetEventOverviewByMonth(dbc, params.Year,
-		quarter*3-1, params.UserType)
+		quarter*3-1, params.UserType, streets)
 	if err == nil {
 		eventOverviews = append(eventOverviews, eo2...)
 	}
 	eo3, err := QueryAllStreetEventOverviewByMonth(dbc, params.Year,
-		quarter*3, params.UserType)
+		quarter*3, params.UserType, streets)
 	if err == nil {
 		eventOverviews = append(eventOverviews, eo3...)
 	}
