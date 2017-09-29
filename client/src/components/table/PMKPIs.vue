@@ -29,6 +29,17 @@
                 </el-option>
               </el-select>
             </td>
+            <td class='searchKey'>街道</td>
+            <td>
+              <el-select v-model="selectedStreetID" filterable placeholder="请选择街道" :class='s.elSelect'>
+                <el-option
+                  v-for="item in streets"
+                  :key="item.ID"
+                  :label="item.Name"
+                  :value="item.ID">
+                </el-option>
+              </el-select>
+            </td>
             <div :class='s.hidden'>
               <td class='searchKey'>物业公司名</td>
               <td>
@@ -172,9 +183,9 @@ export default {
       host: 'https://www.maszfglzx.com:3000',
       loading: false,
       quarters: [
-        {value:1, label:'1'},
-        {value:2,label:'2'},
-        {value:3, label:'3'},
+        {value:1, label: '1'},
+        {value:2, label: '2'},
+        {value:3, label: '3'},
         {value:4, label: '4'}
       ],
       selectedYear: 0,
@@ -212,7 +223,7 @@ export default {
     var thisMonth = new Date().getMonth()
     this.selectedQuarter = parseInt((thisMonth + 1) / 3) + (((thisMonth + 1) % 3) > 0 ? 1 : 0)
     // this.onInputSearch()
-    // this.fetechAllStreets()
+    this.fetechAllStreets()
     
     var query = {
         Name: '',
@@ -220,19 +231,6 @@ export default {
         PageSize: 10
       }
     this.onSearch(query)
-  },
-  watch: {
-    selectedStreetID: function (value) {
-      this.selectedCommunityID = ''
-      this.fetchCommunitiesByStreetID(value)
-    },
-    selectedCommunityID: function (value) {
-      this.selectedXQID = ''
-      this.fetchXQByCommunityID(value)
-    },
-    KPIs: function (value) {
-      this.fetchPMs(this.KPIs.map(item => { return item.XQID}))
-    }
   },
   methods: {
     onExport() {
@@ -263,11 +261,6 @@ export default {
         PageSize: 10
       }
       this.onSearch(queryPM)
-    },
-    sortKPIs (kpis) {
-      return kpis.sort((a, b) => {
-        return a.PMName > b.Name ? 1 : -1
-      })
     },
     onEdit (item) {
       this.kpiOther = item.Other
@@ -397,55 +390,6 @@ export default {
           this.streets = data.data.streets || []
         }
       })
-    },
-    fetchCommunitiesByStreetID (streetID) {
-      if (!streetID) return
-      this.isLoadingInput = true
-      this.communities = []
-      this.inputCommunityID = ''
-      fetchpm(this, true, '/pm/community/kvs', {
-        method: 'POST',
-        body: {streetID: streetID}
-      }).then(resp => {
-        return resp.json()
-      }).then( body => {
-        console.info('fetchCommunitiesByStreetName', body)
-        if(body.error !== 0) {
-          console.error("Error: search CommunitiesByStreetName. Reason:" + body.data)
-        } else if (body.data !== null ) {
-          this.communities = body.data || []
-        }
-        this.isLoadingInput = false
-      })
-    },
-    fetchXQByCommunityID (communityID) {
-      if (!communityID) return
-      this.isLoadingInput = true
-      fetchpm(this, true, '/pm/xq/kvs', {
-        method: 'POST',
-        body: {communityID: communityID}
-      }).then(resp => {
-        return resp.json()
-      }).then( body => {
-        console.info('fetchXQByCommunityName', body)
-        if(body.error !== 0) console.error("Error: search fetchXQByCommunityName. Reason:" + body.data)
-        else if (body.data !== null ) {
-          this.xqs = body.data || []
-        }
-        this.isLoadingInput = false
-      })
-    },
-    formatSearchData () {
-      var searchData = {}
-      if (this.selectedYear !== -1 && this.selectedYear !== '') searchData.Year = this.selectedYear.getFullYear()
-      if (this.selectedQuarter !== 0) searchData.Quarter = this.selectedQuarter
-      return searchData
-    },
-    toDetails (event) {
-      event.index = 1
-      console.info('toDetails', event.Index)
-      this.$router.push({path:'/street/detail/', params:{index: '1'}})
-      // this.$router.push({path:'/street/detail/' + event.Index})
     }
   }
 }
