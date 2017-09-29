@@ -27,6 +27,7 @@ func ExportPMKPIFile(pmkpis []table.PMKPI, fileName string, year int, quart int)
 	row.AddCell().Value = "年"
 	row.AddCell().Value = "季度"
 	row.AddCell().Value = "物业公司"
+	row.AddCell().Value = "街道"
 	row.AddCell().Value = "小区名"
 	row.AddCell().Value = "黄色警告次数"
 	row.AddCell().Value = "红色警告次数"
@@ -38,6 +39,7 @@ func ExportPMKPIFile(pmkpis []table.PMKPI, fileName string, year int, quart int)
 		row.AddCell().Value = strconv.Itoa(pmkpi.Year)
 		row.AddCell().Value = strconv.Itoa(pmkpi.Quarter)
 		row.AddCell().Value = pmkpi.PMName
+		row.AddCell().Value = pmkpi.StreetName
 		row.AddCell().Value = pmkpi.XQName
 		row.AddCell().Value = strconv.Itoa(pmkpi.YWNo)
 		row.AddCell().Value = strconv.Itoa(pmkpi.RWNo)
@@ -49,35 +51,47 @@ func ExportPMKPIFile(pmkpis []table.PMKPI, fileName string, year int, quart int)
 	return err
 }
 
-func SetNameAndScore(pmkpi *table.PMKPI, pmName string, xqName string) {
+func SetNameAndScore(pmkpi *table.PMKPI, streetName string, pmName string, xqName string) {
+	pmkpi.StreetName = streetName
 	pmkpi.PMName = pmName
 	pmkpi.XQName = xqName
 	pmkpi.Score = 100.00 - float32(pmkpi.YWNo)*0.5 -
 		float32(pmkpi.RWNo*1) - float32(pmkpi.IWNo*3) - float32(pmkpi.Other)
 }
 
-func startPMKPI(router *gin.RouterGroup, dbc *mgo.Database) {
-	//按年季度导出所有小区的pmkpi
-	router.POST("/pm/kpi/export", func(c *gin.Context) {
+//ExportPMKPIBYStreet 按街道导出PMKPI
+func ExportPMKPI(router *gin.RouterGroup, db *mgo.Database) {
+	router.POST("pm/kpi/export/street", func(c *gin.Context) {
 		var params QueryPMKPI
 		err := c.BindJSON(&params)
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
 			return
 		}
-		allXQs, err := table.FindAllXQs(dbc)
-		var pmkpis []table.PMKPI
-		for _, xq := range allXQs {
-			err, pmkpi := table.FindPMKPI(dbc, xq.ID.Hex(), params.Year, params.Quarter)
+		var allStreets []table.Street
+		if params.StreetID == "" {
+			allStreets, err = table.FindAllStreets(db)
 			if err != nil {
+				c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+				return
+			}
+		} else {
+			street, err := table.FindStreetByID(db, params.StreetID)
+			if err != nil {
+				c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+				return
+			}
+			allStreets = append(allStreets, street)
+		}
+		var pmkpis []table.PMKPI
+		for _, street := range allStreets {
+			tempPmkpi, terr := FindPMKPIByStreet(db, params.Year, params.Quarter, street)
+			if terr != nil {
 				continue
 			}
-			pm := table.FindPMByKV(dbc, "xqid", xq.ID.Hex())
-			xq := table.FindXQ(dbc, xq.ID.Hex())
-			SetNameAndScore(&pmkpi, pm.Name, xq.Name)
-			pmkpis = append(pmkpis, pmkpi)
+			pmkpis = append(pmkpis, tempPmkpi...)
 		}
-		fileName := "pmkpi_" + strconv.Itoa(params.Year) + strconv.Itoa(params.Quarter) + ".xlsx"
+		fileName := "pmkpi_" + params.StreetID + "_" + strconv.Itoa(params.Year) + "_" + strconv.Itoa(params.Quarter) + ".xlsx"
 		err = ExportPMKPIFile(pmkpis, fileName, params.Year, params.Quarter)
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
@@ -85,8 +99,30 @@ func startPMKPI(router *gin.RouterGroup, dbc *mgo.Database) {
 		}
 		c.JSON(http.StatusOK, gin.H{"error": 0, "data": gin.H{"file": fileName}})
 	})
+}
 
-	// 按小区ID、年、季度查询kpi
+func FindPMKPIByStreet(db *mgo.Database, year int, quarter int, street table.Street) ([]table.PMKPI, error) {
+	var result []table.PMKPI
+	xqs, err := table.FindXQsByStreetID(db, street.ID.Hex())
+	if err != nil {
+		return result, err
+	}
+	for _, xq := range xqs {
+		err, pmkpi := table.FindPMKPI(db, xq.ID.Hex(), year, quarter)
+		if err != nil {
+			continue
+		}
+		pm := table.FindPMByKV(db, "xqid", xq.ID.Hex())
+		SetNameAndScore(&pmkpi, street.Name, pm.Name, xq.Name)
+		result = append(result, pmkpi)
+	}
+	return result, err
+}
+
+func startPMKPI(router *gin.RouterGroup, dbc *mgo.Database) {
+	//按年季度导出所有小区的pmkpi
+	ExportPMKPI(router, dbc)
+	// 按街道、年、季度查询kpi
 	router.POST("/pmkpi/query", func(c *gin.Context) {
 		var params QueryPMKPI
 		err := c.BindJSON(&params)
@@ -94,12 +130,34 @@ func startPMKPI(router *gin.RouterGroup, dbc *mgo.Database) {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
 			return
 		}
-		err, pmkpi := table.FindPMKPI(dbc, params.XQID, params.Year, params.Quarter)
+		var allStreets []table.Street
+		if params.StreetID == "" {
+			allStreets, err = table.FindAllStreets(dbc)
+			if err != nil {
+				c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+				return
+			}
+		} else {
+			street, err := table.FindStreetByID(dbc, params.StreetID)
+			if err != nil {
+				c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+				return
+			}
+			allStreets = append(allStreets, street)
+		}
+		var pmkpis []table.PMKPI
+		for _, street := range allStreets {
+			tempPmkpi, terr := FindPMKPIByStreet(dbc, params.Year, params.Quarter, street)
+			if terr != nil {
+				continue
+			}
+			pmkpis = append(pmkpis, tempPmkpi...)
+		}
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{"error": 0, "data": pmkpi})
+		c.JSON(http.StatusOK, gin.H{"error": 0, "data": pmkpis})
 	})
 
 	router.POST("/pmkpi", func(c *gin.Context) {

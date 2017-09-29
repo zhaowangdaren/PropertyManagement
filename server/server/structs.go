@@ -74,17 +74,19 @@ type QueryEventByTime struct {
 	EndTime   int64 // 查询的结束时间
 }
 
-// 查询OpenID所属时间段内的事件
+// QueryEventCheckProgress 查询OpenID所属时间段内的事件
 type QueryEventCheckProgress struct {
 	OpenID    string //openID
 	StartTime int64  // 查询的开始时间
 	EndTime   int64  // 查询的结束时间
 }
 
+// QueryPMKPI 查询物业KPI 按街道查询
 type QueryPMKPI struct {
-	XQID    string
-	Year    int
-	Quarter int
+	StreetID string //街道ID
+	XQID     string
+	Year     int
+	Quarter  int
 }
 
 //ResultsPage 分页查询结果

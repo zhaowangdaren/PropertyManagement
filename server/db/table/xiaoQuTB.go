@@ -173,6 +173,14 @@ func FindXQsByIDs(db *mgo.Database, ids []string) interface{} {
 	return gin.H{"error": 0, "data": result}
 }
 
+//FindXQsByStreetID 通过street ID查询小区列表
+func FindXQsByStreetID(db *mgo.Database, streetID string) ([]XiaoQu, error) {
+	c := db.C(XiaoQuTableName)
+	var result []XiaoQu
+	err := c.Find(bson.M{"streetid": bson.ObjectIdHex(streetID)}).All(&result)
+	return result, err
+}
+
 func SearchXQByName(db *mgo.Database, name string) interface{} {
 	c := db.C(XiaoQuTableName)
 	var result []XiaoQu
