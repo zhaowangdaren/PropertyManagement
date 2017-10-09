@@ -21,7 +21,8 @@ import (
 )
 
 //FileBasicPath file basic path
-const FileBasicPath = "/root/PropertyManagement/server/dist"
+// const FileBasicPath = "/root/PropertyManagement/server/dist"
+const FileBasicPath = "/Users/gtja/Documents/myDoc/golang/PropertyManagement/server/dist"
 const WXConfPath = "/root/PropertyManagement/server/dist/wx.json"
 
 //readFile readFile

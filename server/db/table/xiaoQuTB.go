@@ -177,7 +177,7 @@ func FindXQsByIDs(db *mgo.Database, ids []string) interface{} {
 func FindXQsByStreetID(db *mgo.Database, streetID string) ([]XiaoQu, error) {
 	c := db.C(XiaoQuTableName)
 	var result []XiaoQu
-	err := c.Find(bson.M{"streetid": bson.ObjectIdHex(streetID)}).All(&result)
+	err := c.Find(bson.M{"streetid": streetID}).All(&result)
 	return result, err
 }
 

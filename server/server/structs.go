@@ -87,6 +87,8 @@ type QueryPMKPI struct {
 	XQID     string
 	Year     int
 	Quarter  int
+	PageSize int
+	PageNo   int
 }
 
 //ResultsPage 分页查询结果

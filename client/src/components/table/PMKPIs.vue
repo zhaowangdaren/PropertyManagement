@@ -112,8 +112,8 @@
             <tr v-for='(item,index) in KPIs'>
               <td v-text='item.Year'></td>
               <td v-text='item.Quarter'></td>
-              <td v-text='item.Name'></td>
-              <td>{{ xqs[index] ? xqs[index].Name : ""}}</td>
+              <td v-text='item.PMName'></td>
+              <td>{{item.XQName}}</td>
               <td v-text='item.YWNo'></td>
               <td v-text='item.RWNo'></td>
               <td v-text='item.IWNo'></td>
@@ -139,14 +139,14 @@
               </td>
             </tr>
             <tr v-if='KPIs.length === 0'>
-              <td colspan="7">无记录</td>
+              <td colspan="9">无记录</td>
             </tr>
           </template>
         </table>
         <el-pagination
           layout="total, prev, pager, next"
           @current-change='onChangePage'
-          :page-size='queryPM.PageSize'
+          :page-size='queryPMKPI.PageSize'
           :total="sum">
         </el-pagination>
       </div>
@@ -179,8 +179,8 @@ export default {
   },
   data () {
     return {
-      // host: '//localhost:3000',
-      host: 'https://www.maszfglzx.com:3000',
+      host: '//localhost:3000',
+      // host: 'https://www.maszfglzx.com:3000',
       loading: false,
       quarters: [
         {value:1, label: '1'},
@@ -200,9 +200,11 @@ export default {
       communities: [],
       streets: [],
       sum: 0,
-
-      queryPM: {
-        Name: '',
+      queryPMKPI: {
+        StreetID: '',
+        XQID: '',
+        Year: 0,
+        Quarter: 0,
         PageNo: 0,
         PageSize: 10
       },
@@ -226,7 +228,10 @@ export default {
     this.fetechAllStreets()
     
     var query = {
-        Name: '',
+        StreetID: this.selectedStreetID,
+        XQID: '',
+        Year: this.selectedYear.getFullYear(),
+        Quarter: this.selectedQuarter,
         PageNo: 0,
         PageSize: 10
       }
@@ -236,11 +241,12 @@ export default {
     onExport() {
       this.exportFile.isExporting = true
       this.showExportDailog = true
-      fetchpm(this, true, '/pm/pm/kpi/export', {
+      fetchpm(this, true, '/pm/pm/kpi/export/street', {
         method: 'POST',
         body: {
           Year: this.selectedYear.getFullYear(),
-          Quarter: this.selectedQuarter
+          Quarter: this.selectedQuarter,
+          StreetID: this.selectedStreetID
         }
       }).then(resp => {
         return resp.json()
@@ -256,7 +262,10 @@ export default {
     },
     onBTSearch () {
       var queryPM = {
-        Name: '',
+        StreetID: this.selectedStreetID,
+        XQID: '',
+        Year: this.selectedYear.getFullYear(),
+        Quarter: this.selectedQuarter,
         PageNo: 0,
         PageSize: 10
       }
@@ -282,8 +291,22 @@ export default {
     onSearch (query) {
       if (this.loading) return
       this.loading = true
-      this.fetchPMsV2(query)
-      // this.fetchXQs(query)
+      this.fetchPMKPIs(query)
+    },
+    fetchPMKPIs (query) {
+      fetchpm(this, true, '/pm/pmkpi/query', {
+        method: 'POST',
+        body: query
+      }).then(resp => {
+        return resp.json()
+      }).then(body => {
+        console.info('fetchPMKPIs', body)
+        if (body.error === 0) {
+          this.KPIs = body.data.list || []
+          this.sum = body.data.sum || 0
+        }
+        this.loading = false
+      })
     },
     fetchPMsV2 (query){
       fetchpm(this, true, '/pm/pm', {
@@ -372,7 +395,10 @@ export default {
       this.selectedYear = new Date()
       this.selectedQuarter = parseInt((this.selectedYear.getMonth() + 1 ) / 3) + (((this.selectedYear.getMonth() + 1) % 3) > 0 ? 1 : 0)
       var queryPM = {
-        Name: '',
+        StreetID: this.selectedStreetID,
+        XQID: '',
+        Year: this.selectedYear.getFullYear(),
+        Quarter: this.selectedQuarter,
         PageNo: 0,
         PageSize: 10
       }

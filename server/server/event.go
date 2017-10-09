@@ -151,7 +151,7 @@ func ExportEventOverviewByQuarter(dbc *mgo.Database, params QueryEventOverview, 
 	}
 	return eventOverviews
 }
-func GetPageDate(data []table.EventOverview, pageNo int, pageSize int) []table.EventOverview {
+func getPageData(data []table.EventOverview, pageNo int, pageSize int) []table.EventOverview {
 	sum := len(data)
 
 	if (pageNo+1)*pageSize > sum {
@@ -228,7 +228,7 @@ func startEvent(router *gin.RouterGroup, dbc *mgo.Database) {
 		if params.PageSize == 0 {
 			result = eventOverviews
 		} else {
-			result = GetPageDate(eventOverviews, params.PageNo, params.PageSize)
+			result = getPageData(eventOverviews, params.PageNo, params.PageSize)
 		}
 		c.JSON(http.StatusOK, gin.H{"error": 0, "data": gin.H{"list": result, "sum": len(eventOverviews)}})
 	})

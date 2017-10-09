@@ -61,7 +61,7 @@ func SetNameAndScore(pmkpi *table.PMKPI, streetName string, pmName string, xqNam
 
 //ExportPMKPIBYStreet 按街道导出PMKPI
 func ExportPMKPI(router *gin.RouterGroup, db *mgo.Database) {
-	router.POST("pm/kpi/export/street", func(c *gin.Context) {
+	router.POST("/pm/kpi/export/street", func(c *gin.Context) {
 		var params QueryPMKPI
 		err := c.BindJSON(&params)
 		if err != nil {
@@ -107,6 +107,7 @@ func FindPMKPIByStreet(db *mgo.Database, year int, quarter int, street table.Str
 	if err != nil {
 		return result, err
 	}
+	fmt.Println("xqs", xqs)
 	for _, xq := range xqs {
 		err, pmkpi := table.FindPMKPI(db, xq.ID.Hex(), year, quarter)
 		if err != nil {
@@ -117,6 +118,15 @@ func FindPMKPIByStreet(db *mgo.Database, year int, quarter int, street table.Str
 		result = append(result, pmkpi)
 	}
 	return result, err
+}
+
+func getPMKPIPageData(array []table.PMKPI, pageNo int, pageSize int) []table.PMKPI {
+	sum := len(array)
+
+	if (pageNo+1)*pageSize > sum {
+		return array[(pageNo * pageSize):sum]
+	}
+	return array[(pageNo * pageSize):((pageNo + 1) * pageSize)]
 }
 
 func startPMKPI(router *gin.RouterGroup, dbc *mgo.Database) {
@@ -153,11 +163,18 @@ func startPMKPI(router *gin.RouterGroup, dbc *mgo.Database) {
 			}
 			pmkpis = append(pmkpis, tempPmkpi...)
 		}
+
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{"error": 0, "data": pmkpis})
+		var result []table.PMKPI
+		if params.PageSize == 0 {
+			result = pmkpis
+		} else {
+			result = getPMKPIPageData(pmkpis, params.PageNo, params.PageSize)
+		}
+		c.JSON(http.StatusOK, gin.H{"error": 0, "data": gin.H{"list": result, "sum": len(pmkpis)}})
 	})
 
 	router.POST("/pmkpi", func(c *gin.Context) {
