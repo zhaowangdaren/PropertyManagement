@@ -179,8 +179,8 @@ export default {
   },
   data () {
     return {
-      host: '//localhost:3000',
-      // host: 'https://www.maszfglzx.com:3000',
+      // host: '//localhost:3000',
+      host: 'https://www.maszfglzx.com:3000',
       loading: false,
       quarters: [
         {value:1, label: '1'},
@@ -224,7 +224,6 @@ export default {
     this.selectedYear = new Date()
     var thisMonth = new Date().getMonth()
     this.selectedQuarter = parseInt((thisMonth + 1) / 3) + (((thisMonth + 1) % 3) > 0 ? 1 : 0)
-    // this.onInputSearch()
     this.fetechAllStreets()
     
     var query = {
@@ -306,85 +305,6 @@ export default {
           this.sum = body.data.sum || 0
         }
         this.loading = false
-      })
-    },
-    fetchPMsV2 (query){
-      fetchpm(this, true, '/pm/pm', {
-        method: 'POST',
-        body: query
-      }).then(resp => {
-        return resp.json()
-      }).then(body => {
-        console.info('fetchPMsV2', body)
-        if (body.error === 0) {
-          this.KPIs = body.data.pms || []
-          this.sum = body.data.sum
-          this.fetchKPIs(this.KPIs.map(item => {return item.XQID}), this.selectedYear.getFullYear(), this.selectedQuarter)
-          this.fetchXQsByIds(this.KPIs.map(item => {return item.XQID}))
-        }
-        setTimeout(() => {
-          this.loading = false
-        }, 1000)
-      })
-    },
-    fetchXQsByIds (ids) {
-      fetchpm(this, true, '/pm/xq/ids', {
-        method: 'POST',
-        body: {Values: ids}
-      }).then(resp => {
-        return resp.json()
-      }).then(body => {
-        console.info('fetcXQs', body)
-        if (body.error === 0) {
-          this.xqs = body.data || []
-        }
-      })
-    },
-    fetchKPIs (ids, year, quarter) {
-      for (let i = 0; i < ids.length; i++) {
-        let params = {
-          XQID: ids[i],
-          Year: year,
-          Quarter: quarter
-        }
-        fetchpm(this, true, '/pm/pmkpi/query', {
-          method: 'POST',
-          body: params
-        }).then(resp => {
-          return resp.json()
-        }).then(body => {
-          if (body.error === 0) {
-            let pmkpi = body.data || {}
-            this.setPMKPI(pmkpi)
-            // this.KPIs[i] = Object.assign(this.KPIs[i], pmkpi)
-           // this.$set( this.KPIs[i], 'Score' ,(100 - pmkpi.YWNo * 0.5 - pmkpi.RWNo * 1 - pmkpi.IWNo * 3 - pmkpi.Other))
-            console.info('KPIs', this.KPIs)
-          }
-        })
-      }
-    },
-    setPMKPI (pmkpi) {
-      var index = this.KPIs.findIndex((item, i, array) => {
-        console.info('findIndex', item.XQID + '----' + pmkpi.XQID)
-        return item.XQID === pmkpi.XQID
-      })
-      console.warn('pmkpi index', index)
-      this.KPIs[index] = Object.assign(this.KPIs[index], pmkpi)
-    },
-    fetchPMs (ids) {
-      fetchpm(this, true, '/pm/pm/xqids', {
-        method: 'POST',
-        body: {Values: ids}
-      }).then(resp => {
-        return resp.json()
-      }).then(body => {
-        console.info('fetchPMs', body)
-        if (body.error === 0) {
-          this.pms = body.data || []
-          for (let i = 0; i < this.pms.length; i++) {
-            this.$set(this.KPIs[i], 'PMName', this.pms[i].Name)
-          }
-        }
       })
     },
     onChangePage (curPage) {
