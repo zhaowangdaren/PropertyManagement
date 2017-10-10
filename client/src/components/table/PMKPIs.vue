@@ -33,6 +33,10 @@
             <td>
               <el-select v-model="selectedStreetID" filterable placeholder="请选择街道" :class='s.elSelect'>
                 <el-option
+                  key=''
+                  value=''
+                  label='全部'></el-option>
+                <el-option
                   v-for="item in streets"
                   :key="item.ID"
                   :label="item.Name"
@@ -139,7 +143,7 @@
               </td>
             </tr>
             <tr v-if='KPIs.length === 0'>
-              <td colspan="9">无记录</td>
+              <td colspan="10">无记录</td>
             </tr>
           </template>
         </table>
@@ -225,16 +229,10 @@ export default {
     var thisMonth = new Date().getMonth()
     this.selectedQuarter = parseInt((thisMonth + 1) / 3) + (((thisMonth + 1) % 3) > 0 ? 1 : 0)
     this.fetechAllStreets()
-    
-    var query = {
-        StreetID: this.selectedStreetID,
-        XQID: '',
-        Year: this.selectedYear.getFullYear(),
-        Quarter: this.selectedQuarter,
-        PageNo: 0,
-        PageSize: 10
-      }
-    this.onSearch(query)
+    this.queryPMKPI.StreetID = this.selectedStreetID
+    this.queryPMKPI.Year = this.selectedYear.getFullYear()
+    this.queryPMKPI.Quarter = this.selectedQuarter
+    this.onSearch(this.queryPMKPI)
   },
   methods: {
     onExport() {
@@ -276,6 +274,9 @@ export default {
       this.editingKPI = item
     },
     onEditSure () {
+      if (this.kpiOther.length == 0 || isNaN(this.kpiOther)) {
+        return
+      }
       this.editingKPI.Other = parseInt(this.kpiOther)
       fetchpm(this, true, '/pm/pmkpi/update/other', {
         method: 'POST',
@@ -308,8 +309,8 @@ export default {
       })
     },
     onChangePage (curPage) {
-      this.queryPM.PageNo = curPage - 1
-      this.onSearch(this.queryPM)
+      this.queryPMKPI.PageNo = curPage - 1
+      this.onSearch(this.queryPMKPI)
     },
     onCurQuarter () {
       this.selectedYear = new Date()
