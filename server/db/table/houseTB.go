@@ -5,6 +5,8 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang/glog"
+	"github.com/tealeg/xlsx"
 
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -42,6 +44,34 @@ type House struct {
 	Imgs                string
 }
 
+//ImportHouseIndex 建筑信息表
+type ImportHouseIndex struct {
+	BuildNo             int //建筑编号
+	Owner               int //房产登记人
+	StreetID            int //所属街道
+	CommunityID         int //所属社区
+	XQID                int //房屋所属小区名
+	HouseBuildNo        int //房屋楼栋号
+	HouseNo             int //房屋门牌号
+	HouseType           int //房屋类型
+	Year                int //建筑年代
+	UseChange           int //使用变更
+	MainCrack           int //主体结构裂缝
+	FoundationDown      int //地基沉降变形
+	MainSlant           int //主体结构倾斜
+	CantileverCrack     int //悬挑结构破坏
+	ParapetOff          int //女儿墙脱落
+	OuterLloatedCoatOff int //外墙抹灰层剥落
+	HouseDeform         int //房顶变形
+	Disaster            int //地质灾害
+	DisasterManage      int //地址灾害治理情况
+	DrainageSsystem     int //排水系统
+	InnerChange         int //房屋内部装修主体结构变更破坏情况
+	IllegalBuild        int //违规搭建加层
+	RankAppraisal       int //房屋鉴定等级
+	Imgs                int
+}
+
 //Houses 集合
 type Houses struct {
 	Houses []House
@@ -56,6 +86,69 @@ func CountHouses(db *mgo.Database) interface{} {
 	}
 	return gin.H{"error": 0, "data": count}
 }
+
+//ImportHousesFromXML 从xml文件中导入house信息
+func ImportHousesFromXML(db *mgo.Database, path string) error {
+	xlFile, err := xlsx.OpenFile(path)
+	if err != nil {
+		glog.Error(err.Error())
+		return err
+	}
+	for _, sheet := range xlFile.Sheets {
+		streetName := sheet.Name
+		streets, err := SearchStreetByName(db, streetName)
+		if err != nil {
+			return err
+		}
+		if len(streets) == 0 {
+			glog.Error("未查询到街道：" + streetName)
+			continue
+		}
+		for index, row := range sheet.Rows {
+			if index == 0 {
+				continue
+			}
+			var house House
+			house.ID = bson.NewObjectId()
+			house.BuildNo = row.Cells[1].String()
+			house.Owner = row.Cells[2].String()
+			house.HouseType = row.Cells[3].String()
+			house.StreetID = streets[0].ID.Hex() // 4
+			house.CommunityID = ""               // 5
+			xqName := row.Cells[6].String()
+			xqs, err := SearchXQByName(db, xqName)
+			if err == nil && len(xqs) > 0 {
+				house.XQID = xqs[0].ID.Hex()
+				house.CommunityID = xqs[0].CommunityID
+			}
+			house.HouseBuildNo = row.Cells[7].String()
+			house.HouseNo = row.Cells[8].String()
+			house.Year = row.Cells[9].String()
+			house.UseChange = row.Cells[10].String()
+			house.MainCrack = row.Cells[11].String()
+			house.FoundationDown = row.Cells[12].String()
+			house.MainSlant = row.Cells[13].String()
+			house.CantileverCrack = row.Cells[14].String()
+			house.ParapetOff = row.Cells[15].String()
+			house.OuterLloatedCoatOff = row.Cells[16].String()
+			house.HouseDeform = row.Cells[17].String()
+			house.Disaster = row.Cells[18].String()
+			house.DisasterManage = row.Cells[19].String()
+			house.DrainageSsystem = row.Cells[20].String()
+			house.InnerChange = row.Cells[21].String()
+			house.IllegalBuild = row.Cells[22].String()
+			house.RankAppraisal = row.Cells[23].String()
+			InsertHouse(db, house)
+		}
+	}
+	return err
+}
+
+// func AnalysisRowIndex(row *xlsx.Row) ImportHouseIndex {
+// 	for index, cell := range row.Cells {
+// 		if cell.String() == ""
+// 	}
+// }
 
 //InsertHouse 插入
 func InsertHouse(db *mgo.Database, house House) interface{} {

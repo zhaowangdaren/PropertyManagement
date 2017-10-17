@@ -6,6 +6,7 @@ import (
 
 	"../db/table"
 	"github.com/gin-gonic/gin"
+	"github.com/golang/glog"
 	mgo "gopkg.in/mgo.v2"
 )
 
@@ -75,5 +76,26 @@ func startHouse(router *gin.RouterGroup, dbc *mgo.Database) {
 		} else {
 			c.JSON(http.StatusOK, table.DelHouses(dbc, names.Values))
 		}
+	})
+
+	// 导入xml，从xml中读取建筑信息
+	router.POST("/house/import/xml", func(c *gin.Context) {
+		var files Values
+		err := c.BindJSON(&files)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			return
+		}
+		for _, fileName := range files.Values {
+			err = table.ImportHousesFromXML(dbc, FileBasicPath+"/files/"+fileName)
+			// if err != nil {
+			// 	c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+			// } else {
+			// }
+			if err != nil {
+				glog.Error(err.Error())
+			}
+		}
+		c.JSON(http.StatusOK, gin.H{"error": 0, "data": "导入完成"})
 	})
 }

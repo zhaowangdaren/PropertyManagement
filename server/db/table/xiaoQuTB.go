@@ -181,12 +181,9 @@ func FindXQsByStreetID(db *mgo.Database, streetID string) ([]XiaoQu, error) {
 	return result, err
 }
 
-func SearchXQByName(db *mgo.Database, name string) interface{} {
+func SearchXQByName(db *mgo.Database, name string) ([]XiaoQu, error) {
 	c := db.C(XiaoQuTableName)
 	var result []XiaoQu
 	err := c.Find(bson.M{"name": bson.M{"$regex": name, "$options": "$i"}}).All(&result)
-	if err != nil {
-		return gin.H{"error": 1, "data": err.Error()}
-	}
-	return gin.H{"error": 0, "data": result}
+	return result, err
 }

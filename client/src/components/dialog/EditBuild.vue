@@ -93,7 +93,7 @@
             </td>
           </tr>
           <tr>
-            <td :class='s.title'>主题结构裂缝情况</td>
+            <td :class='s.title'>主体结构裂缝情况</td>
             <td colspan="5">
               <el-input :class='s.elInput' v-model='house.MainCrack' type='textarea'></el-input>
             </td>
@@ -105,7 +105,7 @@
             </td>
           </tr>
           <tr>
-            <td :class='s.title'>主题结构倾斜状况</td>
+            <td :class='s.title'>主体结构倾斜状况</td>
             <td colspan="5">
               <el-input :class='s.elInput' v-model='house.MainSlant' type='textarea'></el-input>
             </td>

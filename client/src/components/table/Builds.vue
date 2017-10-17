@@ -71,6 +71,7 @@
     <div :class='s.addDel'>
       <el-button v-if='EDITABLE' type="primary" icon="plus" @click='showAddDialog = true' class='add'>新增</el-button>
       <el-button type="primary" icon="search" @click='onSearch' class='search'>查询</el-button>
+      <el-button type="primary" icon="upload2" @click='showUploadFile = true'>批量上传</el-button>
     </div>
     <table>
       <tr >
@@ -136,6 +137,15 @@
         <el-button type="primary" @click="onDelConfirm">确 定</el-button>
       </span>
     </el-dialog>
+    <el-dialog
+      v-if='showUploadFile'
+      title="上传房屋信息"
+      :visible.sync="showUploadFile">
+      <upload
+        :uploading='importing'
+        @cancel='showUploadFile = false'
+        @sure='onImportSure'></upload>
+    </el-dialog>
   </div>
 </template>
 
@@ -144,12 +154,14 @@
   import AddBuild from '@/components/dialog/AddBuild'
   import EditBuild from '@/components/dialog/EditBuild'
   import DetailsBuild from '@/components/dialog/DetailsBuild'
+  import Upload from '@/components/dialog/Upload'
+  import { Message } from 'element-ui'
   import fetchpm from '@/fetchpm'
   export default {
     props: {
       EDITABLE: Boolean
     },
-    components: {AddBuild, EditBuild, DetailsBuild},
+    components: {AddBuild, EditBuild, DetailsBuild, Upload},
     data () {
       return {
         warn: '',
@@ -157,6 +169,8 @@
         showEditDialog: false,
         showDetailsDialog: false,
         showDelConfirm: false,
+        showUploadFile: false,
+        importing: false, // 导入文件中
         streets: [],
         communities: [],
         xqs: [],
@@ -198,6 +212,31 @@
       },
     },
     methods: {
+      onImportSure (files) {
+        if (!files || files.length === 0) {
+          this.showUploadFile = false
+          return
+        }
+        this.importing = true
+        var fileNames = files.map((item) => {
+          return item.response.data.md5
+        })
+        fetchpm(this, true, '/pm/house/import/xml', {
+          method: 'POST',
+          body: {values: fileNames}
+        }).then(resp => {
+          return resp.json()
+        }).then(body => {
+          if (body.error == 1) {
+            Message({type: 'error', message: body.data})
+          } else {
+            Message({type:'success', message: '恭喜，导入成功'})
+            this.onSearch()
+          }
+          this.importing = false
+          this.showUploadFile = false
+        })
+      },
       onChangePage (curPage) {
         this.pageNo = curPage - 1
         this.onSearch()

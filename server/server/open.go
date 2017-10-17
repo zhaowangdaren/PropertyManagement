@@ -137,12 +137,22 @@ func startOpen(router *gin.RouterGroup, dbc *mgo.Database) {
 	//search
 	router.GET("/xq/name/:name", func(c *gin.Context) {
 		name := c.Param("name")
-		c.JSON(http.StatusOK, table.SearchXQByName(dbc, name))
+		xqs, err := table.SearchXQByName(dbc, name)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+		} else {
+			c.JSON(http.StatusOK, gin.H{"error": 0, "data": xqs})
+		}
 	})
 
 	router.GET("/streets/search/name/:name", func(c *gin.Context) {
 		name := c.Param("name")
-		c.JSON(http.StatusOK, table.SearchStreetByName(dbc, name))
+		streets, err := table.SearchStreetByName(dbc, name)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
+		} else {
+			c.JSON(http.StatusOK, gin.H{"error": 0, "data": streets})
+		}
 	})
 
 	router.POST("/upload", func(c *gin.Context) {

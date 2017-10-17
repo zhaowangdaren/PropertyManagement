@@ -13,19 +13,19 @@
             <td :class='s.title'>编号</td>
             <td>
               <div :class='s.inputWrap'>
-                <el-input v-model='house.BuildNo' :disabled='true'></el-input>
+                {{house.BuildNo}}
               </div>
             </td>
             <td :class='s.title'>房产登记人</td>
             <td>
               <div :class='s.inputWrap'>
-                <el-input v-model='house.Owner' :disabled='true'></el-input>
+                {{house.Owner}}
               </div>
             </td>
             <td :class='s.title'>房屋类型</td>
             <td>
               <div :class='s.inputWrap'>
-                <el-input v-model='house.HouseType' :disabled='true'></el-input>
+                {{house.HouseType}}
               </div>
             </td>
           </tr>
@@ -33,36 +33,29 @@
           <!-- 街道 社区 小区 -->
             <td :class='s.title'>街道</td>
             <td>
-              <el-select :class='s.elSelect' v-model="inputStreetID" placeholder="请选择" disabled>
+              <div v-for="street in streets">
+                <span v-if="street.ID === inputStreetID">{{street.Name}}</span>
+              </div>
+              <!-- <el-select :class='s.elSelect' v-model="inputStreetID" placeholder="请选择" disabled>
                 <el-option
                   v-for="item in streets"
                   :key="item.ID"
                   :label="item.Name"
                   :value="item.ID">
                 </el-option>
-              </el-select>
+              </el-select> -->
             </td>
             <td :class='s.title'>社区</td>
             <td>
-              <el-select :class='s.elSelect' v-model="inputCommunityID" placeholder="请选择" disabled>
-                <el-option
-                  v-for="item in communities"
-                  :key="item.ID"
-                  :label="item.Name"
-                  :value="item.ID">
-                </el-option>
-              </el-select>
+              <div v-for="item in communities">
+                <span v-if="item.ID === inputCommunityID">{{item.Name}}</span>
+              </div>
             </td>
             <td :class='s.title'>小区</td>
             <td>
-              <el-select :class='s.elSelect' v-model="inputXQID" placeholder="请选择" :disabled='true'>
-                <el-option
-                  v-for="item in xqs"
-                  :key="item.ID"
-                  :label="item.Name"
-                  :value="item.ID">
-                </el-option>
-              </el-select>
+              <div v-for="item in xqs">
+                <span v-if="item.ID === inputXQID">{{item.Name}}</span>
+              </div>
             </td>
           </tr>
           <tr>
@@ -70,104 +63,104 @@
             <td :class='s.title'>房屋楼栋号</td>
             <td>
               <div :class='s.inputWrap'>
-                <el-input v-model='house.HouseBuildNo' :disabled='true'></el-input>
+                {{house.HouseBuildNo}}
               </div>
             </td>
             <td :class='s.title'>房屋门牌号</td>
             <td>
               <div :class='s.inputWrap'>
-                <el-input v-model='house.HouseNo' :disabled='true'></el-input>
+                {{house.HouseNo}}
               </div>
             </td>
             <td :class='s.title'>建筑年代</td>
             <td>
               <div :class='s.inputWrap'>
-                <el-input v-model='house.Year' :disabled='true'></el-input>
+                {{house.Year}}
               </div>
             </td>
           </tr>
           <tr>
             <td :class='s.title'>房屋使用变更</td>
             <td colspan="5">
-              <el-input :class='s.elInput' v-model='house.UseChange' type='textarea' :disabled='true'></el-input>
+              {{house.UseChange}}
             </td>
           </tr>
           <tr>
-            <td :class='s.title'>主题结构裂缝情况</td>
+            <td :class='s.title'>主体结构裂缝情况</td>
             <td colspan="5">
-              <el-input :class='s.elInput' v-model='house.MainCrack' type='textarea' :disabled='true'></el-input>
+              {{house.MainCrack}}
             </td>
           </tr>
           <tr>
             <td :class='s.title'>地基沉降</td>
             <td colspan="5">
-              <el-input :class='s.elInput' v-model='house.FoundationDown' type='textarea' :disabled='true'></el-input>
+              {{house.FoundationDown}}
             </td>
           </tr>
           <tr>
-            <td :class='s.title'>主题结构倾斜状况</td>
+            <td :class='s.title'>主体结构倾斜状况</td>
             <td colspan="5">
-              <el-input :class='s.elInput' v-model='house.MainSlant' type='textarea' :disabled='true'></el-input>
+              {{house.MainSlant}}
             </td>
           </tr>
           <tr>
             <td :class='s.title'>悬梁结构破坏</td>
             <td colspan="5">
-              <el-input :class='s.elInput' v-model='house.CantileverCrack' type='textarea' :disabled='true'></el-input>
+              {{house.CantileverCrack}}
             </td>
           </tr>
           <tr>
             <td :class='s.title'>女儿墙脱落情况</td>
             <td colspan="5">
-              <el-input :class='s.elInput' v-model='house.ParapetOff' type='textarea' :disabled='true'></el-input>
+              {{house.ParapetOff}}
             </td>
           </tr>
           <tr>
             <td :class='s.title'>外墙抹灰层剥落情况</td>
             <td colspan="5">
-              <el-input :class='s.elInput' v-model='house.OuterLloatedCoatOff' type='textarea' :disabled='true'></el-input>
+              {{house.OuterLloatedCoatOff}}
             </td>
           </tr>
           <tr>
             <td :class='s.title'>房屋变形</td>
             <td colspan="5">
-              <el-input :class='s.elInput' v-model='house.HouseDeform' type='textarea' :disabled='true'></el-input>
+              {{house.HouseDeform}}
             </td>
           </tr>
           <tr>
             <td :class='s.title'>地质灾害</td>
             <td colspan="5">
-              <el-input :class='s.elInput' v-model='house.Disaster' type='textarea' :disabled='true'></el-input>
+              {{house.Disaster}}
             </td>
           </tr>
           <tr>
             <td :class='s.title'>地址灾害治理情况</td>
             <td colspan="5">
-              <el-input :class='s.elInput' v-model='house.DisasterManage' type='textarea' :disabled='true'></el-input>
+              {{house.DisasterManage}}
             </td>
           </tr>
           <tr>
             <td :class='s.title'>排水系统</td>
             <td colspan="5">
-              <el-input :class='s.elInput' v-model='house.DrainageSsystem' type='textarea' :disabled='true'></el-input>
+              {{house.DrainageSsystem}}
             </td>
           </tr>
           <tr>
             <td :class='s.title'>房屋内部装修主体结构变更破坏情况</td>
             <td colspan="5">
-              <el-input :class='s.elInput' v-model='house.InnerChange' type='textarea' :disabled='true'></el-input>
+              {{house.InnerChange}}
             </td>
           </tr>
           <tr>
             <td :class='s.title'>违规搭建加层</td>
             <td colspan="5">
-              <el-input :class='s.elInput' v-model='house.IllegalBuild' type='textarea' :disabled='true'></el-input>
+              {{house.IllegalBuild}}
             </td>
           </tr>
           <tr>
             <td :class='s.title'>房屋鉴定等级</td>
             <td colspan="5">
-              <el-input :class='s.elInput' v-model='house.RankAppraisal' type='textarea' :disabled='true'></el-input>
+              {{house.RankAppraisal}}
             </td>
           </tr>
         </table>
@@ -389,7 +382,7 @@ export default {
       }
       .elInput{
         width: 75%;
-        margin-left: 10px
+        margin-left: 10px;
       }
     }
   }

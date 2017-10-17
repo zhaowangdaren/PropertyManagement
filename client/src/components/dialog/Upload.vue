@@ -28,6 +28,7 @@ export default {
   data () {
     return {
       host: 'https://www.maszfglzx.com:3000',
+      // host: '//localhost:3000',
       files:[]
     }
   },
