@@ -71,7 +71,7 @@
     <div :class='s.addDel'>
       <el-button v-if='EDITABLE' type="primary" icon="plus" @click='showAddDialog = true' class='add'>新增</el-button>
       <el-button type="primary" icon="search" @click='onSearch' class='search'>查询</el-button>
-      <el-button type="primary" icon="upload2" @click='showUploadFile = true'>批量上传</el-button>
+      <el-button type="primary" icon="upload2" @click='showUploadFile = true'>批量上传(支持.xlsx文件)</el-button>
     </div>
     <table>
       <tr >
@@ -143,7 +143,7 @@
       :visible.sync="showUploadFile">
       <upload
         :uploading='importing'
-        @cancel='showUploadFile = false'
+        @cancel='showUploadFile = false;importing = false'
         @sure='onImportSure'></upload>
     </el-dialog>
   </div>
@@ -210,6 +210,9 @@
         if (this.isLoadingInput ) return
         this.fetchAllXQByCommunityID(val)
       },
+      showUploadFile: function (val) {
+        this.importing = false
+      }
     },
     methods: {
       onImportSure (files) {

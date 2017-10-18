@@ -36,7 +36,7 @@ export default {
     handleUploadSucc (response, file, fileList) {
       this.files = fileList
     },
-    handleRemove () {
+    handleRemove (file, fileList) {
       this.files = fileList
     },
     onSure () {
@@ -53,5 +53,9 @@ export default {
 .upload{
   width: 80%;
   margin: 0 auto;
+}
+.bottomBtns{
+  display: flex;
+  justify-content: flex-end;
 }
 </style>

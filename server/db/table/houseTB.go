@@ -1,6 +1,7 @@
 package table
 
 import (
+	"errors"
 	"log"
 	"strings"
 
@@ -105,39 +106,42 @@ func ImportHousesFromXML(db *mgo.Database, path string) error {
 			continue
 		}
 		for index, row := range sheet.Rows {
+			if len(row.Cells) < 23 {
+				return errors.New("表格内容不完整")
+			}
 			if index == 0 {
 				continue
 			}
 			var house House
 			house.ID = bson.NewObjectId()
-			house.BuildNo = row.Cells[1].String()
-			house.Owner = row.Cells[2].String()
-			house.HouseType = row.Cells[3].String()
-			house.StreetID = streets[0].ID.Hex() // 4
-			house.CommunityID = ""               // 5
-			xqName := row.Cells[6].String()
+			house.BuildNo = row.Cells[0].String()
+			house.Owner = row.Cells[1].String()
+			house.HouseType = row.Cells[2].String()
+			house.StreetID = streets[0].ID.Hex() // 3
+			house.CommunityID = ""               // 4
+			xqName := row.Cells[5].String()
 			xqs, err := SearchXQByName(db, xqName)
 			if err == nil && len(xqs) > 0 {
 				house.XQID = xqs[0].ID.Hex()
 				house.CommunityID = xqs[0].CommunityID
 			}
-			house.HouseBuildNo = row.Cells[7].String()
-			house.HouseNo = row.Cells[8].String()
-			house.Year = row.Cells[9].String()
-			house.UseChange = row.Cells[10].String()
-			house.MainCrack = row.Cells[11].String()
-			house.FoundationDown = row.Cells[12].String()
-			house.MainSlant = row.Cells[13].String()
-			house.CantileverCrack = row.Cells[14].String()
-			house.ParapetOff = row.Cells[15].String()
-			house.OuterLloatedCoatOff = row.Cells[16].String()
-			house.HouseDeform = row.Cells[17].String()
-			house.Disaster = row.Cells[18].String()
-			house.DisasterManage = row.Cells[19].String()
-			house.DrainageSsystem = row.Cells[20].String()
-			house.InnerChange = row.Cells[21].String()
-			house.IllegalBuild = row.Cells[22].String()
-			house.RankAppraisal = row.Cells[23].String()
+			house.HouseBuildNo = row.Cells[6].String()
+			house.HouseNo = row.Cells[7].String()
+			house.Year = row.Cells[8].String()
+			house.UseChange = row.Cells[9].String()
+			house.MainCrack = row.Cells[10].String()
+			house.FoundationDown = row.Cells[11].String()
+			house.MainSlant = row.Cells[12].String()
+			house.CantileverCrack = row.Cells[13].String()
+			house.ParapetOff = row.Cells[14].String()
+			house.OuterLloatedCoatOff = row.Cells[15].String()
+			house.HouseDeform = row.Cells[16].String()
+			house.Disaster = row.Cells[17].String()
+			house.DisasterManage = row.Cells[18].String()
+			house.DrainageSsystem = row.Cells[19].String()
+			house.InnerChange = row.Cells[20].String()
+			house.IllegalBuild = row.Cells[21].String()
+			house.RankAppraisal = row.Cells[22].String()
 			InsertHouse(db, house)
 		}
 	}
@@ -159,7 +163,8 @@ func InsertHouse(db *mgo.Database, house House) interface{} {
 		return gin.H{"error": 1, "data": err.Error()}
 	}
 	if count > 0 {
-		return gin.H{"error": 1, "data": "编号为" + house.BuildNo + "的House已经存在"}
+		// return gin.H{"error": 1, "data": "编号为" + house.BuildNo + "的House已经存在"}
+		glog.Warning("InsertHouse: 编号为" + house.BuildNo + "的House已经存在")
 	}
 	house.ID = bson.NewObjectId()
 	err = c.Insert(&house)

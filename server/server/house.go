@@ -86,6 +86,7 @@ func startHouse(router *gin.RouterGroup, dbc *mgo.Database) {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
 			return
 		}
+		importInfo := ""
 		for _, fileName := range files.Values {
 			err = table.ImportHousesFromXML(dbc, FileBasicPath+"/files/"+fileName)
 			// if err != nil {
@@ -94,8 +95,9 @@ func startHouse(router *gin.RouterGroup, dbc *mgo.Database) {
 			// }
 			if err != nil {
 				glog.Error(err.Error())
+				importInfo += err.Error()
 			}
 		}
-		c.JSON(http.StatusOK, gin.H{"error": 0, "data": "导入完成"})
+		c.JSON(http.StatusOK, gin.H{"error": 0, "data": "导入完成," + importInfo})
 	})
 }

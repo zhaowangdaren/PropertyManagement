@@ -170,7 +170,7 @@
               <el-input :class='s.elInput' v-model='house.RankAppraisal' type='textarea'></el-input>
             </td>
           </tr>
-          <tr>
+          <!-- <tr>
             <td :class='s.title'>上传图片</td>
             <td colspan="5">
               <div :class='s.uploadWrap'>
@@ -183,7 +183,7 @@
                 </el-upload>
               </div>
             </td>
-          </tr>
+          </tr> -->
         </table>
       </div>
       <div slot="footer" :class="s.bts">
