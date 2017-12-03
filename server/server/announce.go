@@ -58,7 +58,7 @@ func startAnnounce(router *gin.RouterGroup, dbc *mgo.Database) {
 func noticeAllPM(dbc *mgo.Database, fileName string) {
 	kvs := make(map[string]interface{})
 	kvs["bind"] = 1
-	pmUsers := table.FindPMUserByKVs(dbc, kvs)
+	pmUsers := table.FindDistinctPMUserByKVs(dbc, kvs)
 	for _, pmUser := range pmUsers {
 		pjson := `{
 			"touser": "` + pmUser.OpenID + `",

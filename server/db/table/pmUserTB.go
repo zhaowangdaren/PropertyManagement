@@ -101,6 +101,22 @@ func FindPMUserByKVs(db *mgo.Database, kvs map[string]interface{}) []PMUser {
 	return result
 }
 
+func FindDistinctPMUserByKVs(db *mgo.Database, kvs map[string]interface{}) []PMUser {
+	querys := make(map[string]interface{})
+	for k, v := range kvs {
+		querys[strings.ToLower(k)] = v
+	}
+	c := db.C(PMUserTableName)
+	query := c.Find(querys)
+	var err error
+	var result []PMUser
+	err = query.Distinct("openid", &result)
+	if err != nil {
+		glog.Error(err.Error())
+	}
+	return result
+}
+
 //FindPMUserDistinct 筛选key对应的value
 func FindPMUserDistinct(db *mgo.Database, key string) interface{} {
 	c := db.C(PMUserTableName)
