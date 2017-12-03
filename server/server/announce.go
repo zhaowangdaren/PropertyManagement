@@ -6,7 +6,6 @@ import (
 
 	"../db/table"
 	"github.com/gin-gonic/gin"
-	"github.com/golang/glog"
 	mgo "gopkg.in/mgo.v2"
 )
 
@@ -59,7 +58,8 @@ func noticeAllPM(dbc *mgo.Database, fileName string) {
 	kvs := make(map[string]interface{})
 	kvs["bind"] = 1
 	pmUsers := table.FindDistinctPMUserByKVs(dbc, kvs)
-	glog.Info("pmUsers", len(pmUsers))
+	// glog.Info("pmUsers", len(pmUsers))
+	fmt.Println("pmUsers", len(pmUsers))
 	for _, pmUser := range pmUsers {
 		pjson := `{
 			"touser": "` + pmUser.OpenID + `",
