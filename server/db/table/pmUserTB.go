@@ -101,6 +101,7 @@ func FindPMUserByKVs(db *mgo.Database, kvs map[string]interface{}) []PMUser {
 	return result
 }
 
+// FindDistinctPMUserByKVs
 func FindDistinctPMUserByKVs(db *mgo.Database, kvs map[string]interface{}) []PMUser {
 	querys := make(map[string]interface{})
 	for k, v := range kvs {

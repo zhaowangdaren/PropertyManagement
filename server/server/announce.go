@@ -59,6 +59,7 @@ func noticeAllPM(dbc *mgo.Database, fileName string) {
 	kvs := make(map[string]interface{})
 	kvs["bind"] = 1
 	pmUsers := table.FindDistinctPMUserByKVs(dbc, kvs)
+	glog.log("pmUsers", len(pmUsers))
 	for _, pmUser := range pmUsers {
 		pjson := `{
 			"touser": "` + pmUser.OpenID + `",
