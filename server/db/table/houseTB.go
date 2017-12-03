@@ -45,34 +45,6 @@ type House struct {
 	Imgs                string
 }
 
-//ImportHouseIndex 建筑信息表
-type ImportHouseIndex struct {
-	BuildNo             int //建筑编号
-	Owner               int //房产登记人
-	StreetID            int //所属街道
-	CommunityID         int //所属社区
-	XQID                int //房屋所属小区名
-	HouseBuildNo        int //房屋楼栋号
-	HouseNo             int //房屋门牌号
-	HouseType           int //房屋类型
-	Year                int //建筑年代
-	UseChange           int //使用变更
-	MainCrack           int //主体结构裂缝
-	FoundationDown      int //地基沉降变形
-	MainSlant           int //主体结构倾斜
-	CantileverCrack     int //悬挑结构破坏
-	ParapetOff          int //女儿墙脱落
-	OuterLloatedCoatOff int //外墙抹灰层剥落
-	HouseDeform         int //房顶变形
-	Disaster            int //地质灾害
-	DisasterManage      int //地址灾害治理情况
-	DrainageSsystem     int //排水系统
-	InnerChange         int //房屋内部装修主体结构变更破坏情况
-	IllegalBuild        int //违规搭建加层
-	RankAppraisal       int //房屋鉴定等级
-	Imgs                int
-}
-
 //Houses 集合
 type Houses struct {
 	Houses []House

@@ -59,31 +59,35 @@ func noticeAllPM(dbc *mgo.Database, fileName string) {
 	kvs := make(map[string]interface{})
 	kvs["bind"] = 1
 	pmUsers := table.FindPMUserByKVs(dbc, kvs)
-	for _, pmUsers := range pmUsers {
+	for _, pmUser := range pmUsers {
 		pjson := `{
 			"touser": "` + pmUser.OpenID + `",
-			"template_id": "TdVxvtwH1i24ArEUcx1FGmWNFI_11WFZvDGfBJ9cjBw",
+			"template_id": "_yYzGHjaSbNh9FqugaRQjE-l_56szVL05X3tM-XDgds",
 			"url": "",
 			"data": {
 				"first": {
 					"value": "您好，政府部门发布了新的公告：` + fileName + `"
 				},
 				"keyword1": {
-					"value": "` + fileName + `"
+					"value": ""
 				},
 				"keyword2": {
-					"value": "新公告"
+					"value": "` + fileName + `"
 				},
 				"keyword3": {
-					"value": "所有物业相关单位和个体"
+					"value": "政府部门"
 				},
+				"keyword4": {
+					"value": ""
+				}
 				"remark": {
 					"value": "请及时登陆官网查看新公告"
 				}
 			}
 		}`
+		access_token := GetAccessToken()
+		wxURL := "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + access_token
+		PostJson(wxURL, pjson)
 	}
-	access_token := GetAccessToken()
-	wxURL := "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + access_token
-	PostJson(wxURL, pjson)
+
 }

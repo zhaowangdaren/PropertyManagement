@@ -69,12 +69,12 @@ func startHouse(router *gin.RouterGroup, dbc *mgo.Database) {
 
 	//按street的name删数据, 删除多个
 	router.POST("/houses/del", func(c *gin.Context) {
-		var names Values
-		err := c.BindJSON(&names)
+		var ids Values
+		err := c.BindJSON(&ids)
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{"error": 1, "data": err.Error()})
 		} else {
-			c.JSON(http.StatusOK, table.DelHouses(dbc, names.Values))
+			c.JSON(http.StatusOK, table.DelHouses(dbc, ids.Values))
 		}
 	})
 
