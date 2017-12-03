@@ -1,10 +1,8 @@
 package server
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
-	"reflect"
 
 	"../db/table"
 	"github.com/gin-gonic/gin"
@@ -62,10 +60,11 @@ func noticeAllPM(dbc *mgo.Database, fileName string) {
 	pmUsers := table.FindPMUserByKVs(dbc, kvs)
 	var announcedPM []string
 	for _, pmUser := range pmUsers {
-		hasSend, _ := Contain(announcedPM, pmUser.OpenID)
+		hasSend := Contains(announcedPM, pmUser.OpenID)
 		if hasSend {
 			continue
 		}
+		fmt.Println("OpenID", pmUser.OpenID)
 		announcedPM = append(announcedPM, pmUser.OpenID)
 		pjson := `{
 			"touser": "` + pmUser.OpenID + `",
@@ -99,20 +98,15 @@ func noticeAllPM(dbc *mgo.Database, fileName string) {
 }
 
 // Contain 判断obj是否在target中，target支持的类型arrary,slice,map
-func Contain(obj interface{}, target interface{}) (bool, error) {
-	targetValue := reflect.ValueOf(target)
-	switch reflect.TypeOf(target).Kind() {
-	case reflect.Slice, reflect.Array:
-		for i := 0; i < targetValue.Len(); i++ {
-			if targetValue.Index(i).Interface() == obj {
-				return true, nil
-			}
-		}
-	case reflect.Map:
-		if targetValue.MapIndex(reflect.ValueOf(obj)).IsValid() {
-			return true, nil
-		}
+func Contains(slice []string, item string) bool {
+	if len(slice) == 0 {
+		return false
+	}
+	set := make(map[string]struct{}, len(slice))
+	for _, s := range slice {
+		set[s] = struct{}{}
 	}
 
-	return false, errors.New("not in array")
+	_, ok := set[item]
+	return ok
 }
