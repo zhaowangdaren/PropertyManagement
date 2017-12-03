@@ -79,7 +79,7 @@ func noticeAllPM(dbc *mgo.Database, fileName string) {
 				},
 				"keyword4": {
 					"value": ""
-				}
+				},
 				"remark": {
 					"value": "请及时登陆官网查看新公告"
 				}
