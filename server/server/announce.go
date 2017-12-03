@@ -1,8 +1,10 @@
 package server
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
+	"reflect"
 
 	"../db/table"
 	"github.com/gin-gonic/gin"
@@ -57,10 +59,14 @@ func startAnnounce(router *gin.RouterGroup, dbc *mgo.Database) {
 func noticeAllPM(dbc *mgo.Database, fileName string) {
 	kvs := make(map[string]interface{})
 	kvs["bind"] = 1
-	pmUsers := table.FindDistinctPMUserByKVs(dbc, kvs)
-	// glog.Info("pmUsers", len(pmUsers))
-	fmt.Println("pmUsers", len(pmUsers))
+	pmUsers := table.FindPMUserByKVs(dbc, kvs)
+	var announcedPM []string
 	for _, pmUser := range pmUsers {
+		hasSend, _ := Contain(announcedPM, pmUser.OpenID)
+		if hasSend {
+			continue
+		}
+		announcedPM = append(announcedPM, pmUser.OpenID)
 		pjson := `{
 			"touser": "` + pmUser.OpenID + `",
 			"template_id": "_yYzGHjaSbNh9FqugaRQjE-l_56szVL05X3tM-XDgds",
@@ -86,9 +92,27 @@ func noticeAllPM(dbc *mgo.Database, fileName string) {
 				}
 			}
 		}`
-		access_token := GetAccessToken()
-		wxURL := "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + access_token
+		accessToken := GetAccessToken()
+		wxURL := "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + accessToken
 		PostJson(wxURL, pjson)
 	}
+}
 
+// Contain 判断obj是否在target中，target支持的类型arrary,slice,map
+func Contain(obj interface{}, target interface{}) (bool, error) {
+	targetValue := reflect.ValueOf(target)
+	switch reflect.TypeOf(target).Kind() {
+	case reflect.Slice, reflect.Array:
+		for i := 0; i < targetValue.Len(); i++ {
+			if targetValue.Index(i).Interface() == obj {
+				return true, nil
+			}
+		}
+	case reflect.Map:
+		if targetValue.MapIndex(reflect.ValueOf(obj)).IsValid() {
+			return true, nil
+		}
+	}
+
+	return false, errors.New("not in array")
 }
