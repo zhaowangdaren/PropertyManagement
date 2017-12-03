@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/gin-gonic/gin"
-	mgo "gopkg.in/mgo.v2"
-
 	"../db/table"
+	"github.com/gin-gonic/gin"
+	"github.com/golang/glog"
+	mgo "gopkg.in/mgo.v2"
 )
 
 func startAnnounce(router *gin.RouterGroup, dbc *mgo.Database) {
@@ -59,7 +59,7 @@ func noticeAllPM(dbc *mgo.Database, fileName string) {
 	kvs := make(map[string]interface{})
 	kvs["bind"] = 1
 	pmUsers := table.FindDistinctPMUserByKVs(dbc, kvs)
-	glog.log("pmUsers", len(pmUsers))
+	glog.Info("pmUsers", len(pmUsers))
 	for _, pmUser := range pmUsers {
 		pjson := `{
 			"touser": "` + pmUser.OpenID + `",
