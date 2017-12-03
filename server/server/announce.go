@@ -39,6 +39,9 @@ func startAnnounce(router *gin.RouterGroup, dbc *mgo.Database) {
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{"error": 0, "data": ""})
+		for _, announce := range announces.List {
+			noticeAllPM(dbc, announce.FileName)
+		}
 	})
 
 	router.GET("/announce/del/id/:id", func(c *gin.Context) {
@@ -50,4 +53,37 @@ func startAnnounce(router *gin.RouterGroup, dbc *mgo.Database) {
 		}
 		c.JSON(http.StatusOK, gin.H{"error": 0, "data": ""})
 	})
+}
+
+func noticeAllPM(dbc *mgo.Database, fileName string) {
+	kvs := make(map[string]interface{})
+	kvs["bind"] = 1
+	pmUsers := table.FindPMUserByKVs(dbc, kvs)
+	for _, pmUsers := range pmUsers {
+		pjson := `{
+			"touser": "` + pmUser.OpenID + `",
+			"template_id": "TdVxvtwH1i24ArEUcx1FGmWNFI_11WFZvDGfBJ9cjBw",
+			"url": "",
+			"data": {
+				"first": {
+					"value": "您好，政府部门发布了新的公告：` + fileName + `"
+				},
+				"keyword1": {
+					"value": "` + fileName + `"
+				},
+				"keyword2": {
+					"value": "新公告"
+				},
+				"keyword3": {
+					"value": "所有物业相关单位和个体"
+				},
+				"remark": {
+					"value": "请及时登陆官网查看新公告"
+				}
+			}
+		}`
+	}
+	access_token := GetAccessToken()
+	wxURL := "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + access_token
+	PostJson(wxURL, pjson)
 }
